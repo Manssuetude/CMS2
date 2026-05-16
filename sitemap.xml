@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>http://127.0.0.1:4173/#accueil</loc></url>
+  <url><loc>http://127.0.0.1:4173/#themes</loc></url>
+  <url><loc>http://127.0.0.1:4173/#activites</loc></url>
+  <url><loc>http://127.0.0.1:4173/#productions</loc></url>
+  <url><loc>http://127.0.0.1:4173/#projets</loc></url>
+  <url><loc>http://127.0.0.1:4173/#perca</loc></url>
+  <url><loc>http://127.0.0.1:4173/#a-propos</loc></url>
+  <url><loc>http://127.0.0.1:4173/#nous-soutenir</loc></url>
+  <url><loc>http://127.0.0.1:4173/#nous-rejoindre</loc></url>
+</urlset>

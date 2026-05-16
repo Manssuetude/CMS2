@@ -1,0 +1,38 @@
+{
+  "name": "manssuetude-cms",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src scripts tests next.config.ts --max-warnings=0",
+    "format:check": "prettier --check \"{src,scripts,docs}/**/*.{ts,tsx,mjs,md,css}\" \"*.{md,json}\" --ignore-path .gitignore",
+    "test": "node --test tests/**/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "seed": "node scripts/seed.mjs",
+    "db:check": "node scripts/check-db.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.46.1",
+    "next": "^15.0.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "resend": "^4.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/node": "^22.9.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^15.5.18",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.59.3"
+  }
+}
