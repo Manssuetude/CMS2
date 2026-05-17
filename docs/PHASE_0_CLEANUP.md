@@ -14,15 +14,15 @@ Ce nettoyage vise à rendre le dépôt plus lisible et plus professionnel **sans
 
 ## 2. Fichiers supprimés
 
-| Fichier | Raison | Risque |
-|---|---|---|
-| `.DS_Store` | Fichier système macOS généré par Finder | Aucun risque applicatif |
-| `assets/.DS_Store` | Fichier système macOS dans le dossier assets | Aucun risque applicatif |
-| `src/.DS_Store` | Fichier système macOS dans le dossier source | Aucun risque applicatif |
-| `node_modules/.DS_Store` | Fichier système macOS dans les dépendances | Aucun risque applicatif |
-| `tsconfig.tsbuildinfo` | Fichier généré par TypeScript incremental build | Régénérable via `npm run typecheck` |
-| `.next-stale-1778801994` | Ancien cache/build Next.js obsolète | Régénérable si nécessaire |
-| `.npm-cache` | Cache npm local créé pendant les installations | Aucun risque applicatif |
+| Fichier                  | Raison                                          | Risque                              |
+| ------------------------ | ----------------------------------------------- | ----------------------------------- |
+| `.DS_Store`              | Fichier système macOS généré par Finder         | Aucun risque applicatif             |
+| `assets/.DS_Store`       | Fichier système macOS dans le dossier assets    | Aucun risque applicatif             |
+| `src/.DS_Store`          | Fichier système macOS dans le dossier source    | Aucun risque applicatif             |
+| `node_modules/.DS_Store` | Fichier système macOS dans les dépendances      | Aucun risque applicatif             |
+| `tsconfig.tsbuildinfo`   | Fichier généré par TypeScript incremental build | Régénérable via `npm run typecheck` |
+| `.next-stale-1778801994` | Ancien cache/build Next.js obsolète             | Régénérable si nécessaire           |
+| `.npm-cache`             | Cache npm local créé pendant les installations  | Aucun risque applicatif             |
 
 ---
 
@@ -62,19 +62,19 @@ Aucune suppression d'asset n'a été faite sans audit d'usage détaillé afin d'
 
 **Règles ajoutées ou renforcées :**
 
-| Règle | Raison |
-|---|---|
-| `.turbo/` | Cache Turbopack |
-| `.vercel/` | Artefacts Vercel locaux |
-| `out/` | Output de build statique |
-| `coverage/` | Rapports de couverture |
-| `playwright-report/` | Rapports Playwright |
-| `test-results/` | Résultats de tests |
-| `*.tsbuildinfo` | Incremental build TypeScript |
-| `**/.DS_Store` | `.DS_Store` dans tous les sous-dossiers |
-| `Thumbs.db` | Fichier système Windows |
-| `*.tmp` · `*.temp` | Fichiers temporaires |
-| `*.swp` · `*~` | Fichiers de swap éditeurs |
+| Règle                | Raison                                  |
+| -------------------- | --------------------------------------- |
+| `.turbo/`            | Cache Turbopack                         |
+| `.vercel/`           | Artefacts Vercel locaux                 |
+| `out/`               | Output de build statique                |
+| `coverage/`          | Rapports de couverture                  |
+| `playwright-report/` | Rapports Playwright                     |
+| `test-results/`      | Résultats de tests                      |
+| `*.tsbuildinfo`      | Incremental build TypeScript            |
+| `**/.DS_Store`       | `.DS_Store` dans tous les sous-dossiers |
+| `Thumbs.db`          | Fichier système Windows                 |
+| `*.tmp` · `*.temp`   | Fichiers temporaires                    |
+| `*.swp` · `*~`       | Fichiers de swap éditeurs               |
 
 ---
 

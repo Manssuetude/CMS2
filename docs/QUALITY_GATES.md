@@ -44,13 +44,13 @@ npm run format:check  # si la modification est large
 
 **Configuration :**
 
-| Paramètre | Valeur |
-|---|---|
-| Fichier | `tsconfig.json` |
-| Mode strict | `strict: true` |
-| Alias interne | `@/*` vers `src/*` |
-| JS interdit | `allowJs: false` |
-| Compilation | `noEmit: true` (Next.js gère la compilation) |
+| Paramètre     | Valeur                                       |
+| ------------- | -------------------------------------------- |
+| Fichier       | `tsconfig.json`                              |
+| Mode strict   | `strict: true`                               |
+| Alias interne | `@/*` vers `src/*`                           |
+| JS interdit   | `allowJs: false`                             |
+| Compilation   | `noEmit: true` (Next.js gère la compilation) |
 
 ```bash
 npm run typecheck
@@ -64,10 +64,10 @@ npm run typecheck
 
 **Configuration :**
 
-| Paramètre | Valeur |
-|---|---|
-| Fichier | `eslint.config.mjs` |
-| Format | ESLint flat config |
+| Paramètre   | Valeur                                                                       |
+| ----------- | ---------------------------------------------------------------------------- |
+| Fichier     | `eslint.config.mjs`                                                          |
+| Format      | ESLint flat config                                                           |
 | Dépendances | `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-config-next`, `globals` |
 
 ```bash
@@ -90,13 +90,13 @@ npm run lint
 
 **Configuration :**
 
-| Paramètre | Valeur |
-|---|---|
-| Fichier | `.prettierrc.json` |
-| Largeur | `120` |
-| Points-virgules | Activés |
-| Guillemets | Doubles |
-| Trailing commas | Activées |
+| Paramètre       | Valeur             |
+| --------------- | ------------------ |
+| Fichier         | `.prettierrc.json` |
+| Largeur         | `120`              |
+| Points-virgules | Activés            |
+| Guillemets      | Doubles            |
+| Trailing commas | Activées           |
 
 ```bash
 npm run format:check
@@ -127,12 +127,12 @@ npm run build
 
 **Configuration :**
 
-| Paramètre | Valeur |
-|---|---|
-| Fichier | `.github/workflows/ci.yml` |
+| Paramètre     | Valeur                                       |
+| ------------- | -------------------------------------------- |
+| Fichier       | `.github/workflows/ci.yml`                   |
 | Déclenchement | Pull requests et push sur `main` / `develop` |
-| Node.js | 22 |
-| Installation | `npm ci` |
+| Node.js       | 22                                           |
+| Installation  | `npm ci`                                     |
 
 **Étapes de la CI :**
 

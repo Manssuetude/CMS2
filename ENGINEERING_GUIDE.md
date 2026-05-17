@@ -57,17 +57,17 @@ supabase/
 
 **Responsabilités :**
 
-| Dossier | Rôle |
-|---|---|
-| `src/app` | Routes Next.js, layouts, pages, handlers API |
-| `src/components` | Présentation et interactions UI |
-| `src/repositories` | Accès données, CRUD, mapping DB |
-| `src/services` | Logique métier testable |
-| `src/lib` | Infrastructure technique |
-| `src/types` | Types CMS et DB |
-| `src/config` | Configuration stable non secrète |
-| `src/constants` | Constantes métier |
-| `src/utils` | Helpers génériques |
+| Dossier            | Rôle                                         |
+| ------------------ | -------------------------------------------- |
+| `src/app`          | Routes Next.js, layouts, pages, handlers API |
+| `src/components`   | Présentation et interactions UI              |
+| `src/repositories` | Accès données, CRUD, mapping DB              |
+| `src/services`     | Logique métier testable                      |
+| `src/lib`          | Infrastructure technique                     |
+| `src/types`        | Types CMS et DB                              |
+| `src/config`       | Configuration stable non secrète             |
+| `src/constants`    | Constantes métier                            |
+| `src/utils`        | Helpers génériques                           |
 
 Voir [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) pour le détail.
 
@@ -98,14 +98,14 @@ Route handler → validation/auth/permissions → service/repository → respons
 
 ## 5. Conventions de code
 
-| Élément | Convention |
-|---|---|
-| Composants React | `PascalCase.tsx` |
-| Services | `camelCaseService.ts` |
-| Repositories | pluriel + `Repository.ts` |
-| Imports internes | `@/` |
-| Types exportés | `PascalCase` |
-| Default export | Réservé aux fichiers Next.js naturels |
+| Élément          | Convention                            |
+| ---------------- | ------------------------------------- |
+| Composants React | `PascalCase.tsx`                      |
+| Services         | `camelCaseService.ts`                 |
+| Repositories     | pluriel + `Repository.ts`             |
+| Imports internes | `@/`                                  |
+| Types exportés   | `PascalCase`                          |
+| Default export   | Réservé aux fichiers Next.js naturels |
 
 - TypeScript strict — pas de `any` non justifié
 
@@ -134,11 +134,11 @@ Voir [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md).
 
 **Fichiers SQL :**
 
-| Fichier | Contenu |
-|---|---|
-| `supabase/schema.sql` | Tables principales |
-| `supabase/storage.sql` | Buckets médias |
-| `supabase/cms-advanced.sql` | Tables avancées |
+| Fichier                     | Contenu            |
+| --------------------------- | ------------------ |
+| `supabase/schema.sql`       | Tables principales |
+| `supabase/storage.sql`      | Buckets médias     |
+| `supabase/cms-advanced.sql` | Tables avancées    |
 
 **Tables principales :** `users`, `pages`, `themes`, `productions`, `activities`, `projects`, `resources`, `form_submissions`, `site_settings`
 
@@ -203,17 +203,18 @@ La CI exécute ces contrôles dans `.github/workflows/ci.yml`.
 
 **Branches :**
 
-| Branche | Usage |
-|---|---|
-| `main` | Stable |
-| `develop` | Intégration |
+| Branche     | Usage           |
+| ----------- | --------------- |
+| `main`      | Stable          |
+| `develop`   | Intégration     |
 | `feature/*` | Fonctionnalités |
-| `fix/*` | Corrections |
-| `chore/*` | Maintenance |
+| `fix/*`     | Corrections     |
+| `chore/*`   | Maintenance     |
 
 **Préfixes de commits :** `feat:` · `fix:` · `refactor:` · `docs:` · `test:` · `chore:`
 
 **Une PR doit inclure :**
+
 - Objectif
 - Zones touchées
 - Validations exécutées

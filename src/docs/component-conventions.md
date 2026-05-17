@@ -18,11 +18,11 @@
 
 Tout composant partagé ou complexe doit documenter :
 
-| Élément | Description |
-|---|---|
-| **Purpose** | Pourquoi ce composant existe |
-| **Props** | Liste typée des props attendues |
-| **Variants** | Variantes disponibles |
-| **Usage** | Exemple d'utilisation |
+| Élément          | Description                           |
+| ---------------- | ------------------------------------- |
+| **Purpose**      | Pourquoi ce composant existe          |
+| **Props**        | Liste typée des props attendues       |
+| **Variants**     | Variantes disponibles                 |
+| **Usage**        | Exemple d'utilisation                 |
 | **Restrictions** | Ce que ce composant ne doit pas faire |
-| **Example** | Exemple de code minimal |
+| **Example**      | Exemple de code minimal               |

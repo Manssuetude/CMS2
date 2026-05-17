@@ -8,19 +8,19 @@
 
 **Entités principales :**
 
-| Entité | Description |
-|---|---|
-| Theme | Grand axe intellectuel ou dossier de réflexion |
-| Production | Contenu éditorial publié |
-| Activity | Format collectif (séance, débat, atelier, etc.) |
-| Project | Initiative structurée |
-| Resource | Fichier ou contenu réutilisable |
-| Media | Média associé aux entités |
-| Season | Période ou saison éditoriale |
-| Member | Membre de l'association |
-| Page | Page publique du site |
-| CTA | Appel à l'action |
-| Collection | Regroupement thématique |
+| Entité     | Description                                     |
+| ---------- | ----------------------------------------------- |
+| Theme      | Grand axe intellectuel ou dossier de réflexion  |
+| Production | Contenu éditorial publié                        |
+| Activity   | Format collectif (séance, débat, atelier, etc.) |
+| Project    | Initiative structurée                           |
+| Resource   | Fichier ou contenu réutilisable                 |
+| Media      | Média associé aux entités                       |
+| Season     | Période ou saison éditoriale                    |
+| Member     | Membre de l'association                         |
+| Page       | Page publique du site                           |
+| CTA        | Appel à l'action                                |
+| Collection | Regroupement thématique                         |
 
 Chaque entité peut porter : **status, visibility, tags, relations, media, SEO et versioning metadata**.
 
@@ -30,23 +30,23 @@ Chaque entité peut porter : **status, visibility, tags, relations, media, SEO e
 
 **Statuts éditoriaux :**
 
-| Statut | Signification |
-|---|---|
-| `draft` | Brouillon en cours |
-| `review` | En attente de relecture |
-| `validated` | Validé, prêt à publier |
-| `published` | Publié et visible |
-| `archived` | Archivé |
+| Statut      | Signification           |
+| ----------- | ----------------------- |
+| `draft`     | Brouillon en cours      |
+| `review`    | En attente de relecture |
+| `validated` | Validé, prêt à publier  |
+| `published` | Publié et visible       |
+| `archived`  | Archivé                 |
 
 **Statuts de progression :**
 
-| Statut | Signification |
-|---|---|
-| `idea` | Idée initiale |
+| Statut        | Signification  |
+| ------------- | -------------- |
+| `idea`        | Idée initiale  |
 | `preparation` | En préparation |
-| `active` | En cours |
-| `completed` | Terminé |
-| `paused` | En pause |
+| `active`      | En cours       |
+| `completed`   | Terminé        |
+| `paused`      | En pause       |
 
 ---
 

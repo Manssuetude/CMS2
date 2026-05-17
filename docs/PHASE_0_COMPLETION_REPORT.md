@@ -20,65 +20,65 @@ Le projet dispose maintenant d'une architecture documentée, de conventions de c
 
 ### Supprimer les bricolages
 
-| Élément | Valeur |
-|---|---|
-| **Statut** | Partiellement complet, non bloquant |
-| **Preuves** | Fichiers parasites nettoyés, `.gitignore` renforcé, quality gates en place, prototype identifié comme legacy |
-| **Fichiers** | `.gitignore`, `docs/PHASE_0_CLEANUP.md`, `docs/LEGACY_MIGRATION_PLAN.md` |
+| Élément            | Valeur                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Statut**         | Partiellement complet, non bloquant                                                                                                         |
+| **Preuves**        | Fichiers parasites nettoyés, `.gitignore` renforcé, quality gates en place, prototype identifié comme legacy                                |
+| **Fichiers**       | `.gitignore`, `docs/PHASE_0_CLEANUP.md`, `docs/LEGACY_MIGRATION_PLAN.md`                                                                    |
 | **Dette restante** | `index.html`, `app.js`, `content.js`, `styles.css` existent encore à la racine — documentés, ne reçoivent plus de nouvelles fonctionnalités |
 
 ### Consolider l'architecture
 
-| Élément | Valeur |
-|---|---|
-| **Statut** | Complet pour Phase 0 |
-| **Preuves** | Architecture cible documentée, dossiers principaux présents, responsabilités clarifiées |
-| **Fichiers** | `docs/ARCHITECTURE.md`, `docs/RESPONSIBILITY_MAP.md`, `ENGINEERING_GUIDE.md`, `src/` |
+| Élément            | Valeur                                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **Statut**         | Complet pour Phase 0                                                                                           |
+| **Preuves**        | Architecture cible documentée, dossiers principaux présents, responsabilités clarifiées                        |
+| **Fichiers**       | `docs/ARCHITECTURE.md`, `docs/RESPONSIBILITY_MAP.md`, `ENGINEERING_GUIDE.md`, `src/`                           |
 | **Dette restante** | Certains dossiers comme `src/components/ui` et `src/components/navigation` sont prêts mais encore peu utilisés |
 
 ### Standardiser les conventions
 
-| Élément | Valeur |
-|---|---|
-| **Statut** | Complet pour Phase 0 |
-| **Preuves** | Conventions de nommage, imports, TypeScript, services, repositories et composants documentées |
-| **Fichiers** | `docs/CODE_CONVENTIONS.md`, `eslint.config.mjs`, `package.json` |
+| Élément            | Valeur                                                                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Statut**         | Complet pour Phase 0                                                                                                                 |
+| **Preuves**        | Conventions de nommage, imports, TypeScript, services, repositories et composants documentées                                        |
+| **Fichiers**       | `docs/CODE_CONVENTIONS.md`, `eslint.config.mjs`, `package.json`                                                                      |
 | **Dette restante** | Quelques patterns historiques à lisser : `contentRepository.ts` très large et coexistence `formRepository.ts` / `formsRepository.ts` |
 
 ### Préparer la scalabilité
 
-| Élément | Valeur |
-|---|---|
-| **Statut** | Complet pour Phase 0 |
-| **Preuves** | Séparation UI / services / repositories, documentation des flux, CI, lint et build |
-| **Fichiers** | `src/repositories`, `src/services`, `src/lib`, `.github/workflows/ci.yml` |
+| Élément            | Valeur                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| **Statut**         | Complet pour Phase 0                                                                                |
+| **Preuves**        | Séparation UI / services / repositories, documentation des flux, CI, lint et build                  |
+| **Fichiers**       | `src/repositories`, `src/services`, `src/lib`, `.github/workflows/ci.yml`                           |
 | **Dette restante** | Workflows avancés, permissions fines, versioning et collaboration prévus mais pas encore développés |
 
 ### Clarifier les responsabilités
 
-| Élément | Valeur |
-|---|---|
-| **Statut** | Complet pour Phase 0 |
-| **Preuves** | Carte de responsabilités et guide engineering |
-| **Fichiers** | `docs/RESPONSIBILITY_MAP.md`, `ENGINEERING_GUIDE.md`, `docs/ARCHITECTURE.md` |
-| **Dette restante** | Certaines routes API génériques accèdent encore directement à la base |
+| Élément            | Valeur                                                                       |
+| ------------------ | ---------------------------------------------------------------------------- |
+| **Statut**         | Complet pour Phase 0                                                         |
+| **Preuves**        | Carte de responsabilités et guide engineering                                |
+| **Fichiers**       | `docs/RESPONSIBILITY_MAP.md`, `ENGINEERING_GUIDE.md`, `docs/ARCHITECTURE.md` |
+| **Dette restante** | Certaines routes API génériques accèdent encore directement à la base        |
 
 ### Documenter le projet
 
-| Élément | Valeur |
-|---|---|
-| **Statut** | Complet |
-| **Preuves** | README, onboarding, architecture, conventions, design system, quality gates, legacy migration, audit et cleanup |
-| **Fichiers** | `README.md`, `docs/ONBOARDING.md`, `docs/*`, `ENGINEERING_GUIDE.md` |
-| **Dette restante** | La documentation devra rester synchronisée avec les développements de Phase 1 |
+| Élément            | Valeur                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- |
+| **Statut**         | Complet                                                                                                         |
+| **Preuves**        | README, onboarding, architecture, conventions, design system, quality gates, legacy migration, audit et cleanup |
+| **Fichiers**       | `README.md`, `docs/ONBOARDING.md`, `docs/*`, `ENGINEERING_GUIDE.md`                                             |
+| **Dette restante** | La documentation devra rester synchronisée avec les développements de Phase 1                                   |
 
 ### Figer les fondations techniques
 
-| Élément | Valeur |
-|---|---|
-| **Statut** | Complet pour Phase 0 |
-| **Preuves** | TypeScript strict, ESLint, Prettier, CI, build valide |
-| **Fichiers** | `tsconfig.json`, `eslint.config.mjs`, `.prettierrc.json`, `.github/workflows/ci.yml`, `package.json` |
+| Élément            | Valeur                                                                                                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Statut**         | Complet pour Phase 0                                                                                                           |
+| **Preuves**        | TypeScript strict, ESLint, Prettier, CI, build valide                                                                          |
+| **Fichiers**       | `tsconfig.json`, `eslint.config.mjs`, `.prettierrc.json`, `.github/workflows/ci.yml`, `package.json`                           |
 | **Dette restante** | La règle `@next/next/no-img-element` est désactivée temporairement — migration vers `next/image` à faire dans une tâche dédiée |
 
 ---
@@ -141,22 +141,22 @@ API route → validation → service/repository → response
 
 ## 5. Documentation disponible
 
-| Document | Description |
-|---|---|
-| [`README.md`](../README.md) | Vision, installation rapide, scripts, architecture rapide |
-| [`ENGINEERING_GUIDE.md`](../ENGINEERING_GUIDE.md) | Règles d'ingénierie et principes d'équipe |
-| [`docs/ONBOARDING.md`](ONBOARDING.md) | Guide complet pour nouveaux développeurs |
-| [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) | Architecture cible et règles d'import |
-| [`docs/RESPONSIBILITY_MAP.md`](RESPONSIBILITY_MAP.md) | Séparation UI / repositories / services / lib / utils / types |
-| [`docs/CODE_CONVENTIONS.md`](CODE_CONVENTIONS.md) | Conventions TypeScript, imports, naming, services, repositories |
-| [`docs/DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) | Tokens, règles visuelles et dette design |
-| [`docs/QUALITY_GATES.md`](QUALITY_GATES.md) | Commandes obligatoires, ESLint, Prettier, CI |
-| [`docs/LEGACY_MIGRATION_PLAN.md`](LEGACY_MIGRATION_PLAN.md) | Stratégie de sortie du prototype vanilla |
-| [`docs/DATABASE.md`](DATABASE.md) | Fichiers SQL et tables Supabase |
-| [`docs/WORKFLOWS.md`](WORKFLOWS.md) | Branches, PR et commits |
-| [`docs/PHASE_0_AUDIT.md`](PHASE_0_AUDIT.md) | Audit initial |
-| [`docs/PHASE_0_CLEANUP.md`](PHASE_0_CLEANUP.md) | Nettoyage initial |
-| [`docs/AUDIT.md`](AUDIT.md) · [`docs/CMS.md`](CMS.md) | Notes techniques complémentaires |
+| Document                                                    | Description                                                     |
+| ----------------------------------------------------------- | --------------------------------------------------------------- |
+| [`README.md`](../README.md)                                 | Vision, installation rapide, scripts, architecture rapide       |
+| [`ENGINEERING_GUIDE.md`](../ENGINEERING_GUIDE.md)           | Règles d'ingénierie et principes d'équipe                       |
+| [`docs/ONBOARDING.md`](ONBOARDING.md)                       | Guide complet pour nouveaux développeurs                        |
+| [`docs/ARCHITECTURE.md`](ARCHITECTURE.md)                   | Architecture cible et règles d'import                           |
+| [`docs/RESPONSIBILITY_MAP.md`](RESPONSIBILITY_MAP.md)       | Séparation UI / repositories / services / lib / utils / types   |
+| [`docs/CODE_CONVENTIONS.md`](CODE_CONVENTIONS.md)           | Conventions TypeScript, imports, naming, services, repositories |
+| [`docs/DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md)                 | Tokens, règles visuelles et dette design                        |
+| [`docs/QUALITY_GATES.md`](QUALITY_GATES.md)                 | Commandes obligatoires, ESLint, Prettier, CI                    |
+| [`docs/LEGACY_MIGRATION_PLAN.md`](LEGACY_MIGRATION_PLAN.md) | Stratégie de sortie du prototype vanilla                        |
+| [`docs/DATABASE.md`](DATABASE.md)                           | Fichiers SQL et tables Supabase                                 |
+| [`docs/WORKFLOWS.md`](WORKFLOWS.md)                         | Branches, PR et commits                                         |
+| [`docs/PHASE_0_AUDIT.md`](PHASE_0_AUDIT.md)                 | Audit initial                                                   |
+| [`docs/PHASE_0_CLEANUP.md`](PHASE_0_CLEANUP.md)             | Nettoyage initial                                               |
+| [`docs/AUDIT.md`](AUDIT.md) · [`docs/CMS.md`](CMS.md)       | Notes techniques complémentaires                                |
 
 ---
 
@@ -164,11 +164,11 @@ API route → validation → service/repository → response
 
 **Résultats locaux :**
 
-| Commande | Statut |
-|---|---|
-| `npm run typecheck` | OK |
-| `npm run lint` | OK |
-| `npm run build` | OK |
+| Commande            | Statut |
+| ------------------- | ------ |
+| `npm run typecheck` | OK     |
+| `npm run lint`      | OK     |
+| `npm run build`     | OK     |
 
 **CI :**
 

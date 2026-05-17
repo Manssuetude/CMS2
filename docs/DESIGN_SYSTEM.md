@@ -28,16 +28,16 @@ Les tokens de référence vivent dans `src/config/designTokens.ts`. Les variable
 
 **Familles de tokens stabilisées :**
 
-| Famille | Contenu |
-|---|---|
-| `colors` | Palette Manssuétude |
-| `typography` | Tailles, graisses et hauteurs de ligne |
-| `spacing` | Échelle d'espacement |
-| `radius` | Arrondis autorisés |
-| `shadows` | Niveaux d'élévation |
-| `layout` | Largeurs, gutters et tailles structurelles |
-| `breakpoints` | Seuils responsive |
-| `zIndex` | Couches d'interface |
+| Famille       | Contenu                                    |
+| ------------- | ------------------------------------------ |
+| `colors`      | Palette Manssuétude                        |
+| `typography`  | Tailles, graisses et hauteurs de ligne     |
+| `spacing`     | Échelle d'espacement                       |
+| `radius`      | Arrondis autorisés                         |
+| `shadows`     | Niveaux d'élévation                        |
+| `layout`      | Largeurs, gutters et tailles structurelles |
+| `breakpoints` | Seuils responsive                          |
+| `zIndex`      | Couches d'interface                        |
 
 Le fichier conserve aussi les alias `color` et `shadow` pour éviter de casser d'éventuels imports anciens.
 
@@ -47,16 +47,16 @@ Le fichier conserve aussi les alias `color` et `shadow` pour éviter de casser d
 
 **Palette principale :**
 
-| Token | Usage |
-|---|---|
-| `primary` / orange | Action, accent, liens importants, eyebrows |
-| `ink` | Texte principal |
-| `premiumBlack` | Sections fortes, CTA premium, états sélectionnés |
-| `background` | Fond général |
-| `surface` | Cartes et panneaux |
-| `cream`, `creamSoft`, `creamTint` | Respirations éditoriales |
-| `muted` | Textes secondaires |
-| `border`, `borderStrong`, `borderDashed` | Séparateurs |
+| Token                                    | Usage                                            |
+| ---------------------------------------- | ------------------------------------------------ |
+| `primary` / orange                       | Action, accent, liens importants, eyebrows       |
+| `ink`                                    | Texte principal                                  |
+| `premiumBlack`                           | Sections fortes, CTA premium, états sélectionnés |
+| `background`                             | Fond général                                     |
+| `surface`                                | Cartes et panneaux                               |
+| `cream`, `creamSoft`, `creamTint`        | Respirations éditoriales                         |
+| `muted`                                  | Textes secondaires                               |
+| `border`, `borderStrong`, `borderDashed` | Séparateurs                                      |
 
 **Règles :**
 
@@ -73,14 +73,14 @@ La typographie actuelle reste volontairement simple : `Inter, Arial, sans-serif`
 
 **Hiérarchie :**
 
-| Niveau | Usage |
-|---|---|
-| H1 | Fort, éditorial — héros ou titres de page uniquement |
-| H2 | Titres de sections majeures |
-| H3 | Titres de cartes ou sous-sections |
-| body | Texte courant lisible |
-| caption | Métadonnées, tags, labels |
-| quote | Citations éditoriales |
+| Niveau  | Usage                                                |
+| ------- | ---------------------------------------------------- |
+| H1      | Fort, éditorial — héros ou titres de page uniquement |
+| H2      | Titres de sections majeures                          |
+| H3      | Titres de cartes ou sous-sections                    |
+| body    | Texte courant lisible                                |
+| caption | Métadonnées, tags, labels                            |
+| quote   | Citations éditoriales                                |
 
 > Ne pas multiplier les tailles arbitraires. Si une nouvelle taille devient récurrente, l'ajouter à `designTokens.typography.size`.
 
@@ -90,13 +90,13 @@ La typographie actuelle reste volontairement simple : `Inter, Arial, sans-serif`
 
 **Échelle autorisée :**
 
-| Token | Usage |
-|---|---|
-| `xs` | Micro-espacement |
-| `sm` | Groupes compacts |
-| `md` | Espacement standard |
-| `lg` | Blocs de composants |
-| `xl` | Sections légères |
+| Token | Usage                            |
+| ----- | -------------------------------- |
+| `xs`  | Micro-espacement                 |
+| `sm`  | Groupes compacts                 |
+| `md`  | Espacement standard              |
+| `lg`  | Blocs de composants              |
+| `xl`  | Sections légères                 |
 | `2xl` | Grandes respirations éditoriales |
 
 **Règles :**
@@ -112,22 +112,22 @@ La typographie actuelle reste volontairement simple : `Inter, Arial, sans-serif`
 
 **Radius :**
 
-| Token | Usage |
-|---|---|
-| `sm` | Éléments très compacts |
-| `md` | Cartes, boutons, champs |
-| `lg` | Panneaux plus amples |
-| `pill` | Badges uniquement |
-| `editorialImage` | Grands visuels hero |
+| Token            | Usage                   |
+| ---------------- | ----------------------- |
+| `sm`             | Éléments très compacts  |
+| `md`             | Cartes, boutons, champs |
+| `lg`             | Panneaux plus amples    |
+| `pill`           | Badges uniquement       |
+| `editorialImage` | Grands visuels hero     |
 
 **Ombres :**
 
-| Token | Usage |
-|---|---|
-| `subtle` | Cartes publiques |
-| `subtleSoft` | Cartes secondaires |
-| `elevated` | Panneaux admin et blocs importants |
-| `modal` | Modales |
+| Token        | Usage                              |
+| ------------ | ---------------------------------- |
+| `subtle`     | Cartes publiques                   |
+| `subtleSoft` | Cartes secondaires                 |
+| `elevated`   | Panneaux admin et blocs importants |
+| `modal`      | Modales                            |
 
 > Les ombres doivent rester discrètes. Manssuétude doit sembler premium, pas "app dashboard brillante".
 
@@ -152,43 +152,52 @@ La largeur maximale publique et admin est `1480px`. Le gutter horizontal est cen
 ## 8. Composants standards
 
 **Button :**
+
 - `.button` pour action standard
 - `.button.primary` pour action principale
 - Future variante recommandée : `.button.premium` pour CTA noir
 
 **Card :**
+
 - `.card` pour cartes publiques
 - `.admin-card` pour panneaux admin
 - `.media-card` pour médias
 - `.cms-preview-block` pour aperçu du studio
 
 **Section :**
+
 - `.section` pour blocs publics
 - `.section-head` pour titre + action
 - Variantes futures : `light`, `cream`, `dark`, `editorial`
 
 **Hero :**
+
 - `.hero`, `.hero-copy`, `.hero-image`
 - Image forte, texte respirant, CTA limités
 - Éviter de surcharger le hero avec trop de métriques
 
 **Badge :**
+
 - `.tags span`, `.settings-pill`, `.media-metrics span`
 - Radius pill, fond orange doux, texte orange
 
 **Form field :**
+
 - `label`, `input`, `textarea`, `select`
 - Labels visibles, focus visible, pas de champs sans contexte
 
 **Admin table :**
+
 - `.admin-table`
 - Données lisibles, actions explicites, pas de densité excessive
 
 **Sidebar :**
+
 - `.admin-sidebar`
 - Navigation claire, état actif contrasté
 
 **CTA :**
+
 - CTA principal orange
 - CTA premium noir pour sections fortes
 - CTA secondaire sobre
@@ -213,10 +222,10 @@ La largeur maximale publique et admin est `1480px`. Le gutter horizontal est cen
 
 **Breakpoints actuels :**
 
-| Seuil | Valeur |
-|---|---|
+| Seuil    | Valeur  |
+| -------- | ------- |
 | Tablette | `960px` |
-| Mobile | `680px` |
+| Mobile   | `680px` |
 
 **Règles :**
 

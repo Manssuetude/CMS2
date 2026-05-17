@@ -24,17 +24,17 @@ Le projet Manssuétude CMS contient deux architectures qui coexistent : un **pro
 
 **Application Next.js :**
 
-| Dossier | Contenu |
-|---|---|
-| `src/app/(public)` | Pages publiques |
-| `src/app/admin` | Administration |
-| `src/app/api` | Endpoints API |
-| `src/components` | `public`, `admin`, `media`, `forms`, `blocks` |
-| `src/repositories` | Accès données |
-| `src/services` | Logique métier émergente |
-| `src/lib` | Auth, DB, CTA, validations, erreurs, logs, Google Drive, médias |
-| `src/types` | Types CMS et DB |
-| `src/constants`, `src/config`, `src/utils` | Constantes, tokens, helpers |
+| Dossier                                    | Contenu                                                         |
+| ------------------------------------------ | --------------------------------------------------------------- |
+| `src/app/(public)`                         | Pages publiques                                                 |
+| `src/app/admin`                            | Administration                                                  |
+| `src/app/api`                              | Endpoints API                                                   |
+| `src/components`                           | `public`, `admin`, `media`, `forms`, `blocks`                   |
+| `src/repositories`                         | Accès données                                                   |
+| `src/services`                             | Logique métier émergente                                        |
+| `src/lib`                                  | Auth, DB, CTA, validations, erreurs, logs, Google Drive, médias |
+| `src/types`                                | Types CMS et DB                                                 |
+| `src/constants`, `src/config`, `src/utils` | Constantes, tokens, helpers                                     |
 
 **Structure cible partiellement créée mais vide :** `src/entities/*` · `src/components/ui` · `src/components/layout` · `src/components/cards` · `src/components/navigation`
 

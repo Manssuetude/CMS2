@@ -12,27 +12,27 @@ Le CMS doit rester **simple à utiliser** pour une petite équipe interne, tout 
 
 **État actuel :**
 
-| Statut | Description |
-|---|---|
-| ✅ Existant | Application Next.js dans `src/`, routes publiques, routes admin, repositories, services, Supabase, seed, formulaires et médiathèque en base |
-| 🗂 Conservé temporairement | Ancien prototype vanilla `index.html`, `app.js`, `content.js`, `styles.css` comme référence de migration |
-| 🔜 À faire progressivement | CRUD admin complet, workflows éditoriaux avancés, Google Drive complet, design system en composants UI réutilisables |
+| Statut                     | Description                                                                                                                                 |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅ Existant                | Application Next.js dans `src/`, routes publiques, routes admin, repositories, services, Supabase, seed, formulaires et médiathèque en base |
+| 🗂 Conservé temporairement | Ancien prototype vanilla `index.html`, `app.js`, `content.js`, `styles.css` comme référence de migration                                    |
+| 🔜 À faire progressivement | CRUD admin complet, workflows éditoriaux avancés, Google Drive complet, design system en composants UI réutilisables                        |
 
 ---
 
 ## Stack
 
-| Couche | Technologie |
-|---|---|
-| Frontend | Next.js, React, TypeScript |
-| Backend | Route Handlers Next.js dans `src/app/api` |
-| Base de données | Supabase / PostgreSQL |
+| Couche           | Technologie                                                           |
+| ---------------- | --------------------------------------------------------------------- |
+| Frontend         | Next.js, React, TypeScript                                            |
+| Backend          | Route Handlers Next.js dans `src/app/api`                             |
+| Base de données  | Supabase / PostgreSQL                                                 |
 | Authentification | Session admin locale côté serveur, prête à évoluer vers Supabase Auth |
-| Stockage médias | Supabase Storage |
-| Emails | Resend (prévu pour notifications) |
-| Google Drive | Picker/OAuth préparé, à finaliser |
-| Styles | CSS propriétaire dans `src/styles/globals.css` |
-| Déploiement | Vercel |
+| Stockage médias  | Supabase Storage                                                      |
+| Emails           | Resend (prévu pour notifications)                                     |
+| Google Drive     | Picker/OAuth préparé, à finaliser                                     |
+| Styles           | CSS propriétaire dans `src/styles/globals.css`                        |
+| Déploiement      | Vercel                                                                |
 
 ---
 
@@ -75,17 +75,17 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 ## Scripts utiles
 
-| Commande | Description |
-|---|---|
-| `npm run dev` | Lance Next.js en local |
-| `npm run build` | Compile la version production |
-| `npm run start` | Lance la version buildée |
-| `npm run typecheck` | Vérifie TypeScript strict |
-| `npm run lint` | Alias actuel vers typecheck |
-| `npm run format:check` | Vérifie Prettier |
-| `npm run test` | Lance les tests d'architecture |
-| `npm run seed` | Importe le contenu initial depuis `content.js` |
-| `npm run db:check` | Vérifie la connexion Supabase |
+| Commande               | Description                                    |
+| ---------------------- | ---------------------------------------------- |
+| `npm run dev`          | Lance Next.js en local                         |
+| `npm run build`        | Compile la version production                  |
+| `npm run start`        | Lance la version buildée                       |
+| `npm run typecheck`    | Vérifie TypeScript strict                      |
+| `npm run lint`         | Alias actuel vers typecheck                    |
+| `npm run format:check` | Vérifie Prettier                               |
+| `npm run test`         | Lance les tests d'architecture                 |
+| `npm run seed`         | Importe le contenu initial depuis `content.js` |
+| `npm run db:check`     | Vérifie la connexion Supabase                  |
 
 ---
 
@@ -120,18 +120,18 @@ API route → validation → service/repository → response
 
 ## Documentation complète
 
-| Document | Description |
-|---|---|
-| [docs/ONBOARDING.md](docs/ONBOARDING.md) | Guide d'arrivée développeur |
-| [ENGINEERING_GUIDE.md](ENGINEERING_GUIDE.md) | Règles d'ingénierie |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture et responsabilités |
-| [docs/CODE_CONVENTIONS.md](docs/CODE_CONVENTIONS.md) | Conventions de code |
-| [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) | Règles design system |
+| Document                                                 | Description                             |
+| -------------------------------------------------------- | --------------------------------------- |
+| [docs/ONBOARDING.md](docs/ONBOARDING.md)                 | Guide d'arrivée développeur             |
+| [ENGINEERING_GUIDE.md](ENGINEERING_GUIDE.md)             | Règles d'ingénierie                     |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)             | Architecture et responsabilités         |
+| [docs/CODE_CONVENTIONS.md](docs/CODE_CONVENTIONS.md)     | Conventions de code                     |
+| [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)           | Règles design system                    |
 | [docs/RESPONSIBILITY_MAP.md](docs/RESPONSIBILITY_MAP.md) | Séparation UI / services / repositories |
-| [docs/DATABASE.md](docs/DATABASE.md) | Tables et fichiers SQL Supabase |
-| [docs/WORKFLOWS.md](docs/WORKFLOWS.md) | Branches, PR et validations |
-| [docs/PHASE_0_AUDIT.md](docs/PHASE_0_AUDIT.md) | Audit initial |
-| [docs/PHASE_0_CLEANUP.md](docs/PHASE_0_CLEANUP.md) | Nettoyage initial |
+| [docs/DATABASE.md](docs/DATABASE.md)                     | Tables et fichiers SQL Supabase         |
+| [docs/WORKFLOWS.md](docs/WORKFLOWS.md)                   | Branches, PR et validations             |
+| [docs/PHASE_0_AUDIT.md](docs/PHASE_0_AUDIT.md)           | Audit initial                           |
+| [docs/PHASE_0_CLEANUP.md](docs/PHASE_0_CLEANUP.md)       | Nettoyage initial                       |
 
 ---
 
@@ -140,6 +140,7 @@ API route → validation → service/repository → response
 **Phase actuelle : Phase 0 — Consolidation technique**
 
 Objectifs de la phase :
+
 - Clarifier l'architecture
 - Documenter les conventions
 - Éviter les refactors risqués

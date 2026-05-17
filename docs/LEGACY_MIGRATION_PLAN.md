@@ -24,39 +24,39 @@ Cette phase ne supprime pas les fichiers legacy. Elle fixe une stratégie pour �
 
 ### `index.html`
 
-| Aspect | Détail |
-|---|---|
-| Rôle actuel | Point d'entrée HTML de l'ancien prototype statique — charge `styles.css`, `content.js` et `app.js` |
-| Contenu utile | Balises SEO de base, favicon, structure minimale, rappel du fonctionnement hash historique |
+| Aspect             | Détail                                                                                                            |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Rôle actuel        | Point d'entrée HTML de l'ancien prototype statique — charge `styles.css`, `content.js` et `app.js`                |
+| Contenu utile      | Balises SEO de base, favicon, structure minimale, rappel du fonctionnement hash historique                        |
 | Équivalent Next.js | `src/app/layout.tsx`, `src/app/(public)/layout.tsx`, routes publiques, header/footer dans `src/components/layout` |
-| Statut | À conserver temporairement. Supprimable quand la doc et le seed ne dépendent plus de la racine legacy |
+| Statut             | À conserver temporairement. Supprimable quand la doc et le seed ne dépendent plus de la racine legacy             |
 
 ### `app.js`
 
-| Aspect | Détail |
-|---|---|
-| Rôle actuel | Moteur complet du prototype vanilla : rendu public, navigation hash, recherche, formulaires locaux, admin local, médiathèque simulée, `localStorage` |
-| Contenu utile | Idées UX du prototype, inventaire des modules admin attendus, logique CTA `FORM:`, recherche globale, filtres, export CSV local, dashboard qualité local |
-| Équivalent Next.js | Routes publiques, admin, composants, repositories, services, API routes dans `src/` |
-| Statut | À conserver temporairement comme référence fonctionnelle. À ne plus modifier. À supprimer après extraction des idées encore utiles |
+| Aspect             | Détail                                                                                                                                                   |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rôle actuel        | Moteur complet du prototype vanilla : rendu public, navigation hash, recherche, formulaires locaux, admin local, médiathèque simulée, `localStorage`     |
+| Contenu utile      | Idées UX du prototype, inventaire des modules admin attendus, logique CTA `FORM:`, recherche globale, filtres, export CSV local, dashboard qualité local |
+| Équivalent Next.js | Routes publiques, admin, composants, repositories, services, API routes dans `src/`                                                                      |
+| Statut             | À conserver temporairement comme référence fonctionnelle. À ne plus modifier. À supprimer après extraction des idées encore utiles                       |
 
 ### `content.js`
 
-| Aspect | Détail |
-|---|---|
-| Rôle actuel | Source structurée de contenu historique et seed initial — `scripts/seed.mjs` lit encore ce fichier via `loadLegacyContent()` |
-| Contenu utile | Meta site, navigation, `ctaLinks`, pages principales, homepage config, footer config, collections (themes, productions, activities, projects, resources), formulaires et relations initiales |
-| Équivalent Next.js | Tables Supabase dans `supabase/schema.sql`, repositories dans `src/repositories`, types dans `src/types/cms.ts`, seed dans `scripts/seed.mjs` |
-| Statut | À conserver tant que `npm run seed` en dépend. À migrer ensuite vers `scripts/seed-data/legacy-content.js` ou `supabase/seeds/content.js` |
+| Aspect             | Détail                                                                                                                                                                                       |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rôle actuel        | Source structurée de contenu historique et seed initial — `scripts/seed.mjs` lit encore ce fichier via `loadLegacyContent()`                                                                 |
+| Contenu utile      | Meta site, navigation, `ctaLinks`, pages principales, homepage config, footer config, collections (themes, productions, activities, projects, resources), formulaires et relations initiales |
+| Équivalent Next.js | Tables Supabase dans `supabase/schema.sql`, repositories dans `src/repositories`, types dans `src/types/cms.ts`, seed dans `scripts/seed.mjs`                                                |
+| Statut             | À conserver tant que `npm run seed` en dépend. À migrer ensuite vers `scripts/seed-data/legacy-content.js` ou `supabase/seeds/content.js`                                                    |
 
 ### `styles.css`
 
-| Aspect | Détail |
-|---|---|
-| Rôle actuel | CSS complet du prototype vanilla : public, admin local, modales, formulaires, médiathèque, responsive |
-| Contenu utile | Références de rythme visuel, classes prototype pour admin, media library, dark sections, panels et responsive |
-| Équivalent Next.js | `src/styles/globals.css`, tokens dans `src/config/designTokens.ts`, doc dans `docs/DESIGN_SYSTEM.md` |
-| Statut | À conserver temporairement comme référence visuelle. À ne plus modifier pour le CMS actif |
+| Aspect             | Détail                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Rôle actuel        | CSS complet du prototype vanilla : public, admin local, modales, formulaires, médiathèque, responsive         |
+| Contenu utile      | Références de rythme visuel, classes prototype pour admin, media library, dark sections, panels et responsive |
+| Équivalent Next.js | `src/styles/globals.css`, tokens dans `src/config/designTokens.ts`, doc dans `docs/DESIGN_SYSTEM.md`          |
+| Statut             | À conserver temporairement comme référence visuelle. À ne plus modifier pour le CMS actif                     |
 
 ---
 

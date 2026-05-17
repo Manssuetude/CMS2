@@ -83,17 +83,17 @@ Contient les composants UI.
 
 **Sous-dossiers :**
 
-| Dossier | Contenu |
-|---|---|
-| `admin` | Composants d'administration |
-| `blocks` | Blocs CMS verrouillés |
-| `cards` | Composants de cartes et grilles |
-| `forms` | CTA et modales de formulaires |
-| `layout` | Header, footer, shell public/admin |
-| `media` | Composants UI de médiathèque et champs média |
-| `navigation` | Futur emplacement pour navigation réutilisable |
-| `public` | Composants publics spécifiques encore actifs |
-| `ui` | Futur emplacement pour primitives UI génériques |
+| Dossier      | Contenu                                         |
+| ------------ | ----------------------------------------------- |
+| `admin`      | Composants d'administration                     |
+| `blocks`     | Blocs CMS verrouillés                           |
+| `cards`      | Composants de cartes et grilles                 |
+| `forms`      | CTA et modales de formulaires                   |
+| `layout`     | Header, footer, shell public/admin              |
+| `media`      | Composants UI de médiathèque et champs média    |
+| `navigation` | Futur emplacement pour navigation réutilisable  |
+| `public`     | Composants publics spécifiques encore actifs    |
+| `ui`         | Futur emplacement pour primitives UI génériques |
 
 ---
 
@@ -117,18 +117,18 @@ Contient la logique métier : relations, graphe éditorial, recommandations, SEO
 
 Contient les clients techniques et helpers d'infrastructure :
 
-| Fichier | Rôle |
-|---|---|
-| `auth.ts` | Authentification |
-| `env.ts` | Variables d'environnement |
-| `db.ts` | Client Supabase |
-| `permissions.ts` | Permissions |
-| `validation.ts` | Schémas Zod |
-| `logger.ts` | Logs structurés |
-| `errors.ts` | Erreurs API standardisées |
-| `media.ts` | Stockage média technique |
-| `google-drive.ts` | Intégration Google Drive |
-| `cta.ts` | Résolution technique des CTA |
+| Fichier           | Rôle                         |
+| ----------------- | ---------------------------- |
+| `auth.ts`         | Authentification             |
+| `env.ts`          | Variables d'environnement    |
+| `db.ts`           | Client Supabase              |
+| `permissions.ts`  | Permissions                  |
+| `validation.ts`   | Schémas Zod                  |
+| `logger.ts`       | Logs structurés              |
+| `errors.ts`       | Erreurs API standardisées    |
+| `media.ts`        | Stockage média technique     |
+| `google-drive.ts` | Intégration Google Drive     |
+| `cta.ts`          | Résolution technique des CTA |
 
 > `src/lib` ne doit pas devenir un fourre-tout métier.
 
@@ -306,12 +306,12 @@ route handler
 
 Les fichiers suivants appartiennent à l'ancien prototype vanilla :
 
-| Fichier | Statut |
-|---|---|
-| `index.html` | Conservé temporairement — référence visuelle |
-| `app.js` | Conservé temporairement — référence fonctionnelle |
-| `content.js` | Conservé tant que le seed en dépend |
-| `styles.css` | Conservé temporairement — référence visuelle |
+| Fichier      | Statut                                            |
+| ------------ | ------------------------------------------------- |
+| `index.html` | Conservé temporairement — référence visuelle      |
+| `app.js`     | Conservé temporairement — référence fonctionnelle |
+| `content.js` | Conservé tant que le seed en dépend               |
+| `styles.css` | Conservé temporairement — référence visuelle      |
 
 **Règles :**
 

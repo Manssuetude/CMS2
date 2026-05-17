@@ -101,18 +101,18 @@ Le projet doit rester lisible par plusieurs développeurs. Chaque couche a une r
 
 `src/lib` contient l'infrastructure technique :
 
-| Fichier | Rôle |
-|---|---|
-| `auth.ts` | Session et rôles |
-| `db.ts` | Client Supabase |
-| `env.ts` | Variables d'environnement |
-| `errors.ts` | Erreurs API standardisées |
-| `logger.ts` | Logs structurés |
-| `validation.ts` | Schémas Zod partagés |
-| `media.ts` | Interaction technique avec le stockage |
-| `google-drive.ts` | Intégration Google Drive |
-| `permissions.ts` | Matrice de permission simple |
-| `cta.ts` | Résolution technique des CTA |
+| Fichier           | Rôle                                   |
+| ----------------- | -------------------------------------- |
+| `auth.ts`         | Session et rôles                       |
+| `db.ts`           | Client Supabase                        |
+| `env.ts`          | Variables d'environnement              |
+| `errors.ts`       | Erreurs API standardisées              |
+| `logger.ts`       | Logs structurés                        |
+| `validation.ts`   | Schémas Zod partagés                   |
+| `media.ts`        | Interaction technique avec le stockage |
+| `google-drive.ts` | Intégration Google Drive               |
+| `permissions.ts`  | Matrice de permission simple           |
+| `cta.ts`          | Résolution technique des CTA           |
 
 > `lib` ne doit pas devenir un dossier de logique métier. Si une règle parle du produit Manssuétude ou du comportement éditorial, elle doit aller dans `services`.
 
@@ -122,8 +122,8 @@ Le projet doit rester lisible par plusieurs développeurs. Chaque couche a une r
 
 **Différence entre utils et services :**
 
-| Utils | Services |
-|---|---|
+| Utils                                      | Services                                   |
+| ------------------------------------------ | ------------------------------------------ |
 | Générique, pur, sans signification produit | Connaît une règle métier ou un flux du CMS |
 
 **Exemples d'utils :** `src/utils/slug.ts` · `src/utils/row.ts` · `src/utils/tags.ts`
@@ -152,36 +152,42 @@ Les types partagés vivent dans `src/types`.
 ## 8. Cas concrets du projet
 
 ### Themes
+
 - **UI :** pages dans `src/app/(public)/themes`, admin dans `src/app/admin/themes`
 - **Repository :** `src/repositories/themesRepository.ts`
 - **Types :** `Theme` dans `src/types/cms.ts`
 - **Services :** relations, recommandations et taxonomie dans `src/services`
 
 ### Activities
+
 - **UI :** `src/app/(public)/activites`, admin dans `src/app/admin/activites`
 - **Repository :** `src/repositories/activitiesRepository.ts`
 - **Types :** `Activity` dans `src/types/cms.ts`
 - **Services :** à créer seulement si des règles d'activité apparaissent
 
 ### Productions
+
 - **UI :** `src/app/(public)/productions`, cards dans `src/components/cards`
 - **Repository :** `src/repositories/productionsRepository.ts`
 - **Types :** `Production` et `ContentBlock` dans `src/types/cms.ts`
 - **Services :** recommandations, SEO et relations
 
 ### Resources
+
 - **UI :** `src/app/(public)/ressources`, admin dans `src/app/admin/resources`
 - **Repository :** `src/repositories/resourcesRepository.ts`
 - **Types :** `Media` / resource dans `src/types/cms.ts`
 - **Services :** `mediaService`, `relationService`, `taxonomyService`
 
 ### Projects
+
 - **UI :** `src/app/(public)/projets`, admin dans `src/app/admin/projets`
 - **Repository :** `src/repositories/projectsRepository.ts`
 - **Types :** `Project` dans `src/types/cms.ts`
 - **Services :** relations, recommandations, smart defaults
 
 ### Media
+
 - **UI :** `src/components/media`
 - **Repository :** `src/repositories/mediaRepository.ts`
 - **Infrastructure storage :** `src/lib/media.ts`
@@ -189,6 +195,7 @@ Les types partagés vivent dans `src/types`.
 - **Helpers génériques :** `src/utils/tags.ts`
 
 ### Forms
+
 - **UI :** `src/components/forms`
 - **Config champs :** `src/constants/forms.ts`
 - **Client action :** `src/services/formClientService.ts`
@@ -196,6 +203,7 @@ Les types partagés vivent dans `src/types`.
 - **API :** `src/app/api/forms/route.ts`
 
 ### Homepage
+
 - **UI admin :** `src/components/admin/EditorStudio.tsx`
 - **Blocs :** `src/components/blocks`
 - **Opérations de blocs :** `src/services/editorBlockService.ts`

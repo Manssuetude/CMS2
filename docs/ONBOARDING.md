@@ -12,12 +12,12 @@ Le produit doit être **simple** pour une équipe interne de 5 à 8 personnes. L
 
 **État actuel :**
 
-| Statut | Description |
-|---|---|
-| ✅ Existant | Next.js, routes publiques, admin, API routes, Supabase, repositories, services, seed, documentation Phase 0 |
-| 🗂 Existant temporaire | Ancien prototype vanilla à la racine |
-| 🔜 Prévu | CRUD admin plus complet, workflows éditoriaux, intégration Google Drive finalisée, composants UI centralisés |
-| ⛔ À éviter maintenant | Développer de nouvelles fonctionnalités avant la fin de la stabilisation Phase 0 |
+| Statut                 | Description                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| ✅ Existant            | Next.js, routes publiques, admin, API routes, Supabase, repositories, services, seed, documentation Phase 0  |
+| 🗂 Existant temporaire | Ancien prototype vanilla à la racine                                                                         |
+| 🔜 Prévu               | CRUD admin plus complet, workflows éditoriaux, intégration Google Drive finalisée, composants UI centralisés |
+| ⛔ À éviter maintenant | Développer de nouvelles fonctionnalités avant la fin de la stabilisation Phase 0                             |
 
 ---
 
@@ -55,23 +55,24 @@ Nous ne construisons pas :
 
 ## 4. Stack technique
 
-| Domaine | Technologie |
-|---|---|
-| Framework | Next.js / React / TypeScript |
-| API | Route Handlers Next.js |
-| Base de données | Supabase / PostgreSQL |
-| Stockage médias | Supabase Storage |
-| Styles | CSS propriétaire dans `src/styles/globals.css` |
-| Tokens design | `src/config/designTokens.ts` |
-| Emails | Resend (prévu) |
-| Google Drive | Picker/OAuth préparé, à finaliser |
-| Déploiement | Vercel |
+| Domaine         | Technologie                                    |
+| --------------- | ---------------------------------------------- |
+| Framework       | Next.js / React / TypeScript                   |
+| API             | Route Handlers Next.js                         |
+| Base de données | Supabase / PostgreSQL                          |
+| Stockage médias | Supabase Storage                               |
+| Styles          | CSS propriétaire dans `src/styles/globals.css` |
+| Tokens design   | `src/config/designTokens.ts`                   |
+| Emails          | Resend (prévu)                                 |
+| Google Drive    | Picker/OAuth préparé, à finaliser              |
+| Déploiement     | Vercel                                         |
 
 ---
 
 ## 5. Installation
 
 **Pré-requis :**
+
 - Node.js installé
 - Accès au dépôt
 - Accès aux variables Supabase si le travail touche la base
@@ -104,11 +105,13 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 **Minimum pour travailler avec Supabase :**
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 **Pour créer l'admin initial via seed :**
+
 - `ADMIN_INITIAL_EMAIL`
 - `ADMIN_INITIAL_PASSWORD`
 
@@ -118,12 +121,12 @@ Google Drive et Resend peuvent rester vides tant que l'intégration complète n'
 
 ## 7. Lancer le projet
 
-| Commande | Description |
-|---|---|
-| `npm run dev` | Développement (localhost:3000) |
-| `npm run typecheck` | Validation TypeScript |
-| `npm run build` | Build production |
-| `npm run test` | Tests d'architecture |
+| Commande            | Description                    |
+| ------------------- | ------------------------------ |
+| `npm run dev`       | Développement (localhost:3000) |
+| `npm run typecheck` | Validation TypeScript          |
+| `npm run build`     | Build production               |
+| `npm run test`      | Tests d'architecture           |
 
 ---
 
@@ -131,10 +134,10 @@ Google Drive et Resend peuvent rester vides tant que l'intégration complète n'
 
 **Fichiers SQL :**
 
-| Fichier | Contenu |
-|---|---|
-| `supabase/schema.sql` | Tables principales |
-| `supabase/storage.sql` | Buckets médias |
+| Fichier                     | Contenu             |
+| --------------------------- | ------------------- |
+| `supabase/schema.sql`       | Tables principales  |
+| `supabase/storage.sql`      | Buckets médias      |
 | `supabase/cms-advanced.sql` | Tables avancées CMS |
 
 **Ordre recommandé dans Supabase SQL Editor :**
@@ -198,34 +201,40 @@ API route → validation → service/repository → response
 ## 11. Modules principaux
 
 **Pages publiques**
+
 - Routes : `src/app/(public)`
 - Rendu page : `src/components/public/PublicPage.tsx`
 - Pages détail : `src/components/public/DetailPage.tsx`
 
 **Admin**
+
 - Routes : `src/app/admin`
 - Sidebar : `src/components/admin/AdminSidebar.tsx`
 - Tables : `src/components/admin/AdminTable.tsx`
 - Studio éditorial : `src/components/admin/EditorStudio.tsx`
 
 **Médias**
+
 - Composants : `src/components/media`
 - Repository : `src/repositories/mediaRepository.ts`
 - Services : `src/services/mediaService.ts`, `src/services/mediaClientService.ts`
 - Stockage : `src/lib/media.ts`
 
 **Formulaires**
+
 - Composants : `src/components/forms`
 - Constantes : `src/constants/forms.ts`
 - Repositories : `src/repositories/formRepository.ts`, `src/repositories/formsRepository.ts`
 - Service client : `src/services/formClientService.ts`
 
 **Contenus**
+
 - Repositories : `themesRepository.ts`, `productionsRepository.ts`, `projectsRepository.ts`, `activitiesRepository.ts`, `resourcesRepository.ts`
 - Types : `src/types/cms.ts`
 - Relations : `src/services/relationService.ts`, `src/services/graphService.ts`
 
 **Design**
+
 - Tokens : `src/config/designTokens.ts`
 - CSS global : `src/styles/globals.css`
 - Documentation : [`docs/DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md)
@@ -235,6 +244,7 @@ API route → validation → service/repository → response
 ## 12. Règles de développement
 
 **À respecter :**
+
 - Utiliser `@/` pour les imports internes
 - Garder les composants sans accès direct Supabase
 - Placer la logique métier dans `src/services`
@@ -246,15 +256,15 @@ API route → validation → service/repository → response
 
 **Avant d'ajouter un fichier :**
 
-| Type de fichier | Emplacement |
-|---|---|
-| Nouvelle page publique | `src/app/(public)/...` |
-| Nouvelle page admin | `src/app/admin/...` |
-| Nouveau composant | `src/components/...` selon son rôle |
-| Nouveau repository | `src/repositories/...Repository.ts` |
-| Nouveau service | `src/services/...Service.ts` |
-| Nouveau type global | `src/types/...` ou `src/types/cms.ts` |
-| Nouvelle constante métier | `src/constants/...` |
+| Type de fichier           | Emplacement                           |
+| ------------------------- | ------------------------------------- |
+| Nouvelle page publique    | `src/app/(public)/...`                |
+| Nouvelle page admin       | `src/app/admin/...`                   |
+| Nouveau composant         | `src/components/...` selon son rôle   |
+| Nouveau repository        | `src/repositories/...Repository.ts`   |
+| Nouveau service           | `src/services/...Service.ts`          |
+| Nouveau type global       | `src/types/...` ou `src/types/cms.ts` |
+| Nouvelle constante métier | `src/constants/...`                   |
 
 ---
 
@@ -262,17 +272,18 @@ API route → validation → service/repository → response
 
 **Branches recommandées :**
 
-| Branche | Usage |
-|---|---|
-| `main` | Version stable |
-| `develop` | Intégration |
-| `feature/*` | Fonctionnalité |
-| `fix/*` | Correction |
-| `chore/*` | Maintenance ou documentation |
+| Branche     | Usage                        |
+| ----------- | ---------------------------- |
+| `main`      | Version stable               |
+| `develop`   | Intégration                  |
+| `feature/*` | Fonctionnalité               |
+| `fix/*`     | Correction                   |
+| `chore/*`   | Maintenance ou documentation |
 
 **Préfixes de commits :** `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`
 
 **Une PR doit contenir :**
+
 - Objectif
 - Fichiers ou modules touchés
 - Validations exécutées
@@ -292,6 +303,7 @@ npm run build
 ```
 
 **Selon le changement :**
+
 - `npm run test` — si architecture, conventions ou règles critiques
 - `npm run format:check` — si beaucoup de fichiers sont touchés
 - Vérification visuelle locale — si UI modifiée
@@ -326,18 +338,18 @@ npm run build
 
 ## 16. Glossaire Manssuétude
 
-| Terme | Définition |
-|---|---|
-| **Thème** | Grand axe intellectuel ou dossier de réflexion. Un thème peut relier productions, activités, projets et ressources. |
-| **Sujet du moment** | Thème ou angle éditorial actuellement mis en avant sur la homepage. |
-| **Activité** | Format collectif : séance, débat, atelier, discussion, visite, formation ou rencontre. Une activité peut produire des ressources ou des comptes-rendus. |
-| **Production** | Contenu éditorial publié : article, note, synthèse, vidéo, podcast, infographie, compte-rendu, carrousel ou rapport. |
-| **Ressource** | Fichier ou contenu réutilisable : PDF, document, image, vidéo, audio, lien externe, kit ou support. |
-| **Projet** | Initiative Manssuétude structurée. Un projet peut être interne, éditorial, communautaire ou externe. |
-| **Contribution externe** | Proposition envoyée par une personne extérieure ou non-admin : contenu, projet, partenariat, candidature ou soutien. |
-| **Formulaire** | Point d'entrée contrôlé via CTA. Les formulaires ne doivent pas s'afficher automatiquement dans les pages. |
-| **Homepage Builder** | Interface d'administration permettant de composer la page d'accueil avec des blocs verrouillés. |
-| **Admin** | Utilisateur ayant accès à la gestion complète du CMS. |
-| **Éditeur** | Utilisateur pouvant gérer les contenus et médias selon les permissions accordées. |
-| **Contributeur** | Utilisateur ou personne pouvant proposer un contenu, un projet ou une participation, sans accès complet au CMS. |
-| **PERCA** | Méthode Manssuétude : Penser, Exprimer, Relier, Concrétiser, Ancrer. PERCA est un cadre de travail, pas une entité séparée du projet. |
+| Terme                    | Définition                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Thème**                | Grand axe intellectuel ou dossier de réflexion. Un thème peut relier productions, activités, projets et ressources.                                     |
+| **Sujet du moment**      | Thème ou angle éditorial actuellement mis en avant sur la homepage.                                                                                     |
+| **Activité**             | Format collectif : séance, débat, atelier, discussion, visite, formation ou rencontre. Une activité peut produire des ressources ou des comptes-rendus. |
+| **Production**           | Contenu éditorial publié : article, note, synthèse, vidéo, podcast, infographie, compte-rendu, carrousel ou rapport.                                    |
+| **Ressource**            | Fichier ou contenu réutilisable : PDF, document, image, vidéo, audio, lien externe, kit ou support.                                                     |
+| **Projet**               | Initiative Manssuétude structurée. Un projet peut être interne, éditorial, communautaire ou externe.                                                    |
+| **Contribution externe** | Proposition envoyée par une personne extérieure ou non-admin : contenu, projet, partenariat, candidature ou soutien.                                    |
+| **Formulaire**           | Point d'entrée contrôlé via CTA. Les formulaires ne doivent pas s'afficher automatiquement dans les pages.                                              |
+| **Homepage Builder**     | Interface d'administration permettant de composer la page d'accueil avec des blocs verrouillés.                                                         |
+| **Admin**                | Utilisateur ayant accès à la gestion complète du CMS.                                                                                                   |
+| **Éditeur**              | Utilisateur pouvant gérer les contenus et médias selon les permissions accordées.                                                                       |
+| **Contributeur**         | Utilisateur ou personne pouvant proposer un contenu, un projet ou une participation, sans accès complet au CMS.                                         |
+| **PERCA**                | Méthode Manssuétude : Penser, Exprimer, Relier, Concrétiser, Ancrer. PERCA est un cadre de travail, pas une entité séparée du projet.                   |

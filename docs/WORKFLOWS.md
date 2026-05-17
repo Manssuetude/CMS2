@@ -6,12 +6,12 @@
 
 ## Branches
 
-| Branche | Usage |
-|---|---|
-| `main` | Version stable, production-ready |
-| `develop` | Branche d'intégration |
-| `feature/*` | Nouvelles fonctionnalités |
-| `fix/*` | Corrections de bugs |
+| Branche     | Usage                            |
+| ----------- | -------------------------------- |
+| `main`      | Version stable, production-ready |
+| `develop`   | Branche d'intégration            |
+| `feature/*` | Nouvelles fonctionnalités        |
+| `fix/*`     | Corrections de bugs              |
 
 ---
 
@@ -31,14 +31,14 @@
 
 **Préfixes à utiliser :**
 
-| Préfixe | Usage |
-|---|---|
-| `feat:` | Nouvelle fonctionnalité |
-| `fix:` | Correction de bug |
+| Préfixe     | Usage                                       |
+| ----------- | ------------------------------------------- |
+| `feat:`     | Nouvelle fonctionnalité                     |
+| `fix:`      | Correction de bug                           |
 | `refactor:` | Refactoring sans changement de comportement |
-| `docs:` | Documentation uniquement |
-| `test:` | Ajout ou modification de tests |
-| `chore:` | Maintenance, configuration, dépendances |
+| `docs:`     | Documentation uniquement                    |
+| `test:`     | Ajout ou modification de tests              |
+| `chore:`    | Maintenance, configuration, dépendances     |
 
 ---
 
