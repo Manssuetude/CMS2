@@ -1,21 +1,27 @@
 # Quality Gates — Manssuétude CMS
 
+> Commandes, règles et CI pour garantir la qualité du code avant chaque merge.
+
+---
+
 ## 1. Objectif
 
 Les quality gates évitent que le projet se dégrade quand plusieurs développeurs travaillent en parallèle. Ils doivent rester simples, utiles et rapides.
 
-Objectifs :
+**Objectifs :**
 
-- garder TypeScript strict ;
-- détecter les erreurs simples avant review ;
-- empêcher les imports ou variables oubliées de s’accumuler ;
-- vérifier que le build Next.js reste valide ;
-- standardiser le formatage ;
-- faire passer les mêmes contrôles en local et en CI.
+- Garder TypeScript strict
+- Détecter les erreurs simples avant review
+- Empêcher les imports ou variables oubliées de s'accumuler
+- Vérifier que le build Next.js reste valide
+- Standardiser le formatage
+- Faire passer les mêmes contrôles en local et en CI
+
+---
 
 ## 2. Commandes obligatoires
 
-Avant une pull request :
+**Avant toute pull request :**
 
 ```bash
 npm run typecheck
@@ -23,133 +29,142 @@ npm run lint
 npm run build
 ```
 
-Selon le changement :
+**Selon le changement :**
 
 ```bash
-npm run test
-npm run format:check
+npm run test          # si l'architecture ou les conventions changent
+npm run format:check  # si la modification est large
 ```
 
-La CI exécute aussi ces commandes pour protéger `main` et `develop`.
+> La CI exécute aussi ces commandes pour protéger `main` et `develop`.
+
+---
 
 ## 3. TypeScript
 
-Configuration :
+**Configuration :**
 
-- fichier : `tsconfig.json` ;
-- mode strict activé : `strict: true` ;
-- alias interne : `@/*` vers `src/*` ;
-- `allowJs: false` pour garder le code applicatif en TypeScript ;
-- `noEmit: true`, car Next.js gère la compilation.
-
-Commande :
+| Paramètre | Valeur |
+|---|---|
+| Fichier | `tsconfig.json` |
+| Mode strict | `strict: true` |
+| Alias interne | `@/*` vers `src/*` |
+| JS interdit | `allowJs: false` |
+| Compilation | `noEmit: true` (Next.js gère la compilation) |
 
 ```bash
 npm run typecheck
 ```
 
-Règle : ne pas contourner TypeScript avec `any` ou des casts larges sans justification.
+> Ne pas contourner TypeScript avec `any` ou des casts larges sans justification.
+
+---
 
 ## 4. ESLint
 
-Configuration :
+**Configuration :**
 
-- fichier : `eslint.config.mjs` ;
-- format : ESLint flat config ;
-- dépendances : `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-config-next`, `globals`.
-
-Commande :
+| Paramètre | Valeur |
+|---|---|
+| Fichier | `eslint.config.mjs` |
+| Format | ESLint flat config |
+| Dépendances | `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-config-next`, `globals` |
 
 ```bash
 npm run lint
 ```
 
-Pourquoi pas `next lint` :
+**Pourquoi pas `next lint` :** les versions récentes de Next.js ne poussent plus `next lint` comme point d'entrée durable. Le projet utilise donc ESLint directement, avec une configuration explicite et légère.
 
-- les versions récentes de Next.js ne poussent plus `next lint` comme point d’entrée durable ;
-- le projet utilise donc ESLint directement, avec une configuration explicite et légère.
+**Règles principales :**
 
-Règles principales :
+- `@typescript-eslint/no-explicit-any` en **erreur**
+- Variables inutilisées en erreur, avec `_` autorisé pour les paramètres volontairement ignorés
+- `console` limité dans l'application, autorisé dans scripts et tests
+- Règles Next core web vitals via `eslint-config-next`
+- `--max-warnings=0` pour éviter les avertissements ignorés
 
-- `@typescript-eslint/no-explicit-any` en erreur ;
-- variables inutilisées en erreur, avec `_` autorisé pour les paramètres volontairement ignorés ;
-- `console` limité dans l’application, autorisé dans scripts et tests ;
-- règles Next core web vitals chargées via `eslint-config-next` ;
-- `--max-warnings=0` pour éviter les avertissements ignorés.
+---
 
 ## 5. Prettier
 
-Configuration :
+**Configuration :**
 
-- fichier : `.prettierrc.json` ;
-- largeur : `120` ;
-- points-virgules activés ;
-- guillemets doubles ;
-- trailing commas activées.
-
-Commande :
+| Paramètre | Valeur |
+|---|---|
+| Fichier | `.prettierrc.json` |
+| Largeur | `120` |
+| Points-virgules | Activés |
+| Guillemets | Doubles |
+| Trailing commas | Activées |
 
 ```bash
 npm run format:check
 ```
 
-La commande utilise `.gitignore` pour éviter les dossiers générés.
+> La commande utilise `.gitignore` pour éviter les dossiers générés.
+
+---
 
 ## 6. Build
-
-Commande :
 
 ```bash
 npm run build
 ```
 
-Le build vérifie :
+**Le build vérifie :**
 
-- compilation Next.js ;
-- validité des routes ;
-- compatibilité des pages server/client ;
-- erreurs de typage détectées par Next.
+- Compilation Next.js
+- Validité des routes
+- Compatibilité des pages server/client
+- Erreurs de typage détectées par Next
 
-Un build vert est obligatoire avant merge.
+> Un build vert est **obligatoire** avant merge.
+
+---
 
 ## 7. CI GitHub Actions
 
-Workflow :
+**Configuration :**
 
-- fichier : `.github/workflows/ci.yml` ;
-- déclenchement : pull requests et push sur `main` / `develop` ;
-- Node.js : 22 ;
-- installation : `npm ci`.
+| Paramètre | Valeur |
+|---|---|
+| Fichier | `.github/workflows/ci.yml` |
+| Déclenchement | Pull requests et push sur `main` / `develop` |
+| Node.js | 22 |
+| Installation | `npm ci` |
 
-Étapes :
+**Étapes de la CI :**
 
-1. checkout ;
-2. setup node ;
-3. npm ci ;
-4. `npm run typecheck` ;
-5. `npm run lint` ;
-6. `npm run format:check` ;
-7. `npm test` ;
-8. `npm run build`.
+1. Checkout
+2. Setup Node
+3. `npm ci`
+4. `npm run typecheck`
+5. `npm run lint`
+6. `npm run format:check`
+7. `npm test`
+8. `npm run build`
+
+---
 
 ## 8. Checklist avant pull request
 
-Avant d’ouvrir une PR :
+- [ ] La tâche ne lance pas une fonctionnalité hors phase
+- [ ] Les fichiers touchés ont été relus
+- [ ] `npm run typecheck` — OK
+- [ ] `npm run lint` — OK
+- [ ] `npm run build` — OK
+- [ ] `npm run test` — si l'architecture ou les conventions changent
+- [ ] Documentation mise à jour si une règle change
+- [ ] Captures ajoutées si l'UI change
+- [ ] Limites restantes mentionnées dans la PR
 
-- vérifier que la tâche ne lance pas une fonctionnalité hors phase ;
-- relire les fichiers touchés ;
-- exécuter `npm run typecheck` ;
-- exécuter `npm run lint` ;
-- exécuter `npm run build` ;
-- ajouter `npm run test` si l’architecture ou les conventions changent ;
-- mettre à jour la documentation si une règle change ;
-- ajouter des captures si l’UI change ;
-- mentionner les limites restantes.
+---
 
 ## 9. Problèmes connus
 
-- Le cache npm global du poste peut être bloqué par des fichiers root-owned. Contournement local : utiliser `npm install --cache ./.npm-cache`.
-- `npm install` signale actuellement deux vulnérabilités modérées dans l’arbre de dépendances. Ne pas lancer `npm audit fix --force` sans audit, car cela peut introduire des mises à jour cassantes.
-- L’ancien prototype vanilla reste dans le dépôt. Les quality gates ciblent principalement `src`, `scripts`, `tests` et `next.config.ts`.
-- La règle Next `@next/next/no-img-element` est désactivée temporairement. Le projet utilise encore des images simples pendant la consolidation ; la migration progressive vers `next/image` doit se faire dans une tâche dédiée.
-- Le lint est volontairement pragmatique. Des règles plus strictes pourront être ajoutées après stabilisation de la Phase 0.
+- Le cache npm global du poste peut être bloqué par des fichiers root-owned. Contournement local : `npm install --cache ./.npm-cache`
+- `npm install` signale actuellement deux vulnérabilités modérées. Ne pas lancer `npm audit fix --force` sans audit — risque de mises à jour cassantes
+- L'ancien prototype vanilla reste dans le dépôt. Les quality gates ciblent principalement `src`, `scripts`, `tests` et `next.config.ts`
+- La règle Next `@next/next/no-img-element` est désactivée temporairement. La migration vers `next/image` doit se faire dans une tâche dédiée
+- Le lint est volontairement pragmatique. Des règles plus strictes pourront être ajoutées après stabilisation de la Phase 0

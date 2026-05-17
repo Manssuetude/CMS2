@@ -1,34 +1,52 @@
-# Workflows
+# Workflows Git — Manssuétude CMS
+
+> Conventions de branches, pull requests et commits.
+
+---
 
 ## Branches
 
-- `main`: production-ready.
-- `develop`: integration branch.
-- `feature/*`: new work.
-- `fix/*`: bug fixes.
+| Branche | Usage |
+|---|---|
+| `main` | Version stable, production-ready |
+| `develop` | Branche d'intégration |
+| `feature/*` | Nouvelles fonctionnalités |
+| `fix/*` | Corrections de bugs |
+
+---
 
 ## Pull Requests
 
-Every PR should include:
+**Chaque PR doit inclure :**
 
-- purpose;
-- affected pages/modules;
-- validation steps;
-- screenshots for UI changes;
-- migration notes when DB changes.
+- Objectif de la PR
+- Pages ou modules affectés
+- Étapes de validation exécutées
+- Captures d'écran pour les changements UI
+- Notes de migration si le schéma DB change
 
-## Commit Convention
+---
 
-Use concise prefixes:
+## Convention de commits
 
-- `feat:`
-- `fix:`
-- `refactor:`
-- `docs:`
-- `test:`
-- `chore:`
+**Préfixes à utiliser :**
 
-## Required Checks
+| Préfixe | Usage |
+|---|---|
+| `feat:` | Nouvelle fonctionnalité |
+| `fix:` | Correction de bug |
+| `refactor:` | Refactoring sans changement de comportement |
+| `docs:` | Documentation uniquement |
+| `test:` | Ajout ou modification de tests |
+| `chore:` | Maintenance, configuration, dépendances |
 
-- `npm run typecheck`
-- `npm run build`
+---
+
+## Checks requis
+
+Avant toute PR :
+
+```bash
+npm run typecheck
+npm run build
+```

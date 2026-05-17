@@ -1,63 +1,83 @@
 # Phase 0 Audit
 
-## High Severity
+> Synthèse des problèmes identifiés lors de l'audit initial, classés par sévérité.
 
-### API collection routes accepted raw table names too directly
+---
 
-Impact: weak validation and unclear error behavior.
+## Sévérité haute
 
-Fix: centralize allowed collections in `src/constants/collections.ts`, validate route params, and standardize API errors through `src/lib/errors.ts`.
+### Routes de collection API trop permissives
 
-### Type leakage through `any`
+**Impact :** validation faible et comportement d'erreur peu clair.
 
-Impact: repository mapping could silently accept malformed data and weaken strict TypeScript.
+**Correction :** centraliser les collections autorisées dans `src/constants/collections.ts`, valider les paramètres de route et standardiser les erreurs API via `src/lib/errors.ts`.
 
-Fix: introduce row mapping helpers in `src/utils/row.ts`, remove unused TypeScript seed, and replace several `any` mappers with typed conversion functions.
+---
 
-### Admin prototype logic mixed product decisions with UI
+### Fuite de types via `any`
 
-Impact: future contributors would not know which parts are business logic and which parts are presentation.
+**Impact :** le mapping repository pouvait accepter silencieusement des données malformées et affaiblir TypeScript strict.
 
-Fix: create layer documentation, centralize admin navigation, add services for graph/media/health/taxonomy, and document dependency direction.
+**Correction :** introduire des helpers de mapping dans `src/utils/row.ts`, supprimer le seed TypeScript inutilisé, remplacer plusieurs mappers `any` par des fonctions de conversion typées.
 
-## Medium Severity
+---
 
-### CSS was monolithic
+### Prototype admin mixant décisions produit et UI
 
-Impact: visual consistency depends on discipline instead of tokens.
+**Impact :** les futurs contributeurs ne sauraient pas distinguer logique métier et présentation.
 
-Fix: add design tokens in `src/config/designTokens.ts` and document design-system rules. CSS still needs future splitting by layer.
+**Correction :** créer une documentation des couches, centraliser la navigation admin, ajouter des services pour graph/media/health/taxonomie, documenter la direction des dépendances.
 
-### Documentation was not enough for onboarding
+---
 
-Impact: new developers would need oral context.
+## Sévérité moyenne
 
-Fix: add `ENGINEERING_GUIDE.md` and docs for architecture, CMS, database, workflows and components.
+### CSS monolithique
 
-### Duplicate seed path
+**Impact :** la cohérence visuelle dépendait de la discipline individuelle plutôt que de tokens.
 
-Impact: `scripts/seed.ts` was unused and still carried legacy `any` logic.
+**Correction :** ajouter des tokens dans `src/config/designTokens.ts` et documenter les règles du design system. Le CSS nécessite encore un découpage futur par couche.
 
-Fix: remove it. `npm run seed` uses `scripts/seed.mjs`.
+---
 
-## Low Severity
+### Documentation insuffisante pour l'onboarding
 
-### Inline styling in login page
+**Impact :** les nouveaux développeurs auraient eu besoin de contexte oral.
 
-Impact: small inconsistency in style governance.
+**Correction :** ajouter `ENGINEERING_GUIDE.md` et des docs pour l'architecture, le CMS, la base de données, les workflows et les composants.
 
-Fix: replace inline style with `.login-panel`.
+---
 
-### Git and CI conventions were missing
+### Chemin de seed dupliqué
 
-Impact: collaboration would become inconsistent as the team grows.
+**Impact :** `scripts/seed.ts` était inutilisé et portait encore de la logique legacy avec `any`.
 
-Fix: add branch/PR conventions and a CI workflow running typecheck and build.
+**Correction :** supprimé. `npm run seed` utilise `scripts/seed.mjs`.
 
-## Remaining Debt
+---
 
-- Some repository rows still rely on broad generated database records because Supabase generated types are not yet complete.
-- ESLint is not fully installed/configured yet; the current hard checks are TypeScript and build.
-- CSS should eventually be split into tokens, base, layout, components and utilities.
-- Tests are not yet implemented.
-- API payload schemas should be expanded per collection, not only at the generic route level.
+## Sévérité faible
+
+### Style inline sur la page de login
+
+**Impact :** petite incohérence dans la gouvernance des styles.
+
+**Correction :** remplacer le style inline par `.login-panel`.
+
+---
+
+### Conventions Git et CI manquantes
+
+**Impact :** la collaboration aurait pu devenir incohérente avec la croissance de l'équipe.
+
+**Correction :** ajouter les conventions de branches/PR et un workflow CI exécutant typecheck et build.
+
+---
+
+## Dette restante
+
+- Certains rows de repository s'appuient encore sur des records DB génériques larges, car les types Supabase générés ne sont pas encore complets
+- ESLint n'est pas encore entièrement installé/configuré — les checks actuels sont TypeScript et build
+- Le CSS devrait être découpé en tokens, base, layout, composants et utilitaires
+- Les tests unitaires ne sont pas encore implémentés
+- Les schémas de payload API devraient être étendus par collection, pas seulement au niveau de la route générique

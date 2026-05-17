@@ -1,22 +1,28 @@
 # Component Conventions
 
-## Purpose
+> Les composants sont presentation-first. Ils affichent les données CMS, collectent les interactions utilisateur et délèguent les décisions métier aux services ou repositories.
 
-Components are presentation-first. They display CMS data, collect user interaction, and delegate business decisions to services or repositories.
+---
 
-## Rules
+## Règles
 
-- Components must not call Supabase directly.
-- Components must not know table names.
-- Components must not contain business rules for recommendations, relations, permissions, publishing, or media processing.
-- Client components must be used only when state, events, or browser APIs are required.
-- Important component variants must be registered in a central registry before being used broadly.
+- Les composants ne doivent **pas** appeler Supabase directement
+- Les composants ne doivent **pas** connaître les noms de tables
+- Les composants ne doivent **pas** contenir de règles métier (recommandations, relations, permissions, publication, traitement média)
+- Les composants client (`"use client"`) ne doivent être utilisés que lorsque l'état, les événements ou les API navigateur sont requis
+- Les variantes de composants importantes doivent être enregistrées dans un registre central avant d'être utilisées largement
 
-## Required Documentation For Important Components
+---
 
-- Purpose
-- Props
-- Variants
-- Usage
-- Restrictions
-- Example
+## Documentation requise pour les composants importants
+
+Tout composant partagé ou complexe doit documenter :
+
+| Élément | Description |
+|---|---|
+| **Purpose** | Pourquoi ce composant existe |
+| **Props** | Liste typée des props attendues |
+| **Variants** | Variantes disponibles |
+| **Usage** | Exemple d'utilisation |
+| **Restrictions** | Ce que ce composant ne doit pas faire |
+| **Example** | Exemple de code minimal |

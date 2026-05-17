@@ -1,45 +1,63 @@
-# CMS Model
+# CMS Model — Manssuétude
 
-## Entity-First Model
+> Modèle de données, workflows éditoriaux et comportements CMS.
 
-Primary entities:
+---
 
-- Theme
-- Production
-- Activity
-- Project
-- Resource
-- Media
-- Season
-- Member
-- Page
-- CTA
-- Collection
+## Modèle orienté entités
 
-Each entity can carry status, visibility, tags, relations, media, SEO and versioning metadata.
+**Entités principales :**
 
-## Workflow
+| Entité | Description |
+|---|---|
+| Theme | Grand axe intellectuel ou dossier de réflexion |
+| Production | Contenu éditorial publié |
+| Activity | Format collectif (séance, débat, atelier, etc.) |
+| Project | Initiative structurée |
+| Resource | Fichier ou contenu réutilisable |
+| Media | Média associé aux entités |
+| Season | Période ou saison éditoriale |
+| Member | Membre de l'association |
+| Page | Page publique du site |
+| CTA | Appel à l'action |
+| Collection | Regroupement thématique |
 
-Editorial statuses:
+Chaque entité peut porter : **status, visibility, tags, relations, media, SEO et versioning metadata**.
 
-- `draft`
-- `review`
-- `validated`
-- `published`
-- `archived`
+---
 
-Progress statuses:
+## Workflows éditoriaux
 
-- `idea`
-- `preparation`
-- `active`
-- `completed`
-- `paused`
+**Statuts éditoriaux :**
+
+| Statut | Signification |
+|---|---|
+| `draft` | Brouillon en cours |
+| `review` | En attente de relecture |
+| `validated` | Validé, prêt à publier |
+| `published` | Publié et visible |
+| `archived` | Archivé |
+
+**Statuts de progression :**
+
+| Statut | Signification |
+|---|---|
+| `idea` | Idée initiale |
+| `preparation` | En préparation |
+| `active` | En cours |
+| `completed` | Terminé |
+| `paused` | En pause |
+
+---
 
 ## Relations
 
-Relations are stored in `entity_relations` for the long-term graph model. Legacy relation tables can remain during migration, but new domain logic should prefer generic graph relations.
+Les relations sont stockées dans `entity_relations` pour le modèle de graphe long terme. Les tables de relations legacy peuvent rester pendant la migration, mais toute nouvelle logique de domaine doit préférer les relations génériques de graphe.
 
-## Forms
+---
 
-Forms must never render automatically in public pages. CTA targets beginning with `FORM:` open the appropriate form modal.
+## Formulaires
+
+> Les formulaires ne doivent **jamais** se rendre automatiquement dans les pages publiques.
+
+Les CTA dont la cible commence par `FORM:` ouvrent la modale de formulaire correspondante.

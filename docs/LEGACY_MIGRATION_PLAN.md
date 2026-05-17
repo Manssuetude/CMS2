@@ -1,213 +1,239 @@
 # Legacy Migration Plan — Manssuétude CMS
 
+> Stratégie de sortie progressive du prototype vanilla. Ce document ne déclenche pas de suppression — il fixe le plan.
+
+---
+
 ## 1. Objectif
 
-Le dépôt contient encore un prototype vanilla complet à la racine et une application Next.js active dans `src/`. L’objectif est de préparer la suppression progressive du legacy sans perdre le contenu, les idées UX ou les références visuelles utiles.
+Le dépôt contient encore un prototype vanilla complet à la racine et une application Next.js active dans `src/`. L'objectif est de préparer la suppression progressive du legacy sans perdre le contenu, les idées UX ou les références visuelles utiles.
 
 Cette phase ne supprime pas les fichiers legacy. Elle fixe une stratégie pour éviter deux systèmes parallèles :
 
-- deux sources de vérité de contenu ;
-- deux systèmes de rendu ;
-- deux administrations ;
-- deux styles globaux ;
-- deux navigations.
+- Deux sources de vérité de contenu
+- Deux systèmes de rendu
+- Deux administrations
+- Deux styles globaux
+- Deux navigations
 
-La règle : tout nouveau développement doit se faire dans `src/`. Le legacy sert uniquement de référence et de source de seed tant que la migration n’est pas terminée.
+> **La règle :** tout nouveau développement doit se faire dans `src/`. Le legacy sert uniquement de référence et de source de seed tant que la migration n'est pas terminée.
+
+---
 
 ## 2. Fichiers legacy concernés
 
 ### `index.html`
 
-- rôle actuel : point d’entrée HTML de l’ancien prototype statique. Il charge `styles.css`, `content.js` et `app.js`, avec une structure `#app`, header, navigation et footer générés côté navigateur.
-- contenu utile : balises SEO de base, favicon, structure minimale de référence, rappel du fonctionnement hash historique.
-- équivalent Next.js existant : `src/app/layout.tsx`, `src/app/(public)/layout.tsx`, routes dans `src/app/(public)`, header/footer dans `src/components/layout`.
-- statut : à conserver temporairement comme référence de prototype. Supprimable plus tard lorsque la documentation de référence et le seed ne dépendent plus de la racine legacy.
+| Aspect | Détail |
+|---|---|
+| Rôle actuel | Point d'entrée HTML de l'ancien prototype statique — charge `styles.css`, `content.js` et `app.js` |
+| Contenu utile | Balises SEO de base, favicon, structure minimale, rappel du fonctionnement hash historique |
+| Équivalent Next.js | `src/app/layout.tsx`, `src/app/(public)/layout.tsx`, routes publiques, header/footer dans `src/components/layout` |
+| Statut | À conserver temporairement. Supprimable quand la doc et le seed ne dépendent plus de la racine legacy |
 
 ### `app.js`
 
-- rôle actuel : moteur complet du prototype vanilla. Il contient le rendu public, la navigation hash, la recherche, les pages détail, les formulaires locaux, l’admin local, la médiathèque simulée, les sauvegardes et le stockage `localStorage`.
-- contenu utile : idées UX du prototype, inventaire des modules admin attendus, logique de CTA `FORM:`, recherche globale, filtres, export CSV local, média field simulé, dashboard qualité local.
-- équivalent Next.js existant : routes publiques dans `src/app/(public)`, admin dans `src/app/admin`, composants dans `src/components`, repositories dans `src/repositories`, services dans `src/services`, API routes dans `src/app/api`.
-- statut : à conserver temporairement comme référence fonctionnelle. À ne plus modifier pour ajouter des fonctionnalités. À supprimer seulement après extraction/documentation des idées encore utiles.
+| Aspect | Détail |
+|---|---|
+| Rôle actuel | Moteur complet du prototype vanilla : rendu public, navigation hash, recherche, formulaires locaux, admin local, médiathèque simulée, `localStorage` |
+| Contenu utile | Idées UX du prototype, inventaire des modules admin attendus, logique CTA `FORM:`, recherche globale, filtres, export CSV local, dashboard qualité local |
+| Équivalent Next.js | Routes publiques, admin, composants, repositories, services, API routes dans `src/` |
+| Statut | À conserver temporairement comme référence fonctionnelle. À ne plus modifier. À supprimer après extraction des idées encore utiles |
 
 ### `content.js`
 
-- rôle actuel : source structurée de contenu historique et seed initial. `scripts/seed.mjs` lit encore ce fichier directement avec `loadLegacyContent()`.
-- contenu utile : meta site, navigation, `ctaLinks`, pages principales, homepage config, footer config, blocs réutilisables, collections `themes`, `productions`, `activities`, `projects`, `resources`, formulaires et relations initiales.
-- équivalent Next.js existant : tables Supabase dans `supabase/schema.sql`, repositories dans `src/repositories`, types dans `src/types/cms.ts`, seed dans `scripts/seed.mjs`.
-- statut : à conserver tant que `npm run seed` dépend de `content.js`. À migrer ensuite vers une source de seed explicite, par exemple `scripts/seed-data/legacy-content.js` ou `supabase/seeds/content.js`.
+| Aspect | Détail |
+|---|---|
+| Rôle actuel | Source structurée de contenu historique et seed initial — `scripts/seed.mjs` lit encore ce fichier via `loadLegacyContent()` |
+| Contenu utile | Meta site, navigation, `ctaLinks`, pages principales, homepage config, footer config, collections (themes, productions, activities, projects, resources), formulaires et relations initiales |
+| Équivalent Next.js | Tables Supabase dans `supabase/schema.sql`, repositories dans `src/repositories`, types dans `src/types/cms.ts`, seed dans `scripts/seed.mjs` |
+| Statut | À conserver tant que `npm run seed` en dépend. À migrer ensuite vers `scripts/seed-data/legacy-content.js` ou `supabase/seeds/content.js` |
 
 ### `styles.css`
 
-- rôle actuel : CSS complet du prototype vanilla. Il couvre site public, admin local, modales, formulaires, médiathèque, pages détail, responsive et états visuels.
-- contenu utile : références de rythme visuel, classes prototype pour admin, media library, final CTA, dark sections, panels et responsive.
-- équivalent Next.js existant : `src/styles/globals.css`, tokens dans `src/config/designTokens.ts`, documentation dans `docs/DESIGN_SYSTEM.md`.
-- statut : à conserver temporairement comme référence visuelle. À ne plus modifier pour le CMS actif. Supprimable après récupération des patterns utiles dans le design system Next.js.
+| Aspect | Détail |
+|---|---|
+| Rôle actuel | CSS complet du prototype vanilla : public, admin local, modales, formulaires, médiathèque, responsive |
+| Contenu utile | Références de rythme visuel, classes prototype pour admin, media library, dark sections, panels et responsive |
+| Équivalent Next.js | `src/styles/globals.css`, tokens dans `src/config/designTokens.ts`, doc dans `docs/DESIGN_SYSTEM.md` |
+| Statut | À conserver temporairement comme référence visuelle. À ne plus modifier pour le CMS actif |
+
+---
 
 ## 3. Risques des doubles systèmes
 
-- Un développeur peut corriger `app.js` alors que le site actif utilise `src/`.
-- `content.js` peut être modifié en pensant modifier le contenu live, alors qu’il sert surtout au seed.
-- `styles.css` peut recevoir des corrections visuelles qui n’affectent pas l’application Next.js.
-- Deux admins coexistent conceptuellement : admin local vanilla et admin Next.js.
-- Les routes hash du prototype peuvent être confondues avec les vraies routes Next.js.
-- La logique `localStorage` du prototype peut masquer le besoin réel de repositories, API et Supabase.
-- Des idées utiles peuvent être supprimées trop tôt si le legacy est retiré sans inventaire.
+- Un développeur peut corriger `app.js` alors que le site actif utilise `src/`
+- `content.js` peut être modifié en pensant modifier le contenu live
+- `styles.css` peut recevoir des corrections qui n'affectent pas l'application Next.js
+- Deux admins coexistent conceptuellement : admin local vanilla et admin Next.js
+- Les routes hash du prototype peuvent être confondues avec les vraies routes Next.js
+- La logique `localStorage` peut masquer le besoin réel de repositories, API et Supabase
+- Des idées utiles peuvent être supprimées trop tôt si le legacy est retiré sans inventaire
+
+---
 
 ## 4. Contenus à récupérer
 
-Depuis `content.js` :
+**Depuis `content.js` :**
 
-- `meta` : nom, tagline, logo, favicon, fallback image, phrase PERCA, couleurs ;
-- `nav` : menu principal final, y compris entrée admin cachée ;
-- `ctaLinks` : table de CTA et logique `FORM:` ;
-- `footerConfig` : description, colonnes, réseaux sociaux, newsletter, liens légaux ;
-- `homepageConfig` : sujet du moment, productions/projets mis en avant, stats, CTA final ;
-- `pages` : neuf pages publiques principales ;
-- `collections.themes` : 6 thèmes ;
-- `collections.productions` : 6 productions ;
-- `collections.activities` : 3 activités ;
-- `collections.projects` : 7 projets ;
-- `collections.resources` : 2 ressources ;
-- `pageBlocks` : méthode, en ce moment, approche, mission, timeline, soutiens, forms.
+- `meta` : nom, tagline, logo, favicon, fallback image, phrase PERCA, couleurs
+- `nav` : menu principal final, y compris entrée admin cachée
+- `ctaLinks` : table de CTA et logique `FORM:`
+- `footerConfig` : description, colonnes, réseaux sociaux, newsletter, liens légaux
+- `homepageConfig` : sujet du moment, productions/projets mis en avant, stats, CTA final
+- `pages` : neuf pages publiques principales
+- `collections.themes` : 6 thèmes
+- `collections.productions` : 6 productions
+- `collections.activities` : 3 activités
+- `collections.projects` : 7 projets
+- `collections.resources` : 2 ressources
+- `pageBlocks` : méthode, en ce moment, approche, mission, timeline, soutiens, forms
 
-Depuis `app.js` :
+**Depuis `app.js` :**
 
-- comportements CTA `FORM:` ;
-- recherche globale groupée ;
-- filtres sur collections ;
-- structure admin modulaire ;
-- export CSV des formulaires ;
-- logique de médiathèque simulée ;
-- panneau qualité local ;
-- import/export de contenu.
+- Comportements CTA `FORM:`
+- Recherche globale groupée
+- Filtres sur collections
+- Structure admin modulaire
+- Export CSV des formulaires
+- Logique de médiathèque simulée
+- Panneau qualité local
+- Import/export de contenu
 
-Ces éléments doivent être repris uniquement s’ils sont utiles au CMS Next.js, pas copiés tels quels.
+> Ces éléments doivent être repris uniquement s'ils sont utiles au CMS Next.js, pas copiés tels quels.
+
+---
 
 ## 5. Styles à récupérer
 
 Depuis `styles.css`, récupérer progressivement :
 
-- rythme des héros éditoriaux ;
-- blocs noirs premium ;
-- CTA final ;
-- cards avec hover subtil ;
-- panels admin sobres ;
-- media library visuelle ;
-- modales ;
-- formulaires ;
-- responsive du menu mobile ;
-- pages détail plus éditoriales.
+- Rythme des héros éditoriaux
+- Blocs noirs premium
+- CTA final
+- Cards avec hover subtil
+- Panels admin sobres
+- Media library visuelle
+- Modales
+- Formulaires
+- Responsive du menu mobile
+- Pages détail plus éditoriales
 
-À intégrer uniquement via :
+**À intégrer uniquement via :**
 
-- `src/styles/globals.css` ;
-- `src/config/designTokens.ts` ;
-- futurs composants `src/components/ui/Button.tsx`, `Card.tsx`, `Section.tsx`, `Badge.tsx`.
+- `src/styles/globals.css`
+- `src/config/designTokens.ts`
+- Futurs composants `src/components/ui/Button.tsx`, `Card.tsx`, `Section.tsx`, `Badge.tsx`
 
-Ne pas copier massivement `styles.css` dans le CSS actif.
+> Ne pas copier massivement `styles.css` dans le CSS actif.
+
+---
 
 ## 6. Logiques à abandonner
 
-À ne pas migrer :
+À ne **pas** migrer vers Next.js :
 
-- rendu HTML par chaînes de caractères ;
-- navigation hash comme source principale ;
-- stockage `localStorage` comme persistance CMS ;
-- admin par mot de passe local dans le navigateur ;
-- upload simulé créant seulement des chemins `assets/files/...` ;
-- manipulation DOM directe ;
-- réinitialisation locale du contenu via `structuredClone(SITE_CONTENT)` ;
-- SEO mis à jour manuellement par manipulation DOM ;
-- formulaires enregistrés uniquement dans le navigateur.
+- Rendu HTML par chaînes de caractères
+- Navigation hash comme source principale
+- Stockage `localStorage` comme persistance CMS
+- Admin par mot de passe local dans le navigateur
+- Upload simulé créant seulement des chemins `assets/files/...`
+- Manipulation DOM directe
+- Réinitialisation locale du contenu via `structuredClone(SITE_CONTENT)`
+- SEO mis à jour manuellement par manipulation DOM
+- Formulaires enregistrés uniquement dans le navigateur
 
-Ces logiques ont été utiles pour le prototype, mais elles ne doivent pas survivre dans le CMS Next.js.
+---
 
 ## 7. Étapes de migration
 
 ### Étape 1 — Marquer le legacy comme référence
 
-- objectif : empêcher toute confusion immédiate.
-- fichiers concernés : `README.md`, `ENGINEERING_GUIDE.md`, `docs/ONBOARDING.md`, `docs/LEGACY_MIGRATION_PLAN.md`.
-- critères de validation : documentation claire indiquant que `src/` est l’application active et que les fichiers racine sont legacy.
+- **Objectif :** empêcher toute confusion immédiate
+- **Fichiers :** `README.md`, `ENGINEERING_GUIDE.md`, `docs/ONBOARDING.md`, `docs/LEGACY_MIGRATION_PLAN.md`
+- **Validation :** documentation claire indiquant que `src/` est l'application active et que les fichiers racine sont legacy
 
 ### Étape 2 — Sécuriser le seed
 
-- objectif : déplacer la dépendance à `content.js` dans une zone de seed explicite.
-- fichiers concernés : `content.js`, `scripts/seed.mjs`, future cible `scripts/seed-data/legacy-content.js` ou `supabase/seeds/content.js`.
-- critères de validation : `npm run seed` fonctionne après déplacement ; `content.js` ne vit plus à la racine ; documentation mise à jour.
+- **Objectif :** déplacer la dépendance à `content.js` dans une zone de seed explicite
+- **Fichiers :** `content.js`, `scripts/seed.mjs`, future cible `scripts/seed-data/legacy-content.js`
+- **Validation :** `npm run seed` fonctionne après déplacement ; `content.js` ne vit plus à la racine ; documentation mise à jour
 
 ### Étape 3 — Inventorier les écarts de contenu
 
-- objectif : vérifier que les pages, collections, CTA, footer et homepage issus de `content.js` existent bien en base ou dans les repositories.
-- fichiers concernés : `content.js`, `scripts/seed.mjs`, `src/repositories/*`, `src/types/cms.ts`.
-- critères de validation : chaque collection legacy a un équivalent DB ou une décision explicite de non-migration.
+- **Objectif :** vérifier que pages, collections, CTA, footer et homepage de `content.js` existent bien en base ou dans les repositories
+- **Fichiers :** `content.js`, `scripts/seed.mjs`, `src/repositories/*`, `src/types/cms.ts`
+- **Validation :** chaque collection legacy a un équivalent DB ou une décision explicite de non-migration
 
 ### Étape 4 — Migrer les idées UX utiles de `app.js`
 
-- objectif : reprendre les concepts, pas le code.
-- fichiers concernés : `app.js`, `src/components`, `src/services`, `src/app/admin`, `src/app/api`.
-- critères de validation : les comportements retenus existent dans Next.js avec séparation UI / service / repository.
+- **Objectif :** reprendre les concepts, pas le code
+- **Fichiers :** `app.js`, `src/components`, `src/services`, `src/app/admin`, `src/app/api`
+- **Validation :** les comportements retenus existent dans Next.js avec séparation UI / service / repository
 
 ### Étape 5 — Récupérer les patterns visuels utiles
 
-- objectif : intégrer les meilleurs patterns de `styles.css` dans le design system actif.
-- fichiers concernés : `styles.css`, `src/styles/globals.css`, `src/config/designTokens.ts`, futurs composants UI.
-- critères de validation : documentation design system à jour ; pas de duplication massive ; build OK.
+- **Objectif :** intégrer les meilleurs patterns de `styles.css` dans le design system actif
+- **Fichiers :** `styles.css`, `src/styles/globals.css`, `src/config/designTokens.ts`, futurs composants UI
+- **Validation :** design system à jour, pas de duplication massive, build OK
 
 ### Étape 6 — Déplacer le prototype hors racine
 
-- objectif : réduire la confusion sans supprimer l’historique.
-- fichiers concernés : `index.html`, `app.js`, `styles.css`, éventuellement ancien `content.js` si seed déjà déplacé.
-- critères de validation : prototype déplacé vers `legacy/vanilla-prototype/` ou `docs/reference/vanilla-prototype/`; aucune route Next.js cassée ; docs mises à jour.
+- **Objectif :** réduire la confusion sans supprimer l'historique
+- **Fichiers :** `index.html`, `app.js`, `styles.css`, éventuellement `content.js` si seed déjà déplacé
+- **Validation :** prototype dans `legacy/vanilla-prototype/` ; aucune route Next.js cassée ; docs mises à jour
 
 ### Étape 7 — Suppression définitive
 
-- objectif : retirer le double système du dépôt actif.
-- fichiers concernés : `index.html`, `app.js`, `content.js`, `styles.css` ou leur dossier legacy.
-- critères de validation : seed indépendant ; contenu migré ; styles utiles récupérés ; admin Next.js couvre les usages nécessaires ; validation complète OK.
+- **Objectif :** retirer le double système du dépôt actif
+- **Fichiers :** `index.html`, `app.js`, `content.js`, `styles.css` ou leur dossier legacy
+- **Validation :** seed indépendant, contenu migré, styles utiles récupérés, admin Next.js couvre les usages nécessaires, validation complète OK
+
+---
 
 ## 8. Conditions avant suppression définitive
 
 ### Avant suppression de `index.html`
 
-- les routes Next.js publiques couvrent toutes les pages principales ;
-- les métadonnées SEO sont gérées dans Next.js ;
-- le prototype n’est plus utilisé comme point d’entrée de démonstration ;
-- une capture ou référence visuelle est conservée si nécessaire.
+- Les routes Next.js publiques couvrent toutes les pages principales
+- Les métadonnées SEO sont gérées dans Next.js
+- Le prototype n'est plus utilisé comme point d'entrée de démonstration
+- Une capture ou référence visuelle est conservée si nécessaire
 
 ### Avant suppression de `app.js`
 
-- aucune fonctionnalité utile du prototype ne reste uniquement dans `app.js` ;
-- CTA `FORM:` fonctionnels côté Next.js ;
-- formulaires gérés via API et base ;
-- admin Next.js couvre dashboard, médias, formulaires et contenus essentiels ;
-- export/import ou sauvegarde documentés côté Next.js si retenus ;
-- recherche/filtres repris ou explicitement reportés.
+- Aucune fonctionnalité utile du prototype ne reste uniquement dans `app.js`
+- CTA `FORM:` fonctionnels côté Next.js
+- Formulaires gérés via API et base
+- Admin Next.js couvre dashboard, médias, formulaires et contenus essentiels
+- Export/import ou sauvegarde documentés côté Next.js si retenus
+- Recherche/filtres repris ou explicitement reportés
 
 ### Avant suppression de `content.js`
 
-- `scripts/seed.mjs` ne lit plus `content.js` à la racine ;
-- les données seed vivent dans un dossier explicite ;
-- toutes les pages et collections importantes sont seedées ou migrées ;
-- la documentation indique la nouvelle source de seed ;
-- `npm run seed` fonctionne.
+- `scripts/seed.mjs` ne lit plus `content.js` à la racine
+- Les données seed vivent dans un dossier explicite
+- Toutes les pages et collections importantes sont seedées ou migrées
+- La documentation indique la nouvelle source de seed
+- `npm run seed` fonctionne
 
 ### Avant suppression de `styles.css`
 
-- les patterns visuels utiles sont récupérés ou abandonnés explicitement ;
-- `src/styles/globals.css` et `src/config/designTokens.ts` couvrent les besoins actifs ;
-- les composants UI de base ont une stratégie claire ;
-- aucune documentation ne renvoie encore à `styles.css` comme style actif.
+- Les patterns visuels utiles sont récupérés ou abandonnés explicitement
+- `src/styles/globals.css` et `src/config/designTokens.ts` couvrent les besoins actifs
+- Les composants UI de base ont une stratégie claire
+- Aucune documentation ne renvoie encore à `styles.css` comme style actif
+
+---
 
 ## 9. Recommandation finale
 
-Ne pas supprimer le legacy immédiatement. La prochaine action sûre est de déplacer d’abord la source seed vers un dossier explicite, puis d’adapter `scripts/seed.mjs`. Ensuite seulement, déplacer le prototype vanilla dans un dossier `legacy/` ou `docs/reference/`.
+Ne pas supprimer le legacy immédiatement. La prochaine action sûre est de déplacer d'abord la source seed vers un dossier explicite, puis d'adapter `scripts/seed.mjs`. Ensuite seulement, déplacer le prototype vanilla dans un dossier `legacy/` ou `docs/reference/`.
 
-Priorité recommandée :
+**Priorité recommandée :**
 
-1. garder `content.js` tant que le seed en dépend ;
-2. interdire toute nouvelle logique dans `app.js` et `styles.css` ;
-3. migrer les éléments utiles sous forme de services, composants et tokens Next.js ;
-4. déplacer le legacy hors racine ;
-5. supprimer définitivement lorsque les conditions ci-dessus sont validées.
+1. Garder `content.js` tant que le seed en dépend
+2. Interdire toute nouvelle logique dans `app.js` et `styles.css`
+3. Migrer les éléments utiles sous forme de services, composants et tokens Next.js
+4. Déplacer le legacy hors racine
+5. Supprimer définitivement lorsque les conditions ci-dessus sont validées
