@@ -73,7 +73,7 @@ Ce comportement est géré par **Husky**, un outil qui permet de versionner les 
 
 **Hooks configurés :**
 
-| Hook         | Déclencheur  | Action                                                  |
-| ------------ | ------------ | ------------------------------------------------------- |
-| `pre-commit` | `git commit` | Lance `npm test` — bloque le commit si les tests échouent |
-| `pre-push`   | `git push`   | Reformate tous les fichiers avec Prettier et re-stage   |
+| Hook         | Déclencheur  | Action                                                                              |
+| ------------ | ------------ | ----------------------------------------------------------------------------------- |
+| `pre-commit` | `git commit` | Reformate tous les fichiers avec Prettier, re-stage, puis lance `npm test`          |
+| `pre-push`   | `git push`   | Vérifie que le formatage est correct — bloque le push si un fichier est mal formaté |

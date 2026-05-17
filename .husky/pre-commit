@@ -1,1 +1,3 @@
+npx prettier --write "{src,scripts,docs}/**/*.{ts,tsx,mjs,md,css}" "*.{md,json}" --ignore-path .gitignore
+git add -A
 npm test
