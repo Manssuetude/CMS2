@@ -33,7 +33,7 @@ Nous construisons un **CMS éditorial sur-mesure** :
 - Administration visuelle
 - Base pour une mémoire collective
 
-**Le CMS est orienté entités :** thèmes, productions, activités, projets, ressources, médias, pages, formulaires.
+**Le CMS est orienté entités.** Voir [`docs/CMS.md`](CMS.md) pour le détail des entités, statuts et comportements.
 
 ---
 
@@ -132,19 +132,7 @@ Google Drive et Resend peuvent rester vides tant que l'intégration complète n'
 
 ## 8. Base de données et Supabase
 
-**Fichiers SQL :**
-
-| Fichier                     | Contenu             |
-| --------------------------- | ------------------- |
-| `supabase/schema.sql`       | Tables principales  |
-| `supabase/storage.sql`      | Buckets médias      |
-| `supabase/cms-advanced.sql` | Tables avancées CMS |
-
-**Ordre recommandé dans Supabase SQL Editor :**
-
-1. `supabase/schema.sql`
-2. `supabase/storage.sql`
-3. `supabase/cms-advanced.sql`
+Fichiers SQL, tables et règles d'accès : [`docs/DATABASE.md`](DATABASE.md#fichiers-sql).
 
 **Vérification de la connexion :**
 
@@ -174,27 +162,7 @@ Script concerné : `scripts/seed.mjs`
 
 ## 10. Architecture
 
-```
-src/
-  app/           routes Next.js, pages, layouts, API routes
-  components/    composants UI
-  repositories/  accès données et mapping DB
-  services/      logique métier
-  lib/           auth, env, db, validation, erreurs, permissions
-  types/         types CMS et DB
-  config/        tokens et configuration non secrète
-  constants/     constantes métier
-  hooks/         hooks React réutilisables
-  utils/         helpers génériques
-docs/            documentation projet
-```
-
-**Flux recommandé :**
-
-```
-UI → service → repository → database
-API route → validation → service/repository → response
-```
+Voir [`ARCHITECTURE.md`](ARCHITECTURE.md) pour l'arborescence complète, les responsabilités de chaque dossier et les flux de données.
 
 ---
 
@@ -270,69 +238,19 @@ API route → validation → service/repository → response
 
 ## 13. Workflow Git
 
-**Branches recommandées :**
-
-| Branche     | Usage                        |
-| ----------- | ---------------------------- |
-| `main`      | Version stable               |
-| `develop`   | Intégration                  |
-| `feature/*` | Fonctionnalité               |
-| `fix/*`     | Correction                   |
-| `chore/*`   | Maintenance ou documentation |
-
-**Préfixes de commits :** `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`
-
-**Une PR doit contenir :**
-
-- Objectif
-- Fichiers ou modules touchés
-- Validations exécutées
-- Risques
-- Captures si l'UI change
-- Notes DB si un schéma change
+Voir [`WORKFLOWS.md`](WORKFLOWS.md#branches) pour les branches, conventions de commits et format des PR.
 
 ---
 
 ## 14. Checklist avant PR
 
-**Minimum obligatoire :**
-
-```bash
-npm run typecheck
-npm run build
-```
-
-**Selon le changement :**
-
-- `npm run test` — si architecture, conventions ou règles critiques
-- `npm run format:check` — si beaucoup de fichiers sont touchés
-- Vérification visuelle locale — si UI modifiée
-- Documentation mise à jour — si convention, architecture, DB ou workflow changent
-
-**Checklist mentale :**
-
-- [ ] Ai-je respecté la séparation UI / service / repository ?
-- [ ] Ai-je évité les chemins relatifs profonds ?
-- [ ] Ai-je évité `any` ?
-- [ ] Ai-je gardé les fichiers legacy intacts si ce n'était pas le sujet ?
-- [ ] Ai-je documenté la dette restante ?
+Voir [`QUALITY_GATES.md`](QUALITY_GATES.md#8-checklist-avant-pull-request) pour les commandes obligatoires et la checklist complète.
 
 ---
 
 ## 15. Erreurs fréquentes
 
-> Ces erreurs ont toutes déjà été commises — évite-les.
-
-- Appeler Supabase dans un composant
-- Ajouter une route API sans validation
-- Modifier `content.js` comme si c'était encore la source durable du CMS
-- Supprimer `index.html`, `app.js`, `content.js` ou `styles.css` pendant la Phase 0
-- Créer une variante visuelle hors design system
-- Ajouter une librairie UI lourde sans décision collective
-- Masquer une dette technique au lieu de la documenter
-- Mélanger textes éditoriaux et logique de rendu
-- Créer une page pour chaque micro-section
-- Lancer une fonctionnalité produit pendant une tâche de consolidation
+Voir [`ARCHITECTURE.md`](ARCHITECTURE.md#7-anti-patterns-interdits) pour la liste complète des anti-patterns interdits.
 
 ---
 
@@ -353,3 +271,7 @@ npm run build
 | **Éditeur**              | Utilisateur pouvant gérer les contenus et médias selon les permissions accordées.                                                                       |
 | **Contributeur**         | Utilisateur ou personne pouvant proposer un contenu, un projet ou une participation, sans accès complet au CMS.                                         |
 | **PERCA**                | Méthode Manssuétude : Penser, Exprimer, Relier, Concrétiser, Ancrer. PERCA est un cadre de travail, pas une entité séparée du projet.                   |
+
+---
+
+← [README.md](../README.md) · Suite → [ARCHITECTURE.md](ARCHITECTURE.md)

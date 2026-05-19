@@ -61,3 +61,7 @@ Les relations sont stockées dans `entity_relations` pour le modèle de graphe l
 > Les formulaires ne doivent **jamais** se rendre automatiquement dans les pages publiques.
 
 Les CTA dont la cible commence par `FORM:` ouvrent la modale de formulaire correspondante.
+
+---
+
+[← Ordre de lecture](../README.md#ordre-de-lecture-recommandé)

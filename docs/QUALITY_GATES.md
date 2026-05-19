@@ -168,3 +168,7 @@ npm run build
 - L'ancien prototype vanilla reste dans le dépôt. Les quality gates ciblent principalement `src`, `scripts`, `tests` et `next.config.ts`
 - La règle Next `@next/next/no-img-element` est désactivée temporairement. La migration vers `next/image` doit se faire dans une tâche dédiée
 - Le lint est volontairement pragmatique. Des règles plus strictes pourront être ajoutées après stabilisation de la Phase 0
+
+---
+
+← [WORKFLOWS.md](WORKFLOWS.md) · [Retour à l'ordre de lecture](../README.md#ordre-de-lecture-recommandé)

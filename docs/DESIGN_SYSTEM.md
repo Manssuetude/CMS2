@@ -312,3 +312,7 @@ Le site public doit être éditorial et humain.
 3. Extraire les styles admin et public en couches lisibles
 4. Remplacer les valeurs magiques restantes par des variables
 5. Documenter chaque nouvelle variante avant usage large
+
+---
+
+[← Ordre de lecture](../README.md#ordre-de-lecture-recommandé)

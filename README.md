@@ -51,25 +51,7 @@ Le site local démarre généralement sur `http://localhost:3000`.
 
 ## Variables d'environnement
 
-Créer `.env.local` à partir de `.env.example` :
-
-```env
-DATABASE_URL=
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-GOOGLE_CLIENT_ID=
-GOOGLE_API_KEY=
-GOOGLE_CLIENT_SECRET=
-RESEND_API_KEY=
-ADMIN_INITIAL_EMAIL=
-ADMIN_INITIAL_PASSWORD=
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` et `SUPABASE_SERVICE_ROLE_KEY` sont nécessaires pour connecter Supabase.
-- `ADMIN_INITIAL_EMAIL` et `ADMIN_INITIAL_PASSWORD` servent au seed du premier admin.
-- Les clés Google et Resend peuvent rester vides tant que ces intégrations ne sont pas utilisées.
+Créer `.env.local` à partir de `.env.example`. Détail des variables et minimum requis : [`docs/ONBOARDING.md`](docs/ONBOARDING.md#6-variables-denvironnement).
 
 ---
 
@@ -91,30 +73,25 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 ## Architecture rapide
 
-```
-src/
-  app/             routes Next.js publiques, admin et API
-  components/      composants UI, layout, blocs, médias, formulaires
-  repositories/    accès données Supabase et mapping DB
-  services/        logique métier, relations, SEO, santé, médias
-  lib/             clients techniques, auth, env, validation, erreurs
-  types/           types CMS et base de données
-  config/          tokens et configuration non secrète
-  constants/       constantes métier et navigation
-  hooks/           hooks React réutilisables
-  styles/          CSS global
-  utils/           helpers génériques
-docs/              documentation technique
-scripts/           seed et vérifications
-supabase/          schémas SQL
-```
+Voir [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) pour l'arborescence complète, les responsabilités de chaque dossier et les flux de données.
 
-**Flux recommandé :**
+---
 
-```
-UI → service → repository → database
-API route → validation → service/repository → response
-```
+## Ordre de lecture recommandé
+
+Pour un développeur qui arrive sur le projet, dans cet ordre :
+
+| Étape | Document                                             | Pourquoi                                                                       |
+| ----- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1     | [docs/ONBOARDING.md](docs/ONBOARDING.md)             | Vue d'ensemble du projet, installation, modules clés, glossaire                |
+| 2     | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)         | Arborescence, responsabilités de chaque couche, flux de données, anti-patterns |
+| 3     | [docs/CODE_CONVENTIONS.md](docs/CODE_CONVENTIONS.md) | Nommage, imports, TypeScript, patterns de code                                 |
+| 4     | [docs/DATABASE.md](docs/DATABASE.md)                 | Schéma SQL, tables, règles d'accès aux données                                 |
+| 5     | [docs/WORKFLOWS.md](docs/WORKFLOWS.md)               | Branches, commits, format des PR                                               |
+| 6     | [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md)       | Commandes obligatoires et checklist avant PR                                   |
+| —     | [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)       | Si le travail touche l'UI ou le CSS                                            |
+| —     | [docs/CMS.md](docs/CMS.md)                           | Si le travail touche les entités éditoriales                                   |
+| —     | [ENGINEERING_GUIDE.md](ENGINEERING_GUIDE.md)         | Pour les décisions d'architecture et les principes d'ingénierie                |
 
 ---
 
@@ -156,5 +133,8 @@ Avant toute PR :
 1. Lire [`docs/ONBOARDING.md`](docs/ONBOARDING.md)
 2. Respecter [`docs/CODE_CONVENTIONS.md`](docs/CODE_CONVENTIONS.md) et [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)
 3. Ne pas supprimer les fichiers legacy sans décision explicite
-4. Exécuter `npm run typecheck` et `npm run build`
-5. Documenter les impacts, validations et risques dans la PR
+4. Checklist complète : [`docs/QUALITY_GATES.md`](docs/QUALITY_GATES.md#8-checklist-avant-pull-request)
+
+---
+
+**Par où commencer ?** → [`docs/ONBOARDING.md`](docs/ONBOARDING.md)

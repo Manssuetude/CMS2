@@ -77,3 +77,7 @@ Ce comportement est géré par **Husky**, un outil qui permet de versionner les 
 | ------------ | ------------ | ----------------------------------------------------------------------------------- |
 | `pre-commit` | `git commit` | Reformate tous les fichiers avec Prettier, re-stage, puis lance `npm test`          |
 | `pre-push`   | `git push`   | Vérifie que le formatage est correct — bloque le push si un fichier est mal formaté |
+
+---
+
+← [DATABASE.md](DATABASE.md) · Suite → [QUALITY_GATES.md](QUALITY_GATES.md)

@@ -58,3 +58,7 @@ Exécuter dans cet ordre dans le Supabase SQL Editor :
 ## Règle d'accès
 
 > Les requêtes Supabase doivent rester dans les repositories ou dans les fichiers d'intégration de bas niveau. Les composants et les pages publiques ne doivent pas contenir de logique au niveau des tables.
+
+---
+
+← [CODE_CONVENTIONS.md](CODE_CONVENTIONS.md) · Suite → [WORKFLOWS.md](WORKFLOWS.md)

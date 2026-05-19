@@ -10,3 +10,5 @@
 - Ne **pas** interroger Supabase directement depuis un hook
 - Placer les décisions CMS/métier dans `src/services`
 - Garder l'accès aux données dans `src/repositories`
+
+Voir [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md#srchooks) pour le contexte complet.

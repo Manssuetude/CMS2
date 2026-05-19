@@ -85,22 +85,7 @@ Le projet fonctionne en mode strict. Les types doivent être explicites aux fron
 
 ## 5. Components
 
-Les composants sont responsables de l'affichage et des interactions visuelles.
-
-**Ils peuvent :**
-
-- Recevoir des données typées
-- Gérer un état UI local
-- Déclencher une action utilisateur
-- Appeler un service client dédié si une interaction nécessite une requête
-
-**Ils ne doivent pas :**
-
-- Contenir de logique métier lourde
-- Mapper directement des lignes DB brutes
-- Appeler Supabase directement
-- Embarquer des règles de permission
-- Devenir des fichiers fourre-tout
+Voir [`ARCHITECTURE.md`](ARCHITECTURE.md#srccomponents) pour les responsabilités, règles et interdictions des composants.
 
 > Les props doivent être typées. Pour les composants publics réutilisables, préférer une interface ou un type nommé.
 
@@ -108,50 +93,13 @@ Les composants sont responsables de l'affichage et des interactions visuelles.
 
 ## 6. Repositories
 
-Les repositories encapsulent l'accès aux données.
-
-**Ils peuvent :**
-
-- Lire et écrire en base
-- Mapper les lignes DB vers les types domaine
-- Appliquer les filtres de requête
-- Exposer des fonctions CRUD
-
-**Ils ne doivent pas :**
-
-- Décider de la présentation
-- Importer des composants
-- Gérer des états React
-- Contenir les règles éditoriales complexes
-- Formater des textes pour l'UI
-
-**Flux attendu :**
-
-```
-service → repository → database
-```
+Voir [`ARCHITECTURE.md`](ARCHITECTURE.md#srcrepositories) pour les responsabilités, règles et interdictions des repositories.
 
 ---
 
 ## 7. Services
 
-Les services portent la logique métier testable.
-
-**Ils peuvent :**
-
-- Orchestrer plusieurs repositories
-- Préparer des recommandations
-- Gérer les relations entre contenus
-- Construire des métadonnées SEO
-- Normaliser les médias
-- Appliquer des règles de workflow
-
-**Ils ne doivent pas :**
-
-- Rendre du JSX
-- Dépendre d'un composant
-- Manipuler directement le DOM
-- Contenir des secrets d'environnement
+Voir [`ARCHITECTURE.md`](ARCHITECTURE.md#srcservices) pour les responsabilités, règles et interdictions des services.
 
 Quand plusieurs fonctions appartiennent au même domaine, exporter un objet service :
 
@@ -204,26 +152,7 @@ Les styles globaux vivent dans `src/styles/globals.css`. Les tokens stables vive
 
 ## 10. Git & PR
 
-**Branches recommandées :**
-
-| Branche     | Usage                            |
-| ----------- | -------------------------------- |
-| `main`      | Version stable                   |
-| `develop`   | Intégration                      |
-| `feature/*` | Nouvelles fonctionnalités        |
-| `fix/*`     | Corrections ciblées              |
-| `chore/*`   | Maintenance, docs, configuration |
-
-**Chaque PR doit indiquer :** objectif, fichiers ou modules touchés, validations exécutées, risques, captures si l'UI change.
-
-**Avant revue :**
-
-```bash
-npm run typecheck
-npm run build
-npm run test        # si le changement touche l'architecture
-npm run format:check  # si la modification est large
-```
+Voir [`WORKFLOWS.md`](WORKFLOWS.md#branches) pour les branches, conventions de commits et format des PR. Voir [`QUALITY_GATES.md`](QUALITY_GATES.md#2-commandes-obligatoires) pour les commandes avant revue.
 
 ---
 
@@ -313,3 +242,7 @@ export function renderRecommendationCard() {
   return <article />;
 }
 ```
+
+---
+
+← [ARCHITECTURE.md](ARCHITECTURE.md) · Suite → [DATABASE.md](DATABASE.md)

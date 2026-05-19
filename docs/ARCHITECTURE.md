@@ -326,3 +326,7 @@ Les fichiers suivants appartiennent à l'ancien prototype vanilla :
 2. Déplacer `content.js` vers `scripts/seed-data/legacy-content.js`
 3. Adapter `scripts/seed.mjs`
 4. Documenter la fin de vie du prototype
+
+---
+
+← [ONBOARDING.md](ONBOARDING.md) · Suite → [CODE_CONVENTIONS.md](CODE_CONVENTIONS.md)
