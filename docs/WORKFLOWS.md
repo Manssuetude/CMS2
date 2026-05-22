@@ -80,4 +80,4 @@ Ce comportement est géré par **Husky**, un outil qui permet de versionner les 
 
 ---
 
-← [DATABASE.md](DATABASE.md) · Suite → [QUALITY_GATES.md](QUALITY_GATES.md)
+← [DATABASE.md](DATABASE.md) · Suite → [COLLABORATION.md](COLLABORATION.md) · [QUALITY_GATES.md](QUALITY_GATES.md)

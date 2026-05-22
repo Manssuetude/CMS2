@@ -88,7 +88,8 @@ Pour un développeur qui arrive sur le projet, dans cet ordre :
 | 3     | [docs/CODE_CONVENTIONS.md](docs/CODE_CONVENTIONS.md) | Nommage, imports, TypeScript, patterns de code                                 |
 | 4     | [docs/DATABASE.md](docs/DATABASE.md)                 | Schéma SQL, tables, règles d'accès aux données                                 |
 | 5     | [docs/WORKFLOWS.md](docs/WORKFLOWS.md)               | Branches, commits, format des PR                                               |
-| 6     | [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md)       | Commandes obligatoires et checklist avant PR                                   |
+| 6     | [docs/COLLABORATION.md](docs/COLLABORATION.md)       | Board kanban, issues, labels, milestones, cycle de vie des tâches              |
+| 7     | [docs/QUALITY_GATES.md](docs/QUALITY_GATES.md)       | Commandes obligatoires et checklist avant PR                                   |
 | —     | [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md)       | Si le travail touche l'UI ou le CSS                                            |
 | —     | [docs/CMS.md](docs/CMS.md)                           | Si le travail touche les entités éditoriales                                   |
 | —     | [ENGINEERING_GUIDE.md](ENGINEERING_GUIDE.md)         | Pour les décisions d'architecture et les principes d'ingénierie                |
@@ -107,6 +108,7 @@ Pour un développeur qui arrive sur le projet, dans cet ordre :
 | [docs/RESPONSIBILITY_MAP.md](docs/RESPONSIBILITY_MAP.md) | Séparation UI / services / repositories |
 | [docs/DATABASE.md](docs/DATABASE.md)                     | Tables et fichiers SQL Supabase         |
 | [docs/WORKFLOWS.md](docs/WORKFLOWS.md)                   | Branches, PR et validations             |
+| [docs/COLLABORATION.md](docs/COLLABORATION.md)           | Organisation du travail en équipe       |
 | [docs/PHASE_0_AUDIT.md](docs/PHASE_0_AUDIT.md)           | Audit initial                           |
 | [docs/PHASE_0_CLEANUP.md](docs/PHASE_0_CLEANUP.md)       | Nettoyage initial                       |
 

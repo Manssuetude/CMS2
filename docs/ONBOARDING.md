@@ -242,6 +242,17 @@ Voir [`WORKFLOWS.md`](WORKFLOWS.md#branches) pour les branches, conventions de c
 
 ---
 
+## 13.1. Gestion de projet
+
+Le travail de l'équipe est organisé sur **GitHub Projects** :
+
+- **Board kanban** : [CMS2 — Development Board](https://github.com/users/manssuetude-2026/projects/1)
+- **Issues** : [manssuetude-2026/CMS2/issues](https://github.com/manssuetude-2026/CMS2/issues)
+
+Chaque tâche passe par une issue GitHub liée à un milestone, un label et une priorité. Voir [`COLLABORATION.md`](COLLABORATION.md) pour le détail complet du workflow.
+
+---
+
 ## 14. Checklist avant PR
 
 Voir [`QUALITY_GATES.md`](QUALITY_GATES.md#8-checklist-avant-pull-request) pour les commandes obligatoires et la checklist complète.
