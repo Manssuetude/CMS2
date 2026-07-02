@@ -14,7 +14,6 @@ export type AuthUser = {
   email: string;
   name?: string;
   role: UserRole;
-  password_hash?: string | null;
 };
 
 export async function getSession(): Promise<AdminSession | null> {
