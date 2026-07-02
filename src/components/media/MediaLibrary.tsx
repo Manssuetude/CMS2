@@ -1,78 +1,93 @@
+"use client";
+
+import { useState } from "react";
 import type { Media } from "@/types/cms";
 import { ImportWizard } from "@/components/media/ImportWizard";
-
-function mediaPreview(media: Media) {
-  if (media.type === "image") {
-    return (
-      <img src={media.thumbnailUrl || media.previewUrl || media.url} alt={media.alt || media.title} loading="lazy" />
-    );
-  }
-  return <span className="media-kind">{media.type.toUpperCase()}</span>;
-}
+import { deleteMediaAction } from "@/app/admin/media/actions";
+import { MediaCard } from "@/components/media/MediaCard";
 
 export function MediaLibrary({ media }: { media: Media[] }) {
-  const unused = media.filter((item) => !item.caption && !item.description);
+  const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+
+  const filtered = media.filter((item) => {
+    const q = query.toLowerCase();
+    const matchesQuery =
+      !q ||
+      item.title.toLowerCase().includes(q) ||
+      item.filename.toLowerCase().includes(q) ||
+      item.alt?.toLowerCase().includes(q) ||
+      item.tags.some((t) => t.toLowerCase().includes(q));
+    const matchesType = !typeFilter || item.type === typeFilter;
+    return matchesQuery && matchesType;
+  });
+
   const withoutAlt = media.filter((item) => item.type === "image" && !item.alt);
+  const drafts = media.filter((item) => item.visibility === "draft");
 
   return (
     <div className="media-library">
       <ImportWizard />
       <section className="admin-panel">
-        <div className="section-head">
+        <div className="admin-page-header">
           <div>
-            <p className="eyebrow">Bibliothèque média</p>
-            <h1>Médiathèque</h1>
+            <h1>Mediatheque</h1>
+            <p>
+              {filtered.length} media{filtered.length !== 1 ? "s" : ""}
+              {query || typeFilter ? ` sur ${media.length}` : ""}
+            </p>
           </div>
           <div className="media-metrics">
-            <span>{media.length} médias</span>
-            <span>{withoutAlt.length} sans alt</span>
-            <span>{unused.length} à qualifier</span>
+            <span>{media.length} total</span>
+            {withoutAlt.length > 0 && (
+              <span style={{ background: "var(--amber-soft, #fef3c7)", color: "#92400e" }}>
+                {withoutAlt.length} sans alt
+              </span>
+            )}
+            {drafts.length > 0 && (
+              <span>
+                {drafts.length} brouillon{drafts.length !== 1 ? "s" : ""}
+              </span>
+            )}
           </div>
         </div>
-        <div className="media-filters">
-          <input placeholder="Rechercher un média, tag, type..." aria-label="Rechercher dans la médiathèque" />
-          <select aria-label="Filtrer par type">
-            <option>Tous les types</option>
-            <option>Images</option>
-            <option>PDF</option>
-            <option>Vidéos</option>
-            <option>Documents</option>
-          </select>
-          <select aria-label="Filtrer par source">
-            <option>Toutes les sources</option>
-            <option>Upload</option>
-            <option>Google Drive</option>
-            <option>YouTube</option>
-            <option>Vimeo</option>
-          </select>
-        </div>
-        <div className="media-grid">
-          {media.map((item) => (
-            <article className="media-card" key={item.id}>
-              <div className="media-thumb">{mediaPreview(item)}</div>
-              <div className="media-card-body">
-                <strong>{item.title}</strong>
-                <p>{item.filename}</p>
-                <div className="tags">
-                  {item.tags.slice(0, 3).map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </div>
-                <div className="media-actions">
-                  <a className="button" href={item.url} target="_blank" rel="noreferrer">
-                    Prévisualiser
-                  </a>
-                  <button className="button" type="button">
-                    Remplacer
-                  </button>
-                  <button className="button" type="button">
-                    Copier le lien
-                  </button>
-                </div>
+
+        {media.length === 0 ? (
+          <div className="admin-empty">
+            <strong>Aucun media dans la bibliotheque</strong>
+            <p>Utilisez le formulaire ci-dessus pour importer votre premier fichier.</p>
+          </div>
+        ) : (
+          <>
+            <div className="media-filters">
+              <input
+                placeholder="Rechercher un media, tag, type..."
+                aria-label="Rechercher dans la mediatheque"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <select aria-label="Filtrer par type" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+                <option value="">Tous les types</option>
+                <option value="image">Images</option>
+                <option value="pdf">PDF</option>
+                <option value="video">Videos</option>
+                <option value="document">Documents</option>
+              </select>
+            </div>
+            {filtered.length === 0 ? (
+              <div className="admin-empty">
+                <strong>Aucun resultat pour &quot;{query}&quot;</strong>
+                <p>Essayez un autre terme ou supprimez le filtre.</p>
               </div>
-            </article>
-          ))}
-        </div>
+            ) : (
+              <div className="media-grid">
+                {filtered.map((item) => (
+                  <MediaCard key={item.id} item={item} deleteAction={deleteMediaAction} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </section>
     </div>
   );

@@ -6,6 +6,7 @@ const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: projectRoot,
+  transpilePackages: ["ckeditor5", "@ckeditor/ckeditor5-react"],
   turbopack: {
     root: projectRoot,
   },

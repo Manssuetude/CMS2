@@ -1,0 +1,126 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import { contentRepository } from "@/repositories/contentRepository";
+import { slugify } from "@/utils/slug";
+
+const schema = z.object({
+  title: z.string().min(1, "Le titre est requis."),
+  type: z.string().min(1, "Le type est requis."),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
+  author: z.string().optional().nullable(),
+  date: z.string().optional().nullable(),
+  readingTime: z.string().optional().nullable(),
+  pages: z.string().optional().nullable(),
+  featured: z.boolean().default(false),
+  description: z.string().optional().nullable(),
+  body: z.string().optional().nullable(),
+});
+
+function toInput(data: z.infer<typeof schema>) {
+  return {
+    title: data.title,
+    type: data.type,
+    status: data.status,
+    author: data.author || null,
+    date: data.date || null,
+    reading_time: data.readingTime || null,
+    pages: data.pages || null,
+    featured: data.featured,
+    description: data.description || null,
+    body: data.body || null,
+  };
+}
+
+export async function createProductionAction(_: string | null, formData: FormData): Promise<string | null> {
+  const parsed = schema.safeParse({
+    title: formData.get("title"),
+    type: formData.get("type"),
+    status: formData.get("status") || "draft",
+    author: formData.get("author") || null,
+    date: formData.get("date") || null,
+    readingTime: formData.get("readingTime") || null,
+    pages: formData.get("pages") || null,
+    featured: formData.get("featured") === "on",
+    description: formData.get("description") || null,
+    body: formData.get("body") || null,
+  });
+
+  if (!parsed.success) {
+    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+  }
+
+  const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
+
+  let production;
+  try {
+    production = await contentRepository.createProduction({ slug, ...toInput(parsed.data) });
+  } catch {
+    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+  }
+
+  const themeIds = ((formData.get("themeIds") as string | null) ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (themeIds.length > 0) {
+    await contentRepository.setProductionThemes(production.id, themeIds);
+  }
+
+  revalidatePath("/admin/productions");
+  redirect("/admin/productions");
+}
+
+export async function updateProductionAction(_: string | null, formData: FormData): Promise<string | null> {
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return "Identifiant manquant.";
+
+  const parsed = schema.safeParse({
+    title: formData.get("title"),
+    type: formData.get("type"),
+    status: formData.get("status") || "draft",
+    author: formData.get("author") || null,
+    date: formData.get("date") || null,
+    readingTime: formData.get("readingTime") || null,
+    pages: formData.get("pages") || null,
+    featured: formData.get("featured") === "on",
+    description: formData.get("description") || null,
+    body: formData.get("body") || null,
+  });
+
+  if (!parsed.success) {
+    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+  }
+
+  try {
+    await contentRepository.updateProduction(id, toInput(parsed.data));
+  } catch {
+    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+  }
+
+  const themeIds = ((formData.get("themeIds") as string | null) ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  await contentRepository.setProductionThemes(id, themeIds);
+
+  revalidatePath("/admin/productions");
+  redirect("/admin/productions");
+}
+
+export async function deleteProductionAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return;
+  await contentRepository.deleteProduction(id);
+  revalidatePath("/admin/productions");
+}
+
+export async function toggleProductionStatusAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  const status = (formData.get("status") as string | null)?.trim();
+  if (!id || !status) return;
+  await contentRepository.toggleStatus("productions", id, status);
+  revalidatePath("/admin/productions");
+}

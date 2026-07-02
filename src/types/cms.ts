@@ -223,6 +223,7 @@ export type Production = {
   title: string;
   type: string;
   description?: string | null;
+  body?: string | null;
   contentBlocks: ContentBlock[];
   author?: string | null;
   date?: string | null;
@@ -233,6 +234,7 @@ export type Production = {
   tags: string[];
   status: ContentStatus;
   featured: boolean;
+  themeIds?: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -243,6 +245,7 @@ export type Activity = {
   title: string;
   format: string;
   description?: string | null;
+  body?: string | null;
   date?: string | null;
   status: ContentStatus;
   progressStatus?: ProgressStatus | null;
@@ -261,6 +264,7 @@ export type Project = {
   progressStatus?: ProgressStatus | null;
   priority?: string | null;
   description?: string | null;
+  body?: string | null;
   objectives: string[];
   deliverables: string[];
   documents: string[];

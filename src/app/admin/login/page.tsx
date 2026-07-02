@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { loginAction } from "./actions";
 
 export default function LoginPage() {
@@ -10,21 +11,65 @@ export default function LoginPage() {
   return (
     <main className="page-main">
       <section className="admin-panel login-panel">
-        <p className="eyebrow">Administration</p>
-        <h1>Connexion Manssuétude</h1>
-        <p className="login-subtitle">Espace réservé aux membres de l&apos;équipe éditoriale.</p>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            marginBottom: 24,
+          }}
+        >
+          <div
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: 10,
+              background: "var(--orange)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              fontWeight: 900,
+              fontSize: 20,
+              flexShrink: 0,
+            }}
+          >
+            M
+          </div>
+          <div>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 11,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                color: "var(--muted)",
+              }}
+            >
+              Administration
+            </p>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 16,
+                fontWeight: 800,
+                lineHeight: 1.2,
+              }}
+            >
+              Manssuetude CMS
+            </p>
+          </div>
+        </div>
+
+        <h1 style={{ fontSize: 22, marginBottom: 6 }}>Connexion</h1>
+        <p className="login-subtitle">Espace reserve aux membres de l&apos;equipe editoriale.</p>
 
         <form action={action} className="form-grid login-form">
           <label className="login-field">
             <span className="login-label">
+              <Mail size={14} strokeWidth={2} style={{ opacity: 0.6 }} />
               Email
-              <span
-                className="login-hint"
-                title="Utilisez l'adresse email associée à votre compte Manssuétude"
-                aria-label="Information sur le champ email"
-              >
-                ?
-              </span>
             </span>
             <input
               name="email"
@@ -38,7 +83,10 @@ export default function LoginPage() {
           </label>
 
           <label className="login-field">
-            <span className="login-label">Mot de passe</span>
+            <span className="login-label">
+              <Lock size={14} strokeWidth={2} style={{ opacity: 0.6 }} />
+              Mot de passe
+            </span>
             <span className="login-password-wrap">
               <input
                 name="password"
@@ -54,7 +102,7 @@ export default function LoginPage() {
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
               >
-                {showPassword ? "Masquer" : "Afficher"}
+                {showPassword ? <EyeOff size={16} strokeWidth={2} /> : <Eye size={16} strokeWidth={2} />}
               </button>
             </span>
           </label>
@@ -66,7 +114,7 @@ export default function LoginPage() {
           )}
 
           <button className="button primary" type="submit" disabled={isPending}>
-            {isPending ? "Connexion en cours..." : "Se connecter"}
+            {isPending ? "Connexion..." : "Se connecter"}
           </button>
         </form>
       </section>
