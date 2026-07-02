@@ -1,16 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = "https://qyagkxsgfzfuqefjlqdu.supabase.co";
-const key =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5YWdreHNnZnpmdXFlZmpscWR1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3ODc3NzcyNCwiZXhwIjoyMDk0MzUzNzI0fQ.Tv6XmrG1COtACIwxU-yj7iyzVx-2DcQpZFuOdw4HGLM";
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!url || !key) {
+  console.error("Variables NEXT_PUBLIC_SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY requises");
+  process.exit(1);
+}
 
 const supabase = createClient(url, key);
 
-const { data, error } = await supabase
-  .from("productions")
-  .select("id, slug, title, content_blocks")
-  .eq("id", "400f22fc-1975-44e1-8894-739c93e86de5")
-  .single();
+const { data, error } = await supabase.from("productions").select("id, slug, title, content_blocks").limit(1).single();
 
 if (error) {
   console.error("Error:", error.message);
