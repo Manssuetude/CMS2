@@ -83,17 +83,18 @@ Contient les composants UI.
 
 **Sous-dossiers :**
 
-| Dossier      | Contenu                                         |
-| ------------ | ----------------------------------------------- |
-| `admin`      | Composants d'administration                     |
-| `blocks`     | Blocs CMS verrouillés                           |
-| `cards`      | Composants de cartes et grilles                 |
-| `forms`      | CTA et modales de formulaires                   |
-| `layout`     | Header, footer, shell public/admin              |
-| `media`      | Composants UI de médiathèque et champs média    |
-| `navigation` | Futur emplacement pour navigation réutilisable  |
-| `public`     | Composants publics spécifiques encore actifs    |
-| `ui`         | Futur emplacement pour primitives UI génériques |
+| Dossier      | Contenu                                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `admin`      | Composants d'administration (sidebar, shell, formulaires CRUD, EditorStudio, BlockSettings, OnboardingTour, GlobalSearch) |
+| `blocks`     | Blocs CMS verrouillés (BlockRenderer, blockRegistry)                                                                      |
+| `cards`      | Composants de cartes et grilles                                                                                           |
+| `editor`     | Éditeur riche CKEditor 5 (RichTextEditor)                                                                                 |
+| `forms`      | CTA et modales de formulaires                                                                                             |
+| `layout`     | Header, footer, shell public/admin                                                                                        |
+| `media`      | Médiathèque (MediaLibrary, MediaCard, ImportWizard, MediaField)                                                           |
+| `navigation` | Futur emplacement pour navigation réutilisable                                                                            |
+| `public`     | Composants de rendu public des entités                                                                                    |
+| `ui`         | Futur emplacement pour primitives UI génériques                                                                           |
 
 ---
 
@@ -283,7 +284,28 @@ route handler
 
 ---
 
-## 7. Anti-patterns interdits
+## 7. Interface d'administration (Sprint 1)
+
+L'espace admin est accessible sur `/admin/*` et protégé par middleware Supabase Auth.
+
+**Composants clés :**
+
+| Composant        | Rôle                                                 |
+| ---------------- | ---------------------------------------------------- |
+| `AdminShell`     | Coquille cliente : sidebar + topbar + OnboardingTour |
+| `AdminSidebar`   | Navigation + bouton "Aide" pour rejouer le tour      |
+| `EditorStudio`   | Éditeur de structure de page par blocs (homepage)    |
+| `BlockSettings`  | Panneau de réglages contextuel selon le type de bloc |
+| `OnboardingTour` | Tour guidé 5 étapes, auto-affiché au premier accès   |
+| `RichTextEditor` | CKEditor 5 GPL pour les corps de texte HTML          |
+| `MediaLibrary`   | Médiathèque avec recherche client-side               |
+| `GlobalSearch`   | Recherche transversale via `/api/admin/search`       |
+
+**Server Actions :** chaque entité (activités, productions, projets, thèmes) dispose de ses propres actions dans `src/app/admin/[entite]/actions.ts`.
+
+---
+
+## 8. Anti-patterns interdits
 
 - Logique métier dans les composants
 - Accès DB direct dans l'UI
@@ -302,7 +324,7 @@ route handler
 
 ---
 
-## 8. Statut de migration legacy
+## 9. Statut de migration legacy
 
 Les fichiers suivants appartiennent à l'ancien prototype vanilla :
 
