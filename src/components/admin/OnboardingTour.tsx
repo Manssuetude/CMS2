@@ -122,7 +122,9 @@ export function OnboardingTour() {
     setActive(false);
     try {
       localStorage.setItem(STORAGE_KEY, "done");
-    } catch {}
+    } catch (_) {
+      // localStorage indisponible (mode prive ou restrictions navigateur)
+    }
   }, []);
 
   const next = useCallback(() => {
@@ -146,7 +148,9 @@ export function OnboardingTour() {
         const t = setTimeout(() => setActive(true), 900);
         return () => clearTimeout(t);
       }
-    } catch {}
+    } catch (_) {
+      // localStorage indisponible
+    }
   }, []);
 
   if (!active) return null;

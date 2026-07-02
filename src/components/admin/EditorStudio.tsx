@@ -209,7 +209,7 @@ export function EditorStudio({
               </button>
             </>
           ) : (
-            <p className="settings-hint">Sélectionnez un bloc dans l'aperçu ou la structure.</p>
+            <p className="settings-hint">{"Sélectionnez un bloc dans l'aperçu ou la structure."}</p>
           )}
         </aside>
       </div>
