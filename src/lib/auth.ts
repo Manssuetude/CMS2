@@ -1,9 +1,7 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { UserRole } from "@/types/cms";
 import { getSupabaseAdmin } from "@/lib/db";
-
-export const sessionCookieName = "manssuetude_session";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type AdminSession = {
   userId: string;
@@ -20,15 +18,21 @@ export type AuthUser = {
 };
 
 export async function getSession(): Promise<AdminSession | null> {
-  const cookieStore = await cookies();
-  const raw = cookieStore.get(sessionCookieName)?.value;
-  if (!raw) return null;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  try {
-    return JSON.parse(Buffer.from(raw, "base64url").toString("utf8")) as AdminSession;
-  } catch {
-    return null;
-  }
+  if (error || !user || !user.email) return null;
+
+  const role = (user.user_metadata?.role as UserRole | undefined) ?? "admin";
+
+  return {
+    userId: user.id,
+    email: user.email,
+    role,
+  };
 }
 
 export async function requireRole(allowed: UserRole[] = ["admin", "editor"]) {
@@ -42,8 +46,4 @@ export async function resolveUserByEmail(email: string) {
   const { data, error } = await db.from("users").select("*").eq("email", email).single();
   if (error) return null;
   return data as AuthUser;
-}
-
-export function encodeSession(session: AdminSession) {
-  return Buffer.from(JSON.stringify(session), "utf8").toString("base64url");
 }

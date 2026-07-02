@@ -1,18 +1,54 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const sessionCookieName = "manssuetude_session";
+export async function middleware(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({ request });
 
-export function middleware(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return supabaseResponse;
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        supabaseResponse = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options));
+      },
+    },
+  });
+
+  // Rafraichit la session Supabase Auth sur chaque requete
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { pathname } = request.nextUrl;
-  const isAdminRoute = pathname.startsWith("/admin") && pathname !== "/admin/login";
-  if (!isAdminRoute) return NextResponse.next();
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isLoginPage = pathname === "/admin/login";
 
-  const hasSession = request.cookies.has(sessionCookieName);
-  if (hasSession) return NextResponse.next();
+  // Redirige vers /admin/login si la session est absente
+  if (isAdminRoute && !isLoginPage && !user) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/admin/login";
+    return NextResponse.redirect(loginUrl);
+  }
 
-  const loginUrl = request.nextUrl.clone();
-  loginUrl.pathname = "/admin/login";
-  return NextResponse.redirect(loginUrl);
+  // Redirige vers /admin/dashboard si deja connecte
+  if (isLoginPage && user) {
+    const dashboardUrl = request.nextUrl.clone();
+    dashboardUrl.pathname = "/admin/dashboard";
+    return NextResponse.redirect(dashboardUrl);
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {
