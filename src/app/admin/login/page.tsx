@@ -11,8 +11,8 @@ export default function LoginPage() {
     <main className="page-main">
       <section className="admin-panel login-panel">
         <p className="eyebrow">Administration</p>
-        <h1>Connexion Manssuetude</h1>
-        <p className="login-subtitle">Espace reserve aux membres de l&apos;equipe editoriale.</p>
+        <h1>Connexion Manssuétude</h1>
+        <p className="login-subtitle">Espace réservé aux membres de l&apos;équipe éditoriale.</p>
 
         <form action={action} className="form-grid login-form">
           <label className="login-field">
@@ -20,7 +20,7 @@ export default function LoginPage() {
               Email
               <span
                 className="login-hint"
-                title="Utilisez l'adresse email associee a votre compte Manssuetude"
+                title="Utilisez l'adresse email associée à votre compte Manssuétude"
                 aria-label="Information sur le champ email"
               >
                 ?

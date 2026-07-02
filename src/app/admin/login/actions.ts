@@ -26,7 +26,7 @@ export async function loginAction(_prevState: string | null, formData: FormData)
   });
 
   if (error) {
-    return "Email ou mot de passe incorrect. Veuillez reessayer.";
+    return "Email ou mot de passe incorrect. Veuillez réessayer.";
   }
 
   redirect("/admin/dashboard");
