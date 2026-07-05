@@ -2,6 +2,13 @@ import { notFound } from "next/navigation";
 import { ProductionDetail } from "@/components/public/ProductionDetail";
 import { contentRepository } from "@/repositories/contentRepository";
 
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const items = await contentRepository.listProductions(true);
+  return items.map((p) => ({ slug: p.slug }));
+}
+
 export default async function ProductionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const item = await contentRepository.getProduction(slug);

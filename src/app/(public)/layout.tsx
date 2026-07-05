@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (

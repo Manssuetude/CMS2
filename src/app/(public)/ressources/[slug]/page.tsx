@@ -1,6 +1,13 @@
 import { notFound } from "next/navigation";
 import { mediaRepository } from "@/repositories/mediaRepository";
 
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const items = await mediaRepository.list();
+  return items.map((r) => ({ slug: r.id }));
+}
+
 export default async function ResourceDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const items = await mediaRepository.list();
