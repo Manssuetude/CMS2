@@ -3,6 +3,15 @@ import { Pencil, Plus } from "lucide-react";
 import { contentRepository } from "@/repositories/contentRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { deleteProjectAction, toggleProjectStatusAction } from "./actions";
+import type { Project } from "@/types/cms";
+
+type Status = "draft" | "published" | "archived";
+
+const STATUS_LABELS: Record<Status, string> = {
+  draft: "Brouillon",
+  published: "Publié",
+  archived: "Archivé",
+};
 
 function ProgressTag({ status }: { status: string | null | undefined }) {
   if (!status) return <span style={{ color: "var(--muted)" }}>-</span>;
@@ -16,8 +25,32 @@ function ProgressTag({ status }: { status: string | null | undefined }) {
   return <span className="progress-tag">{label[status] ?? status}</span>;
 }
 
-export default async function AdminProjetsPage() {
-  const items = await contentRepository.listProjects(true);
+function countByStatus(items: Project[]) {
+  return {
+    all: items.length,
+    published: items.filter((i) => i.status === "published").length,
+    draft: items.filter((i) => i.status === "draft").length,
+    archived: items.filter((i) => i.status === "archived").length,
+  };
+}
+
+export default async function AdminProjetsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const { status } = await searchParams;
+  const all = await contentRepository.listProjects(true);
+  const counts = countByStatus(all);
+
+  const activeStatus = (["published", "draft", "archived"] as Status[]).includes(status as Status)
+    ? (status as Status)
+    : null;
+
+  const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
+
+  const tabs = [
+    { key: null, label: "Tous", count: counts.all },
+    { key: "published" as Status, label: "Publiés", count: counts.published },
+    { key: "draft" as Status, label: "Brouillons", count: counts.draft },
+    { key: "archived" as Status, label: "Archivés", count: counts.archived },
+  ];
 
   return (
     <section className="admin-panel">
@@ -26,6 +59,7 @@ export default async function AdminProjetsPage() {
           <h1>Projets</h1>
           <p>
             {items.length} projet{items.length !== 1 ? "s" : ""}
+            {activeStatus ? ` · filtre : ${STATUS_LABELS[activeStatus]}` : ""}
           </p>
         </div>
         <Link href="/admin/projets/new" className="button primary">
@@ -34,13 +68,36 @@ export default async function AdminProjetsPage() {
         </Link>
       </div>
 
+      <nav className="admin-filter-tabs" aria-label="Filtrer par statut">
+        {tabs.map(({ key, label, count }) => {
+          const href = key ? `/admin/projets?status=${key}` : "/admin/projets";
+          const isActive = activeStatus === key;
+          return (
+            <Link key={key ?? "all"} href={href} className={`admin-filter-tab${isActive ? " active" : ""}`}>
+              {label}
+              <span className="tab-count">{count}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
       {items.length === 0 ? (
         <div className="admin-empty">
-          <strong>Aucun projet pour l&apos;instant</strong>
-          <p>Créez votre premier projet pour le faire apparaître sur le site.</p>
-          <Link href="/admin/projets/new" className="button primary" style={{ marginTop: 8 }}>
-            Créer un projet
-          </Link>
+          <strong>
+            Aucun projet{activeStatus ? ` avec le statut « ${STATUS_LABELS[activeStatus]} »` : " pour l'instant"}
+          </strong>
+          <p>
+            {activeStatus ? (
+              <Link href="/admin/projets">Voir tous les projets</Link>
+            ) : (
+              "Créez votre premier projet pour le faire apparaître sur le site."
+            )}
+          </p>
+          {!activeStatus && (
+            <Link href="/admin/projets/new" className="button primary" style={{ marginTop: 8 }}>
+              Créer un projet
+            </Link>
+          )}
         </div>
       ) : (
         <table className="admin-table">
