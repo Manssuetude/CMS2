@@ -5,8 +5,13 @@ import { contentRepository } from "@/repositories/contentRepository";
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const items = await contentRepository.listProductions(true);
-  return items.map((p) => ({ slug: p.slug }));
+  try {
+    const items = await contentRepository.listProductions(true);
+    return items.map((p) => ({ slug: p.slug }));
+  } catch {
+    // DB unreachable at build time (e.g. no credentials in CI): render on demand instead.
+    return [];
+  }
 }
 
 export default async function ProductionPage({ params }: { params: Promise<{ slug: string }> }) {
