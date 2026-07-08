@@ -2,72 +2,35 @@ import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { contentRepository } from "@/repositories/contentRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { AdminListHeader } from "@/components/admin/AdminListHeader";
+import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
+import { StatusToggleButton } from "@/components/admin/StatusToggleButton";
+import { buildStatusTabs, countByStatus, resolveActiveStatus, STATUS_LABELS } from "@/utils/adminStatus";
 import { deleteProductionAction, toggleProductionStatusAction } from "./actions";
-import type { Production } from "@/types/cms";
-
-type Status = "draft" | "published" | "archived";
-
-const STATUS_LABELS: Record<Status, string> = {
-  draft: "Brouillon",
-  published: "Publié",
-  archived: "Archivé",
-};
-
-function countByStatus(items: Production[]) {
-  return {
-    all: items.length,
-    published: items.filter((i) => i.status === "published").length,
-    draft: items.filter((i) => i.status === "draft").length,
-    archived: items.filter((i) => i.status === "archived").length,
-  };
-}
 
 export default async function AdminProductionsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
   const all = await contentRepository.listProductions(true);
-  const counts = countByStatus(all);
-
-  const activeStatus = (["published", "draft", "archived"] as Status[]).includes(status as Status)
-    ? (status as Status)
-    : null;
-
+  const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
-
-  const tabs = [
-    { key: null, label: "Toutes", count: counts.all },
-    { key: "published" as Status, label: "Publiées", count: counts.published },
-    { key: "draft" as Status, label: "Brouillons", count: counts.draft },
-    { key: "archived" as Status, label: "Archivées", count: counts.archived },
-  ];
+  const tabs = buildStatusTabs(countByStatus(all), "f");
 
   return (
     <section className="admin-panel">
-      <div className="admin-page-header">
-        <div>
-          <h1>Productions</h1>
-          <p>
-            {items.length} production{items.length !== 1 ? "s" : ""}
-            {activeStatus ? ` · filtre : ${STATUS_LABELS[activeStatus]}` : ""}
-          </p>
-        </div>
+      <AdminListHeader
+        title="Productions"
+        count={items.length}
+        singular="production"
+        plural="productions"
+        activeStatusLabel={activeStatus ? STATUS_LABELS[activeStatus] : null}
+      >
         <Link href="/admin/productions/new" className="button primary">
           <Plus size={15} strokeWidth={2} />
           Nouvelle production
         </Link>
-      </div>
+      </AdminListHeader>
 
-      <nav className="admin-filter-tabs" aria-label="Filtrer par statut">
-        {tabs.map(({ key, label, count }) => {
-          const href = key ? `/admin/productions?status=${key}` : "/admin/productions";
-          const isActive = activeStatus === key;
-          return (
-            <Link key={key ?? "all"} href={href} className={`admin-filter-tab${isActive ? " active" : ""}`}>
-              {label}
-              <span className="tab-count">{count}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      <StatusFilterTabs basePath="/admin/productions" activeStatus={activeStatus} tabs={tabs} />
 
       {items.length === 0 ? (
         <div className="admin-empty">
@@ -107,13 +70,7 @@ export default async function AdminProductionsPage({ searchParams }: { searchPar
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.type}</td>
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.author ?? "-"}</td>
                 <td>
-                  <form action={toggleProductionStatusAction} style={{ display: "inline" }}>
-                    <input type="hidden" name="id" value={item.id} />
-                    <input type="hidden" name="status" value={item.status} />
-                    <button type="submit" className={`btn-toggle ${item.status}`} title="Changer le statut">
-                      {item.status === "published" ? "Publié" : item.status === "archived" ? "Archivé" : "Brouillon"}
-                    </button>
-                  </form>
+                  <StatusToggleButton action={toggleProductionStatusAction} id={item.id} status={item.status} />
                 </td>
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>
                   {item.date

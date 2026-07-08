@@ -1,83 +1,51 @@
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { contentRepository } from "@/repositories/contentRepository";
-import type { Theme } from "@/types/cms";
+import { AdminListHeader } from "@/components/admin/AdminListHeader";
+import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
+import {
+  buildStatusTabs,
+  countByStatus,
+  resolveActiveStatus,
+  STATUS_LABELS,
+  type FilterStatus,
+} from "@/utils/adminStatus";
 
-type Status = "draft" | "published" | "archived";
-
-const STATUS_LABELS: Record<Status, string> = {
-  draft: "Brouillon",
-  published: "Publié",
-  archived: "Archivé",
-};
-
-const STATUS_BADGE: Record<Status, string> = {
+const STATUS_BADGE: Record<FilterStatus, string> = {
   draft: "badge-draft",
   published: "badge-published",
   archived: "badge-archived",
 };
 
 function StatusBadge({ status }: { status: string }) {
-  const cls = STATUS_BADGE[status as Status] ?? "badge-draft";
-  const label = STATUS_LABELS[status as Status] ?? status;
+  const cls = STATUS_BADGE[status as FilterStatus] ?? "badge-draft";
+  const label = STATUS_LABELS[status as FilterStatus] ?? status;
   return <span className={`badge-status ${cls}`}>{label}</span>;
-}
-
-function countByStatus(items: Theme[]) {
-  return {
-    all: items.length,
-    published: items.filter((i) => i.status === "published").length,
-    draft: items.filter((i) => i.status === "draft").length,
-    archived: items.filter((i) => i.status === "archived").length,
-  };
 }
 
 export default async function AdminThemesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
   const all = await contentRepository.listThemes(true);
-  const counts = countByStatus(all);
-
-  const activeStatus = (["published", "draft", "archived"] as Status[]).includes(status as Status)
-    ? (status as Status)
-    : null;
-
+  const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
-
-  const tabs = [
-    { key: null, label: "Tous", count: counts.all },
-    { key: "published" as Status, label: "Publiés", count: counts.published },
-    { key: "draft" as Status, label: "Brouillons", count: counts.draft },
-    { key: "archived" as Status, label: "Archivés", count: counts.archived },
-  ];
+  const tabs = buildStatusTabs(countByStatus(all), "m");
 
   return (
     <section className="admin-panel">
-      <div className="admin-page-header">
-        <div>
-          <h1>Thèmes</h1>
-          <p>
-            {items.length} thème{items.length !== 1 ? "s" : ""}
-            {activeStatus ? ` · filtre : ${STATUS_LABELS[activeStatus]}` : ""}
-          </p>
-        </div>
+      <AdminListHeader
+        title="Thèmes"
+        count={items.length}
+        singular="thème"
+        plural="thèmes"
+        activeStatusLabel={activeStatus ? STATUS_LABELS[activeStatus] : null}
+      >
         <Link href="/admin/themes/new" className="button primary">
           <Plus size={15} strokeWidth={2} />
           Nouveau thème
         </Link>
-      </div>
+      </AdminListHeader>
 
-      <nav className="admin-filter-tabs" aria-label="Filtrer par statut">
-        {tabs.map(({ key, label, count }) => {
-          const href = key ? `/admin/themes?status=${key}` : "/admin/themes";
-          const isActive = activeStatus === key;
-          return (
-            <Link key={key ?? "all"} href={href} className={`admin-filter-tab${isActive ? " active" : ""}`}>
-              {label}
-              <span className="tab-count">{count}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      <StatusFilterTabs basePath="/admin/themes" activeStatus={activeStatus} tabs={tabs} />
 
       {items.length === 0 ? (
         <div className="admin-empty">

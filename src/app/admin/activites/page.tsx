@@ -2,90 +2,40 @@ import Link from "next/link";
 import { Pencil, Plus, CalendarDays } from "lucide-react";
 import { contentRepository } from "@/repositories/contentRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { AdminListHeader } from "@/components/admin/AdminListHeader";
+import { ProgressTag } from "@/components/admin/ProgressTag";
+import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
+import { StatusToggleButton } from "@/components/admin/StatusToggleButton";
+import { buildStatusTabs, countByStatus, resolveActiveStatus, STATUS_LABELS } from "@/utils/adminStatus";
 import { deleteActivityAction, toggleActivityStatusAction } from "./actions";
-import type { Activity } from "@/types/cms";
-
-type Status = "draft" | "published" | "archived";
-
-const STATUS_LABELS: Record<Status, string> = {
-  draft: "Brouillon",
-  published: "Publié",
-  archived: "Archivé",
-};
-
-function ProgressTag({ status }: { status: string | null | undefined }) {
-  if (!status) return <span style={{ color: "var(--muted)" }}>-</span>;
-  const label: Record<string, string> = {
-    idea: "Idée",
-    preparation: "En prep.",
-    active: "En cours",
-    completed: "Terminé",
-    paused: "En pause",
-  };
-  return <span className="progress-tag">{label[status] ?? status}</span>;
-}
-
-function countByStatus(items: Activity[]) {
-  return {
-    all: items.length,
-    published: items.filter((i) => i.status === "published").length,
-    draft: items.filter((i) => i.status === "draft").length,
-    archived: items.filter((i) => i.status === "archived").length,
-  };
-}
 
 export default async function AdminActivitesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
   const all = await contentRepository.listActivities(true);
-  const counts = countByStatus(all);
-
-  const activeStatus = (["published", "draft", "archived"] as Status[]).includes(status as Status)
-    ? (status as Status)
-    : null;
-
+  const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
-
-  const tabs = [
-    { key: null, label: "Toutes", count: counts.all },
-    { key: "published" as Status, label: "Publiées", count: counts.published },
-    { key: "draft" as Status, label: "Brouillons", count: counts.draft },
-    { key: "archived" as Status, label: "Archivées", count: counts.archived },
-  ];
+  const tabs = buildStatusTabs(countByStatus(all), "f");
 
   return (
     <section className="admin-panel">
-      <div className="admin-page-header">
-        <div>
-          <h1>Activités</h1>
-          <p>
-            {items.length} activité{items.length !== 1 ? "s" : ""}
-            {activeStatus ? ` · filtre : ${STATUS_LABELS[activeStatus]}` : ""}
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: 10 }}>
-          <Link href="/admin/activites/calendar" className="button">
-            <CalendarDays size={15} strokeWidth={1.75} />
-            Calendrier
-          </Link>
-          <Link href="/admin/activites/new" className="button primary">
-            <Plus size={15} strokeWidth={2} />
-            Nouvelle activité
-          </Link>
-        </div>
-      </div>
+      <AdminListHeader
+        title="Activités"
+        count={items.length}
+        singular="activité"
+        plural="activités"
+        activeStatusLabel={activeStatus ? STATUS_LABELS[activeStatus] : null}
+      >
+        <Link href="/admin/activites/calendar" className="button">
+          <CalendarDays size={15} strokeWidth={1.75} />
+          Calendrier
+        </Link>
+        <Link href="/admin/activites/new" className="button primary">
+          <Plus size={15} strokeWidth={2} />
+          Nouvelle activité
+        </Link>
+      </AdminListHeader>
 
-      <nav className="admin-filter-tabs" aria-label="Filtrer par statut">
-        {tabs.map(({ key, label, count }) => {
-          const href = key ? `/admin/activites?status=${key}` : "/admin/activites";
-          const isActive = activeStatus === key;
-          return (
-            <Link key={key ?? "all"} href={href} className={`admin-filter-tab${isActive ? " active" : ""}`}>
-              {label}
-              <span className="tab-count">{count}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      <StatusFilterTabs basePath="/admin/activites" activeStatus={activeStatus} tabs={tabs} />
 
       {items.length === 0 ? (
         <div className="admin-empty">
@@ -123,13 +73,7 @@ export default async function AdminActivitesPage({ searchParams }: { searchParam
                 <td className="col-title">{item.title}</td>
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.format}</td>
                 <td>
-                  <form action={toggleActivityStatusAction} style={{ display: "inline" }}>
-                    <input type="hidden" name="id" value={item.id} />
-                    <input type="hidden" name="status" value={item.status} />
-                    <button type="submit" className={`btn-toggle ${item.status}`} title="Changer le statut">
-                      {item.status === "published" ? "Publié" : item.status === "archived" ? "Archivé" : "Brouillon"}
-                    </button>
-                  </form>
+                  <StatusToggleButton action={toggleActivityStatusAction} id={item.id} status={item.status} />
                 </td>
                 <td>
                   <ProgressTag status={item.progressStatus} />
