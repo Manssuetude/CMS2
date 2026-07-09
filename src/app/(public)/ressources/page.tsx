@@ -2,7 +2,12 @@ import { CardGrid } from "@/components/cards/CardGrid";
 import { mediaRepository } from "@/repositories/mediaRepository";
 
 export default async function ResourcesPage() {
-  const resources = await mediaRepository.list();
+  let resources: Awaited<ReturnType<typeof mediaRepository.list>> = [];
+  try {
+    resources = await mediaRepository.list();
+  } catch {
+    // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
+  }
   return (
     <>
       <section className="hero">

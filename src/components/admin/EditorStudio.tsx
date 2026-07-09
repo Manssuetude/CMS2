@@ -1,192 +1,216 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { blockRegistry, defaultHomepageBlocks } from "@/components/blocks/blockRegistry";
 import { BlockRenderer } from "@/components/blocks/BlockRenderer";
-import { MediaField } from "@/components/media/MediaField";
+import { BlockSettings } from "@/components/admin/BlockSettings";
 import { editorBlockService } from "@/services/editorBlockService";
 import type { ContentBlock, Media } from "@/types/cms";
+
+const BLOCK_TYPE_LABELS: Record<string, string> = {
+  hero: "Hero",
+  editorial: "Bloc éditorial",
+  feed: "Flux dynamique",
+  gallery: "Galerie",
+  quote: "Citation",
+  cta: "CTA",
+  heading: "Titre",
+  paragraph: "Paragraphe",
+  image: "Image",
+  file: "Fichier",
+  video: "Vidéo",
+  timeline: "Frise chronologique",
+  faq: "FAQ",
+  references: "Références",
+  list: "Liste",
+};
 
 export function EditorStudio({
   initialBlocks,
   media,
   title = "Studio éditorial",
+  pageSlug,
+  onPublish,
 }: {
   initialBlocks?: ContentBlock[];
   media: Media[];
   title?: string;
+  pageSlug?: string;
+  onPublish?: (slug: string, blocks: ContentBlock[]) => Promise<void>;
 }) {
   const [blocks, setBlocks] = useState<ContentBlock[]>(initialBlocks?.length ? initialBlocks : defaultHomepageBlocks());
-  const [selectedId, setSelectedId] = useState(blocks[0]?.id || "");
-  const selected = useMemo(() => blocks.find((block) => block.id === selectedId) || blocks[0], [blocks, selectedId]);
+  const [selectedId, setSelectedId] = useState(blocks[0]?.id ?? "");
+  const selected = useMemo(() => blocks.find((b) => b.id === selectedId) ?? blocks[0], [blocks, selectedId]);
+  const [isPending, startTransition] = useTransition();
+  const [saved, setSaved] = useState(false);
 
   function updateSelected(patch: Partial<ContentBlock>) {
     setBlocks((items) =>
       items.map((item) => (item.id === selected?.id ? editorBlockService.patch(item, patch) : item)),
     );
+    setSaved(false);
   }
 
-  function moveSelected(direction: -1 | 1) {
+  function moveSelected(dir: -1 | 1) {
     if (!selected) return;
-    setBlocks((items) => editorBlockService.move(items, selected.id, direction));
+    setBlocks((items) => editorBlockService.move(items, selected.id ?? "", dir));
+    setSaved(false);
   }
 
   function duplicateSelected() {
     if (!selected) return;
     const clone = editorBlockService.duplicate(selected);
-    const index = blocks.findIndex((block) => block.id === selected.id);
+    const index = blocks.findIndex((b) => b.id === selected.id);
     setBlocks([...blocks.slice(0, index + 1), clone, ...blocks.slice(index + 1)]);
-    setSelectedId(clone.id || "");
+    setSelectedId(clone.id ?? "");
+    setSaved(false);
   }
 
+  function removeSelected() {
+    if (!selected || blocks.length <= 1) return;
+    const index = blocks.findIndex((b) => b.id === selected.id);
+    const next = blocks[index - 1] ?? blocks[index + 1];
+    setBlocks((items) => items.filter((b) => b.id !== selected.id));
+    setSelectedId(next?.id ?? "");
+    setSaved(false);
+  }
+
+  function toggleVisible() {
+    updateSelected({ visible: !("visible" in selected ? selected.visible !== false : true) } as Partial<ContentBlock>);
+  }
+
+  function blockLabel(block: ContentBlock) {
+    if (block.type === "hero" && block.title) return block.title;
+    if (block.type === "editorial" && block.title) return block.title;
+    if (block.type === "editorial") return block.body?.slice(0, 32) + "...";
+    if (block.type === "feed") return `Flux : ${block.source}`;
+    if (block.type === "quote") return `« ${block.value?.slice(0, 28)}... »`;
+    if (block.type === "cta") return block.label;
+    return BLOCK_TYPE_LABELS[block.type] ?? block.type;
+  }
+
+  const isHidden = selected && "visible" in selected && selected.visible === false;
+
   return (
-    <section className="editor-studio">
+    <section className="editor-studio" data-tour="tour-editor">
       <header className="editor-toolbar">
         <div>
-          <p className="eyebrow">Component-only CMS</p>
+          <p className="eyebrow">Éditeur de structure</p>
           <h1>{title}</h1>
         </div>
         <div className="editor-actions">
-          <button className="button" type="button">
+          <button className="button" type="button" disabled>
             Aperçu mobile
           </button>
-          <button className="button" type="button">
+          <button className="button" type="button" disabled>
             Prévisualiser
           </button>
-          <button className="button primary" type="button">
-            Publier
+          <button
+            className="button primary"
+            type="button"
+            disabled={isPending || !onPublish || !pageSlug}
+            onClick={() => {
+              if (!onPublish || !pageSlug) return;
+              setSaved(false);
+              startTransition(async () => {
+                await onPublish(pageSlug, blocks);
+                setSaved(true);
+              });
+            }}
+          >
+            {isPending ? "Publication..." : saved ? "Publié !" : "Publier"}
           </button>
         </div>
       </header>
 
       <div className="editor-shell">
+        {/* Structure */}
         <aside className="editor-structure" aria-label="Structure de la page">
           <h2>Structure</h2>
-          {blocks.map((block, index) => (
-            <button
-              key={block.id || `${block.type}-${index}`}
-              type="button"
-              className={selected?.id === block.id ? "is-selected" : ""}
-              onClick={() => setSelectedId(block.id || "")}
-            >
-              <span>{index + 1}</span>
-              <strong>{editorBlockService.getLabel(block)}</strong>
-              <small>{("variant" in block && block.variant) || block.type}</small>
-            </button>
-          ))}
+          {blocks.map((block, index) => {
+            const hidden = "visible" in block && block.visible === false;
+            return (
+              <button
+                key={block.id ?? `${block.type}-${index}`}
+                type="button"
+                className={[selected?.id === block.id ? "is-selected" : "", hidden ? "is-hidden-block" : ""]
+                  .filter(Boolean)
+                  .join(" ")}
+                onClick={() => setSelectedId(block.id ?? "")}
+                title={hidden ? "Bloc masqué" : undefined}
+              >
+                <span>{index + 1}</span>
+                <strong>{blockLabel(block)}</strong>
+                <small>{BLOCK_TYPE_LABELS[block.type] ?? block.type}</small>
+              </button>
+            );
+          })}
+
           <div className="block-library">
             <h3>Ajouter un bloc</h3>
-            {blockRegistry.slice(0, 6).map((definition) => (
+            {blockRegistry.map((def) => (
               <button
-                key={definition.type}
+                key={def.type}
                 type="button"
+                title={def.description}
                 onClick={() => {
-                  const block = editorBlockService.createFromDefinition(definition);
+                  const block = editorBlockService.createFromDefinition(def);
                   setBlocks((items) => [...items, block]);
-                  setSelectedId(block.id || "");
+                  setSelectedId(block.id ?? "");
+                  setSaved(false);
                 }}
               >
-                {definition.label}
+                {def.label}
               </button>
             ))}
           </div>
         </aside>
 
-        <main className="editor-preview" aria-label="Aperçu live">
+        {/* Aperçu */}
+        <main className="editor-preview" aria-label="Aperçu">
           {blocks.map((block) => (
-            <BlockRenderer key={block.id || block.type} block={block} />
+            <div
+              key={block.id ?? block.type}
+              className={`editor-preview-item${selected?.id === block.id ? " is-selected-preview" : ""}`}
+              onClick={() => setSelectedId(block.id ?? "")}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && setSelectedId(block.id ?? "")}
+              aria-label={`Sélectionner le bloc ${blockLabel(block)}`}
+            >
+              <BlockRenderer block={block} />
+            </div>
           ))}
         </main>
 
-        <aside className="editor-settings" aria-label="Réglages contextuels">
+        {/* Réglages */}
+        <aside className="editor-settings" aria-label="Réglages du bloc sélectionné">
           <h2>Réglages</h2>
           {selected ? (
             <>
-              <p className="settings-pill">{editorBlockService.getLabel(selected)}</p>
-              {"title" in selected ? (
-                <label>
-                  Titre
-                  <input
-                    value={selected.title || ""}
-                    onChange={(event) => updateSelected({ title: event.target.value } as Partial<ContentBlock>)}
-                  />
-                </label>
-              ) : null}
-              {"text" in selected ? (
-                <label>
-                  Texte
-                  <textarea
-                    value={selected.text || ""}
-                    onChange={(event) => updateSelected({ text: event.target.value } as Partial<ContentBlock>)}
-                  />
-                </label>
-              ) : null}
-              {"body" in selected ? (
-                <label>
-                  Corps
-                  <textarea
-                    value={selected.body || ""}
-                    onChange={(event) => updateSelected({ body: event.target.value } as Partial<ContentBlock>)}
-                  />
-                </label>
-              ) : null}
-              {"label" in selected ? (
-                <label>
-                  Libellé
-                  <input
-                    value={selected.label || ""}
-                    onChange={(event) => updateSelected({ label: event.target.value } as Partial<ContentBlock>)}
-                  />
-                </label>
-              ) : null}
-              {"target" in selected ? (
-                <label>
-                  Destination
-                  <input
-                    value={selected.target || ""}
-                    onChange={(event) => updateSelected({ target: event.target.value } as Partial<ContentBlock>)}
-                  />
-                </label>
-              ) : null}
-              {"variant" in selected ? (
-                <label>
-                  Variante
-                  <input
-                    value={String(selected.variant)}
-                    onChange={(event) => updateSelected({ variant: event.target.value } as Partial<ContentBlock>)}
-                  />
-                </label>
-              ) : null}
-              {"mediaId" in selected || selected.type === "hero" || selected.type === "image" ? (
-                <MediaField
-                  label="Média du bloc"
-                  value={media.find((item) => "mediaId" in selected && item.id === selected.mediaId) || null}
-                />
-              ) : null}
-              <div className="settings-actions">
-                <button className="button" type="button" onClick={() => moveSelected(-1)}>
-                  Monter
-                </button>
-                <button className="button" type="button" onClick={() => moveSelected(1)}>
-                  Descendre
-                </button>
-                <button className="button" type="button" onClick={duplicateSelected}>
-                  Dupliquer
-                </button>
-                <button
-                  className="button"
-                  type="button"
-                  onClick={() =>
-                    updateSelected({
-                      visible: !("visible" in selected ? selected.visible !== false : true),
-                    } as Partial<ContentBlock>)
-                  }
-                >
-                  {"visible" in selected && selected.visible === false ? "Afficher" : "Masquer"}
-                </button>
-              </div>
+              <p className="settings-pill">{BLOCK_TYPE_LABELS[selected.type] ?? selected.type}</p>
+              {isHidden && <p className="settings-hint">Ce bloc est masqué sur le site public.</p>}
+              <BlockSettings
+                block={selected}
+                media={media}
+                onChange={updateSelected}
+                onMove={moveSelected}
+                onDuplicate={duplicateSelected}
+                onToggleVisible={toggleVisible}
+              />
+              <button
+                className="button danger"
+                type="button"
+                onClick={removeSelected}
+                disabled={blocks.length <= 1}
+                style={{ marginTop: 8 }}
+              >
+                Supprimer ce bloc
+              </button>
             </>
-          ) : null}
+          ) : (
+            <p className="settings-hint">{"Sélectionnez un bloc dans l'aperçu ou la structure."}</p>
+          )}
         </aside>
       </div>
     </section>

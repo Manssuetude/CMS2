@@ -10,14 +10,39 @@ create type form_type as enum ('join', 'project', 'content', 'partner', 'donatio
 create type form_status as enum ('reçu', 'en cours', 'traité', 'archivé');
 
 create table if not exists users (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key references auth.users(id) on delete cascade,
   email text unique not null,
   name text,
   role user_role not null default 'viewer',
-  password_hash text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- Sync automatique auth.users -> public.users a chaque nouvel utilisateur Supabase Auth
+create or replace function public.handle_new_auth_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.users (id, email, name, role, created_at, updated_at)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'name', new.email),
+    coalesce(new.raw_user_meta_data->>'role', 'admin')::user_role,
+    now(),
+    now()
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_auth_user();
 
 create table if not exists resources (
   id uuid primary key default gen_random_uuid(),

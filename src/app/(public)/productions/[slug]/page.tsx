@@ -1,10 +1,32 @@
 import { notFound } from "next/navigation";
-import { DetailPage } from "@/components/public/DetailPage";
+import { ProductionDetail } from "@/components/public/ProductionDetail";
 import { contentRepository } from "@/repositories/contentRepository";
 
-export default async function ProductionDetail({ params }: { params: Promise<{ slug: string }> }) {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  try {
+    const items = await contentRepository.listProductions(true);
+    return items.map((p) => ({ slug: p.slug }));
+  } catch {
+    // DB unreachable at build time (e.g. no credentials in CI): render on demand instead.
+    return [];
+  }
+}
+
+export default async function ProductionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const item = await contentRepository.getProduction(slug);
   if (!item) notFound();
-  return <DetailPage item={item} eyebrow="Production" backTarget="/productions" />;
+
+  const [themeIds, allThemes] = await Promise.all([
+    contentRepository.getProductionThemeIds(item.id),
+    contentRepository.listThemes(false),
+  ]);
+
+  const enriched = { ...item, themeIds };
+
+  const relatedProductions = themeIds.length > 0 ? await contentRepository.getProductionsByTheme(themeIds[0]) : [];
+
+  return <ProductionDetail item={enriched} allThemes={allThemes} relatedProductions={relatedProductions} />;
 }

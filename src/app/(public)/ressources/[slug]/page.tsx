@@ -1,6 +1,18 @@
 import { notFound } from "next/navigation";
 import { mediaRepository } from "@/repositories/mediaRepository";
 
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  try {
+    const items = await mediaRepository.list();
+    return items.map((r) => ({ slug: r.id }));
+  } catch {
+    // DB unreachable at build time (e.g. no credentials in CI): render on demand instead.
+    return [];
+  }
+}
+
 export default async function ResourceDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const items = await mediaRepository.list();

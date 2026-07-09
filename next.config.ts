@@ -6,8 +6,21 @@ const projectRoot = dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: projectRoot,
+  transpilePackages: ["ckeditor5", "@ckeditor/ckeditor5-react"],
   turbopack: {
     root: projectRoot,
+  },
+  async headers() {
+    return [
+      {
+        source: "/assets/(.*)",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/_next/static/(.*)",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
   },
   images: {
     remotePatterns: [

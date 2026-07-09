@@ -1,0 +1,103 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import { contentRepository } from "@/repositories/contentRepository";
+import { slugify } from "@/utils/slug";
+
+const schema = z.object({
+  title: z.string().min(1, "Le titre est requis."),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
+  category: z.string().optional().nullable(),
+  progressStatus: z.string().optional().nullable(),
+  priority: z.string().optional().nullable(),
+  featured: z.boolean().default(false),
+  description: z.string().optional().nullable(),
+  body: z.string().optional().nullable(),
+});
+
+function toInput(data: z.infer<typeof schema>) {
+  return {
+    title: data.title,
+    status: data.status,
+    category: data.category || null,
+    progress_status: data.progressStatus || null,
+    priority: data.priority || null,
+    featured: data.featured,
+    description: data.description || null,
+    body: data.body || null,
+  };
+}
+
+export async function createProjectAction(_: string | null, formData: FormData): Promise<string | null> {
+  const parsed = schema.safeParse({
+    title: formData.get("title"),
+    status: formData.get("status") || "draft",
+    category: formData.get("category") || null,
+    progressStatus: formData.get("progressStatus") || null,
+    priority: formData.get("priority") || null,
+    featured: formData.get("featured") === "on",
+    description: formData.get("description") || null,
+    body: formData.get("body") || null,
+  });
+
+  if (!parsed.success) {
+    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+  }
+
+  const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
+
+  try {
+    await contentRepository.createProject({ slug, ...toInput(parsed.data) });
+  } catch {
+    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+  }
+
+  revalidatePath("/admin/projets");
+  redirect("/admin/projets");
+}
+
+export async function updateProjectAction(_: string | null, formData: FormData): Promise<string | null> {
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return "Identifiant manquant.";
+
+  const parsed = schema.safeParse({
+    title: formData.get("title"),
+    status: formData.get("status") || "draft",
+    category: formData.get("category") || null,
+    progressStatus: formData.get("progressStatus") || null,
+    priority: formData.get("priority") || null,
+    featured: formData.get("featured") === "on",
+    description: formData.get("description") || null,
+    body: formData.get("body") || null,
+  });
+
+  if (!parsed.success) {
+    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+  }
+
+  try {
+    await contentRepository.updateProject(id, toInput(parsed.data));
+  } catch {
+    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+  }
+
+  revalidatePath("/admin/projets");
+  redirect("/admin/projets");
+}
+
+export async function deleteProjectAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return;
+  await contentRepository.deleteProject(id);
+  revalidatePath("/admin/projets");
+}
+
+export async function toggleProjectStatusAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  const status = (formData.get("status") as string | null)?.trim();
+  if (!id || !status) return;
+  await contentRepository.toggleStatus("projects", id, status);
+  revalidatePath("/admin/projets");
+}

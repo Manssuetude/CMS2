@@ -1,11 +1,23 @@
 import { notFound } from "next/navigation";
-import { DetailPage } from "@/components/public/DetailPage";
+import { ActiviteDetail } from "@/components/public/ActiviteDetail";
 import { contentRepository } from "@/repositories/contentRepository";
 
-export default async function ActivityDetail({ params }: { params: Promise<{ slug: string }> }) {
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  try {
+    const items = await contentRepository.listActivities(true);
+    return items.map((a) => ({ slug: a.slug }));
+  } catch {
+    // DB unreachable at build time (e.g. no credentials in CI): render on demand instead.
+    return [];
+  }
+}
+
+export default async function ActivitePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const items = await contentRepository.listActivities(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  return <DetailPage item={item} eyebrow="Activité" backTarget="/activites" />;
+  return <ActiviteDetail item={item} />;
 }
