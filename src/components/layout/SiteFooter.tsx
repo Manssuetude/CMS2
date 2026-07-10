@@ -8,6 +8,7 @@ const defaultColumns = [
       { label: "À propos", url: "/a-propos" },
       { label: "Nous rejoindre", url: "/nous-rejoindre" },
       { label: "Nous soutenir", url: "/nous-soutenir" },
+      { label: "Nous joindre", url: "/contact" },
     ],
   },
 ];
