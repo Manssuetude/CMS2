@@ -52,13 +52,6 @@
   font-size: 17px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  /* Sticky footer : footer collé en bas même quand la page est courte */
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-}
-.site-shell .page-main {
-  flex: 1 0 auto;
 }
 
 .site-shell h1,
