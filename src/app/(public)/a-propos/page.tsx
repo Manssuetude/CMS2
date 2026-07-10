@@ -1,11 +1,14 @@
-import { PublicPage } from "@/components/public/PublicPage";
+import { AboutEditorial } from "@/components/public/AboutEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
 
 export default async function AboutPage() {
   try {
-    const page = await contentRepository.getPage("a-propos");
+    const [page, percaPage] = await Promise.all([
+      contentRepository.getPage("a-propos"),
+      contentRepository.getPage("perca"),
+    ]);
     if (!page) return <p>Page À propos à créer.</p>;
-    return <PublicPage page={page} heroImageUrl="/assets/photos/hero-a-propos.png" />;
+    return <AboutEditorial page={page} percaPage={percaPage} />;
   } catch {
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
     return <p>Page À propos à créer.</p>;

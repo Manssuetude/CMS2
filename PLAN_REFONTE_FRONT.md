@@ -43,7 +43,7 @@
 - [x] C3. Activités (liste + détail)
 - [x] C4. Productions (liste + détail)
 - [x] C5. Projets (liste + détail)
-- [ ] C6. À propos (avec section PERCA intégrée)
+- [x] C6. À propos (avec section PERCA intégrée)
 - [ ] C7. Nous soutenir
 - [ ] C8. Nous rejoindre
 - [ ] C9. **Formulaire « Nous joindre » (contact)** — design + validation (Zod) + envoi vers l'admin
@@ -82,7 +82,7 @@
 | C3. Activités                            | ✅ Fait (v1) | —                                                                                                                                                                                                                                   | —                                                                                                         |
 | C4. Productions                          | ✅ Fait (v1) | —                                                                                                                                                                                                                                   | —                                                                                                         |
 | C5. Projets                              | ✅ Fait (v1) | —                                                                                                                                                                                                                                   | —                                                                                                         |
-| C6. À propos (+ PERCA)                   | Non commencé | —                                                                                                                                                                                                                                   | —                                                                                                         |
+| C6. À propos (+ PERCA)                   | ✅ Fait      | —                                                                                                                                                                                                                                   | —                                                                                                         |
 | C7. Nous soutenir                        | Non commencé | —                                                                                                                                                                                                                                   | —                                                                                                         |
 | C8. Nous rejoindre                       | Non commencé | —                                                                                                                                                                                                                                   | —                                                                                                         |
 | C9. Formulaire « Nous joindre »          | Non commencé | —                                                                                                                                                                                                                                   | —                                                                                                         |
