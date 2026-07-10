@@ -64,6 +64,8 @@
 
 > **Note contenu :** le remplissage de la base (E3/E4) se fait **à la connexion admin ↔ public**, à partir des documents déposés dans `documents-asso/` (voir la liste exigée dans `documents-asso/README.md`).
 
+> **⚠️ Note images (décision) :** les images sont stockées **en BLOB directement dans la base Supabase** (pas dans Supabase Storage, pas de fichiers dans `public/`). À prendre en compte au rebranchement admin : upload → conversion/stockage en BLOB en DB, et lecture → servir le BLOB (via route API / data-URL) côté public. Les `heroImageUrl` / `focusImageUrl` actuels (fichiers `public/assets/photos/…`) sont **provisoires** pour le design et seront remplacés par les BLOB de la DB.
+
 ---
 
 ## Tableau de suivi
