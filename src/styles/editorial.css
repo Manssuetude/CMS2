@@ -603,8 +603,9 @@
 /* 3 — Activités (liste éditoriale) */
 .site-shell .home-activity-list {
   list-style: none;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
+  max-width: 760px;
 }
 .site-shell .home-activity-list li + li {
   border-top: 1px solid var(--ed-line);
