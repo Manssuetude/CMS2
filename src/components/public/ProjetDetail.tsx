@@ -44,7 +44,7 @@ export function ProjetDetail({ item }: { item: Project }) {
             )}
           </div>
           <div className="actions">
-            <CtaButton label="← Projets" target="/projets" variant="secondary" />
+            <CtaButton label="Retour aux projets" target="/projets" variant="secondary" />
             <CtaButton label="Proposer un projet" target="projectProposal" variant="primary" />
           </div>
         </div>

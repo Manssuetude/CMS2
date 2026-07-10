@@ -41,7 +41,7 @@ export function ProductionDetail({ item, allThemes, relatedProductions = [] }: P
             {item.pages && <span className="meta-pill">{item.pages} pages</span>}
           </div>
           <div className="actions">
-            <CtaButton label="← Productions" target="/productions" variant="secondary" />
+            <CtaButton label="Retour aux productions" target="/productions" variant="secondary" />
             <CtaButton label="Contribuer" target="contribution" variant="primary" />
           </div>
         </div>
