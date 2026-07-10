@@ -1164,3 +1164,117 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* =============================================================
+   Formulaires en modale (FormModal) — habillage éditorial
+   ============================================================= */
+
+.site-shell .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(28, 23, 20, 0.55);
+  backdrop-filter: blur(3px);
+}
+.site-shell .modal {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--ed-paper);
+  border-radius: var(--ed-radius-lg);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  box-shadow: 0 30px 80px rgba(28, 23, 20, 0.3);
+}
+.site-shell .modal > .button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid var(--ed-line-strong);
+  color: var(--ed-ink-soft);
+  border-radius: var(--ed-radius);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+.site-shell .modal > .button:hover {
+  border-color: var(--ed-ink);
+  color: var(--ed-ink);
+}
+.site-shell .modal .eyebrow {
+  margin-top: 0;
+}
+.site-shell .modal h2 {
+  font-size: var(--ed-step-4);
+  margin: 0.25rem 0 1.5rem;
+}
+.site-shell .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.site-shell .form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ed-ink);
+}
+.site-shell .form-grid input {
+  font: inherit;
+  font-weight: 400;
+  color: var(--ed-ink);
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line-strong);
+  border-radius: var(--ed-radius);
+  padding: 0.6rem 0.75rem;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+.site-shell .form-grid input:focus {
+  outline: none;
+  border-color: var(--ed-clay);
+  box-shadow: 0 0 0 3px var(--ed-focus);
+}
+.site-shell .form-grid label:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  grid-column: 1 / -1;
+  font-weight: 400;
+  color: var(--ed-ink-soft);
+}
+.site-shell .form-grid input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ed-brand);
+}
+.site-shell .form-grid label:has(input[type="file"]) {
+  grid-column: 1 / -1;
+}
+.site-shell .form-grid input[type="file"] {
+  padding: 0.5rem;
+  font-size: 0.85rem;
+}
+.site-shell .form-grid > .button.primary {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 560px) {
+  .site-shell .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
