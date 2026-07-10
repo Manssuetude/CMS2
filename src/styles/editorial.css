@@ -348,13 +348,14 @@
   align-items: center;
 }
 .site-shell .hero-copy h1 {
-  font-size: var(--ed-step-6);
+  font-size: var(--ed-step-5);
+  font-weight: 500;
   margin: 0 0 1.25rem;
 }
 .site-shell .hero-copy > p {
-  font-size: var(--ed-step-2);
+  font-size: var(--ed-step-1);
   color: var(--ed-ink-soft);
-  line-height: 1.55;
+  line-height: 1.6;
   margin: 0 0 2rem;
 }
 .site-shell .hero .actions {
@@ -815,4 +816,118 @@
   .site-shell .actions a:hover {
     transform: none;
   }
+}
+
+/* =============================================================
+   Pages liste & détail (cartes, sections, tags) — partagé
+   ============================================================= */
+
+.site-shell .section {
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding: clamp(2rem, 4vw, 3.5rem) var(--ed-gutter);
+}
+.site-shell .section-head {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ed-line);
+}
+.site-shell .section-head h2 {
+  font-size: var(--ed-step-4);
+  margin: 0;
+}
+
+.site-shell .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.site-shell .card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  overflow: hidden;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.site-shell .card:hover {
+  transform: translateY(-3px);
+  border-color: var(--ed-line-strong);
+  box-shadow: 0 16px 34px rgba(28, 23, 20, 0.08);
+}
+.site-shell .card-image {
+  display: block;
+  overflow: hidden;
+}
+.site-shell .card-image img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.site-shell .card:hover .card-image img {
+  transform: scale(1.04);
+}
+.site-shell .card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.75rem;
+}
+.site-shell .card-body .meta {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ed-clay);
+  margin: 0;
+}
+.site-shell .card-body h3 {
+  font-size: var(--ed-step-3);
+  margin: 0;
+}
+.site-shell .card-body h3 a {
+  transition: color 0.16s ease;
+}
+.site-shell .card-body h3 a:hover {
+  color: var(--ed-clay);
+}
+.site-shell .card-body > p {
+  color: var(--ed-ink-soft);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.site-shell .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.site-shell .tags span {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: 999px;
+  color: var(--ed-ink-soft);
+}
+
+/* Détail (DetailPage) — colonne de lecture */
+.site-shell .section.admin-panel {
+  max-width: 820px;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding-top: 0;
+}
+.site-shell .section.admin-panel p {
+  font-size: var(--ed-step-1);
+  color: var(--ed-ink);
+  line-height: 1.8;
+  margin: 0 0 1.25rem;
 }
