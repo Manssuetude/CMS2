@@ -1,18 +1,21 @@
-import { PublicPage } from "@/components/public/PublicPage";
+import { HomeEditorial } from "@/components/public/HomeEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
 
 export default async function HomePage() {
   try {
     const page = await contentRepository.getPage("accueil");
-    const productions = await contentRepository.listProductions();
-    const projects = await contentRepository.listProjects();
+    const [productions, activities] = await Promise.all([
+      contentRepository.listProductions(),
+      contentRepository.listActivities(),
+    ]);
     if (!page) return <p>Page d&apos;accueil à créer dans le CMS.</p>;
     return (
-      <PublicPage
+      <HomeEditorial
         page={page}
         heroImageUrl="/assets/photos/hero-accueil.png"
-        productions={productions.slice(0, 4)}
-        projects={projects.slice(0, 2)}
+        focusImageUrl="/assets/photos/card-industrie.png"
+        activities={activities}
+        productions={productions}
       />
     );
   } catch {
