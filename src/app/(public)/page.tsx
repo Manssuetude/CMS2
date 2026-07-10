@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { HomeEditorial } from "@/components/public/HomeEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
 
@@ -8,7 +9,7 @@ export default async function HomePage() {
       contentRepository.listProductions(),
       contentRepository.listActivities(),
     ]);
-    if (!page) return <p>Page d&apos;accueil à créer dans le CMS.</p>;
+    if (!page) notFound();
     return (
       <HomeEditorial
         page={page}
@@ -18,7 +19,8 @@ export default async function HomePage() {
         productions={productions}
       />
     );
-  } catch {
+  } catch (error) {
+    if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
     return <p>Page d&apos;accueil à créer dans le CMS.</p>;
   }

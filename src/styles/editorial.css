@@ -52,6 +52,13 @@
   font-size: 17px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  /* Sticky footer : footer collé en bas même quand la page est courte */
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.site-shell .page-main {
+  flex: 1 0 auto;
 }
 
 .site-shell h1,
@@ -1332,4 +1339,51 @@
   font-size: var(--ed-step-1);
   line-height: 1.6;
   margin: 0 auto 1.9rem;
+}
+
+/* =============================================================
+   Pages de détail : en-tête article (colonne unique, sans vide)
+   ============================================================= */
+
+.site-shell .hero--detail {
+  display: block;
+  max-width: 940px;
+  margin-inline: auto;
+  padding-block: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.25rem);
+}
+.site-shell .hero--detail .hero-image {
+  display: none; /* supprime la colonne vide/redondante à droite */
+}
+.site-shell .hero--detail .hero-copy h1 {
+  font-size: var(--ed-step-5);
+  max-width: 24ch;
+}
+.site-shell .hero--detail .hero-copy > p {
+  max-width: 66ch;
+}
+
+.site-shell .detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.25rem 0 1.75rem;
+}
+.site-shell .meta-pill {
+  font-size: var(--ed-step-small);
+  color: var(--ed-ink-soft);
+  padding: 0.32rem 0.85rem;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: 999px;
+  background: var(--ed-raise);
+}
+
+/* Corps d'article de détail : colonne de lecture confortable */
+.site-shell .detail-layout {
+  max-width: 940px;
+  margin-inline: auto;
+}
+.site-shell .detail-layout p {
+  font-size: var(--ed-step-1);
+  line-height: 1.8;
+  color: var(--ed-ink);
 }
