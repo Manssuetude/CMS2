@@ -601,46 +601,72 @@
 }
 
 /* 3 — Activités (liste éditoriale) */
+/* En-tête centré, propre à la section Activités de l'accueil */
+.site-shell .home-activities .home-section-head {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  border-bottom: 0;
+  padding-bottom: 0;
+  margin-bottom: 1.25rem;
+}
 .site-shell .home-activity-list {
   list-style: none;
   margin: 0 auto;
   padding: 0;
   max-width: 760px;
+  border-top: 1px solid var(--ed-line);
 }
 .site-shell .home-activity-list li + li {
   border-top: 1px solid var(--ed-line);
 }
 .site-shell .home-activity-list a {
-  display: block;
-  padding: 1.75rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.25rem 1rem;
   text-align: center;
-  transition: opacity 0.16s ease;
+  transition: background 0.2s ease;
 }
 .site-shell .home-activity-list a:hover {
-  opacity: 0.72;
+  background: color-mix(in srgb, var(--ed-sink) 35%, transparent);
 }
 .site-shell .home-activity-meta {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  font-size: var(--ed-step-small);
-  color: var(--ed-muted);
-  margin-bottom: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
 }
 .site-shell .home-activity-format {
-  color: var(--ed-clay);
+  font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
+  color: var(--ed-clay);
+  padding: 0.32rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--ed-clay) 35%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ed-clay) 7%, var(--ed-paper));
+}
+.site-shell .home-activity-date {
+  font-size: var(--ed-step-small);
+  color: var(--ed-muted);
 }
 .site-shell .home-activity-list h3 {
-  font-size: var(--ed-step-3);
-  margin: 0 0 0.5rem;
+  font-size: var(--ed-step-4);
+  margin: 0 0 0.75rem;
+  max-width: 22ch;
+  transition: color 0.16s ease;
+}
+.site-shell .home-activity-list a:hover h3 {
+  color: var(--ed-clay);
 }
 .site-shell .home-activity-list p {
   color: var(--ed-ink-soft);
   margin: 0 auto;
-  max-width: 60ch;
+  max-width: 54ch;
+  line-height: 1.6;
 }
 
 /* 4 — Productions (grille de cartes) */
