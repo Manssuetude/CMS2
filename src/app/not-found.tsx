@@ -4,7 +4,6 @@ export default function NotFound() {
   return (
     <div className="site-shell notfound">
       <div className="notfound-inner">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img className="notfound-logo" src="/assets/photos/logo-manssuetude.png?v=2" alt="Manssuétude" />
 
         <svg
