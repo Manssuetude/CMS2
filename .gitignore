@@ -23,5 +23,5 @@ Thumbs.db
 *.swp
 *~
 .idea
-CLAUDE.md
 HISTORY.md
+.claude/settings.local.json

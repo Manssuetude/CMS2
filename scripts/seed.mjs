@@ -28,6 +28,16 @@ function stableUuid(input) {
   return `${hash.slice(0, 8)}-${hash.slice(8, 12)}-4${hash.slice(13, 16)}-8${hash.slice(17, 20)}-${hash.slice(20, 32)}`;
 }
 
+// Normalise les slugs en ASCII (pas d'accents) → URLs robustes, pages détail toujours accessibles.
+function slugify(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
 function inferMediaType(filename) {
   const ext = filename.split(".").pop()?.toLowerCase();
   if (["jpg", "jpeg", "png", "webp", "svg"].includes(ext || "")) return "image";
@@ -140,7 +150,7 @@ async function main() {
       "themes",
       {
         id: stableUuid(theme.id),
-        slug: theme.slug,
+        slug: slugify(theme.slug),
         title: theme.title,
         short_title: theme.shortTitle,
         description: theme.description,
@@ -162,7 +172,7 @@ async function main() {
       "productions",
       {
         id: stableUuid(prod.id),
-        slug: prod.slug,
+        slug: slugify(prod.slug),
         title: prod.title,
         type: prod.type,
         description: prod.description,
@@ -187,7 +197,7 @@ async function main() {
       "activities",
       {
         id: stableUuid(activity.id),
-        slug: activity.slug,
+        slug: slugify(activity.slug),
         title: activity.title,
         format: activity.format,
         description: activity.description,
@@ -207,7 +217,7 @@ async function main() {
       "projects",
       {
         id: stableUuid(project.id),
-        slug: project.slug,
+        slug: slugify(project.slug),
         title: project.title,
         category: project.category,
         status: status(project.status),

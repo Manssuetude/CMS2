@@ -57,7 +57,7 @@ export function ActiviteDetail({ item }: { item: Activity }) {
             )}
           </div>
           <div className="actions">
-            <CtaButton label="← Activités" target="/activites" variant="secondary" />
+            <CtaButton label="Retour aux activités" target="/activites" variant="secondary" />
             {isUpcoming && <CtaButton label="Nous rejoindre" target="memberApplication" variant="primary" />}
           </div>
         </div>

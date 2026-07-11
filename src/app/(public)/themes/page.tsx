@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
 import { contentRepository } from "@/repositories/contentRepository";
 
@@ -5,9 +6,10 @@ export default async function ThemesPage() {
   try {
     const page = await contentRepository.getPage("themes");
     const themes = await contentRepository.listThemes();
-    if (!page) return <p>Page Thèmes à créer.</p>;
+    if (!page) notFound();
     return <PublicPage page={page} heroImageUrl="/assets/photos/hero-themes.png" themes={themes} />;
-  } catch {
+  } catch (error) {
+    if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
     return <p>Page Thèmes à créer.</p>;
   }

@@ -26,7 +26,7 @@ export function ThemeDetail({ item, productions }: Props) {
           <h1>{item.title}</h1>
           {(item.longDescription ?? item.description) && <p>{item.longDescription ?? item.description}</p>}
           <div className="actions">
-            <CtaButton label="← Thèmes" target="/themes" variant="secondary" />
+            <CtaButton label="Retour aux thèmes" target="/themes" variant="secondary" />
             <CtaButton label="Contribuer" target="contribution" variant="primary" />
           </div>
         </div>

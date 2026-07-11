@@ -110,6 +110,23 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
+### Comment obtenir les clés Supabase
+
+1. Se connecter sur [supabase.com/dashboard](https://supabase.com/dashboard). Si tu n'as pas accès au projet, demander une invitation à un membre de l'équipe.
+2. Ouvrir le projet **Manssuétude**.
+3. Aller dans **Settings** (roue dentée en bas à gauche) → **API**.
+4. Récupérer :
+   - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL` (forme `https://<REF>.supabase.co`)
+   - clé **publique** (`sb_publishable_…`) → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - clé **secrète** (`sb_secret_…`) → `SUPABASE_SERVICE_ROLE_KEY`
+5. Coller ces valeurs dans `.env.local`, puis redémarrer `npm run dev` (les variables ne sont lues qu'au démarrage).
+
+> ⚠️ La clé secrète contourne toutes les règles RLS : ne jamais l'exposer côté client ni la committer. `.env.local` est déjà dans `.gitignore`.
+>
+> Astuce : l'URL du projet se déduit de l'adresse du dashboard `https://supabase.com/dashboard/project/<REF>` → `https://<REF>.supabase.co`.
+
+> **Attention aux valeurs vides :** ne pas laisser une variable validée à vide (ex. `ADMIN_INITIAL_EMAIL=`). Le schéma `src/lib/env.ts` exige un e-mail / une URL valide, et une chaîne vide déclenche une `ZodError` au démarrage. Soit on renseigne la valeur, soit on retire complètement la ligne pour qu'elle reste `undefined`.
+
 **Pour créer l'admin initial via seed :**
 
 - `ADMIN_INITIAL_EMAIL`

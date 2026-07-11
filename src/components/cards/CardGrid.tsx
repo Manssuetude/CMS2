@@ -17,27 +17,25 @@ export function CardGrid({ title, items }: { title: string; items: CardItem[] })
       </div>
       <div className="grid">
         {items.map((item) => (
-          <article className="card" key={item.href}>
+          <Link className="card" href={item.href} key={item.href}>
             {item.imageUrl ? (
-              <Link className="card-image" href={item.href}>
+              <span className="card-image">
                 <img src={item.imageUrl} alt={item.title} loading="lazy" />
-              </Link>
+              </span>
             ) : null}
-            <div className="card-body">
-              {item.meta ? <p className="meta">{item.meta}</p> : null}
-              <h3>
-                <Link href={item.href}>{item.title}</Link>
-              </h3>
-              {item.description ? <p>{item.description}</p> : null}
+            <span className="card-body">
+              {item.meta ? <span className="meta">{item.meta}</span> : null}
+              <h3>{item.title}</h3>
+              {item.description ? <span className="card-desc">{item.description}</span> : null}
               {item.tags?.length ? (
-                <div className="tags">
+                <span className="tags">
                   {item.tags.map((tag) => (
                     <span key={tag}>{tag}</span>
                   ))}
-                </div>
+                </span>
               ) : null}
-            </div>
-          </article>
+            </span>
+          </Link>
         ))}
       </div>
     </section>

@@ -1,21 +1,26 @@
-import { PublicPage } from "@/components/public/PublicPage";
+import { notFound } from "next/navigation";
+import { HomeEditorial } from "@/components/public/HomeEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
 
 export default async function HomePage() {
   try {
     const page = await contentRepository.getPage("accueil");
-    const productions = await contentRepository.listProductions();
-    const projects = await contentRepository.listProjects();
-    if (!page) return <p>Page d&apos;accueil à créer dans le CMS.</p>;
+    const [productions, activities] = await Promise.all([
+      contentRepository.listProductions(),
+      contentRepository.listActivities(),
+    ]);
+    if (!page) notFound();
     return (
-      <PublicPage
+      <HomeEditorial
         page={page}
         heroImageUrl="/assets/photos/hero-accueil.png"
-        productions={productions.slice(0, 4)}
-        projects={projects.slice(0, 2)}
+        focusImageUrl="/assets/photos/card-industrie.png"
+        activities={activities}
+        productions={productions}
       />
     );
-  } catch {
+  } catch (error) {
+    if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
     return <p>Page d&apos;accueil à créer dans le CMS.</p>;
   }

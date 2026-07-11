@@ -53,6 +53,27 @@ Le site local démarre généralement sur `http://localhost:3000`.
 
 Créer `.env.local` à partir de `.env.example`. Détail des variables et minimum requis : [`docs/ONBOARDING.md`](docs/ONBOARDING.md#6-variables-denvironnement).
 
+### Obtenir les clés d'accès Supabase
+
+Le strict minimum pour lancer le site est composé de trois variables Supabase :
+
+| Variable                        | Où la récupérer                                                    |
+| ------------------------------- | ------------------------------------------------------------------ |
+| `NEXT_PUBLIC_SUPABASE_URL`      | Dashboard → **Settings → API** → champ **Project URL**             |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Dashboard → **Settings → API** → clé publique (`sb_publishable_…`) |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Dashboard → **Settings → API** → clé secrète (`sb_secret_…`)       |
+
+Étapes :
+
+1. Se connecter sur [supabase.com/dashboard](https://supabase.com/dashboard) et ouvrir le projet Manssuétude (demander l'accès à un membre de l'équipe si besoin).
+2. Aller dans **Settings** (roue dentée) → **API**.
+3. Copier la **Project URL** et les deux clés (publique et secrète) dans `.env.local`.
+4. L'URL du projet se retrouve aussi dans l'adresse du dashboard : `https://supabase.com/dashboard/project/<REF>` → l'URL est `https://<REF>.supabase.co`.
+
+> ⚠️ La clé secrète (`sb_secret_…` / `SUPABASE_SERVICE_ROLE_KEY`) contourne toutes les règles de sécurité (RLS). Elle ne doit **jamais** être exposée côté navigateur ni commitée. Le fichier `.env.local` est déjà ignoré par Git.
+
+> Les valeurs vides déclenchent une erreur de validation au démarrage (`ADMIN_INITIAL_EMAIL` attend un e-mail valide). Laisser les variables optionnelles **absentes** plutôt que vides, ou les renseigner.
+
 ---
 
 ## Scripts utiles
