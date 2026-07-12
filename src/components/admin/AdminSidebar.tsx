@@ -10,6 +10,8 @@ import {
   FolderKanban,
   Images,
   Inbox,
+  Home,
+  ImagePlus,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -18,6 +20,8 @@ import {
 
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "homepage", label: "Page d'accueil", icon: Home },
+  { id: "pages", label: "Photos des pages", icon: ImagePlus },
   { id: "themes", label: "Thèmes", icon: BookOpen },
   { id: "activites", label: "Activités", icon: CalendarDays },
   { id: "productions", label: "Productions", icon: FileText },

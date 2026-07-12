@@ -23,7 +23,14 @@ function mapContentBlocks(value: unknown): ContentBlock[] {
   return Array.isArray(value) ? (value as ContentBlock[]) : [];
 }
 
+function normalizeUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("http") || url.startsWith("/")) return url;
+  return `/${url}`;
+}
+
 function mapPage(row: DataRow): Page {
+  const imageResource = (row.image_resource as { url?: string } | null) ?? null;
   return {
     id: asString(row.id),
     slug: asString(row.slug),
@@ -31,6 +38,7 @@ function mapPage(row: DataRow): Page {
     eyebrow: asNullableString(row.eyebrow),
     body: asNullableString(row.body),
     imageId: asNullableString(row.image_id),
+    imageUrl: normalizeUrl(imageResource?.url),
     quote: asNullableString(row.quote),
     primaryCtaLabel: asNullableString(row.primary_cta_label),
     primaryCtaTarget: asNullableString(row.primary_cta_target),
@@ -143,18 +151,31 @@ export const contentRepository = {
   // ── Pages ────────────────────────────────────────────────────
   async getPage(slug: string) {
     const db = getSupabaseAdmin();
-    const { data, error } = await db.from("pages").select("*").eq("slug", slug).single();
+    const { data, error } = await db
+      .from("pages")
+      .select("*, image_resource:resources!image_id(url)")
+      .eq("slug", slug)
+      .single();
     if (error) return null;
     return mapPage(data);
   },
 
   async listPages(includeDrafts = false) {
     const db = getSupabaseAdmin();
-    let query = db.from("pages").select("*").order("slug");
+    let query = db.from("pages").select("*, image_resource:resources!image_id(url)").order("slug");
     if (!includeDrafts) query = query.eq("status", statusFilter.status);
     const { data, error } = await query;
     if (error) throw error;
     return data.map(mapPage);
+  },
+
+  async updatePage(slug: string, fields: Record<string, unknown>) {
+    const db = getSupabaseAdmin();
+    const { error } = await db
+      .from("pages")
+      .update({ ...fields, status: "published", updated_at: new Date().toISOString() })
+      .eq("slug", slug);
+    if (error) throw error;
   },
 
   async upsertPage(payload: Record<string, unknown>) {

@@ -25,7 +25,10 @@ const script = Satisfy({
 });
 
 export const metadata: Metadata = {
-  title: "Manssuétude",
+  title: {
+    default: "Manssuétude",
+    template: "%s | Manssuétude",
+  },
   description: "Un espace de réflexion, de production et d'expérimentation collective.",
 };
 

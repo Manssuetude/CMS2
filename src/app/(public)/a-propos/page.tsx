@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AboutEditorial } from "@/components/public/AboutEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
+
+export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await contentRepository.getPage("a-propos");
+    if (!page) return {};
+    return {
+      title: { absolute: page.seoTitle ?? page.title },
+      description: page.seoDescription ?? undefined,
+    };
+  } catch {
+    return {};
+  }
+}
 
 export default async function AboutPage() {
   try {

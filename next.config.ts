@@ -3,6 +3,7 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const projectRoot = dirname(fileURLToPath(import.meta.url));
+const isProd = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: projectRoot,
@@ -11,6 +12,7 @@ const nextConfig: NextConfig = {
     root: projectRoot,
   },
   async headers() {
+    if (!isProd) return [];
     return [
       {
         source: "/assets/(.*)",
