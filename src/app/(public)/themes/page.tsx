@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
 import { contentRepository } from "@/repositories/contentRepository";
+
+export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await contentRepository.getPage("themes");
+    if (!page) return {};
+    return {
+      title: { absolute: page.seoTitle ?? page.title },
+      description: page.seoDescription ?? undefined,
+    };
+  } catch {
+    return {};
+  }
+}
 
 export default async function ThemesPage() {
   try {

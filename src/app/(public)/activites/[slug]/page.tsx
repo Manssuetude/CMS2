@@ -1,8 +1,21 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ActiviteDetail } from "@/components/public/ActiviteDetail";
 import { contentRepository } from "@/repositories/contentRepository";
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const items = await contentRepository.listActivities(true);
+    const item = items.find((a) => a.slug === slug);
+    if (!item) return {};
+    return { title: item.title, description: item.description ?? undefined };
+  } catch {
+    return {};
+  }
+}
 
 export async function generateStaticParams() {
   try {

@@ -1,8 +1,23 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ThemeDetail } from "@/components/public/ThemeDetail";
 import { contentRepository } from "@/repositories/contentRepository";
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const item = await contentRepository.getTheme(slug);
+    if (!item) return {};
+    return {
+      title: item.title,
+      description: item.description ?? undefined,
+    };
+  } catch {
+    return {};
+  }
+}
 
 export async function generateStaticParams() {
   try {

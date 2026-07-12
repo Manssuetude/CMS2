@@ -1999,6 +1999,40 @@ textarea {
   color: var(--orange);
 }
 
+/* ─── Filter bar (productions, activités) ───────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 var(--page-px);
+  margin-bottom: 32px;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.12s,
+    background 0.12s,
+    color 0.12s;
+}
+.filter-chip:hover {
+  background: var(--orange-soft);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.filter-chip.active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+
 /* ─── Hero detail variants ───────────────────────────────────────────── */
 .hero-type-badge {
   position: absolute;
