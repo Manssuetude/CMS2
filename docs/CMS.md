@@ -62,6 +62,30 @@ Les relations sont stockées dans `entity_relations` pour le modèle de graphe l
 
 Les CTA dont la cible commence par `FORM:` ouvrent la modale de formulaire correspondante.
 
+**Flux complet :**
+
+1. `CtaButton` résout la cible via `ctaLinks` (`memberApplication → "FORM:join"`, etc.)
+2. Si la cible est `FORM:*`, un `<button>` ouvre `FormModal`
+3. `FormModal` rend les champs définis dans `src/constants/forms.ts` selon le type
+4. Soumission → POST `/api/forms` → `formRepository.create(formType, data, attachments)`
+5. Stocké en DB dans `form_submissions`
+6. Visible dans `/admin/forms` avec statut modifiable : `reçu` → `en cours` → `traité` → `archivé`
+
+**Types de formulaires disponibles :** `join` (adhésion), `project`, `content` (contribution), `partner`, `don`
+
+## Pages statiques
+
+Les pages de contenu (accueil, a-propos, nous-rejoindre, etc.) sont stockées dans la table `pages` avec :
+
+- `image_id` (FK → `resources`) : photo hero personnalisée, modifiable via `/admin/pages`
+- `sections` (jsonb[]) : blocs de contenu, éditables via EditorStudio
+- `seo_title`, `seo_description` : métadonnées SEO
+
+L'admin dispose de deux interfaces :
+
+- `/admin/homepage` — édition complète de la page d'accueil (texte, CTAs, photo, SEO)
+- `/admin/pages` — gestion des photos hero pour toutes les pages statiques
+
 ---
 
 [← Ordre de lecture](../README.md#ordre-de-lecture-recommandé)
