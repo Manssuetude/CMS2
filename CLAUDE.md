@@ -65,6 +65,26 @@ Copy `.env.example` to `.env.local`. Required vars:
 
 SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.sql`, `storage.sql`. Main entities: Users, Pages, Themes, Productions, Activities, Projects, Resources, Forms, FormSubmissions, SiteSettings, Media.
 
+## Patterns établis
+
+**ISR (revalidation)** — toutes les pages publiques ont `export const revalidate = 60`. Ne pas supprimer. Les éditions admin se propagent au front en <60s sans redéploiement.
+
+**Images des pages** — `contentRepository.getPage(slug)` joint la table `resources` via `image_id` et renvoie `page.imageUrl` (URL absolue normalisée). Les pages publiques utilisent `page.imageUrl ?? "/assets/photos/hero-xxx.png"` comme fallback. Ne jamais hardcoder d'URL statique sans ce fallback.
+
+**Formulaires publics** — les CTA avec target `FORM:join|project|content|partner|don` ouvrent `FormModal`. Les soumissions sont stockées en DB (`form_submissions`) et visibles dans `/admin/forms` avec gestion du statut (reçu → en cours → traité → archivé).
+
+**Admin — sections clés**
+
+- `/admin/homepage` : éditer texte, CTAs, photo hero et SEO de la page d'accueil
+- `/admin/pages` : changer la photo hero de toutes les pages statiques
+- `/admin/forms` : lire et traiter les soumissions de formulaires
+
+**contentRepository — méthodes utiles**
+
+- `getPage(slug)` — retourne page + `imageUrl` résolue (jointure resources)
+- `updatePage(slug, fields)` — met à jour n'importe quel champ de la table `pages`
+- `updatePageSections(slug, blocks)` — met à jour uniquement les blocs de contenu
+
 ## Documentation
 
 Detailed guides live in `docs/`:
