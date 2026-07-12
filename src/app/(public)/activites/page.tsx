@@ -53,7 +53,7 @@ export default async function ActivitesPage({ searchParams }: { searchParams: Pr
           eyebrow={page.eyebrow}
           title={page.title}
           body={page.body}
-          imageUrl="/assets/photos/hero-activites.png"
+          imageUrl={page.imageUrl ?? "/assets/photos/hero-activites.png"}
           quote={page.quote}
           primaryLabel={page.primaryCtaLabel}
           primaryTarget={page.primaryCtaTarget}

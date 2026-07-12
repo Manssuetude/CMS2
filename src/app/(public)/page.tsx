@@ -28,7 +28,7 @@ export default async function HomePage() {
     return (
       <HomeEditorial
         page={page}
-        heroImageUrl="/assets/photos/hero-accueil.png"
+        heroImageUrl={page.imageUrl ?? "/assets/photos/hero-accueil.png"}
         focusImageUrl="/assets/photos/card-industrie.png"
         activities={activities}
         productions={productions}

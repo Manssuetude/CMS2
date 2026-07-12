@@ -2033,6 +2033,28 @@ textarea {
   color: #fff;
 }
 
+/* ─── Admin form sections ────────────────────────────────────────────── */
+.admin-form-section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.admin-form-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+.admin-form-section-hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: -8px 0 0;
+}
+
 /* ─── Hero detail variants ───────────────────────────────────────────── */
 .hero-type-badge {
   position: absolute;

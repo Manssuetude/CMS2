@@ -23,7 +23,7 @@ export default async function ThemesPage() {
     const page = await contentRepository.getPage("themes");
     const themes = await contentRepository.listThemes();
     if (!page) notFound();
-    return <PublicPage page={page} heroImageUrl="/assets/photos/hero-themes.png" themes={themes} />;
+    return <PublicPage page={page} heroImageUrl={page.imageUrl ?? "/assets/photos/hero-themes.png"} themes={themes} />;
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.

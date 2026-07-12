@@ -186,6 +186,7 @@ export type Page = {
   eyebrow?: string | null;
   body?: string | null;
   imageId?: string | null;
+  imageUrl?: string | null;
   image?: Media | null;
   quote?: string | null;
   primaryCtaLabel?: string | null;
