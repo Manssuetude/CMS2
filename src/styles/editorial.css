@@ -41,6 +41,40 @@
   --ed-step-small: 0.8125rem;
 }
 
+/* -- Thème sombre du site public : même famille brun-chaud (crème → terracotta),
+   accent orange avivé et terracotta éclaircie pour le contraste sur fond sombre.
+   Appliqué par choix explicite OU par préférence système. -- */
+:root[data-theme="dark"] {
+  --ed-brand: #ff5a24;
+  --ed-brand-strong: #ff7649;
+  --ed-clay: #d98a63;
+  --ed-paper: #14110d;
+  --ed-raise: #1f1a14;
+  --ed-sink: #0f0c09;
+  --ed-ink: #f2ebe0;
+  --ed-ink-soft: #b8ab9c;
+  --ed-muted: #8f8474;
+  --ed-line: #322b22;
+  --ed-line-strong: #473d30;
+  --ed-focus: rgba(255, 120, 70, 0.5);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ed-brand: #ff5a24;
+    --ed-brand-strong: #ff7649;
+    --ed-clay: #d98a63;
+    --ed-paper: #14110d;
+    --ed-raise: #1f1a14;
+    --ed-sink: #0f0c09;
+    --ed-ink: #f2ebe0;
+    --ed-ink-soft: #b8ab9c;
+    --ed-muted: #8f8474;
+    --ed-line: #322b22;
+    --ed-line-strong: #473d30;
+    --ed-focus: rgba(255, 120, 70, 0.5);
+  }
+}
+
 /* =============================================================
    Base — scopée au site public
    ============================================================= */
@@ -188,8 +222,8 @@
   justify-content: space-between;
   gap: 2rem;
   padding: 1.1rem var(--ed-gutter);
-  border-bottom: 1px solid var(--ed-line);
-  background: color-mix(in srgb, var(--ed-paper) 88%, transparent);
+  border-bottom: 0;
+  background: color-mix(in srgb, var(--ed-raise) 92%, transparent);
   backdrop-filter: saturate(1.1) blur(8px);
   position: sticky;
   top: 0;
@@ -418,8 +452,8 @@
   max-width: none;
   margin-top: clamp(2rem, 4vw, 3rem);
   padding: clamp(1.25rem, 2.5vw, 1.85rem) var(--ed-gutter) 1.1rem;
-  border-top: 1px solid var(--ed-line);
-  background: color-mix(in srgb, var(--ed-sink) 45%, var(--ed-paper));
+  border-top: 0;
+  background: var(--ed-sink);
 }
 .site-shell .footer-grid {
   display: flex;
@@ -448,6 +482,32 @@
 }
 .site-shell .footer-links a:hover {
   color: var(--ed-clay);
+}
+.site-shell .footer-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.site-shell .footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid var(--ed-line-strong);
+  color: var(--ed-ink-soft);
+  transition:
+    color 0.16s ease,
+    border-color 0.16s ease,
+    background 0.16s ease,
+    transform 0.16s ease;
+}
+.site-shell .footer-social a:hover {
+  color: #fff;
+  background: var(--ed-brand);
+  border-color: var(--ed-brand);
+  transform: translateY(-2px);
 }
 .site-shell .footer-bottom {
   max-width: var(--ed-container);
@@ -626,7 +686,8 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Colonnes = nombre d'activités affichées (1 à 3), piloté par --acount. */
+  grid-template-columns: repeat(var(--acount, 3), minmax(0, 1fr));
   border-top: 1px solid var(--ed-line);
   border-bottom: 1px solid var(--ed-line);
 }
@@ -729,13 +790,68 @@
   color: var(--ed-muted);
 }
 
+/* Thèmes en vedette : grille adaptative au nombre (cartes de largeur fixe,
+   centrées quand il y en a peu, réparties quand il y en a plus). */
+.site-shell .home-themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+.site-shell .home-theme-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.75rem;
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.site-shell .home-theme-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--ed-line-strong);
+}
+.site-shell .home-theme-kicker {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ed-clay);
+}
+.site-shell .home-theme-card h3 {
+  font-size: var(--ed-step-3);
+  margin: 0;
+}
+.site-shell .home-theme-card p {
+  color: var(--ed-ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* 5 — Méthode PERCA */
 .site-shell .home-method {
+  --method-bg: var(--ed-ink);
+  --method-fg: var(--ed-paper);
   max-width: none;
-  background: var(--ed-ink);
-  color: var(--ed-paper);
+  background: var(--method-bg);
+  color: var(--method-fg);
   margin-block: clamp(2.5rem, 5vw, 4rem);
   padding-block: clamp(3rem, 6vw, 5rem);
+}
+/* En sombre, l'inversion ink/paper rendrait le bloc blanc : on fixe une teinte
+   chaude « espresso » distincte (ni blanc ni noir) avec texte crème. */
+:root[data-theme="dark"] .site-shell .home-method {
+  --method-bg: #2b211a;
+  --method-fg: #f4ede3;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .site-shell .home-method {
+    --method-bg: #2b211a;
+    --method-fg: #f4ede3;
+  }
 }
 .site-shell .home-method-inner {
   max-width: 760px;
@@ -747,7 +863,7 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--ed-paper) 62%, transparent);
+  color: color-mix(in srgb, var(--method-fg) 62%, transparent);
   margin: 0 0 1.5rem;
 }
 .site-shell .home-method-letters {
@@ -765,7 +881,7 @@
 }
 .site-shell .home-method-text {
   font-size: var(--ed-step-2);
-  color: color-mix(in srgb, var(--ed-paper) 82%, transparent);
+  color: color-mix(in srgb, var(--method-fg) 82%, transparent);
   margin: 0 auto 2rem;
   max-width: 52ch;
 }
@@ -774,8 +890,8 @@
   align-items: center;
   gap: 0.5em;
   font-weight: 600;
-  color: var(--ed-paper);
-  border-bottom: 1px solid color-mix(in srgb, var(--ed-paper) 40%, transparent);
+  color: var(--method-fg);
+  border-bottom: 1px solid color-mix(in srgb, var(--method-fg) 40%, transparent);
   padding-bottom: 2px;
 }
 .site-shell .home-method-link span {
@@ -1065,28 +1181,70 @@
 
 /* Page /perca dédiée : en-tête sans image ni boutons, puis étapes, puis texte */
 .site-shell .perca-page {
-  max-width: 1000px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: clamp(2.5rem, 6vw, 5rem) var(--ed-gutter) clamp(3rem, 6vw, 5rem);
+  padding: clamp(3rem, 7vw, 6rem) var(--ed-gutter) clamp(3.5rem, 7vw, 6rem);
 }
 .site-shell .perca-header {
-  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--ed-line);
 }
 .site-shell .perca-header h1 {
   font-size: var(--ed-step-6);
-  max-width: 16ch;
+  max-width: 14ch;
+  margin: 0;
 }
+
+/* Étapes PERCA : cellules pleines, filet qui s'illumine et léger relief au survol.
+   Grille fluide (auto-fit) → s'adapte de 5 colonnes à 1 selon la largeur. */
 .site-shell .perca-page .perca-steps {
-  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0;
 }
+.site-shell .perca-page .perca-steps li {
+  position: relative;
+  gap: 0.35rem;
+  padding: 1.6rem 1.25rem 1.4rem;
+  margin-right: 0;
+  border-top: 2px solid var(--ed-line);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.site-shell .perca-page .perca-steps li:hover {
+  border-top-color: var(--ed-brand);
+  background: var(--ed-raise);
+  transform: translateY(-3px);
+}
+.site-shell .perca-page .perca-letter {
+  font-size: clamp(2.9rem, 5vw, 4.1rem);
+}
+.site-shell .perca-page .perca-word {
+  font-size: var(--ed-step-2);
+  color: var(--ed-ink);
+}
+
+/* Corps : colonne de lecture confortable, lettrine éditoriale sur le 1er paragraphe */
 .site-shell .perca-body {
-  max-width: 68ch;
+  max-width: 66ch;
 }
 .site-shell .perca-body p {
   font-size: var(--ed-step-1);
-  line-height: 1.8;
-  color: var(--ed-ink);
-  margin: 0 0 1.25rem;
+  line-height: 1.85;
+  color: var(--ed-ink-soft);
+  margin: 0 0 1.35rem;
+}
+.site-shell .perca-body > :first-child::first-letter {
+  float: left;
+  margin: 0.06em 0.12em 0 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 3.4em;
+  line-height: 0.72;
+  font-weight: 600;
+  color: var(--ed-brand);
 }
 
 /* =============================================================
@@ -1446,6 +1604,17 @@
    « Retour → », « Envoyer → », et cohérence avec les boutons .cta / .btn. */
 .site-shell .button::after {
   content: none;
+}
+
+/* Bouton bascule thème (header public) — tokens chauds éditoriaux */
+.site-shell .theme-toggle {
+  border-color: var(--ed-line-strong);
+  color: var(--ed-ink-soft);
+}
+.site-shell .theme-toggle:hover {
+  border-color: var(--ed-ink);
+  color: var(--ed-ink);
+  background: var(--ed-raise);
 }
 
 /* Astérisque des champs obligatoires — token d'accent éditorial */

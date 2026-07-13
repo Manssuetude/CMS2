@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
@@ -18,6 +19,7 @@ export function HomeEditorial({
   focusImageUrl,
   activities = [],
   productions = [],
+  themes = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
@@ -87,6 +89,27 @@ export function HomeEditorial({
         </section>
       ) : null}
 
+      {/* 3.5 — Thèmes en vedette */}
+      {themes.length ? (
+        <section className="home-section home-themes">
+          <div className="home-section-head">
+            <h2>Thèmes en vedette</h2>
+            <Link className="home-section-more" href="/themes">
+              Tous les thèmes <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <div className="home-themes-grid">
+            {themes.map((t) => (
+              <Link key={t.id} className="home-theme-card" href={`/themes/${t.slug}`}>
+                {t.shortTitle ? <span className="home-theme-kicker">{t.shortTitle}</span> : null}
+                <h3>{t.title}</h3>
+                {t.description ? <p>{t.description}</p> : null}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       {/* 4 — Activités récentes */}
       {activities.length ? (
         <section className="home-section home-activities">
@@ -96,7 +119,7 @@ export function HomeEditorial({
               Toutes les activités <span aria-hidden>→</span>
             </Link>
           </div>
-          <ul className="home-activity-list">
+          <ul className="home-activity-list" style={{ "--acount": activities.slice(0, 3).length } as CSSProperties}>
             {activities.slice(0, 3).map((a) => {
               const date = formatDate(a.date);
               return (
@@ -128,9 +151,6 @@ export function HomeEditorial({
           <p className="home-method-text">
             PERCA structure notre façon de partir d&apos;un dossier pour apprendre, débattre, produire et créer du lien.
           </p>
-          <Link className="home-method-link" href="/a-propos">
-            Découvrir notre approche <span aria-hidden>→</span>
-          </Link>
         </div>
       </section>
 

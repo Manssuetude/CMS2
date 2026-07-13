@@ -20,18 +20,29 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   try {
     const page = await contentRepository.getPage("accueil");
-    const [productions, activities] = await Promise.all([
+    const [productions, activities, themes] = await Promise.all([
       contentRepository.listProductions(),
       contentRepository.listActivities(),
+      contentRepository.listThemes(),
     ]);
     if (!page) notFound();
+
+    // Accueil : productions et thèmes "en vedette" (repli sur les plus récents si aucun n'est marqué).
+    // Plafonds : 4 productions, 3 activités, 4 thèmes.
+    const featuredProductions = productions.filter((p) => p.featured);
+    const homeProductions = (featuredProductions.length ? featuredProductions : productions).slice(0, 4);
+    const featuredThemes = themes.filter((t) => t.featured);
+    const homeThemes = (featuredThemes.length ? featuredThemes : themes).slice(0, 4);
+    const homeActivities = activities.slice(0, 3);
+
     return (
       <HomeEditorial
         page={page}
         heroImageUrl={page.imageUrl ?? "/assets/photos/hero-accueil.png"}
         focusImageUrl={page.focusImageUrl ?? "/assets/photos/card-industrie.png"}
-        activities={activities}
-        productions={productions}
+        activities={homeActivities}
+        productions={homeProductions}
+        themes={homeThemes}
       />
     );
   } catch (error) {

@@ -1,4 +1,5 @@
 import { contentRepository } from "@/repositories/contentRepository";
+import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
 import { savePercaFieldsAction } from "./actions";
 
 export default async function AdminPerca() {
@@ -39,17 +40,12 @@ export default async function AdminPerca() {
         <div className="admin-form-section">
           <h2 className="admin-form-section-title">Texte descriptif</h2>
           <p className="admin-form-section-hint">
-            Ce texte s&apos;affiche sous les 5 étapes. Séparez les paragraphes par une ligne vide.
+            Ce texte s&apos;affiche sous les 5 étapes. Utilisez la barre d&apos;outils pour mettre en forme (titres,
+            gras, listes, liens…), comme le contenu principal des productions.
           </p>
           <div className="form-field">
             <label className="form-label">Description</label>
-            <textarea
-              name="body"
-              className="form-input"
-              rows={8}
-              defaultValue={page?.body ?? ""}
-              placeholder="PERCA n'est pas une entité séparée : c'est le cadre de Manssuétude..."
-            />
+            <PercaBodyEditor initial={page?.body ?? ""} />
           </div>
         </div>
 

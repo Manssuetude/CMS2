@@ -10,8 +10,6 @@ const perca: Array<[string, string]> = [
 ];
 
 export function PercaEditorial({ page }: { page: Page }) {
-  const paragraphs = (page.body || "").split(/\n{2,}|\n/).filter((p) => p.trim().length > 0);
-
   return (
     <div className="perca-page">
       <header className="perca-header">
@@ -28,13 +26,7 @@ export function PercaEditorial({ page }: { page: Page }) {
         ))}
       </ol>
 
-      {paragraphs.length ? (
-        <div className="perca-body">
-          {paragraphs.map((text, i) => (
-            <p key={i}>{text}</p>
-          ))}
-        </div>
-      ) : null}
+      {page.body ? <div className="perca-body rich-text" dangerouslySetInnerHTML={{ __html: page.body }} /> : null}
     </div>
   );
 }
