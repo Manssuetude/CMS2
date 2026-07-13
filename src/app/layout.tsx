@@ -27,6 +27,11 @@ const script = Satisfy({
 export const metadata: Metadata = {
   title: "Manssuétude",
   description: "Un espace de réflexion, de production et d'expérimentation collective.",
+  icons: {
+    icon: "/assets/photos/logo-manssuetude.png",
+    shortcut: "/assets/photos/logo-manssuetude.png",
+    apple: "/assets/photos/logo-manssuetude.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

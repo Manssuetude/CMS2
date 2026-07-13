@@ -42,22 +42,34 @@ export function FormModal({ formType, onClose }: { formType: string; onClose: ()
               if (field.type === "checkbox") {
                 return (
                   <label key={field.name}>
-                    <span>{field.label}</span>
+                    {field.hint ? (
+                      <span className="hint-tip" tabIndex={0} aria-label={field.hint}>
+                        {field.label}
+                        {field.required ? <span className="required-mark">*</span> : null}
+                        <span className="hint-tip__bubble" role="tooltip">
+                          {field.hint}
+                        </span>
+                      </span>
+                    ) : (
+                      <span>
+                        {field.label}
+                        {field.required ? <span className="required-mark">*</span> : null}
+                      </span>
+                    )}
                     <input name={field.name} type="checkbox" required={field.required} />
                   </label>
                 );
               }
               return (
                 <label key={field.name}>
-                  <span>{field.label}</span>
+                  <span>
+                    {field.label}
+                    {field.required ? <span className="required-mark">*</span> : null}
+                  </span>
                   <input name={field.name} type={field.type} required={field.required} />
                 </label>
               );
             })}
-            <label>
-              <span>Pièce jointe</span>
-              <input name="attachment" type="file" />
-            </label>
             <button className="button primary" type="submit">
               Envoyer
             </button>
