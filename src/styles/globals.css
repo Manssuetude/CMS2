@@ -2582,3 +2582,34 @@ textarea {
   color: var(--ink);
   background: var(--soft);
 }
+
+/* ─── Étoile « mise en avant » cliquable (admin) ─────────────────────── */
+.featured-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--line-strong);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    transform 0.12s ease;
+}
+.featured-star:hover {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+.featured-star:active {
+  transform: scale(0.9);
+}
+.featured-star.is-on {
+  color: var(--orange);
+}

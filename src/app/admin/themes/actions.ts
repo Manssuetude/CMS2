@@ -55,6 +55,15 @@ export async function createThemeAction(_: string | null, formData: FormData): P
   redirect("/admin/themes");
 }
 
+export async function toggleThemeFeaturedAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  const featured = formData.get("featured") === "true";
+  if (!id) return;
+  await contentRepository.updateTheme(id, { featured });
+  revalidatePath("/admin/themes");
+  revalidatePath("/");
+}
+
 export async function updateThemeAction(_: string | null, formData: FormData): Promise<string | null> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return "Identifiant manquant.";

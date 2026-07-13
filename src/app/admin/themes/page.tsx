@@ -3,6 +3,7 @@ import { Pencil, Plus } from "lucide-react";
 import { contentRepository } from "@/repositories/contentRepository";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
+import { FeaturedToggleButton } from "@/components/admin/FeaturedToggleButton";
 import {
   buildStatusTabs,
   countByStatus,
@@ -93,11 +94,7 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
                   )}
                 </td>
                 <td style={{ textAlign: "center" }}>
-                  {item.featured ? (
-                    <span style={{ color: "var(--orange)", fontWeight: 700, fontSize: 16 }}>★</span>
-                  ) : (
-                    <span style={{ color: "var(--line-strong)" }}>-</span>
-                  )}
+                  <FeaturedToggleButton id={item.id} featured={item.featured} />
                 </td>
                 <td className="col-actions">
                   <div className="row-actions">
