@@ -187,6 +187,7 @@ export type Page = {
   body?: string | null;
   imageId?: string | null;
   imageUrl?: string | null;
+  focusImageUrl?: string | null;
   image?: Media | null;
   quote?: string | null;
   primaryCtaLabel?: string | null;

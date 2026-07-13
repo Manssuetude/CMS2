@@ -66,8 +66,8 @@ export function HomeEditorial({
           {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
           <h2>{page.title}</h2>
           {page.quote ? (
-            <Link className="home-focus-link" href="/themes">
-              {page.quote}
+            <Link className="home-focus-link" href={`/themes/${page.quote}`}>
+              Explorer ce thème
               <span aria-hidden>→</span>
             </Link>
           ) : null}
