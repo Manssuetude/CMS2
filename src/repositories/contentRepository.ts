@@ -31,6 +31,7 @@ function normalizeUrl(url: string | null | undefined): string | null {
 
 function mapPage(row: DataRow): Page {
   const imageResource = (row.image_resource as { url?: string } | null) ?? null;
+  const focusImageResource = (row.focus_image_resource as { url?: string } | null) ?? null;
   return {
     id: asString(row.id),
     slug: asString(row.slug),
@@ -39,6 +40,7 @@ function mapPage(row: DataRow): Page {
     body: asNullableString(row.body),
     imageId: asNullableString(row.image_id),
     imageUrl: normalizeUrl(imageResource?.url),
+    focusImageUrl: normalizeUrl(focusImageResource?.url),
     quote: asNullableString(row.quote),
     primaryCtaLabel: asNullableString(row.primary_cta_label),
     primaryCtaTarget: asNullableString(row.primary_cta_target),
@@ -153,7 +155,7 @@ export const contentRepository = {
     const db = getSupabaseAdmin();
     const { data, error } = await db
       .from("pages")
-      .select("*, image_resource:resources!image_id(url)")
+      .select("*, image_resource:resources!image_id(url), focus_image_resource:resources!seo_image_id(url)")
       .eq("slug", slug)
       .single();
     if (error) return null;
@@ -162,7 +164,10 @@ export const contentRepository = {
 
   async listPages(includeDrafts = false) {
     const db = getSupabaseAdmin();
-    let query = db.from("pages").select("*, image_resource:resources!image_id(url)").order("slug");
+    let query = db
+      .from("pages")
+      .select("*, image_resource:resources!image_id(url), focus_image_resource:resources!seo_image_id(url)")
+      .order("slug");
     if (!includeDrafts) query = query.eq("status", statusFilter.status);
     const { data, error } = await query;
     if (error) throw error;

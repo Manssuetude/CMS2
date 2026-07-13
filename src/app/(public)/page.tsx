@@ -29,7 +29,7 @@ export default async function HomePage() {
       <HomeEditorial
         page={page}
         heroImageUrl={page.imageUrl ?? "/assets/photos/hero-accueil.png"}
-        focusImageUrl="/assets/photos/card-industrie.png"
+        focusImageUrl={page.focusImageUrl ?? "/assets/photos/card-industrie.png"}
         activities={activities}
         productions={productions}
       />
