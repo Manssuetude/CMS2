@@ -6,6 +6,15 @@ import { z } from "zod";
 import { contentRepository } from "@/repositories/contentRepository";
 import { slugify } from "@/utils/slug";
 
+export async function toggleProductionFeaturedAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  const featured = formData.get("featured") === "true";
+  if (!id) return;
+  await contentRepository.updateProduction(id, { featured });
+  revalidatePath("/admin/productions");
+  revalidatePath("/");
+}
+
 const schema = z.object({
   title: z.string().min(1, "Le titre est requis."),
   type: z.string().min(1, "Le type est requis."),

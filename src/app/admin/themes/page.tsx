@@ -94,7 +94,7 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
                   )}
                 </td>
                 <td style={{ textAlign: "center" }}>
-                  <FeaturedToggleButton id={item.id} featured={item.featured} />
+                  <FeaturedToggleButton id={item.id} featured={item.featured} kind="theme" />
                 </td>
                 <td className="col-actions">
                   <div className="row-actions">

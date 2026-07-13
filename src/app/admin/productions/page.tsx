@@ -5,6 +5,7 @@ import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
 import { StatusToggleButton } from "@/components/admin/StatusToggleButton";
+import { FeaturedToggleButton } from "@/components/admin/FeaturedToggleButton";
 import { buildStatusTabs, countByStatus, resolveActiveStatus, STATUS_LABELS } from "@/utils/adminStatus";
 import { deleteProductionAction, toggleProductionStatusAction } from "./actions";
 
@@ -82,11 +83,7 @@ export default async function AdminProductionsPage({ searchParams }: { searchPar
                     : "-"}
                 </td>
                 <td style={{ textAlign: "center" }}>
-                  {item.featured ? (
-                    <span style={{ color: "var(--orange)", fontWeight: 900, fontSize: 16 }}>★</span>
-                  ) : (
-                    <span style={{ color: "var(--line-strong)" }}>-</span>
-                  )}
+                  <FeaturedToggleButton id={item.id} featured={item.featured} kind="production" />
                 </td>
                 <td className="col-actions">
                   <div className="row-actions">

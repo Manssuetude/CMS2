@@ -17,16 +17,16 @@ export function HomeEditorial({
   page,
   heroImageUrl,
   focusImageUrl,
+  focusTheme = null,
   activities = [],
   productions = [],
-  themes = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
   focusImageUrl?: string | null;
+  focusTheme?: Theme | null;
   activities?: Activity[];
   productions?: Production[];
-  themes?: Theme[];
 }) {
   // L'identité de l'association vit dans `body` (demande de René : l'asso d'abord).
   const sentences = (page.body || "").split(/\.\s+/).filter(Boolean);
@@ -59,22 +59,28 @@ export function HomeEditorial({
         ) : null}
       </section>
 
-      {/* 2 — Sujet du moment : thème + sujet + média de la séance à venir */}
-      <section className="home-focus">
-        <div className="home-focus-media">
-          {focusImageUrl ? <img src={focusImageUrl} alt="" loading="lazy" /> : null}
-        </div>
-        <div className="home-focus-copy">
-          {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
-          <h2>{page.title}</h2>
-          {page.quote ? (
-            <Link className="home-focus-link" href={`/themes/${page.quote}`}>
+      {/* 2 — Sujet du moment : le thème sélectionné en admin (carte cliquable, image optionnelle) */}
+      {focusTheme ? (
+        <Link
+          className={`home-focus${focusImageUrl ? "" : " home-focus--no-image"}`}
+          href={`/themes/${focusTheme.slug}`}
+        >
+          {focusImageUrl ? (
+            <div className="home-focus-media">
+              <img src={focusImageUrl} alt="" loading="lazy" />
+            </div>
+          ) : null}
+          <div className="home-focus-copy">
+            {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
+            <h2>{focusTheme.title}</h2>
+            {focusTheme.description ? <p className="home-focus-desc">{focusTheme.description}</p> : null}
+            <span className="home-focus-link">
               Explorer ce thème
               <span aria-hidden>→</span>
-            </Link>
-          ) : null}
-        </div>
-      </section>
+            </span>
+          </div>
+        </Link>
+      ) : null}
 
       {/* 3 — Productions récentes */}
       {productions.length ? (
@@ -86,27 +92,6 @@ export function HomeEditorial({
             </Link>
           </div>
           <ProductionsCarousel productions={productions} />
-        </section>
-      ) : null}
-
-      {/* 3.5 — Thèmes en vedette */}
-      {themes.length ? (
-        <section className="home-section home-themes">
-          <div className="home-section-head">
-            <h2>Thèmes en vedette</h2>
-            <Link className="home-section-more" href="/themes">
-              Tous les thèmes <span aria-hidden>→</span>
-            </Link>
-          </div>
-          <div className="home-themes-grid">
-            {themes.map((t) => (
-              <Link key={t.id} className="home-theme-card" href={`/themes/${t.slug}`}>
-                {t.shortTitle ? <span className="home-theme-kicker">{t.shortTitle}</span> : null}
-                <h3>{t.title}</h3>
-                {t.description ? <p>{t.description}</p> : null}
-              </Link>
-            ))}
-          </div>
         </section>
       ) : null}
 

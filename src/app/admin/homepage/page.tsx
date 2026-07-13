@@ -143,21 +143,13 @@ export default async function AdminHomepage() {
             />
           </div>
           <div className="form-field">
-            <label className="form-label">Titre du sujet</label>
-            <input
-              name="title"
-              className="form-input"
-              defaultValue={page?.title ?? ""}
-              placeholder="Intelligence artificielle et éthique"
-            />
-          </div>
-          <div className="form-field">
-            <label className="form-label">Thème associé</label>
+            <label className="form-label">Thème mis en avant</label>
             <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
-              Le clic sur le sujet redirige vers la page de ce thème.
+              Choisissez le thème à afficher comme sujet du moment. Son titre et sa description sont repris
+              automatiquement, et le clic sur le sujet mène à la page de ce thème.
             </p>
             <select name="quote" className="form-input" defaultValue={page?.quote ?? ""}>
-              <option value="">— aucun thème —</option>
+              <option value="">— aucun sujet du moment —</option>
               {themes.map((t) => (
                 <option key={t.id} value={t.slug}>
                   {t.title}
@@ -166,9 +158,9 @@ export default async function AdminHomepage() {
             </select>
           </div>
           <div className="form-field">
-            <label className="form-label">Photo du sujet</label>
+            <label className="form-label">Photo du sujet (optionnelle)</label>
             <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
-              Image affichée à côté du sujet du moment sur la page d&apos;accueil.
+              Image affichée à côté du sujet du moment. Sans image, le sujet s&apos;affiche en pleine largeur.
             </p>
             {page?.focusImageUrl && (
               <div style={{ marginBottom: 12 }}>
@@ -180,7 +172,7 @@ export default async function AdminHomepage() {
               </div>
             )}
             <select name="seo_image_id" className="form-input" defaultValue={page?.seoImageId ?? ""}>
-              <option value="">— image par défaut —</option>
+              <option value="">— aucune image (pleine largeur) —</option>
               {images.map((img) => (
                 <option key={img.id} value={img.id}>
                   {img.title || img.filename}

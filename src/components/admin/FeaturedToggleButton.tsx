@@ -1,15 +1,20 @@
 "use client";
 
 import { toggleThemeFeaturedAction } from "@/app/admin/themes/actions";
+import { toggleProductionFeaturedAction } from "@/app/admin/productions/actions";
 
-export function FeaturedToggleButton({ id, featured }: { id: string; featured: boolean }) {
+type Kind = "theme" | "production";
+
+export function FeaturedToggleButton({ id, featured, kind = "theme" }: { id: string; featured: boolean; kind?: Kind }) {
   const next = !featured;
+  const action = kind === "production" ? toggleProductionFeaturedAction : toggleThemeFeaturedAction;
+  const noun = kind === "production" ? "cette production" : "ce thème";
   const message = featured
-    ? "Retirer ce thème de la mise en avant ?"
-    : "Mettre ce thème en avant sur la page d'accueil ?";
+    ? `Retirer ${noun} de la mise en avant ?`
+    : `Mettre ${noun} en avant sur la page d'accueil ?`;
 
   return (
-    <form action={toggleThemeFeaturedAction} style={{ display: "inline-flex" }}>
+    <form action={action} style={{ display: "inline-flex" }}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="featured" value={String(next)} />
       <button

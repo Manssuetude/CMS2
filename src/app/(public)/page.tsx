@@ -31,18 +31,19 @@ export default async function HomePage() {
     // Plafonds : 4 productions, 3 activités, 4 thèmes.
     const featuredProductions = productions.filter((p) => p.featured);
     const homeProductions = (featuredProductions.length ? featuredProductions : productions).slice(0, 4);
-    const featuredThemes = themes.filter((t) => t.featured);
-    const homeThemes = (featuredThemes.length ? featuredThemes : themes).slice(0, 4);
     const homeActivities = activities.slice(0, 3);
+
+    // "Sujet du moment" = le thème sélectionné en admin (page.quote = slug du thème).
+    const focusTheme = page.quote ? (themes.find((t) => t.slug === page.quote) ?? null) : null;
 
     return (
       <HomeEditorial
         page={page}
         heroImageUrl={page.imageUrl ?? "/assets/photos/hero-accueil.png"}
-        focusImageUrl={page.focusImageUrl ?? "/assets/photos/card-industrie.png"}
+        focusImageUrl={page.focusImageUrl}
+        focusTheme={focusTheme}
         activities={homeActivities}
         productions={homeProductions}
-        themes={homeThemes}
       />
     );
   } catch (error) {
