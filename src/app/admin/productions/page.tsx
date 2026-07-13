@@ -15,6 +15,7 @@ export default async function AdminProductionsPage({ searchParams }: { searchPar
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "f");
+  const featuredCount = all.filter((p) => p.featured).length;
 
   return (
     <section className="admin-panel">
@@ -83,7 +84,13 @@ export default async function AdminProductionsPage({ searchParams }: { searchPar
                     : "-"}
                 </td>
                 <td style={{ textAlign: "center" }}>
-                  <FeaturedToggleButton id={item.id} featured={item.featured} kind="production" />
+                  <FeaturedToggleButton
+                    id={item.id}
+                    featured={item.featured}
+                    kind="production"
+                    count={featuredCount}
+                    max={4}
+                  />
                 </td>
                 <td className="col-actions">
                   <div className="row-actions">
