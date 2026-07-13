@@ -9,7 +9,11 @@ function toAbsoluteUrl(url: string | null | undefined): string {
 }
 
 export default async function AdminHomepage() {
-  const [page, media] = await Promise.all([contentRepository.getPage("accueil"), mediaRepository.list()]);
+  const [page, media, themes] = await Promise.all([
+    contentRepository.getPage("accueil"),
+    mediaRepository.list(),
+    contentRepository.listThemes(true),
+  ]);
 
   const images = media.filter((m) => m.type === "image");
 
@@ -148,13 +152,41 @@ export default async function AdminHomepage() {
             />
           </div>
           <div className="form-field">
-            <label className="form-label">Lien d&apos;accroche (quote)</label>
-            <input
-              name="quote"
-              className="form-input"
-              defaultValue={page?.quote ?? ""}
-              placeholder="Explorer ce thème →"
-            />
+            <label className="form-label">Thème associé</label>
+            <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
+              Le clic sur le sujet redirige vers la page de ce thème.
+            </p>
+            <select name="quote" className="form-input" defaultValue={page?.quote ?? ""}>
+              <option value="">— aucun thème —</option>
+              {themes.map((t) => (
+                <option key={t.id} value={t.slug}>
+                  {t.title}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-field">
+            <label className="form-label">Photo du sujet</label>
+            <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
+              Image affichée à côté du sujet du moment sur la page d&apos;accueil.
+            </p>
+            {page?.focusImageUrl && (
+              <div style={{ marginBottom: 12 }}>
+                <img
+                  src={toAbsoluteUrl(page.focusImageUrl)}
+                  alt="Photo actuelle du sujet"
+                  style={{ height: 100, objectFit: "cover", borderRadius: 6, border: "1px solid var(--line)" }}
+                />
+              </div>
+            )}
+            <select name="seo_image_id" className="form-input" defaultValue={page?.seoImageId ?? ""}>
+              <option value="">— image par défaut —</option>
+              {images.map((img) => (
+                <option key={img.id} value={img.id}>
+                  {img.title || img.filename}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

@@ -34,7 +34,7 @@ export function ActiviteDetail({ item }: { item: Activity }) {
           <div className="detail-meta">
             {eventDate && (
               <span className="meta-pill">
-                {isUpcoming ? "📅 " : "✓ "}
+                {isUpcoming ? "" : "✓ "}
                 {eventDate.toLocaleDateString("fr-FR", {
                   weekday: "long",
                   day: "numeric",
