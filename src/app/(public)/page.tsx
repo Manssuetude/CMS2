@@ -1,6 +1,21 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HomeEditorial } from "@/components/public/HomeEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
+
+export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await contentRepository.getPage("accueil");
+    return {
+      title: { absolute: page?.seoTitle ?? "Manssuétude" },
+      description: page?.seoDescription ?? "Un espace de réflexion, de production et d'expérimentation collective.",
+    };
+  } catch {
+    return {};
+  }
+}
 
 export default async function HomePage() {
   try {
@@ -13,7 +28,7 @@ export default async function HomePage() {
     return (
       <HomeEditorial
         page={page}
-        heroImageUrl="/assets/photos/hero-accueil.png"
+        heroImageUrl={page.imageUrl ?? "/assets/photos/hero-accueil.png"}
         focusImageUrl="/assets/photos/card-industrie.png"
         activities={activities}
         productions={productions}

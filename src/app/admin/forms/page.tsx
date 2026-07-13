@@ -71,7 +71,11 @@ export default async function AdminFormsPage() {
               return (
                 <tr key={f.id}>
                   <td className="col-title" style={{ minWidth: 160 }}>
-                    <div>{String(d.name ?? d.nom ?? "-")}</div>
+                    <div>
+                      {d.firstName != null || d.lastName != null
+                        ? [d.firstName, d.lastName].filter(Boolean).join(" ")
+                        : String(d.name ?? d.nom ?? "-")}
+                    </div>
                     {d.email != null && (
                       <div style={{ fontSize: 12, color: "var(--muted)", fontWeight: 400 }}>{String(d.email)}</div>
                     )}
@@ -106,7 +110,7 @@ export default async function AdminFormsPage() {
                       }}
                     >
                       {Object.entries(d)
-                        .filter(([k]) => !["name", "nom", "email"].includes(k))
+                        .filter(([k]) => !["name", "nom", "firstName", "lastName", "email", "consent"].includes(k))
                         .slice(0, 3)
                         .map(([k, v]) => `${k}: ${String(v)}`)
                         .join(" · ")}

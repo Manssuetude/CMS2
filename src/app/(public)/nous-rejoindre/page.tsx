@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
 import { contentRepository } from "@/repositories/contentRepository";
+
+export const revalidate = 60;
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await contentRepository.getPage("nous-rejoindre");
+    if (!page) return {};
+    return {
+      title: { absolute: page.seoTitle ?? page.title },
+      description: page.seoDescription ?? undefined,
+    };
+  } catch {
+    return {};
+  }
+}
 
 export default async function JoinPage() {
   try {
@@ -8,7 +24,12 @@ export default async function JoinPage() {
     if (!page) notFound();
     // Masque le CTA secondaire "Participer à une activité" sur cette page.
     const pageWithoutSecondaryCta = { ...page, secondaryCtaLabel: null, secondaryCtaTarget: null };
-    return <PublicPage page={pageWithoutSecondaryCta} heroImageUrl="/assets/photos/hero-nous-rejoindre.png" />;
+    return (
+      <PublicPage
+        page={pageWithoutSecondaryCta}
+        heroImageUrl={page.imageUrl ?? "/assets/photos/hero-nous-rejoindre.png"}
+      />
+    );
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
