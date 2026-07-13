@@ -50,13 +50,17 @@ export default async function AdminHomepage() {
               />
             </div>
             <div className="form-field">
-              <label className="form-label">Bouton principal — cible</label>
+              <label className="form-label">Bouton principal — lien</label>
               <input
                 name="primary_cta_target"
                 className="form-input"
                 defaultValue={page?.primaryCtaTarget ?? ""}
-                placeholder="/nous-rejoindre ou FORM:join"
+                placeholder="/nous-rejoindre, FORM:join ou https://linktr.ee/..."
               />
+              <p className="admin-form-section-hint">
+                Où mène ce bouton : une page du site (<code>/nous-rejoindre</code>), un formulaire (
+                <code>FORM:join</code>) ou un lien externe (<code>https://…</code>, ouvert dans un nouvel onglet).
+              </p>
             </div>
           </div>
           <div className="form-row">

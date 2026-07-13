@@ -380,7 +380,7 @@
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: var(--ed-radius-lg);
+  border-radius: 0;
 }
 .site-shell .hero-image blockquote {
   position: absolute;
@@ -523,7 +523,7 @@
 .site-shell .home-hero-media {
   margin: 0;
   overflow: hidden;
-  border-radius: var(--ed-radius-lg);
+  border-radius: 0;
 }
 .site-shell .home-hero-media img {
   width: 100%;
@@ -549,7 +549,7 @@
 }
 .site-shell .home-focus-media {
   overflow: hidden;
-  border-radius: var(--ed-radius);
+  border-radius: 0;
 }
 .site-shell .home-focus-media img {
   width: 100%;
@@ -1009,7 +1009,7 @@
 .site-shell .about-perca-intro {
   font-size: var(--ed-step-1);
   color: var(--ed-ink-soft);
-  max-width: 62ch;
+  max-width: none;
   margin: 0 0 2.5rem;
 }
 .site-shell .perca-steps {
@@ -1038,11 +1038,55 @@
   font-size: var(--ed-step-2);
   font-weight: 500;
 }
+.site-shell .about-perca-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 2.5rem;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ed-clay);
+}
+.site-shell .about-perca-link span {
+  transition: transform 0.18s ease;
+}
+.site-shell .about-perca-link:hover span {
+  transform: translateX(4px);
+}
 
 @media (max-width: 720px) {
   .site-shell .perca-steps {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* Page /perca dédiée : en-tête sans image ni boutons, puis étapes, puis texte */
+.site-shell .perca-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 5rem) var(--ed-gutter) clamp(3rem, 6vw, 5rem);
+}
+.site-shell .perca-header {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.site-shell .perca-header h1 {
+  font-size: var(--ed-step-6);
+  max-width: 16ch;
+}
+.site-shell .perca-page .perca-steps {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.site-shell .perca-body {
+  max-width: 68ch;
+}
+.site-shell .perca-body p {
+  font-size: var(--ed-step-1);
+  line-height: 1.8;
+  color: var(--ed-ink);
+  margin: 0 0 1.25rem;
 }
 
 /* =============================================================
@@ -1389,4 +1433,105 @@
   font-size: var(--ed-step-1);
   line-height: 1.8;
   color: var(--ed-ink);
+}
+
+/* =============================================================
+   Cohérence — corrections scopées au site public
+   (l'admin, hors .site-shell, n'est pas affecté)
+   ============================================================= */
+
+/* globals.css colle une flèche « → » après CHAQUE .button. Dans le thème
+   éditorial les boutons sont épurés (les flèches sont des <span> explicites
+   sur les liens). On supprime la flèche automatique : fini « Fermer → »,
+   « Retour → », « Envoyer → », et cohérence avec les boutons .cta / .btn. */
+.site-shell .button::after {
+  content: none;
+}
+
+/* Astérisque des champs obligatoires — token d'accent éditorial */
+.site-shell .required-mark {
+  color: var(--ed-brand);
+  font-weight: 600;
+}
+
+/* Bulle d'aide (consentement RGPD) — alignée sur les surfaces éditoriales */
+.site-shell .hint-tip {
+  text-decoration-color: var(--ed-line-strong);
+}
+.site-shell .hint-tip:hover,
+.site-shell .hint-tip:focus-visible {
+  color: var(--ed-clay);
+  text-decoration-color: var(--ed-clay);
+}
+.site-shell .hint-tip__bubble {
+  background: var(--ed-raise);
+  border-color: var(--ed-line);
+  color: var(--ed-ink-soft);
+  box-shadow: 0 8px 24px rgba(28, 23, 20, 0.12);
+}
+
+/* Page de maintenance — bloc centré, respiration éditoriale */
+.site-shell .maintenance {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: clamp(4rem, 12vw, 9rem) var(--ed-gutter);
+  text-align: center;
+}
+.site-shell .maintenance h1 {
+  font-size: var(--ed-step-5);
+  margin: 0 0 1.25rem;
+}
+.site-shell .maintenance-body {
+  max-width: 52ch;
+  margin: 0 auto 2.25rem;
+  color: var(--ed-ink-soft);
+  font-size: var(--ed-step-1);
+}
+.site-shell .maintenance .eyebrow {
+  justify-content: center;
+}
+.site-shell .maintenance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+/* Tri / filtres (Activités, Productions) — refonte éditoriale.
+   globals.css les rendait en pastilles orange criardes (tokens froids).
+   Ici : rangée sobre sous un filet, actif = encre (accent orange gardé rare). */
+.site-shell .filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0 0 2rem;
+}
+.site-shell .filter-chip {
+  padding: 0.42rem 1rem;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: var(--ed-step-small);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ed-ink-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    background 0.16s ease,
+    color 0.16s ease;
+}
+.site-shell .filter-chip:hover {
+  border-color: var(--ed-line-strong);
+  background: var(--ed-raise);
+  color: var(--ed-ink);
+}
+.site-shell .filter-chip.active {
+  border-color: var(--ed-ink);
+  background: var(--ed-ink);
+  color: var(--ed-paper);
 }

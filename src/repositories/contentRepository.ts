@@ -100,7 +100,6 @@ function mapFormSubmission(row: DataRow): FormSubmission {
     id: asString(row.id),
     formType: asString(row.form_type) as FormSubmission["formType"],
     data: (row.data ?? {}) as Record<string, unknown>,
-    attachments: asStringArray(row.attachments),
     status: asString(row.status, "reçu") as FormStatus,
     notes: asNullableString(row.notes),
     receivedAt: asString(row.received_at),

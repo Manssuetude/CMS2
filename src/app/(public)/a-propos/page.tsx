@@ -25,7 +25,12 @@ export default async function AboutPage() {
       contentRepository.getPage("perca"),
     ]);
     if (!page) notFound();
-    return <AboutEditorial page={page} percaPage={percaPage} />;
+    // "Voir notre impact" renvoie vers la page de maintenance (contenu à venir).
+    const aboutPage =
+      (page.secondaryCtaLabel ?? "").trim().toLowerCase() === "voir notre impact"
+        ? { ...page, secondaryCtaTarget: "/maintenance" }
+        : page;
+    return <AboutEditorial page={aboutPage} percaPage={percaPage} />;
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.

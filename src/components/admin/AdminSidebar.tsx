@@ -12,6 +12,7 @@ import {
   Inbox,
   Home,
   ImagePlus,
+  Compass,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -21,6 +22,7 @@ import {
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "homepage", label: "Page d'accueil", icon: Home },
+  { id: "perca", label: "Page PERCA", icon: Compass },
   { id: "pages", label: "Photos des pages", icon: ImagePlus },
   { id: "themes", label: "Thèmes", icon: BookOpen },
   { id: "activites", label: "Activités", icon: CalendarDays },

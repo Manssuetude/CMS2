@@ -1,13 +1,12 @@
 import { getSupabaseAdmin } from "@/lib/db";
 import type { FormSubmission, FormType } from "@/types/cms";
-import { asNullableString, asRecord, asString, asStringArray, type DataRow } from "@/utils/row";
+import { asNullableString, asRecord, asString, type DataRow } from "@/utils/row";
 
 function mapSubmission(row: DataRow): FormSubmission {
   return {
     id: asString(row.id),
     formType: asString(row.form_type) as FormType,
     data: asRecord(row.data),
-    attachments: asStringArray(row.attachments),
     status: asString(row.status) as FormSubmission["status"],
     notes: asNullableString(row.notes),
     receivedAt: asString(row.received_at),
@@ -23,14 +22,13 @@ export const formRepository = {
     return data.map(mapSubmission);
   },
 
-  async create(formType: FormType, data: Record<string, unknown>, attachments: string[] = []) {
+  async create(formType: FormType, data: Record<string, unknown>) {
     const db = getSupabaseAdmin();
     const { data: row, error } = await db
       .from("form_submissions")
       .insert({
         form_type: formType,
         data,
-        attachments,
         status: "reçu",
       })
       .select()

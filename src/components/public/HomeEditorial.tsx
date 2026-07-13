@@ -74,7 +74,20 @@ export function HomeEditorial({
         </div>
       </section>
 
-      {/* 3 — Activités récentes */}
+      {/* 3 — Productions récentes */}
+      {productions.length ? (
+        <section className="home-section home-productions">
+          <div className="home-section-head">
+            <h2>Productions récentes</h2>
+            <Link className="home-section-more" href="/productions">
+              Toutes les productions <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <ProductionsCarousel productions={productions} />
+        </section>
+      ) : null}
+
+      {/* 4 — Activités récentes */}
       {activities.length ? (
         <section className="home-section home-activities">
           <div className="home-section-head">
@@ -100,19 +113,6 @@ export function HomeEditorial({
               );
             })}
           </ul>
-        </section>
-      ) : null}
-
-      {/* 4 — Productions récentes */}
-      {productions.length ? (
-        <section className="home-section home-productions">
-          <div className="home-section-head">
-            <h2>Productions récentes</h2>
-            <Link className="home-section-more" href="/productions">
-              Toutes les productions <span aria-hidden>→</span>
-            </Link>
-          </div>
-          <ProductionsCarousel productions={productions} />
         </section>
       ) : null}
 

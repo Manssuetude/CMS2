@@ -2,7 +2,7 @@ import { requireRole } from "@/lib/auth";
 import { formRepository } from "@/repositories/formRepository";
 import type { FormSubmission } from "@/types/cms";
 
-const headers: Array<keyof FormSubmission> = ["id", "formType", "status", "receivedAt", "data", "attachments", "notes"];
+const headers: Array<keyof FormSubmission> = ["id", "formType", "status", "receivedAt", "data", "notes"];
 
 export async function GET() {
   await requireRole(["admin", "editor"]);

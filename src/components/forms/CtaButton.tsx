@@ -33,6 +33,14 @@ export function CtaButton({
     );
   }
 
+  if (/^https?:\/\//.test(resolved)) {
+    return (
+      <a className={`button ${variant}`} href={resolved} target="_blank" rel="noopener noreferrer">
+        {label}
+      </a>
+    );
+  }
+
   return (
     <Link className={`button ${variant}`} href={resolved}>
       {label}

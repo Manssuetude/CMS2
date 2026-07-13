@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Hero } from "@/components/public/Hero";
 import type { Page } from "@/types/cms";
 
@@ -45,6 +46,9 @@ export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Pa
             </li>
           ))}
         </ol>
+        <Link className="about-perca-link" href="/perca">
+          PERCA plus en détail <span aria-hidden>→</span>
+        </Link>
       </section>
     </div>
   );
