@@ -1,12 +1,14 @@
-import type { UserRole } from "@/types/cms";
+import type { AdminSession } from "@/lib/auth";
 
-const permissions: Record<UserRole, string[]> = {
-  admin: ["*"],
-  editor: ["content:read", "content:write", "media:write", "forms:read"],
-  contributor: ["content:propose", "media:propose"],
-  viewer: ["content:read"],
-};
+// Vérifie qu'une session possède une permission "section:action".
+// L'admin (permissions ["*"]) a tous les droits.
+export function can(session: AdminSession | null | undefined, permission: string): boolean {
+  if (!session) return false;
+  if (session.isAdmin || session.permissions.includes("*")) return true;
+  return session.permissions.includes(permission);
+}
 
-export function can(role: UserRole, permission: string) {
-  return permissions[role].includes("*") || permissions[role].includes(permission);
+// Un rôle peut-il accéder à une section admin ? (au moins la permission "view")
+export function canViewSection(session: AdminSession | null | undefined, section: string): boolean {
+  return can(session, `${section}:view`);
 }

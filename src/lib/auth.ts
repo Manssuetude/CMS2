@@ -1,19 +1,15 @@
 import { redirect } from "next/navigation";
-import type { UserRole } from "@/types/cms";
 import { getSupabaseAdmin } from "@/lib/db";
+import { roleRepository } from "@/repositories/roleRepository";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type AdminSession = {
   userId: string;
   email: string;
-  role: UserRole;
-};
-
-export type AuthUser = {
-  id: string;
-  email: string;
-  name?: string;
-  role: UserRole;
+  roleKey: string;
+  roleLabel: string;
+  isAdmin: boolean;
+  permissions: string[]; // liste de clés "section:action" — ["*"] pour l'admin
 };
 
 export async function getSession(): Promise<AdminSession | null> {
@@ -25,24 +21,36 @@ export async function getSession(): Promise<AdminSession | null> {
 
   if (error || !user || !user.email) return null;
 
-  const role = (user.user_metadata?.role as UserRole | undefined) ?? "admin";
+  // Source de vérité du rôle : la table `users` (plus de défaut "admin").
+  const db = getSupabaseAdmin();
+  const { data: urow } = await db.from("users").select("role_key").eq("id", user.id).maybeSingle();
+  const roleKey = (urow?.role_key as string | null) ?? null;
+  if (!roleKey) return null; // aucun rôle attribué → aucun accès admin
+
+  const role = await roleRepository.getByKey(roleKey);
+  const isAdmin = role?.isAdmin ?? false;
 
   return {
     userId: user.id,
     email: user.email,
-    role,
+    roleKey,
+    roleLabel: role?.label ?? roleKey,
+    isAdmin,
+    permissions: isAdmin ? ["*"] : (role?.permissions ?? []),
   };
 }
 
-export async function requireRole(allowed: UserRole[] = ["admin", "editor"]) {
+// Accès à une route/action : admin OU rôle explicitement autorisé.
+export async function requireRole(allowed: string[] = ["admin"]) {
   const session = await getSession();
-  if (!session || !allowed.includes(session.role)) redirect("/admin/login");
-  return session;
+  if (!session) redirect("/admin/login");
+  if (session.isAdmin || allowed.includes(session.roleKey)) return session;
+  redirect("/admin/login");
 }
 
-export async function resolveUserByEmail(email: string) {
-  const db = getSupabaseAdmin();
-  const { data, error } = await db.from("users").select("*").eq("email", email).single();
-  if (error) return null;
-  return data as AuthUser;
+// Réservé aux administrateurs (gestion users / rôles / journal).
+export async function requireAdmin() {
+  const session = await getSession();
+  if (!session || !session.isAdmin) redirect("/admin/login");
+  return session;
 }
