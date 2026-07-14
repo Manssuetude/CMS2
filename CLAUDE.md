@@ -14,7 +14,7 @@ npm run build         # Production build
 npm run typecheck     # TypeScript strict check (primary correctness gate)
 npm run lint          # ESLint (aliased to typecheck in some envs)
 npm run format:check  # Prettier validation
-npm run test          # Node unit tests (tests/**/*.test.mjs)
+npm run test          # Node unit tests (tests/**/*.test.mjs + *.test.ts via tsx)
 npm run seed          # Seed DB from legacy content.js → Supabase
 npm run db:check      # Verify Supabase connection
 ```
@@ -47,7 +47,7 @@ API Route / Page
 - **TypeScript strict mode** — no `any` without explicit justification; ESLint will reject it.
 - **Prettier** — 120-char line width, trailing commas, double quotes. Run `format:check` before committing.
 - **Path alias** — `@/*` maps to `src/*` (configured in tsconfig.json).
-- **Test format** — tests are `.test.mjs` files under `tests/`, run with Node's built-in test runner.
+- **Test format** — tests are `.test.mjs` or `.test.ts` files under `tests/`, run with Node's built-in test runner (`.test.ts` executed via the `tsx` loader). Unit tests cover pure functions and validation only; imported modules must not have value imports through the `@/` alias (tsx does not resolve tsconfig paths) — so do not test modules that import Supabase. New tests must never introduce `any` (enforced by `architecture.test.mjs`).
 - **CSS** — custom CSS in `src/styles/globals.css`, no Tailwind.
 - **No circular dependencies** — components may only import from `types/`, `constants/`, `utils/`, and `hooks/`.
 
