@@ -13,6 +13,7 @@ import {
   Home,
   ImagePlus,
   Clock,
+  Users,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -33,13 +34,18 @@ const NAV = [
   { id: "forms", label: "Formulaires", icon: Inbox },
 ] as const;
 
+// Sections réservées aux administrateurs.
+const ADMIN_NAV = [{ id: "users", label: "Utilisateurs", icon: Users }] as const;
+
 interface Props {
   collapsed: boolean;
   onToggle: () => void;
+  isAdmin?: boolean;
 }
 
-export function AdminSidebar({ collapsed, onToggle }: Props) {
+export function AdminSidebar({ collapsed, onToggle, isAdmin = false }: Props) {
   const pathname = usePathname();
+  const nav = isAdmin ? [...NAV, ...ADMIN_NAV] : NAV;
 
   const isActive = (id: string) => {
     if (id === "dashboard") return pathname === "/admin/dashboard" || pathname === "/admin";
@@ -54,7 +60,7 @@ export function AdminSidebar({ collapsed, onToggle }: Props) {
       </div>
 
       <nav className="admin-nav" data-tour="tour-nav">
-        {NAV.map(({ id, label, icon: Icon }) => (
+        {nav.map(({ id, label, icon: Icon }) => (
           <Link
             key={id}
             href={`/admin/${id}`}

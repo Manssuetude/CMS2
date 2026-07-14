@@ -33,9 +33,12 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAdminRoute = pathname.startsWith("/admin");
   const isLoginPage = pathname === "/admin/login";
+  // Page d'activation d'un compte invité : accessible sans session (les jetons
+  // arrivent dans le fragment d'URL, pas dans un cookie).
+  const isPublicAdmin = isLoginPage || pathname === "/admin/activation";
 
   // Redirige vers /admin/login si la session est absente
-  if (isAdminRoute && !isLoginPage && !user) {
+  if (isAdminRoute && !isPublicAdmin && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     return NextResponse.redirect(loginUrl);
