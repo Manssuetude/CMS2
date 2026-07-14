@@ -41,8 +41,11 @@ export default async function AdminPages() {
     <section className="admin-panel">
       <div className="admin-page-header">
         <div>
-          <h1>Photos des pages</h1>
-          <p>Personnalisez la photo hero affichée sur chaque page du site.</p>
+          <h1>Pages du site</h1>
+          <p>
+            Modifiez le texte, la photo hero et le SEO de chaque page. Photo rapide ci-dessous, ou « Éditer le contenu »
+            pour tout.
+          </p>
         </div>
         <a href="/admin/media" className="btn secondary">
           Médiathèque →
@@ -106,11 +109,12 @@ export default async function AdminPages() {
               {/* Infos page */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 600, marginBottom: 2 }}>{PAGE_LABELS[page.slug] ?? page.slug}</div>
-                {page.imageId ? (
-                  <div style={{ fontSize: 12, color: "var(--muted)" }}>Photo personnalisée</div>
-                ) : (
-                  <div style={{ fontSize: 12, color: "var(--muted)", fontStyle: "italic" }}>Image par défaut</div>
-                )}
+                <a
+                  href={page.slug === "accueil" ? "/admin/homepage" : `/admin/pages/${page.slug}`}
+                  style={{ fontSize: 12, color: "var(--orange)", fontWeight: 600 }}
+                >
+                  Éditer le contenu →
+                </a>
               </div>
 
               {/* Formulaire image picker */}

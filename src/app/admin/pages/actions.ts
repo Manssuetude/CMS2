@@ -1,7 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { contentRepository } from "@/repositories/contentRepository";
+import { requirePermission } from "@/lib/auth";
+import { logAction } from "@/lib/audit";
 
 const SLUG_TO_PATH: Record<string, string> = {
   accueil: "/",
@@ -15,15 +18,18 @@ const SLUG_TO_PATH: Record<string, string> = {
 };
 
 export async function savePageImageAction(formData: FormData): Promise<void> {
+  await requirePermission("pages:edit");
   const slug = String(formData.get("slug") ?? "");
   const imageId = formData.get("image_id") || null;
   if (!slug) return;
   await contentRepository.updatePage(slug, { image_id: imageId });
-  const path = SLUG_TO_PATH[slug] ?? `/${slug}`;
-  revalidatePath(path);
+  await logAction("update", { entityType: "page", entityId: slug, summary: `Photo de la page « ${slug} » modifiée` });
+  revalidatePath(SLUG_TO_PATH[slug] ?? `/${slug}`);
+  redirect("/admin/pages?saved=1");
 }
 
 export async function savePageContentAction(formData: FormData): Promise<void> {
+  await requirePermission("pages:edit");
   const slug = String(formData.get("slug") ?? "");
   if (!slug) return;
   const fields: Record<string, unknown> = {
@@ -35,6 +41,7 @@ export async function savePageContentAction(formData: FormData): Promise<void> {
     seo_description: formData.get("seo_description") || null,
   };
   await contentRepository.updatePage(slug, fields);
-  const path = SLUG_TO_PATH[slug] ?? `/${slug}`;
-  revalidatePath(path);
+  await logAction("update", { entityType: "page", entityId: slug, summary: `Contenu de la page « ${slug} » modifié` });
+  revalidatePath(SLUG_TO_PATH[slug] ?? `/${slug}`);
+  redirect(`/admin/pages/${slug}?saved=1`);
 }
