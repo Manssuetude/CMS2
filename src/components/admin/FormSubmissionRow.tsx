@@ -8,6 +8,8 @@ import type { FormSubmission } from "@/types/cms";
 
 const FORM_TYPE_LABEL: Record<string, string> = {
   join: "Adhésion",
+  theme: "Thème",
+  activity: "Activité",
   project: "Projet",
   content: "Contenu",
   partner: "Partenariat",

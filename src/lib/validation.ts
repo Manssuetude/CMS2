@@ -16,7 +16,7 @@ export const visibilitySchema = z.enum([
   "draft",
 ]);
 
-export const formTypeSchema = z.enum(["join", "project", "content", "partner", "donation"]);
+export const formTypeSchema = z.enum(["join", "project", "content", "partner", "donation", "theme", "activity"]);
 
 export const mediaMetadataSchema = z.object({
   title: z.string().optional(),

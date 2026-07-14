@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
+import { ProposeSection } from "@/components/public/ProposeSection";
 import { contentRepository } from "@/repositories/contentRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
@@ -24,8 +25,27 @@ export default async function ProjetsPage() {
     const page = await contentRepository.getPage("projets");
     const projects = await contentRepository.listProjects();
     if (!page) notFound();
+    // Retire les CTA du hero (« voir notre approche », etc.) — proposition déplacée en bas.
+    const pageNoCta = {
+      ...page,
+      primaryCtaLabel: null,
+      primaryCtaTarget: null,
+      secondaryCtaLabel: null,
+      secondaryCtaTarget: null,
+    };
     return (
-      <PublicPage page={page} heroImageUrl={page.imageUrl ?? "/assets/photos/hero-projets.png"} projects={projects} />
+      <>
+        <PublicPage
+          page={pageNoCta}
+          heroImageUrl={page.imageUrl ?? "/assets/photos/hero-projets.png"}
+          projects={projects}
+        />
+        <ProposeSection
+          lead="Vous avez un projet à soumettre à Manssuétude ?"
+          label="Proposer un projet"
+          target="FORM:project"
+        />
+      </>
     );
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;

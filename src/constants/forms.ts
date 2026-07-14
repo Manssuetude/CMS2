@@ -1,4 +1,4 @@
-export type PublicFormType = "join" | "project" | "content" | "partner" | "don";
+export type PublicFormType = "join" | "project" | "content" | "partner" | "don" | "theme" | "activity";
 
 export type FormFieldDefinition = {
   name: string;
@@ -59,6 +59,22 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
     { name: "name", label: "Nom", type: "text" },
     { name: "email", label: "Email", type: "email", required: true },
     { name: "message", label: "Message optionnel", type: "text" },
+    { name: "consent", label: "Consentement RGPD", type: "checkbox", required: true },
+  ],
+  theme: [
+    { name: "name", label: "Nom", type: "text", required: true },
+    { name: "email", label: "Email", type: "email", required: true },
+    { name: "themeTitle", label: "Thème proposé", type: "text", required: true },
+    { name: "description", label: "Pourquoi ce thème ?", type: "text" },
+    { name: "consent", label: "Consentement RGPD", type: "checkbox", required: true },
+  ],
+  activity: [
+    { name: "name", label: "Nom", type: "text", required: true },
+    { name: "email", label: "Email", type: "email", required: true },
+    { name: "activityTitle", label: "Titre de l'activité", type: "text", required: true },
+    { name: "format", label: "Format (atelier, débat, séance…)", type: "text" },
+    { name: "description", label: "Description / objectif", type: "text" },
+    { name: "date", label: "Date envisagée", type: "text" },
     { name: "consent", label: "Consentement RGPD", type: "checkbox", required: true },
   ],
 };
