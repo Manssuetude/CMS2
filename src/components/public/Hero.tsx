@@ -24,7 +24,7 @@ export function Hero({
   secondaryTarget?: CtaTarget | null;
 }) {
   return (
-    <section className="hero">
+    <section className={`hero${imageUrl ? "" : " hero--no-image"}`}>
       <div className="hero-copy">
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
         <h1>{title}</h1>
@@ -38,9 +38,11 @@ export function Hero({
           ) : null}
         </div>
       </div>
-      <div className="hero-image">
-        {imageUrl ? <img src={imageUrl} alt={imageAlt || title} loading="eager" /> : null}
-      </div>
+      {imageUrl ? (
+        <div className="hero-image">
+          <img src={imageUrl} alt={imageAlt || title} loading="eager" />
+        </div>
+      ) : null}
     </section>
   );
 }

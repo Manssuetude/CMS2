@@ -36,7 +36,7 @@ export function HomeEditorial({
   return (
     <div className="home">
       {/* 1 — Hero : identité de l'association */}
-      <section className="home-hero">
+      <section className={`home-hero${heroImageUrl ? "" : " home-hero--no-image"}`}>
         <div className="home-hero-copy">
           <h1>
             <span className="home-hero-initial">{(headline || "").charAt(0)}</span>

@@ -25,12 +25,7 @@ export default async function JoinPage() {
     if (!page) notFound();
     // Masque le CTA secondaire "Participer à une activité" sur cette page.
     const pageWithoutSecondaryCta = { ...page, secondaryCtaLabel: null, secondaryCtaTarget: null };
-    return (
-      <PublicPage
-        page={pageWithoutSecondaryCta}
-        heroImageUrl={page.imageUrl ?? "/assets/photos/hero-nous-rejoindre.png"}
-      />
-    );
+    return <PublicPage page={pageWithoutSecondaryCta} heroImageUrl={page.imageUrl ?? undefined} />;
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.

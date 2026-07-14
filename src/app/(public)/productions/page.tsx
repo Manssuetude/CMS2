@@ -55,7 +55,7 @@ export default async function ProductionsPage({ searchParams }: { searchParams: 
           eyebrow={page.eyebrow}
           title={page.title}
           body={page.body}
-          imageUrl={page.imageUrl ?? "/assets/photos/hero-productions.png"}
+          imageUrl={page.imageUrl ?? undefined}
           quote={page.quote}
           primaryLabel={page.primaryCtaLabel}
           primaryTarget={page.primaryCtaTarget}
