@@ -2639,3 +2639,81 @@ textarea {
   box-shadow: var(--shadow);
   animation: slideUp 0.2s ease;
 }
+
+/* ─── Formulaires reçus : lignes dépliables + détail ─────────────────── */
+.forms-pending-badge {
+  margin-left: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 700;
+}
+.form-row-toggle {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+.form-row-toggle svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+.form-row-toggle:hover svg {
+  opacity: 1;
+  color: var(--orange);
+}
+.form-row-name {
+  display: block;
+  font-weight: 600;
+}
+.form-row-email {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.form-type-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.form-detail-row td {
+  background: var(--soft);
+  padding: 16px 20px;
+}
+.form-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px 28px;
+  margin: 0;
+}
+.form-detail-item dt {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.form-detail-item dd {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+  word-break: break-word;
+}

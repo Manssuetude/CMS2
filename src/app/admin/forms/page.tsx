@@ -1,58 +1,77 @@
+import Link from "next/link";
+import { Download } from "lucide-react";
 import { contentRepository } from "@/repositories/contentRepository";
 import { updateFormStatusAction } from "./actions";
-import { FormStatusSelect } from "@/components/admin/FormStatusSelect";
+import { FormSubmissionRow } from "@/components/admin/FormSubmissionRow";
 
-const FORM_TYPE_LABEL: Record<string, string> = {
-  join: "Adhésion",
-  project: "Projet",
-  content: "Contenu",
-  partner: "Partenariat",
-  donation: "Don",
-};
+const TYPE_TABS: Array<{ value: string; label: string }> = [
+  { value: "", label: "Tous" },
+  { value: "join", label: "Adhésion" },
+  { value: "project", label: "Projet" },
+  { value: "content", label: "Contenu" },
+  { value: "partner", label: "Partenariat" },
+  { value: "donation", label: "Don" },
+];
 
-function statusClass(status: string) {
-  if (status === "reçu") return "badge-recu";
-  if (status === "en cours") return "badge-encours";
-  if (status === "traité") return "badge-traite";
-  if (status === "archivé") return "badge-archive";
-  return "badge-recu";
-}
+const TABLE_COLUMNS = 4;
 
-export default async function AdminFormsPage() {
-  const forms = await contentRepository.listFormSubmissions();
+export default async function AdminFormsPage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
+  const { type } = await searchParams;
+  const activeType = TYPE_TABS.some((t) => t.value === type && t.value !== "") ? type : "";
 
+  const all = await contentRepository.listFormSubmissions();
+  const forms = activeType ? all.filter((f) => f.formType === activeType) : all;
   const pending = forms.filter((f) => f.status === "reçu").length;
+
+  const exportHref = activeType ? `/api/forms/export?type=${activeType}` : "/api/forms/export";
 
   return (
     <section className="admin-panel">
-      <div className="admin-page-header">
+      <div
+        className="admin-page-header"
+        style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}
+      >
         <div>
           <h1>Formulaires reçus</h1>
           <p>
             {forms.length} soumission{forms.length !== 1 ? "s" : ""}
-            {pending > 0 && (
-              <span
-                style={{
-                  marginLeft: 10,
-                  padding: "2px 8px",
-                  borderRadius: "var(--radius-pill)",
-                  background: "var(--orange-soft)",
-                  color: "var(--orange)",
-                  fontSize: 11,
-                  fontWeight: 700,
-                }}
-              >
-                {pending} en attente
-              </span>
-            )}
+            {pending > 0 && <span className="forms-pending-badge">{pending} en attente</span>}
           </p>
         </div>
+        <a className="button" href={exportHref} download>
+          <Download size={15} strokeWidth={1.75} />
+          Exporter CSV
+        </a>
+      </div>
+
+      {/* Filtres par type */}
+      <div className="filter-bar" style={{ justifyContent: "flex-start" }}>
+        {TYPE_TABS.map((t) => {
+          const count = t.value ? all.filter((f) => f.formType === t.value).length : all.length;
+          const href = t.value ? `/admin/forms?type=${t.value}` : "/admin/forms";
+          return (
+            <Link
+              key={t.value || "all"}
+              href={href}
+              className={`filter-chip${activeType === t.value ? " active" : ""}`}
+            >
+              {t.label}
+              <span style={{ marginLeft: 6, opacity: 0.7 }}>{count}</span>
+            </Link>
+          );
+        })}
       </div>
 
       {forms.length === 0 ? (
         <div className="admin-empty">
-          <strong>Aucun formulaire reçu</strong>
-          <p>Les soumissions du site apparaîtront ici.</p>
+          <strong>Aucun formulaire{activeType ? " de ce type" : " reçu"}</strong>
+          <p>
+            {activeType ? (
+              <Link href="/admin/forms">Voir tous les formulaires</Link>
+            ) : (
+              "Les soumissions du site apparaîtront ici."
+            )}
+          </p>
         </div>
       ) : (
         <table className="admin-table">
@@ -60,76 +79,14 @@ export default async function AdminFormsPage() {
             <tr>
               <th>Contact</th>
               <th>Type</th>
-              <th>Données</th>
               <th>Reçu le</th>
               <th>Statut</th>
             </tr>
           </thead>
           <tbody>
-            {forms.map((f) => {
-              const d = f.data as Record<string, unknown>;
-              return (
-                <tr key={f.id}>
-                  <td className="col-title" style={{ minWidth: 160 }}>
-                    <div>
-                      {d.firstName != null || d.lastName != null
-                        ? [d.firstName, d.lastName].filter(Boolean).join(" ")
-                        : String(d.name ?? d.nom ?? "-")}
-                    </div>
-                    {d.email != null && (
-                      <div style={{ fontSize: 12, color: "var(--muted)", fontWeight: 400 }}>{String(d.email)}</div>
-                    )}
-                  </td>
-                  <td>
-                    <span
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        padding: "2px 7px",
-                        borderRadius: "var(--radius-pill)",
-                        background: "var(--soft)",
-                        border: "1px solid var(--line)",
-                        color: "var(--muted)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
-                      }}
-                    >
-                      {FORM_TYPE_LABEL[f.formType] ?? f.formType}
-                    </span>
-                  </td>
-                  <td style={{ maxWidth: 300 }}>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "var(--muted)",
-                        lineHeight: 1.5,
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                      }}
-                    >
-                      {Object.entries(d)
-                        .filter(([k]) => !["name", "nom", "firstName", "lastName", "email", "consent"].includes(k))
-                        .slice(0, 3)
-                        .map(([k, v]) => `${k}: ${String(v)}`)
-                        .join(" · ")}
-                    </div>
-                  </td>
-                  <td style={{ fontSize: 12, color: "var(--muted)", whiteSpace: "nowrap" }}>
-                    {new Date(f.receivedAt).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td style={{ minWidth: 160, display: "flex", gap: 8, alignItems: "center" }}>
-                    <span className={`badge-status ${statusClass(f.status)}`}>{f.status}</span>
-                    <FormStatusSelect id={f.id} currentStatus={f.status} action={updateFormStatusAction} />
-                  </td>
-                </tr>
-              );
-            })}
+            {forms.map((f) => (
+              <FormSubmissionRow key={f.id} submission={f} action={updateFormStatusAction} columns={TABLE_COLUMNS} />
+            ))}
           </tbody>
         </table>
       )}
