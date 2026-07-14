@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { contentRepository } from "@/repositories/contentRepository";
+import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
 export async function toggleProductionFeaturedAction(formData: FormData): Promise<void> {
@@ -84,6 +85,11 @@ export async function createProductionAction(_: string | null, formData: FormDat
     await contentRepository.setProductionThemes(production.id, themeIds);
   }
 
+  await logAction("create", {
+    entityType: "production",
+    entityId: production.id,
+    summary: `Production créée : ${parsed.data.title}`,
+  });
   revalidatePath("/admin/productions");
   redirect("/admin/productions");
 }
@@ -121,6 +127,11 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     .filter(Boolean);
   await contentRepository.setProductionThemes(id, themeIds);
 
+  await logAction("update", {
+    entityType: "production",
+    entityId: id,
+    summary: `Production modifiée : ${parsed.data.title}`,
+  });
   revalidatePath("/admin/productions");
   redirect("/admin/productions");
 }
@@ -129,6 +140,7 @@ export async function deleteProductionAction(formData: FormData): Promise<void> 
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return;
   await contentRepository.deleteProduction(id);
+  await logAction("delete", { entityType: "production", entityId: id, summary: "Production supprimée" });
   revalidatePath("/admin/productions");
 }
 

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { contentRepository } from "@/repositories/contentRepository";
+import { logAction } from "@/lib/audit";
 
 const schema = z.object({
   description: z.string().optional().nullable(),
@@ -51,6 +52,7 @@ export async function createThemeAction(_: string | null, formData: FormData): P
     return "Erreur lors de la création. Vérifiez que l'identifiant n'existe pas déjà.";
   }
 
+  await logAction("create", { entityType: "theme", summary: `Thème créé : ${parsed.data.title}` });
   revalidatePath("/admin/themes");
   redirect("/admin/themes");
 }
@@ -90,6 +92,7 @@ export async function updateThemeAction(_: string | null, formData: FormData): P
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
+  await logAction("update", { entityType: "theme", entityId: id, summary: "Thème modifié" });
   revalidatePath("/admin/themes");
   redirect("/admin/themes");
 }

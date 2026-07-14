@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { contentRepository } from "@/repositories/contentRepository";
+import { logAction } from "@/lib/audit";
 
 export async function savePercaFieldsAction(formData: FormData): Promise<void> {
   const fields: Record<string, unknown> = {
@@ -12,5 +14,7 @@ export async function savePercaFieldsAction(formData: FormData): Promise<void> {
     seo_description: formData.get("seo_description") || null,
   };
   await contentRepository.updatePage("perca", fields);
+  await logAction("update", { entityType: "page", entityId: "perca", summary: "Page PERCA modifiée" });
   revalidatePath("/perca");
+  redirect("/admin/perca?saved=1");
 }

@@ -1,4 +1,13 @@
 export type UserRole = "admin" | "editor" | "contributor" | "viewer";
+
+// Rôle RBAC personnalisable (table `roles`). `isAdmin` = rôle tout-puissant figé.
+export type Role = {
+  id: string;
+  key: string;
+  label: string;
+  isAdmin: boolean;
+  permissions: string[]; // clés "section:action"
+};
 export type ContentStatus = "draft" | "review" | "validated" | "published" | "archived";
 export type ProgressStatus = "idea" | "preparation" | "active" | "completed" | "paused";
 export type MediaSource = "upload" | "google-drive" | "external-url" | "youtube" | "vimeo";

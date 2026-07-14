@@ -1,4 +1,5 @@
 import type { Page } from "@/types/cms";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 // Les 5 étapes du cadre PERCA de Manssuétude.
 const perca: Array<[string, string]> = [
@@ -26,7 +27,9 @@ export function PercaEditorial({ page }: { page: Page }) {
         ))}
       </ol>
 
-      {page.body ? <div className="perca-body rich-text" dangerouslySetInnerHTML={{ __html: page.body }} /> : null}
+      {page.body ? (
+        <div className="perca-body rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body) }} />
+      ) : null}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { Page } from "@/types/cms";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 export function HistoryEditorial({ page }: { page: Page }) {
   return (
@@ -7,7 +8,9 @@ export function HistoryEditorial({ page }: { page: Page }) {
         {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
         <h1>{page.title}</h1>
       </header>
-      {page.body ? <div className="history-body rich-text" dangerouslySetInnerHTML={{ __html: page.body }} /> : null}
+      {page.body ? (
+        <div className="history-body rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body) }} />
+      ) : null}
     </div>
   );
 }

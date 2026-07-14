@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { contentRepository } from "@/repositories/contentRepository";
+import { logAction } from "@/lib/audit";
 
 export async function saveHistoryFieldsAction(formData: FormData): Promise<void> {
   const payload: Record<string, unknown> = {
@@ -16,5 +18,7 @@ export async function saveHistoryFieldsAction(formData: FormData): Promise<void>
   };
   // upsert : crée la page « history » au premier enregistrement, la met à jour ensuite.
   await contentRepository.upsertPage(payload);
+  await logAction("update", { entityType: "page", entityId: "history", summary: "Page Histoire modifiée" });
   revalidatePath("/history");
+  redirect("/admin/history?saved=1");
 }

@@ -13,6 +13,9 @@ import {
   Home,
   ImagePlus,
   Clock,
+  Users,
+  ShieldCheck,
+  ScrollText,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -33,13 +36,25 @@ const NAV = [
   { id: "forms", label: "Formulaires", icon: Inbox },
 ] as const;
 
+// Sections réservées aux administrateurs.
+const ADMIN_NAV = [
+  { id: "users", label: "Utilisateurs", icon: Users },
+  { id: "roles", label: "Rôles", icon: ShieldCheck },
+  { id: "journal", label: "Journal", icon: ScrollText },
+] as const;
+
 interface Props {
   collapsed: boolean;
   onToggle: () => void;
+  isAdmin?: boolean;
+  permissions?: string[];
 }
 
-export function AdminSidebar({ collapsed, onToggle }: Props) {
+export function AdminSidebar({ collapsed, onToggle, isAdmin = false, permissions = [] }: Props) {
   const pathname = usePathname();
+  // Masque les sections que le rôle ne peut pas voir (l'admin voit tout).
+  const canView = (id: string) => id === "dashboard" || isAdmin || permissions.includes(`${id}:view`);
+  const nav = [...NAV.filter((item) => canView(item.id)), ...(isAdmin ? ADMIN_NAV : [])];
 
   const isActive = (id: string) => {
     if (id === "dashboard") return pathname === "/admin/dashboard" || pathname === "/admin";
@@ -54,7 +69,7 @@ export function AdminSidebar({ collapsed, onToggle }: Props) {
       </div>
 
       <nav className="admin-nav" data-tour="tour-nav">
-        {NAV.map(({ id, label, icon: Icon }) => (
+        {nav.map(({ id, label, icon: Icon }) => (
           <Link
             key={id}
             href={`/admin/${id}`}

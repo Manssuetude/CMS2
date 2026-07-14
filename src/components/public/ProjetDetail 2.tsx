@@ -1,6 +1,5 @@
 import type { Project } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
-import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const PROGRESS_LABEL: Record<string, string> = {
   idea: "Idée",
@@ -66,7 +65,7 @@ export function ProjetDetail({ item }: { item: Project }) {
       {item.body && (
         <section className="section">
           <div className="detail-layout no-sidebar">
-            <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.body) }} />
+            <div className="rich-text" dangerouslySetInnerHTML={{ __html: item.body }} />
           </div>
         </section>
       )}

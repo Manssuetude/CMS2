@@ -4,8 +4,17 @@ import { useState, useEffect } from "react";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminTopbar } from "./AdminTopbar";
 import { OnboardingTour } from "./OnboardingTour";
+import { AdminToaster } from "./AdminToaster";
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+export function AdminShell({
+  children,
+  isAdmin = false,
+  permissions = [],
+}: {
+  children: React.ReactNode;
+  isAdmin?: boolean;
+  permissions?: string[];
+}) {
   const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
@@ -28,12 +37,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className={`admin-shell${collapsed ? " sidebar-collapsed" : ""}`}>
-      <AdminSidebar collapsed={collapsed} onToggle={toggle} />
+      <AdminSidebar collapsed={collapsed} onToggle={toggle} isAdmin={isAdmin} permissions={permissions} />
       <div className="admin-main">
         <AdminTopbar />
         <main className="admin-content">{children}</main>
       </div>
       <OnboardingTour />
+      <AdminToaster />
     </div>
   );
 }
