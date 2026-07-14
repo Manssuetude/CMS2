@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Hero } from "@/components/public/Hero";
 import { FilterBar } from "@/components/public/FilterBar";
 import { CardGrid } from "@/components/cards/CardGrid";
+import { ProposeSection } from "@/components/public/ProposeSection";
 import { contentRepository } from "@/repositories/contentRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
@@ -56,10 +57,6 @@ export default async function ActivitesPage({ searchParams }: { searchParams: Pr
           body={page.body}
           imageUrl={page.imageUrl ?? "/assets/photos/hero-activites.png"}
           quote={page.quote}
-          primaryLabel={page.primaryCtaLabel}
-          primaryTarget={page.primaryCtaTarget}
-          secondaryLabel={page.secondaryCtaLabel}
-          secondaryTarget={page.secondaryCtaTarget}
         />
         <Suspense>
           <FilterBar param="format" options={formatOptions} allLabel="Tous les formats" />
@@ -72,6 +69,11 @@ export default async function ActivitesPage({ searchParams }: { searchParams: Pr
             href: `/activites/${item.slug}`,
             meta: FORMAT_LABEL[item.format] ?? item.format,
           }))}
+        />
+        <ProposeSection
+          lead="Vous avez une idée d'activité à proposer ?"
+          label="Proposer une activité"
+          target="FORM:activity"
         />
       </>
     );

@@ -13,7 +13,7 @@ export type Visibility =
   | "archived"
   | "private"
   | "draft";
-export type FormType = "join" | "project" | "content" | "partner" | "donation";
+export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "activity";
 export type FormStatus = "reçu" | "en cours" | "traité" | "archivé";
 export type EntityType =
   | "theme"
@@ -44,7 +44,7 @@ export type PermissionKey =
   | "seo.manage"
   | "design.manage";
 
-export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don"}`;
+export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "activity"}`;
 
 export type ContentBlock =
   | {

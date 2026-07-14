@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
+import { ProposeSection } from "@/components/public/ProposeSection";
 import { contentRepository } from "@/repositories/contentRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
@@ -24,7 +25,24 @@ export default async function ThemesPage() {
     const page = await contentRepository.getPage("themes");
     const themes = await contentRepository.listThemes();
     if (!page) notFound();
-    return <PublicPage page={page} heroImageUrl={page.imageUrl ?? "/assets/photos/hero-themes.png"} themes={themes} />;
+    // Retire les CTA du hero (« thème actif », etc.) — proposition déplacée en bas.
+    const pageNoCta = {
+      ...page,
+      primaryCtaLabel: null,
+      primaryCtaTarget: null,
+      secondaryCtaLabel: null,
+      secondaryCtaTarget: null,
+    };
+    return (
+      <>
+        <PublicPage page={pageNoCta} heroImageUrl={page.imageUrl ?? "/assets/photos/hero-themes.png"} themes={themes} />
+        <ProposeSection
+          lead="Vous souhaitez proposer un thème de réflexion ?"
+          label="Proposer un thème"
+          target="FORM:theme"
+        />
+      </>
+    );
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.

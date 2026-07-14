@@ -1884,3 +1884,23 @@
     width: 13rem;
   }
 }
+
+/* Bloc "Proposer …" en bas de page (activités, thèmes, projets) */
+.site-shell .propose-section {
+  max-width: var(--ed-container);
+  margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+  padding: clamp(2rem, 4vw, 3rem) var(--ed-gutter);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  text-align: center;
+  border-top: 1px solid var(--ed-line);
+}
+.site-shell .propose-lead {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--ed-step-4);
+  color: var(--ed-ink);
+  max-width: 24ch;
+}
