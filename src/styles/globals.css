@@ -1339,9 +1339,50 @@ textarea {
 .admin-shell .button::after {
   display: none;
 }
-.admin-shell .button {
+/* ─── Boutons admin — style unifié, plus fin et moderne ──────────────── */
+.admin-shell .button,
+.admin-shell .cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13.5px;
   font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.08s ease;
+}
+.admin-shell .button:hover {
+  border-color: var(--ink-soft);
+  background: var(--soft);
+}
+.admin-shell .button:active,
+.admin-shell .cta:active {
+  transform: translateY(1px);
+}
+/* Bouton principal + CTA d'enregistrement : orange de marque */
+.admin-shell .button.primary,
+.admin-shell .cta {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(255, 77, 18, 0.18);
+}
+.admin-shell .button.primary:hover,
+.admin-shell .cta:hover {
+  background: #e63e08;
+  border-color: #e63e08;
+  box-shadow: 0 5px 16px rgba(255, 77, 18, 0.28);
 }
 /* Base reset: undo browser bold default on plain buttons + heavy labels */
 .admin-shell button {
@@ -1400,16 +1441,9 @@ textarea {
   white-space: nowrap;
 }
 .admin-sidebar-logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--orange);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 900;
-  font-size: 16px;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 .admin-sidebar-brand-name {

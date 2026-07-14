@@ -19,23 +19,11 @@ export default function LoginPage() {
             marginBottom: 24,
           }}
         >
-          <div
-            style={{
-              width: 42,
-              height: 42,
-              borderRadius: 10,
-              background: "var(--orange)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              fontWeight: 900,
-              fontSize: 20,
-              flexShrink: 0,
-            }}
-          >
-            M
-          </div>
+          <img
+            src="/assets/photos/logo-manssuetude.png?v=2"
+            alt="Manssuétude"
+            style={{ width: 46, height: 46, objectFit: "contain", flexShrink: 0 }}
+          />
           <div>
             <p
               style={{

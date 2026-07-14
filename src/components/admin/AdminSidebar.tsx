@@ -47,8 +47,8 @@ export function AdminSidebar({ collapsed, onToggle }: Props) {
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
-        <div className="admin-sidebar-logo">M</div>
-        <span className="admin-sidebar-brand-name">Manssuetude</span>
+        <img className="admin-sidebar-logo" src="/assets/photos/logo-manssuetude.png?v=2" alt="Manssuétude" />
+        <span className="admin-sidebar-brand-name">Manssuétude</span>
       </div>
 
       <nav className="admin-nav" data-tour="tour-nav">
