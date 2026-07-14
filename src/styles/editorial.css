@@ -1784,6 +1784,21 @@
 .site-shell .header-search input::placeholder {
   color: var(--ed-muted);
 }
+.site-shell .header-search-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  margin-left: 0.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--ed-clay);
+  cursor: pointer;
+}
+.site-shell .header-search-submit:hover {
+  color: var(--ed-brand);
+}
 
 .site-shell .search-page {
   max-width: 880px;

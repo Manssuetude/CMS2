@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
@@ -16,8 +16,18 @@ const nav = [
 
 export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+
+  function submitSearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const raw = new FormData(event.currentTarget).get("q");
+    const query = String(raw ?? "").trim();
+    setSearchOpen(false);
+    setOpen(false);
+    router.push(query ? `/recherche?q=${encodeURIComponent(query)}` : "/recherche");
+  }
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
@@ -75,16 +85,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
               </svg>
             </button>
             {searchOpen && (
-              <form
-                className="header-search"
-                action="/recherche"
-                method="get"
-                role="search"
-                onSubmit={() => {
-                  setSearchOpen(false);
-                  setOpen(false);
-                }}
-              >
+              <form className="header-search" role="search" onSubmit={submitSearch}>
                 <input
                   type="search"
                   name="q"
@@ -95,6 +96,20 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
                     if (e.key === "Escape") setSearchOpen(false);
                   }}
                 />
+                <button type="submit" className="header-search-submit" aria-label="Lancer la recherche">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    aria-hidden
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                </button>
               </form>
             )}
           </div>
