@@ -1904,3 +1904,24 @@
   color: var(--ed-ink);
   max-width: 24ch;
 }
+
+/* Page /history — éditoriale simple (en-tête + contenu riche) */
+.site-shell .history-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 5rem) var(--ed-gutter) clamp(3rem, 6vw, 5rem);
+}
+.site-shell .history-header {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  padding-bottom: clamp(1.25rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--ed-line);
+}
+.site-shell .history-header h1 {
+  font-size: var(--ed-step-6);
+  margin: 0;
+}
+.site-shell .history-body {
+  font-size: var(--ed-step-1);
+  line-height: 1.8;
+  color: var(--ed-ink);
+}
