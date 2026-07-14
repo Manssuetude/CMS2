@@ -3,7 +3,6 @@ import { Pencil, Plus } from "lucide-react";
 import { contentRepository } from "@/repositories/contentRepository";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
-import { FeaturedToggleButton } from "@/components/admin/FeaturedToggleButton";
 import {
   buildStatusTabs,
   countByStatus,
@@ -66,7 +65,6 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
               <th>Thème</th>
               <th>Statut</th>
               <th>Description</th>
-              <th>En avant</th>
               <th className="col-actions">Actions</th>
             </tr>
           </thead>
@@ -92,9 +90,6 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
                   ) : (
                     <em>Aucune description</em>
                   )}
-                </td>
-                <td style={{ textAlign: "center" }}>
-                  <FeaturedToggleButton id={item.id} featured={item.featured} kind="theme" />
                 </td>
                 <td className="col-actions">
                   <div className="row-actions">
