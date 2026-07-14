@@ -32,7 +32,7 @@ npm run build
 **Selon le changement :**
 
 ```bash
-npm run test          # si l'architecture ou les conventions changent
+npm run test          # tests unitaires (fonctions pures + validation)
 npm run format:check  # si la modification est large
 ```
 
@@ -123,7 +123,41 @@ npm run build
 
 ---
 
-## 7. CI GitHub Actions
+## 7. Tests
+
+**Commande :**
+
+```bash
+npm run test
+```
+
+**Configuration :**
+
+| Paramètre | Valeur                                                  |
+| --------- | ------------------------------------------------------- |
+| Runner    | Runner intégré de Node (`node --test`)                  |
+| Fichiers  | `tests/**/*.test.mjs` et `tests/**/*.test.ts`           |
+| Loader TS | `tsx` (via `--import tsx`) pour exécuter les `.test.ts` |
+
+**Portée :** tests unitaires sur les **fonctions pures** et la **validation** (pas de base de données, pas de rendu React). Les modules testés n'ont pas de dépendance à Supabase ni d'import de valeur via l'alias `@/` (que `tsx` ne résout pas hors compilation Next).
+
+| Fichier                 | Couvre                                                            |
+| ----------------------- | ----------------------------------------------------------------- |
+| `architecture.test.mjs` | Fichiers de fondation présents + absence de `any` explicite       |
+| `slug.test.ts`          | `slugify`                                                         |
+| `utils.test.ts`         | `parseTags` / `uniqueTags`, helpers `row.*`                       |
+| `cta.test.ts`           | `resolveCta` / `isFormCta`                                        |
+| `permissions.test.ts`   | RBAC : `permKey`, `allPermissionKeys`, `can`, `canViewSection`    |
+| `forms.test.ts`         | `toSubmissionFormType`, email + consentement RGPD obligatoires    |
+| `adminStatus.test.ts`   | `resolveActiveStatus`, `countByStatus`, `buildStatusTabs`         |
+| `validation.test.ts`    | Schémas Zod (`formTypeSchema`, `idSchema`, valeurs par défaut)    |
+| `sanitizeHtml.test.ts`  | Anti-XSS : strip `<script>` / handlers inline, formatage conservé |
+
+> **Invariant** : les nouveaux tests ne doivent jamais introduire de `any` (vérifié par `architecture.test.mjs`).
+
+---
+
+## 8. CI GitHub Actions
 
 **Configuration :**
 
@@ -147,21 +181,21 @@ npm run build
 
 ---
 
-## 8. Checklist avant pull request
+## 9. Checklist avant pull request
 
 - [ ] La tâche ne lance pas une fonctionnalité hors phase
 - [ ] Les fichiers touchés ont été relus
 - [ ] `npm run typecheck` — OK
 - [ ] `npm run lint` — OK
 - [ ] `npm run build` — OK
-- [ ] `npm run test` — si l'architecture ou les conventions changent
+- [ ] `npm run test` — OK (obligatoire ; la CI le lance à chaque PR)
 - [ ] Documentation mise à jour si une règle change
 - [ ] Captures ajoutées si l'UI change
 - [ ] Limites restantes mentionnées dans la PR
 
 ---
 
-## 9. Problèmes connus
+## 10. Problèmes connus
 
 - Le cache npm global du poste peut être bloqué par des fichiers root-owned. Contournement local : `npm install --cache ./.npm-cache`
 - `npm install` signale actuellement deux vulnérabilités modérées. Ne pas lancer `npm audit fix --force` sans audit — risque de mises à jour cassantes
