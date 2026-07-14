@@ -391,6 +391,13 @@
   gap: clamp(1.75rem, 4vw, 4rem);
   align-items: center;
 }
+/* Sans photo : le texte occupe toute la largeur (pas de colonne vide) */
+.site-shell .hero--no-image {
+  grid-template-columns: 1fr;
+}
+.site-shell .hero--no-image .hero-copy {
+  max-width: 62ch;
+}
 .site-shell .hero-copy h1 {
   font-size: var(--ed-step-5);
   font-weight: 500;
@@ -554,6 +561,9 @@
   gap: clamp(1.75rem, 4vw, 4rem);
   align-items: center;
   padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(2.5rem, 5vw, 4rem);
+}
+.site-shell .home-hero--no-image {
+  grid-template-columns: 1fr;
 }
 .site-shell .home-hero-copy h1 {
   font-size: var(--ed-step-5);

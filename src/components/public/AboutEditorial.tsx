@@ -18,7 +18,7 @@ export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Pa
         eyebrow={page.eyebrow}
         title={page.title}
         body={page.body}
-        imageUrl={page.imageUrl ?? "/assets/photos/hero-a-propos.png"}
+        imageUrl={page.imageUrl ?? undefined}
         primaryLabel={page.primaryCtaLabel}
         primaryTarget={page.primaryCtaTarget}
         secondaryLabel={page.secondaryCtaLabel}

@@ -35,11 +35,7 @@ export default async function ProjetsPage() {
     };
     return (
       <>
-        <PublicPage
-          page={pageNoCta}
-          heroImageUrl={page.imageUrl ?? "/assets/photos/hero-projets.png"}
-          projects={projects}
-        />
+        <PublicPage page={pageNoCta} heroImageUrl={page.imageUrl ?? undefined} projects={projects} />
         <ProposeSection
           lead="Vous avez un projet à soumettre à Manssuétude ?"
           label="Proposer un projet"

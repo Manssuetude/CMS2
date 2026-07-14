@@ -35,7 +35,7 @@ export default async function ThemesPage() {
     };
     return (
       <>
-        <PublicPage page={pageNoCta} heroImageUrl={page.imageUrl ?? "/assets/photos/hero-themes.png"} themes={themes} />
+        <PublicPage page={pageNoCta} heroImageUrl={page.imageUrl ?? undefined} themes={themes} />
         <ProposeSection
           lead="Vous souhaitez proposer un thème de réflexion ?"
           label="Proposer un thème"

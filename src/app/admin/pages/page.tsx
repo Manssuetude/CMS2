@@ -13,17 +13,6 @@ const PAGE_LABELS: Record<string, string> = {
   themes: "Thèmes",
 };
 
-const PAGE_FALLBACK: Record<string, string> = {
-  accueil: "/assets/photos/hero-accueil.png",
-  "a-propos": "",
-  "nous-rejoindre": "/assets/photos/hero-nous-rejoindre.png",
-  "nous-soutenir": "/assets/photos/hero-nous-soutenir.png",
-  activites: "/assets/photos/hero-activites.png",
-  productions: "/assets/photos/hero-productions.png",
-  projets: "/assets/photos/hero-projets.png",
-  themes: "/assets/photos/hero-themes.png",
-};
-
 function toAbsoluteUrl(url: string | null | undefined): string {
   if (!url) return "";
   if (url.startsWith("http") || url.startsWith("/")) return url;
@@ -70,8 +59,7 @@ export default async function AdminPages() {
 
       <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {staticPages.map((page) => {
-          const fallback = PAGE_FALLBACK[page.slug] ?? "";
-          const currentUrl = toAbsoluteUrl(page.imageUrl ?? fallback);
+          const currentUrl = toAbsoluteUrl(page.imageUrl ?? "");
 
           return (
             <div
