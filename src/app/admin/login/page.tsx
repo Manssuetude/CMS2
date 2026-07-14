@@ -20,7 +20,7 @@ export default function LoginPage() {
           }}
         >
           <img
-            src="/assets/photos/logo-manssuetude.png?v=2"
+            src="/assets/photos/logo-manssuetude.png?v=3"
             alt="Manssuétude"
             style={{ width: 46, height: 46, objectFit: "contain", flexShrink: 0 }}
           />

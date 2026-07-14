@@ -1652,8 +1652,14 @@
 .site-shell .maintenance {
   max-width: 640px;
   margin: 0 auto;
-  padding: clamp(4rem, 12vw, 9rem) var(--ed-gutter);
+  padding: clamp(3rem, 9vw, 6rem) var(--ed-gutter);
   text-align: center;
+}
+.site-shell .maintenance-art {
+  display: block;
+  width: clamp(180px, 40vw, 240px);
+  height: auto;
+  margin: 0 auto 1.75rem;
 }
 .site-shell .maintenance h1 {
   font-size: var(--ed-step-5);
