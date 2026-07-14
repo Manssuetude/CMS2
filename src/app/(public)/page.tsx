@@ -31,8 +31,8 @@ export default async function HomePage() {
     // Plafonds : 4 productions, 3 activités, 4 thèmes.
     const featuredProductions = productions.filter((p) => p.featured);
     const homeProductions = (featuredProductions.length ? featuredProductions : productions).slice(0, 4);
-    const featuredActivities = activities.filter((a) => a.featured);
-    const homeActivities = (featuredActivities.length ? featuredActivities : activities).slice(0, 3);
+    // Activités affichées = uniquement celles marquées en vedette (max 3). Aucune vedette → section masquée.
+    const homeActivities = activities.filter((a) => a.featured).slice(0, 3);
 
     // "Sujet du moment" = le thème sélectionné en admin (page.quote = slug du thème).
     const focusTheme = page.quote ? (themes.find((t) => t.slug === page.quote) ?? null) : null;
