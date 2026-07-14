@@ -17,6 +17,7 @@ const nav = [
 export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
@@ -52,27 +53,51 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
           ))}
         </div>
         <div className="header-actions">
-          <form
-            className="header-search"
-            action="/recherche"
-            method="get"
-            role="search"
-            onSubmit={() => setOpen(false)}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden
+          <div className="header-search-wrap">
+            <button
+              type="button"
+              className="header-search-toggle"
+              aria-label="Rechercher"
+              aria-expanded={searchOpen}
+              onClick={() => setSearchOpen((v) => !v)}
             >
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input type="search" name="q" placeholder="Rechercher…" aria-label="Rechercher sur le site" />
-          </form>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden
+              >
+                <circle cx="11" cy="11" r="7" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+            {searchOpen && (
+              <form
+                className="header-search"
+                action="/recherche"
+                method="get"
+                role="search"
+                onSubmit={() => {
+                  setSearchOpen(false);
+                  setOpen(false);
+                }}
+              >
+                <input
+                  type="search"
+                  name="q"
+                  placeholder="Rechercher…"
+                  aria-label="Rechercher sur le site"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") setSearchOpen(false);
+                  }}
+                />
+              </form>
+            )}
+          </div>
           <ThemeToggle />
           <Link className="support-link" href="/nous-soutenir" onClick={() => setOpen(false)}>
             Nous soutenir
