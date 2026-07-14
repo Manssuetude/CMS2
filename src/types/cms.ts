@@ -253,6 +253,7 @@ export type Activity = {
   progressStatus?: ProgressStatus | null;
   gallery: string[];
   documents: string[];
+  featured: boolean;
   createdAt: string;
   updatedAt: string;
 };

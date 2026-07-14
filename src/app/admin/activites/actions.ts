@@ -97,3 +97,18 @@ export async function toggleActivityStatusAction(formData: FormData): Promise<vo
   await contentRepository.toggleStatus("activities", id, status);
   revalidatePath("/admin/activites");
 }
+
+export async function toggleActivityFeaturedAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  const featured = formData.get("featured") === "true";
+  if (!id) return;
+  // Garde-fou : maximum 3 activités en vedette sur l'accueil.
+  if (featured) {
+    const all = await contentRepository.listActivities(true);
+    const count = all.filter((a) => a.featured).length;
+    if (count >= 3) return;
+  }
+  await contentRepository.updateActivity(id, { featured });
+  revalidatePath("/admin/activites");
+  revalidatePath("/");
+}

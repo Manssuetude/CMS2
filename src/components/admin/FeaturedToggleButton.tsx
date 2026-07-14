@@ -3,8 +3,21 @@
 import { useState } from "react";
 import { toggleThemeFeaturedAction } from "@/app/admin/themes/actions";
 import { toggleProductionFeaturedAction } from "@/app/admin/productions/actions";
+import { toggleActivityFeaturedAction } from "@/app/admin/activites/actions";
 
-type Kind = "theme" | "production";
+type Kind = "theme" | "production" | "activity";
+
+const ACTIONS = {
+  theme: toggleThemeFeaturedAction,
+  production: toggleProductionFeaturedAction,
+  activity: toggleActivityFeaturedAction,
+} as const;
+
+const NOUNS: Record<Kind, string> = {
+  theme: "ce thème",
+  production: "cette production",
+  activity: "cette activité",
+};
 
 export function FeaturedToggleButton({
   id,
@@ -21,8 +34,8 @@ export function FeaturedToggleButton({
 }) {
   const [notice, setNotice] = useState<string | null>(null);
   const next = !featured;
-  const action = kind === "production" ? toggleProductionFeaturedAction : toggleThemeFeaturedAction;
-  const noun = kind === "production" ? "cette production" : "ce thème";
+  const action = ACTIONS[kind];
+  const noun = NOUNS[kind];
 
   // Limite active uniquement si un compteur est fourni (productions).
   const atLimit = typeof count === "number" && !featured && count >= max;

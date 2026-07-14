@@ -6,6 +6,7 @@ import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { ProgressTag } from "@/components/admin/ProgressTag";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
 import { StatusToggleButton } from "@/components/admin/StatusToggleButton";
+import { FeaturedToggleButton } from "@/components/admin/FeaturedToggleButton";
 import { buildStatusTabs, countByStatus, resolveActiveStatus, STATUS_LABELS } from "@/utils/adminStatus";
 import { deleteActivityAction, toggleActivityStatusAction } from "./actions";
 
@@ -15,6 +16,7 @@ export default async function AdminActivitesPage({ searchParams }: { searchParam
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "f");
+  const featuredCount = all.filter((a) => a.featured).length;
 
   return (
     <section className="admin-panel">
@@ -64,6 +66,7 @@ export default async function AdminActivitesPage({ searchParams }: { searchParam
               <th>Statut</th>
               <th>Avancement</th>
               <th>Date</th>
+              <th>Vedette</th>
               <th className="col-actions">Actions</th>
             </tr>
           </thead>
@@ -86,6 +89,15 @@ export default async function AdminActivitesPage({ searchParams }: { searchParam
                         year: "numeric",
                       })
                     : "-"}
+                </td>
+                <td style={{ textAlign: "center" }}>
+                  <FeaturedToggleButton
+                    id={item.id}
+                    featured={item.featured}
+                    kind="activity"
+                    count={featuredCount}
+                    max={3}
+                  />
                 </td>
                 <td className="col-actions">
                   <div className="row-actions">

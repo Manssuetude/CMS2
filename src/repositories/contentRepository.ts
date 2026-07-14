@@ -68,6 +68,7 @@ function mapActivity(row: DataRow): Activity {
     progressStatus: asNullableString(row.progress_status) as ProgressStatus | null,
     gallery: asStringArray(row.gallery),
     documents: asStringArray(row.documents),
+    featured: asBoolean(row.featured),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };
