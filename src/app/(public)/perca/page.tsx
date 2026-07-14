@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PercaEditorial } from "@/components/public/PercaEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
+import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
@@ -26,6 +27,6 @@ export default async function PercaPage() {
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
-    return <p>Page PERCA à créer.</p>;
+    return <MaintenanceNotice />;
   }
 }

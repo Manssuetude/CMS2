@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
 import { contentRepository } from "@/repositories/contentRepository";
+import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
@@ -33,6 +34,6 @@ export default async function JoinPage() {
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
-    return <p>Page Rejoindre à créer.</p>;
+    return <MaintenanceNotice />;
   }
 }

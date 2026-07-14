@@ -5,6 +5,7 @@ import { Hero } from "@/components/public/Hero";
 import { FilterBar } from "@/components/public/FilterBar";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { contentRepository } from "@/repositories/contentRepository";
+import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
@@ -78,6 +79,6 @@ export default async function ProductionsPage({ searchParams }: { searchParams: 
     );
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
-    return <p>Page Productions à créer.</p>;
+    return <MaintenanceNotice />;
   }
 }

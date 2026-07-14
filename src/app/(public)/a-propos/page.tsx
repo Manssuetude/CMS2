@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AboutEditorial } from "@/components/public/AboutEditorial";
 import { contentRepository } from "@/repositories/contentRepository";
+import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
@@ -34,6 +35,6 @@ export default async function AboutPage() {
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
-    return <p>Page À propos à créer.</p>;
+    return <MaintenanceNotice />;
   }
 }

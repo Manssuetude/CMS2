@@ -5,6 +5,7 @@ import { Hero } from "@/components/public/Hero";
 import { FilterBar } from "@/components/public/FilterBar";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { contentRepository } from "@/repositories/contentRepository";
+import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
@@ -76,6 +77,6 @@ export default async function ActivitesPage({ searchParams }: { searchParams: Pr
     );
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
-    return <p>Page Activités à créer.</p>;
+    return <MaintenanceNotice />;
   }
 }
