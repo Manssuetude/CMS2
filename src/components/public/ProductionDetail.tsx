@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Production, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
 
 const TYPE_LABEL: Record<string, string> = {
@@ -56,7 +57,7 @@ export function ProductionDetail({ item, allThemes, relatedProductions = [] }: P
           {/* Corps */}
           <div>
             {item.body ? (
-              <div className="rich-text" dangerouslySetInnerHTML={{ __html: item.body }} />
+              <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.body) }} />
             ) : item.description ? (
               <p className="rich-text">{item.description}</p>
             ) : (

@@ -1,5 +1,6 @@
 import type { Activity } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const FORMAT_LABEL: Record<string, string> = {
   "Debat & Conference": "Débat & Conférence",
@@ -68,7 +69,7 @@ export function ActiviteDetail({ item }: { item: Activity }) {
       {item.body && (
         <section className="section">
           <div className="detail-layout no-sidebar">
-            <div className="rich-text" dangerouslySetInnerHTML={{ __html: item.body }} />
+            <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.body) }} />
           </div>
         </section>
       )}
