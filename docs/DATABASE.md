@@ -196,3 +196,50 @@ Toutes en cascade sur suppression.
 ---
 
 ← [CODE_CONVENTIONS.md](CODE_CONVENTIONS.md) · Suite → [WORKFLOWS.md](WORKFLOWS.md)
+
+---
+
+## Mise à jour — RBAC & évolutions récentes
+
+### Nouvelles tables
+
+**`roles`** — rôles personnalisables (RBAC).
+
+| Colonne                     | Type        | Notes                                                      |
+| --------------------------- | ----------- | ---------------------------------------------------------- |
+| `id`                        | uuid        | PK                                                         |
+| `key`                       | text unique | slug technique (`admin`, `production`, `communication`, …) |
+| `label`                     | text        | libellé affiché                                            |
+| `is_admin`                  | boolean     | rôle tout-puissant, non modifiable                         |
+| `permissions`               | jsonb       | liste de clés `section:action`                             |
+| `created_at` / `updated_at` | timestamptz |                                                            |
+
+**`audit_logs`** — journal d'activité (admin only).
+
+| Colonne                                 | Type                                                               |
+| --------------------------------------- | ------------------------------------------------------------------ |
+| `id`                                    | uuid PK                                                            |
+| `actor_id`                              | uuid → auth.users                                                  |
+| `actor_email` / `actor_role`            | text                                                               |
+| `action`                                | text (`create`/`update`/`delete`/`publish`/`invite`/`role change`) |
+| `entity_type` / `entity_id` / `summary` | text                                                               |
+| `created_at`                            | timestamptz (index desc)                                           |
+
+### Colonnes ajoutées
+
+- `users.role_key` → référence `roles.key` (source de vérité du rôle).
+- `activities.featured` (boolean) — mise en avant sur l'accueil.
+
+### Enum
+
+- `form_type` étendu : ajout de `theme` et `activity` (formulaires « proposer un thème / une activité »).
+
+### Migrations (`supabase/migrations/`)
+
+| Fichier                                  | Contenu                                                |
+| ---------------------------------------- | ------------------------------------------------------ |
+| `20260714_rbac.sql`                      | tables `roles`, `audit_logs`, colonne `users.role_key` |
+| `20260714_activities_featured.sql`       | colonne `activities.featured`                          |
+| `20260714_form_types_theme_activity.sql` | valeurs enum `form_type` : `theme`, `activity`         |
+
+> ⚠️ La table `form_submissions.attachments` n'est plus alimentée (pièce jointe retirée des formulaires) — colonne conservée, inerte.

@@ -57,13 +57,15 @@ Copy `.env.example` to `.env.local`. Required vars:
 
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_API_KEY`
-- `RESEND_API_KEY`
+- `RESEND_API_KEY`, `EMAIL_FROM` (expéditeur des invitations ; défaut `onboarding@resend.dev`)
 - `ADMIN_INITIAL_EMAIL`, `ADMIN_INITIAL_PASSWORD`
 - `NEXT_PUBLIC_SITE_URL`
 
 ## Database
 
-SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.sql`, `storage.sql`. Main entities: Users, Pages, Themes, Productions, Activities, Projects, Resources, Forms, FormSubmissions, SiteSettings, Media.
+SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.sql`, `storage.sql`. Main entities: Users, Roles, Pages, Themes, Productions, Activities, Projects, Resources, Forms, FormSubmissions, SiteSettings, Media, AuditLogs.
+
+**Migrations** dans `supabase/migrations/` (à exécuter dans Supabase, non lancées automatiquement) : RBAC (`roles`/`users.role_key`/`audit_logs`), `activities.featured`, enum `form_type` (`theme`/`activity`). Voir `docs/DATABASE.md`.
 
 ## Patterns établis
 
@@ -71,13 +73,23 @@ SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.s
 
 **Images des pages** — `contentRepository.getPage(slug)` joint la table `resources` via `image_id` et renvoie `page.imageUrl` (URL absolue normalisée). Les pages publiques utilisent `page.imageUrl ?? "/assets/photos/hero-xxx.png"` comme fallback. Ne jamais hardcoder d'URL statique sans ce fallback.
 
-**Formulaires publics** — les CTA avec target `FORM:join|project|content|partner|don` ouvrent `FormModal`. Les soumissions sont stockées en DB (`form_submissions`) et visibles dans `/admin/forms` avec gestion du statut (reçu → en cours → traité → archivé).
+**Formulaires publics** — les CTA `FORM:join|project|content|partner|don|theme|activity` ouvrent `FormModal`. Les pages Activités/Thèmes/Projets ont une section « Proposer … » en bas (`ProposeSection`). Soumissions en DB (`form_submissions`) → `/admin/forms` (détail dépliable, filtres par type, export CSV, statut reçu → en cours → traité → archivé). Plus de pièce jointe.
+
+**RBAC (rôles & permissions)** — le rôle vient de `users.role_key` (table `roles`, permissions JSONB `section:action`). `getSession()` renvoie `{ roleKey, isAdmin, permissions }`. Garde-fous : `requireRole` / `requireAdmin` / `requirePermission` (`lib/auth.ts`), `can()` (`lib/permissions.ts`), catalogue dans `constants/permissions.ts`. Enforcement : middleware (`x-pathname`) + layout admin + sidebar masquée. **Ne jamais réintroduire de rôle « admin » par défaut.** Détails : `docs/AUTH.md`.
+
+**Thème sombre** — préférence système + bouton bascule (`ThemeToggle`, `data-theme`), tokens `--ed-*` (public) et globals (admin). Utiliser les tokens, pas de couleur en dur (surtout pas de `#fff` de fond → `var(--surface)`).
+
+**Pages non disponibles** — `MaintenanceNotice` (404, `/maintenance`, replis, `/history` vide) avec illustration éditoriale.
 
 **Admin — sections clés**
 
-- `/admin/homepage` : éditer texte, CTAs, photo hero et SEO de la page d'accueil
-- `/admin/pages` : changer la photo hero de toutes les pages statiques
-- `/admin/forms` : lire et traiter les soumissions de formulaires
+- `/admin/homepage` : texte, CTAs (libellé + lien), photo hero, sujet du moment (thème + photo), SEO
+- `/admin/perca`, `/admin/history` : contenu riche (comme les articles)
+- `/admin/pages` : photo hero des pages statiques
+- `/admin/forms` : soumissions (détail, filtres, export)
+- `/admin/users`, `/admin/roles`, `/admin/journal` : **admin only** (gestion RBAC + historique)
+- Mise en avant accueil : étoile cliquable (thèmes / productions max 4 / activités max 3)
+- Toute action « Enregistrer » redirige avec `?saved=1` → toast (`AdminToaster`)
 
 **contentRepository — méthodes utiles**
 

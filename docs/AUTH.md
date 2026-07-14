@@ -107,3 +107,54 @@ NEXT_PUBLIC_SITE_URL=        # base URL pour les redirects
 ---
 
 [← ARCHITECTURE.md](ARCHITECTURE.md)
+
+---
+
+## Mise à jour — Module RBAC (rôles, permissions, journal)
+
+> Remplace le modèle « rôle unique par défaut ». Le rôle est désormais la **source de vérité côté DB**.
+
+### Modèle
+
+- Table **`roles`** : rôles personnalisables. `key` (slug), `label`, `is_admin` (rôle tout-puissant figé), `permissions` (JSONB de clés `section:action`).
+- Table **`users`** : colonne **`role_key`** → référence `roles.key` (source de vérité du rôle).
+- Table **`audit_logs`** : journal des actions (`actor_email`, `actor_role`, `action`, `entity_type`, `entity_id`, `summary`, `created_at`).
+
+### Session & permissions
+
+`getSession()` (`src/lib/auth.ts`) lit `users.role_key`, charge le rôle depuis `roles`, et renvoie :
+
+```ts
+{ userId, email, roleKey, roleLabel, isAdmin, permissions: string[] } // ["*"] pour l'admin
+```
+
+⚠️ **Fin du défaut « admin »** : sans `role_key`, `getSession()` renvoie `null` (aucun accès). Corrige l'ancienne faille où tout compte connecté était admin.
+
+### Garde-fous
+
+| Helper                                     | Usage                                                 |
+| ------------------------------------------ | ----------------------------------------------------- |
+| `requireRole(allowed?)`                    | route/action accessible à l'admin ou aux rôles listés |
+| `requireAdmin()`                           | réservé admin (users / rôles / journal)               |
+| `requirePermission("section:action")`      | exige une permission précise                          |
+| `can(session, key)` (`lib/permissions.ts`) | test booléen (admin = tout)                           |
+
+Le **catalogue** des permissions vit dans `src/constants/permissions.ts` (`permissionCatalog` : section × actions view/create/edit/delete/publish).
+
+### Enforcement d'accès aux sections
+
+Le **middleware** expose le chemin courant via le header `x-pathname` ; le **layout admin** (`src/app/admin/layout.tsx`) redirige un rôle non-admin qui n'a pas `section:view`. La **sidebar** masque les sections non autorisées.
+
+### Utilisateurs & invitation
+
+- `/admin/users` (admin only) : inviter (email + rôle) → `supabase.auth.admin.generateLink({ type: "invite" })` → lien affiché dans l'admin **et** envoyé via Resend (`src/lib/email.ts`) si `RESEND_API_KEY` présent.
+- `/admin/activation` (public, allowlistée dans le middleware) : l'invité définit **nom + mot de passe** ; finalisation via `POST /api/activation/complete` (jeton vérifié).
+
+### Journal d'activité
+
+- `logAction()` (`src/lib/audit.ts`) — best-effort, ne casse jamais l'action appelante. Instrumenté sur : contenu (thèmes/productions/activités/projets/pages), users, rôles.
+- `/admin/journal` (admin only) : consultation filtrable + **export CSV** (`/api/journal/export`).
+
+### Fichiers clés (RBAC)
+
+`src/repositories/{roleRepository,userRepository,auditRepository}.ts`, `src/lib/{auth,permissions,audit,email}.ts`, `src/constants/permissions.ts`, `src/app/admin/{users,roles,journal,activation}/`, `supabase/migrations/20260714_rbac.sql`.
