@@ -65,7 +65,6 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
               <th>Thème</th>
               <th>Statut</th>
               <th>Description</th>
-              <th>En avant</th>
               <th className="col-actions">Actions</th>
             </tr>
           </thead>
@@ -90,13 +89,6 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
                     </span>
                   ) : (
                     <em>Aucune description</em>
-                  )}
-                </td>
-                <td style={{ textAlign: "center" }}>
-                  {item.featured ? (
-                    <span style={{ color: "var(--orange)", fontWeight: 700, fontSize: 16 }}>★</span>
-                  ) : (
-                    <span style={{ color: "var(--line-strong)" }}>-</span>
                   )}
                 </td>
                 <td className="col-actions">

@@ -21,6 +21,7 @@ import {
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "homepage", label: "Page d'accueil", icon: Home },
+  { id: "perca", label: "Page PERCA", icon: Home },
   { id: "pages", label: "Photos des pages", icon: ImagePlus },
   { id: "themes", label: "Thèmes", icon: BookOpen },
   { id: "activites", label: "Activités", icon: CalendarDays },
@@ -46,8 +47,8 @@ export function AdminSidebar({ collapsed, onToggle }: Props) {
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
-        <div className="admin-sidebar-logo">M</div>
-        <span className="admin-sidebar-brand-name">Manssuetude</span>
+        <img className="admin-sidebar-logo" src="/assets/photos/logo-manssuetude.png?v=2" alt="Manssuétude" />
+        <span className="admin-sidebar-brand-name">Manssuétude</span>
       </div>
 
       <nav className="admin-nav" data-tour="tour-nav">
@@ -59,7 +60,13 @@ export function AdminSidebar({ collapsed, onToggle }: Props) {
             title={collapsed ? label : undefined}
             data-tour={id === "media" ? "tour-media" : undefined}
           >
-            <Icon size={16} strokeWidth={1.75} />
+            {id === "perca" ? (
+              <span className="admin-nav-glyph" aria-hidden>
+                P
+              </span>
+            ) : (
+              <Icon size={16} strokeWidth={1.75} />
+            )}
             <span className="admin-nav-label">{label}</span>
           </Link>
         ))}

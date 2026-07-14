@@ -60,7 +60,7 @@ export function ProductionDetail({ item, allThemes, relatedProductions = [] }: P
             ) : item.description ? (
               <p className="rich-text">{item.description}</p>
             ) : (
-              <p style={{ color: "var(--muted)" }}>Aucun contenu détaillé disponible pour cette production.</p>
+              <p style={{ color: "var(--ed-muted)" }}>Aucun contenu détaillé disponible pour cette production.</p>
             )}
           </div>
 
@@ -91,7 +91,7 @@ export function ProductionDetail({ item, allThemes, relatedProductions = [] }: P
               )}
               <div className="detail-sidebar-card">
                 <p className="detail-sidebar-label">Partager</p>
-                <p style={{ fontSize: 13, color: "var(--muted)", margin: 0 }}>
+                <p style={{ fontSize: 13, color: "var(--ed-muted)", margin: 0 }}>
                   Vous trouvez cette production utile ?{" "}
                   <CtaButton label="Contribuer" target="contribution" variant="secondary" />
                 </p>

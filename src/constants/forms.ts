@@ -5,21 +5,25 @@ export type FormFieldDefinition = {
   label: string;
   type: "text" | "email" | "checkbox" | "file";
   required?: boolean;
+  hint?: string;
 };
 
 export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
   join: [
-    { name: "firstName", label: "Prénom", type: "text" },
-    { name: "lastName", label: "Nom", type: "text" },
+    { name: "firstName", label: "Prénom", type: "text", required: true },
+    { name: "lastName", label: "Nom", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
-    { name: "phone", label: "Téléphone", type: "text" },
-    { name: "city", label: "Ville", type: "text" },
-    { name: "status", label: "Statut", type: "text" },
+    { name: "phone", label: "Téléphone", type: "text", required: true },
+    { name: "city", label: "Ville ou région", type: "text", required: true },
     { name: "interests", label: "Centres d'intérêt", type: "text" },
-    { name: "commission", label: "Commission souhaitée", type: "text" },
     { name: "motivation", label: "Motivation", type: "text" },
-    { name: "availability", label: "Disponibilité", type: "text" },
-    { name: "consent", label: "Consentement RGPD", type: "checkbox", required: true },
+    {
+      name: "consent",
+      label: "Consentement RGPD",
+      type: "checkbox",
+      required: true,
+      hint: "Le RGPD est le Règlement général sur la protection des données. En cochant cette case, vous autorisez Manssuétude à conserver et traiter les informations de ce formulaire uniquement dans le cadre de votre demande. Vos données ne sont jamais revendues et vous pouvez demander leur suppression à tout moment.",
+    },
   ],
   project: [
     { name: "name", label: "Nom", type: "text" },

@@ -2,11 +2,13 @@ import { requireRole } from "@/lib/auth";
 import { formRepository } from "@/repositories/formRepository";
 import type { FormSubmission } from "@/types/cms";
 
-const headers: Array<keyof FormSubmission> = ["id", "formType", "status", "receivedAt", "data", "attachments", "notes"];
+const headers: Array<keyof FormSubmission> = ["id", "formType", "status", "receivedAt", "data", "notes"];
 
-export async function GET() {
+export async function GET(request: Request) {
   await requireRole(["admin", "editor"]);
-  const rows = await formRepository.list();
+  const type = new URL(request.url).searchParams.get("type");
+  const all = await formRepository.list();
+  const rows = type ? all.filter((r) => r.formType === type) : all;
   const csv = [
     headers.join(","),
     ...rows.map((row) =>

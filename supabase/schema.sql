@@ -134,6 +134,7 @@ create table if not exists activities (
   progress_status progress_status,
   gallery uuid[] not null default '{}',
   documents uuid[] not null default '{}',
+  featured boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

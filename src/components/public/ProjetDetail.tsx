@@ -20,7 +20,7 @@ const PROGRESS_PCT: Record<string, number> = {
 const PRIORITY_COLOR: Record<string, string> = {
   Haute: "var(--orange)",
   Moyenne: "#92400e",
-  Basse: "var(--muted)",
+  Basse: "var(--ed-muted)",
 };
 
 export function ProjetDetail({ item }: { item: Project }) {
@@ -52,7 +52,7 @@ export function ProjetDetail({ item }: { item: Project }) {
           {progress > 0 && (
             <div className="hero-progress">
               <span>{progress}%</span>
-              <p style={{ color: "var(--muted)", fontSize: 14, margin: "4px 0 12px" }}>{progressLabel}</p>
+              <p style={{ color: "var(--ed-muted)", fontSize: 14, margin: "4px 0 12px" }}>{progressLabel}</p>
               <div className="progress-track">
                 <div className="progress-fill" style={{ width: `${progress}%` }} />
               </div>

@@ -14,7 +14,6 @@ export async function saveHomepageFieldsAction(formData: FormData): Promise<void
   const fields: Record<string, unknown> = {
     body: formData.get("body") || null,
     eyebrow: formData.get("eyebrow") || null,
-    title: formData.get("title") || null,
     quote: formData.get("quote") || null,
     primary_cta_label: formData.get("primary_cta_label") || null,
     primary_cta_target: formData.get("primary_cta_target") || null,

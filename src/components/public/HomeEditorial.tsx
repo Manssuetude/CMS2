@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
@@ -16,15 +17,16 @@ export function HomeEditorial({
   page,
   heroImageUrl,
   focusImageUrl,
+  focusTheme = null,
   activities = [],
   productions = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
   focusImageUrl?: string | null;
+  focusTheme?: Theme | null;
   activities?: Activity[];
   productions?: Production[];
-  themes?: Theme[];
 }) {
   // L'identité de l'association vit dans `body` (demande de René : l'asso d'abord).
   const sentences = (page.body || "").split(/\.\s+/).filter(Boolean);
@@ -57,24 +59,43 @@ export function HomeEditorial({
         ) : null}
       </section>
 
-      {/* 2 — Sujet du moment : thème + sujet + média de la séance à venir */}
-      <section className="home-focus">
-        <div className="home-focus-media">
-          {focusImageUrl ? <img src={focusImageUrl} alt="" loading="lazy" /> : null}
-        </div>
-        <div className="home-focus-copy">
-          {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
-          <h2>{page.title}</h2>
-          {page.quote ? (
-            <Link className="home-focus-link" href={`/themes/${page.quote}`}>
+      {/* 2 — Sujet du moment : le thème sélectionné en admin (carte cliquable, image optionnelle) */}
+      {focusTheme ? (
+        <Link
+          className={`home-focus${focusImageUrl ? "" : " home-focus--no-image"}`}
+          href={`/themes/${focusTheme.slug}`}
+        >
+          {focusImageUrl ? (
+            <div className="home-focus-media">
+              <img src={focusImageUrl} alt="" loading="lazy" />
+            </div>
+          ) : null}
+          <div className="home-focus-copy">
+            {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
+            <h2>{focusTheme.title}</h2>
+            {focusTheme.description ? <p className="home-focus-desc">{focusTheme.description}</p> : null}
+            <span className="home-focus-link">
               Explorer ce thème
               <span aria-hidden>→</span>
-            </Link>
-          ) : null}
-        </div>
-      </section>
+            </span>
+          </div>
+        </Link>
+      ) : null}
 
-      {/* 3 — Activités récentes */}
+      {/* 3 — Productions récentes */}
+      {productions.length ? (
+        <section className="home-section home-productions">
+          <div className="home-section-head">
+            <h2>Productions récentes</h2>
+            <Link className="home-section-more" href="/productions">
+              Toutes les productions <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <ProductionsCarousel productions={productions} />
+        </section>
+      ) : null}
+
+      {/* 4 — Activités récentes */}
       {activities.length ? (
         <section className="home-section home-activities">
           <div className="home-section-head">
@@ -83,7 +104,7 @@ export function HomeEditorial({
               Toutes les activités <span aria-hidden>→</span>
             </Link>
           </div>
-          <ul className="home-activity-list">
+          <ul className="home-activity-list" style={{ "--acount": activities.slice(0, 3).length } as CSSProperties}>
             {activities.slice(0, 3).map((a) => {
               const date = formatDate(a.date);
               return (
@@ -103,19 +124,6 @@ export function HomeEditorial({
         </section>
       ) : null}
 
-      {/* 4 — Productions récentes */}
-      {productions.length ? (
-        <section className="home-section home-productions">
-          <div className="home-section-head">
-            <h2>Productions récentes</h2>
-            <Link className="home-section-more" href="/productions">
-              Toutes les productions <span aria-hidden>→</span>
-            </Link>
-          </div>
-          <ProductionsCarousel productions={productions} />
-        </section>
-      ) : null}
-
       {/* 5 — Notre méthode PERCA (teaser vers À propos) */}
       <section className="home-method">
         <div className="home-method-inner">
@@ -128,9 +136,6 @@ export function HomeEditorial({
           <p className="home-method-text">
             PERCA structure notre façon de partir d&apos;un dossier pour apprendre, débattre, produire et créer du lien.
           </p>
-          <Link className="home-method-link" href="/a-propos">
-            Découvrir notre approche <span aria-hidden>→</span>
-          </Link>
         </div>
       </section>
 

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { GlobalSearch } from "./GlobalSearch";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 const SECTION_LABELS: Record<string, string> = {
   dashboard: "Dashboard",
@@ -43,6 +44,7 @@ export function AdminTopbar() {
       </div>
       <div className="admin-topbar-actions">
         <GlobalSearch />
+        <ThemeToggle />
       </div>
     </div>
   );

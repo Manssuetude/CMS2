@@ -50,7 +50,7 @@ export function ThemeDetail({ item, productions }: Props) {
           <div className="section-head">
             <h2>Productions</h2>
           </div>
-          <p style={{ color: "var(--muted)" }}>Aucune production publiée sur ce thème pour l&apos;instant.</p>
+          <p style={{ color: "var(--ed-muted)" }}>Aucune production publiée sur ce thème pour l&apos;instant.</p>
         </section>
       )}
 

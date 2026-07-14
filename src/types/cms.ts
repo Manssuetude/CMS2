@@ -253,6 +253,7 @@ export type Activity = {
   progressStatus?: ProgressStatus | null;
   gallery: string[];
   documents: string[];
+  featured: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -279,7 +280,6 @@ export type FormSubmission = {
   id: string;
   formType: FormType;
   data: Record<string, unknown>;
-  attachments: string[];
   status: FormStatus;
   notes?: string | null;
   receivedAt: string;

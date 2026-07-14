@@ -68,6 +68,7 @@ function mapActivity(row: DataRow): Activity {
     progressStatus: asNullableString(row.progress_status) as ProgressStatus | null,
     gallery: asStringArray(row.gallery),
     documents: asStringArray(row.documents),
+    featured: asBoolean(row.featured),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };
@@ -102,7 +103,6 @@ function mapFormSubmission(row: DataRow): FormSubmission {
     id: asString(row.id),
     formType: asString(row.form_type) as FormSubmission["formType"],
     data: (row.data ?? {}) as Record<string, unknown>,
-    attachments: asStringArray(row.attachments),
     status: asString(row.status, "reçu") as FormStatus,
     notes: asNullableString(row.notes),
     receivedAt: asString(row.received_at),

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 const nav = [
   ["Accueil", "/"],
@@ -51,6 +52,7 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
           ))}
         </div>
         <div className="header-actions">
+          <ThemeToggle />
           <Link className="support-link" href="/nous-soutenir" onClick={() => setOpen(false)}>
             Nous soutenir
           </Link>

@@ -13,6 +13,7 @@
   --soft-gradient: #fff8f3;
   --orange-soft: #fff0e8;
   --white: #fff;
+  --surface: #fff;
   --cream-text: #f6ded1;
   --warning: #c86a21;
   --focus-ring: rgba(255, 77, 18, 0.45);
@@ -25,6 +26,54 @@
   --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.26);
   --content-max: 1480px;
   --page-x: clamp(18px, 4vw, 58px);
+}
+
+/* =============================================================
+   Thème sombre — admin & base (tokens globals).
+   Appliqué soit par choix explicite (html[data-theme="dark"]),
+   soit par préférence système quand aucun choix n'est fait.
+   ============================================================= */
+:root[data-theme="dark"] {
+  --ink: #f1eae0;
+  --ink-soft: #c4baac;
+  --muted: #948b7d;
+  --line: #322b22;
+  --line-strong: #473d30;
+  --line-dashed: #3c332a;
+  --paper: #14110d;
+  --soft: #1e1913;
+  --soft-panel: #1b1611;
+  --soft-gradient: #1b1611;
+  --orange-soft: #2a1a10;
+  --surface: #1f1a14;
+  --focus-ring: rgba(255, 120, 70, 0.5);
+  --overlay: rgba(0, 0, 0, 0.72);
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+  --shadow-subtle: 0 12px 30px rgba(0, 0, 0, 0.4);
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+  --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.65);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1eae0;
+    --ink-soft: #c4baac;
+    --muted: #948b7d;
+    --line: #322b22;
+    --line-strong: #473d30;
+    --line-dashed: #3c332a;
+    --paper: #14110d;
+    --soft: #1e1913;
+    --soft-panel: #1b1611;
+    --soft-gradient: #1b1611;
+    --orange-soft: #2a1a10;
+    --surface: #1f1a14;
+    --focus-ring: rgba(255, 120, 70, 0.5);
+    --overlay: rgba(0, 0, 0, 0.72);
+    --shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+    --shadow-subtle: 0 12px 30px rgba(0, 0, 0, 0.4);
+    --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+    --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.65);
+  }
 }
 
 * {
@@ -160,7 +209,7 @@ h2 span {
   position: relative;
   overflow: hidden;
   min-height: 430px;
-  border-radius: 0 0 0 56px;
+  border-radius: 0;
   background: var(--soft);
 }
 .hero-image img {
@@ -193,7 +242,7 @@ h2 span {
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   font-weight: 900;
-  background: #fff;
+  background: var(--surface);
 }
 .button.primary {
   color: #fff;
@@ -229,7 +278,7 @@ h2 span {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow-subtle);
   transition:
     transform 0.2s ease,
@@ -293,7 +342,7 @@ h2 span {
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow);
 }
 .admin-sidebar-brand {
@@ -346,6 +395,23 @@ h2 span {
   flex-shrink: 0;
   opacity: 0.55;
 }
+.admin-nav-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.7;
+}
+.admin-sidebar a[aria-current="page"] .admin-nav-glyph {
+  opacity: 1;
+  color: var(--orange);
+}
 .admin-sidebar a[aria-current="page"] {
   color: var(--orange);
   background: var(--orange-soft);
@@ -364,7 +430,7 @@ h2 span {
   padding: 28px 32px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow);
   max-width: 1100px;
   width: 100%;
@@ -458,7 +524,7 @@ h2 span {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--surface);
 }
 .admin-table th,
 .admin-table td {
@@ -521,7 +587,7 @@ textarea {
   min-height: 170px;
   border: 1px dashed var(--line-dashed);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   overflow: hidden;
 }
 .media-actions {
@@ -544,7 +610,7 @@ textarea {
   overflow: auto;
   padding: 30px;
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow-modal);
 }
 
@@ -567,7 +633,7 @@ textarea {
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow);
 }
 .editor-shell {
@@ -583,7 +649,7 @@ textarea {
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow);
 }
 .editor-structure,
@@ -606,7 +672,7 @@ textarea {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   text-align: left;
   cursor: pointer;
 }
@@ -647,7 +713,7 @@ textarea {
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow-soft);
 }
 .cms-preview-block.is-dark,
@@ -662,7 +728,7 @@ textarea {
   display: grid;
   align-content: center;
   gap: 14px;
-  background: #fff;
+  background: var(--surface);
 }
 .cms-preview-hero h2 {
   max-width: 760px;
@@ -741,7 +807,7 @@ textarea {
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow);
 }
 .wizard-sources {
@@ -759,7 +825,7 @@ textarea {
   padding: 26px;
   border: 1px dashed var(--line-dashed);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
 }
 .media-metrics span {
   padding: 8px 10px;
@@ -784,7 +850,7 @@ textarea {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow-soft);
 }
 .media-thumb {
@@ -1026,7 +1092,7 @@ textarea {
   border-radius: var(--radius);
   font-size: 12.5px;
   font-weight: 500;
-  background: #fff;
+  background: var(--surface);
   color: var(--ink-soft);
   cursor: pointer;
   text-decoration: none;
@@ -1079,7 +1145,7 @@ textarea {
   padding: 22px 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   box-shadow: var(--shadow-soft);
   display: grid;
   gap: 18px;
@@ -1119,6 +1185,43 @@ textarea {
   font-size: 11px;
   color: var(--muted);
   margin: 0;
+}
+.required-mark {
+  color: var(--orange);
+  margin-left: 3px;
+  font-weight: 600;
+}
+.hint-tip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line-strong);
+}
+.hint-tip:hover,
+.hint-tip:focus-visible {
+  color: var(--orange);
+  text-decoration-color: var(--orange);
+  outline: none;
+}
+.hint-tip__bubble {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(8, 8, 10, 0.12);
+}
+.hint-tip:hover .hint-tip__bubble,
+.hint-tip:focus-visible .hint-tip__bubble {
+  display: block;
 }
 .slug-preview {
   padding: 10px 13px;
@@ -1216,7 +1319,7 @@ textarea {
   .hero-image,
   .hero-image img {
     min-height: 320px;
-    border-radius: var(--radius);
+    border-radius: 0;
   }
   h1 {
     font-size: 42px;
@@ -1236,9 +1339,50 @@ textarea {
 .admin-shell .button::after {
   display: none;
 }
-.admin-shell .button {
+/* ─── Boutons admin — style unifié, plus fin et moderne ──────────────── */
+.admin-shell .button,
+.admin-shell .cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13.5px;
   font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.08s ease;
+}
+.admin-shell .button:hover {
+  border-color: var(--ink-soft);
+  background: var(--soft);
+}
+.admin-shell .button:active,
+.admin-shell .cta:active {
+  transform: translateY(1px);
+}
+/* Bouton principal + CTA d'enregistrement : orange de marque */
+.admin-shell .button.primary,
+.admin-shell .cta {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(255, 77, 18, 0.18);
+}
+.admin-shell .button.primary:hover,
+.admin-shell .cta:hover {
+  background: #e63e08;
+  border-color: #e63e08;
+  box-shadow: 0 5px 16px rgba(255, 77, 18, 0.28);
 }
 /* Base reset: undo browser bold default on plain buttons + heavy labels */
 .admin-shell button {
@@ -1268,7 +1412,7 @@ textarea {
   gap: 0;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--surface);
   flex-shrink: 0;
   overflow: hidden;
   transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1297,16 +1441,9 @@ textarea {
   white-space: nowrap;
 }
 .admin-sidebar-logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--orange);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: 900;
-  font-size: 16px;
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 .admin-sidebar-brand-name {
@@ -1434,7 +1571,7 @@ textarea {
   align-items: center;
   gap: 12px;
   padding: 0 28px;
-  background: #fff;
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
@@ -1478,7 +1615,7 @@ textarea {
 }
 .admin-search-wrap:focus-within {
   border-color: var(--orange);
-  background: #fff;
+  background: var(--surface);
   box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .admin-search-wrap input {
@@ -1510,7 +1647,7 @@ textarea {
 }
 .metric-card {
   padding: 20px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
   text-decoration: none;
@@ -1587,7 +1724,7 @@ textarea {
 
 /* ─── Section cards ──────────────────────────────────────────────────── */
 .admin-section-card {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
@@ -1695,7 +1832,7 @@ textarea {
   border-bottom: 1px solid var(--line);
 }
 .calendar-day {
-  background: #fff;
+  background: var(--surface);
   min-height: 96px;
   padding: 8px;
   display: flex;
@@ -1757,7 +1894,7 @@ textarea {
   top: calc(100% + 6px);
   right: 0;
   width: 360px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
   box-shadow: var(--shadow);
@@ -1823,7 +1960,7 @@ textarea {
   min-height: 38px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  background: #fff;
+  background: var(--surface);
   color: var(--ink-soft);
   font-size: 13px;
   font-weight: 600;
@@ -1914,7 +2051,7 @@ textarea {
 }
 .rich-text figure img {
   max-width: 100%;
-  border-radius: var(--radius);
+  border-radius: 0;
 }
 .rich-text figcaption {
   font-size: 13px;
@@ -1967,7 +2104,7 @@ textarea {
   font-size: 13px;
 }
 .detail-sidebar-card {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 18px;
@@ -2103,7 +2240,7 @@ textarea {
   gap: 28px;
 }
 .objectives-card {
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 28px;
@@ -2192,7 +2329,7 @@ textarea {
   padding: 5px 12px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--line-strong);
-  background: #fff;
+  background: var(--surface);
   font-size: 12px;
   font-weight: 600;
   color: var(--ink-soft);
@@ -2233,6 +2370,41 @@ textarea {
   }
 }
 
+/* ─── Responsive mobile (admin) : tableaux défilables, formulaires empilés ─── */
+@media (max-width: 720px) {
+  /* Les tableaux deviennent défilables horizontalement au lieu de déborder. */
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-table thead th,
+  .admin-table tbody td {
+    white-space: nowrap;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .admin-metrics {
+    grid-template-columns: 1fr;
+  }
+  .admin-topbar {
+    padding: 0 14px;
+  }
+  .admin-content {
+    padding: 16px 14px;
+  }
+  .admin-panel,
+  .admin-card {
+    padding: 18px 16px;
+  }
+  .admin-page-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
 /* ─── Onboarding tour ────────────────────────────────────────────────── */
 .tour-overlay {
   position: fixed;
@@ -2248,7 +2420,7 @@ textarea {
   width: 320px;
   padding: 22px 22px 18px;
   border-radius: var(--radius-lg, 12px);
-  background: #fff;
+  background: var(--surface);
   box-shadow:
     0 8px 40px rgba(0, 0, 0, 0.18),
     0 2px 8px rgba(0, 0, 0, 0.08);
@@ -2375,7 +2547,7 @@ textarea {
   font-size: 13px;
   font-family: inherit;
   color: var(--ink);
-  background: #fff;
+  background: var(--surface);
   transition: border-color 0.15s;
 }
 .settings-field input:focus,
@@ -2419,4 +2591,163 @@ textarea {
 }
 .editor-preview-item.is-selected-preview {
   outline: 2px solid var(--orange);
+}
+
+/* ─── Bouton bascule thème clair/sombre ──────────────────────────────── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background 0.16s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--soft);
+}
+
+/* ─── Étoile « mise en avant » cliquable (admin) ─────────────────────── */
+.featured-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  /* Orange Manssuétude atténué à l'état vide, plein à l'état actif. */
+  color: color-mix(in srgb, var(--orange) 42%, transparent);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    transform 0.12s ease;
+}
+.featured-star:hover {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+.featured-star:active {
+  transform: scale(0.9);
+}
+.featured-star.is-on {
+  color: var(--orange);
+}
+.featured-star.is-limited {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.featured-star.is-limited:hover {
+  background: transparent;
+  color: color-mix(in srgb, var(--orange) 42%, transparent);
+}
+.featured-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1200;
+  max-width: 320px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--orange);
+  border-left: 4px solid var(--orange);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.2s ease;
+}
+
+/* ─── Formulaires reçus : lignes dépliables + détail ─────────────────── */
+.forms-pending-badge {
+  margin-left: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 700;
+}
+.form-row-toggle {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+.form-row-toggle svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+.form-row-toggle:hover svg {
+  opacity: 1;
+  color: var(--orange);
+}
+.form-row-name {
+  display: block;
+  font-weight: 600;
+}
+.form-row-email {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.form-type-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.form-detail-row td {
+  background: var(--soft);
+  padding: 16px 20px;
+}
+.form-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px 28px;
+  margin: 0;
+}
+.form-detail-item dt {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.form-detail-item dd {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+  word-break: break-word;
 }
