@@ -54,3 +54,11 @@ export async function requireAdmin() {
   if (!session || !session.isAdmin) redirect("/admin/login");
   return session;
 }
+
+// Exige une permission précise "section:action" (admin = toujours autorisé).
+export async function requirePermission(permission: string) {
+  const session = await getSession();
+  if (!session) redirect("/admin/login");
+  if (session.isAdmin || session.permissions.includes(permission)) return session;
+  redirect("/admin/dashboard");
+}

@@ -2775,3 +2775,14 @@ textarea {
   font-family: ui-monospace, "Cascadia Code", monospace;
   font-size: 12px;
 }
+
+/* ─── Matrice de permissions (rôles) ─────────────────────────────────── */
+.perm-matrix {
+  overflow-x: auto;
+}
+.perm-matrix input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--orange);
+  cursor: pointer;
+}
