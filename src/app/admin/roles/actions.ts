@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { roleRepository } from "@/repositories/roleRepository";
@@ -45,6 +46,7 @@ export async function updateRolePermissionsAction(formData: FormData): Promise<v
     summary: `Permissions du rôle « ${roleKey} » mises à jour (${permissions.length})`,
   });
   revalidatePath("/admin/roles");
+  redirect("/admin/roles?saved=1");
 }
 
 export async function deleteRoleAction(formData: FormData): Promise<void> {

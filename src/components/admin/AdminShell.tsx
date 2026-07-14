@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminTopbar } from "./AdminTopbar";
 import { OnboardingTour } from "./OnboardingTour";
+import { AdminToaster } from "./AdminToaster";
 
 export function AdminShell({
   children,
@@ -42,6 +43,7 @@ export function AdminShell({
         <main className="admin-content">{children}</main>
       </div>
       <OnboardingTour />
+      <AdminToaster />
     </div>
   );
 }

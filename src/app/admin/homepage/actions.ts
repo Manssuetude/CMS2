@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { contentRepository } from "@/repositories/contentRepository";
+import { logAction } from "@/lib/audit";
 import type { ContentBlock } from "@/types/cms";
 
 export async function savePageBlocksAction(slug: string, blocks: ContentBlock[]): Promise<void> {
@@ -25,5 +27,7 @@ export async function saveHomepageFieldsAction(formData: FormData): Promise<void
     seo_description: formData.get("seo_description") || null,
   };
   await contentRepository.updatePage("accueil", fields);
+  await logAction("update", { entityType: "page", entityId: "accueil", summary: "Page d'accueil modifiée" });
   revalidatePath("/");
+  redirect("/admin/homepage?saved=1");
 }

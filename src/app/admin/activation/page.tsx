@@ -62,8 +62,15 @@ export default function ActivationPage() {
 
   return (
     <div className="page-main">
-      <div className="admin-panel login-panel" style={{ maxWidth: 440, margin: "48px auto" }}>
-        <h1 style={{ fontSize: 22, marginBottom: 6 }}>Activer votre compte</h1>
+      <div className="admin-panel login-panel activation-card" style={{ maxWidth: 460, margin: "48px auto" }}>
+        <div className="activation-brand">
+          <img src="/assets/photos/logo-manssuetude.png?v=3" alt="Manssuétude" />
+          <span>Manssuétude</span>
+        </div>
+        <p className="eyebrow" style={{ color: "var(--orange)" }}>
+          Bienvenue
+        </p>
+        <h1 style={{ fontSize: 24, marginBottom: 6 }}>Activer votre compte</h1>
         {ready === "loading" && <p className="login-subtitle">Vérification du lien…</p>}
         {ready === "invalid" && (
           <p className="login-subtitle">

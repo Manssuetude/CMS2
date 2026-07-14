@@ -35,11 +35,21 @@ export default async function AdminJournalPage({ searchParams }: { searchParams:
 
   return (
     <section className="admin-panel">
-      <div className="admin-page-header">
+      <div
+        className="admin-page-header"
+        style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}
+      >
         <div>
           <h1>Journal d&apos;activité</h1>
           <p>Historique des actions des membres. Réservé aux administrateurs.</p>
         </div>
+        <a
+          className="button"
+          href={`/api/journal/export${action ? `?action=${encodeURIComponent(action)}` : ""}`}
+          download
+        >
+          Exporter CSV
+        </a>
       </div>
 
       <div className="filter-bar" style={{ justifyContent: "flex-start" }}>

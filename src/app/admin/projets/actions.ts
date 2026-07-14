@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { contentRepository } from "@/repositories/contentRepository";
+import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
 const schema = z.object({
@@ -54,6 +55,7 @@ export async function createProjectAction(_: string | null, formData: FormData):
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
+  await logAction("create", { entityType: "project", summary: `Projet créé : ${parsed.data.title}` });
   revalidatePath("/admin/projets");
   redirect("/admin/projets");
 }
@@ -83,6 +85,7 @@ export async function updateProjectAction(_: string | null, formData: FormData):
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
+  await logAction("update", { entityType: "project", entityId: id, summary: `Projet modifié : ${parsed.data.title}` });
   revalidatePath("/admin/projets");
   redirect("/admin/projets");
 }
@@ -91,6 +94,7 @@ export async function deleteProjectAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return;
   await contentRepository.deleteProject(id);
+  await logAction("delete", { entityType: "project", entityId: id, summary: "Projet supprimé" });
   revalidatePath("/admin/projets");
 }
 
