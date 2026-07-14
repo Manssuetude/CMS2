@@ -7,7 +7,6 @@ export function Hero({
   body,
   imageUrl,
   imageAlt,
-  quote,
   primaryLabel,
   primaryTarget,
   secondaryLabel,
@@ -41,7 +40,6 @@ export function Hero({
       </div>
       <div className="hero-image">
         {imageUrl ? <img src={imageUrl} alt={imageAlt || title} loading="eager" /> : null}
-        {quote ? <blockquote>{quote}</blockquote> : null}
       </div>
     </section>
   );
