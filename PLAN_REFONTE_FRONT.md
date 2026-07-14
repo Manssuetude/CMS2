@@ -56,11 +56,47 @@
 
 ### Phase E — Rebranchement & contenu réel
 
-- [ ] E1. Reconnecter le contenu éditable (props ↔ table `pages`)
-- [ ] E2. Retirer la route `perca` (fusionnée)
-- [ ] E3. **Remplir la base avec le contenu réel** issu des documents de l'asso (dossier `documents-asso/`) — pages, thèmes, séances, activités, productions, projets, PERCA, contact
-- [ ] E4. Brancher le **formulaire « Nous joindre »** sur l'admin (réception des messages) + coordonnées réelles
-- [ ] E5. Vérification build + gates (typecheck, lint, format)
+- [x] E1. Reconnecter le contenu éditable (props ↔ table `pages`) — accueil, PERCA, histoire, photos des pages éditables en admin ; propagation ISR < 60 s
+- [~] E2. ~~Retirer la route `perca`~~ → **décision inversée** : `/perca` conservée comme **page dédiée** (sans image ni CTA, étapes P·E·R·C·A + texte riche) avec **éditeur admin**
+- [ ] E3. **Remplir la base avec le contenu réel** issu des documents de l'asso (dossier `documents-asso/`)
+- [x] E4. Brancher les **formulaires** sur l'admin (réception, statuts, détail, filtres, export CSV) — voir Phase F
+- [x] E5. Vérification build + gates (typecheck, lint, format) — CI « quality » verte sur chaque PR
+
+### Phase F — Fonctionnalités CMS, admin & finitions (session en cours)
+
+**Thème & apparence**
+
+- [x] F1. **Thème sombre** : préférence système (`prefers-color-scheme`) **+** bouton bascule mémorisé (localStorage, anti-FOUC), palette brun-chaud — public **et** admin
+- [x] F2. Cohérence design : flèches parasites retirées, gris chauds, filtres redessinés, cadres photo carrés, démarcation header/footer
+- [x] F3. **Favicon** = logo Manssuétude ; **logo dans l'admin** (sidebar + login)
+- [x] F4. **Style des boutons admin** unifié (fin, moderne, orange de marque)
+
+**Accueil piloté par l'admin**
+
+- [x] F5. **Sujet du moment** = thème choisi en admin (liste déroulante), titre auto, carte cliquable, variante sans image
+- [x] F6. **Mises en avant** (étoile cliquable + confirmation + notification) : thèmes, **productions** (max 4), **activités** (max 3) → alimentent l'accueil ; CSS adaptatif au nombre
+
+**Contenu éditable en admin**
+
+- [x] F7. Éditeur **page PERCA** (contenu riche, comme les articles)
+- [x] F8. Page **/history** publique + éditeur admin (contenu riche)
+- [x] F9. Édition **sujet du moment / hero / lien des boutons** de l'accueil
+
+**Formulaires**
+
+- [x] F10. Formulaire d'adhésion nettoyé (pièce jointe retirée, champs obligatoires + astérisques, bulle RGPD)
+- [x] F11. Sections **« Proposer … »** en bas des pages Activités / Thèmes / Projets (nouveaux types `activity`, `theme` ; migration enum `form_type`)
+- [x] F12. **Gestion des formulaires reçus** en admin : détail dépliable, filtres par type, export CSV filtrable
+- [x] F13. Footer : liens **Instagram / TikTok / LinkedIn**
+
+**Pages non disponibles**
+
+- [x] F14. **Design de maintenance unifié** (404 + replis + /maintenance + /history vide) avec **illustration éditoriale**
+
+**Responsive & DB**
+
+- [x] F15. **Admin responsive** (tableaux défilables, formulaires empilés)
+- [x] F16. Migrations : `activities.featured`, valeurs enum `form_type` (`theme`, `activity`)
 
 > **Note contenu :** le remplissage de la base (E3/E4) se fait **à la connexion admin ↔ public**, à partir des documents déposés dans `documents-asso/` (voir la liste exigée dans `documents-asso/README.md`).
 
@@ -99,6 +135,12 @@
 
 ---
 
-### Note de transparence
+### État actuel
 
-Avant ta demande de plan, j'avais déjà **ébauché** les points A1, A2, A3 et B1 (marqués « À valider » ci-dessus). Si tu valides le plan, on les considère comme base de travail ; si tu veux ajuster la direction, on les reprend. Rien d'autre n'a été codé.
+Phases **A → D** terminées (design éditorial, structure, pages, responsive/polish). Phase **E** en grande partie faite (contenu éditable branché ; formulaires branchés). Phase **F** (fonctionnalités CMS/admin, thème sombre, mises en avant, maintenance, /history) livrée et mergée sur `main` via PRs (CI verte).
+
+**Reste à faire :**
+
+- E3 — Remplir la base avec le **contenu réel** de l'association (docs dans `documents-asso/`).
+- Séances (2ᵉ niveau Thème → Séance) à finaliser quand la donnée existera.
+- Images en **BLOB DB** (décision) : à câbler au moment du remplissage réel (voir note images ci-dessus).
