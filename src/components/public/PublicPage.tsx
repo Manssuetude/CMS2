@@ -24,6 +24,7 @@ export function PublicPage({
         title={page.title}
         body={page.body}
         imageUrl={heroImageUrl}
+        imageCrop={page.imageCrop}
         quote={page.quote}
         primaryLabel={page.primaryCtaLabel}
         primaryTarget={page.primaryCtaTarget}

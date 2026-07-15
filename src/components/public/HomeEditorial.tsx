@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
 import type { Page, Production, Activity, Theme } from "@/types/cms";
+import { cropToImageStyle } from "@/utils/imageCrop";
 
 const percaLetters = ["P", "E", "R", "C", "A"] as const;
 
@@ -54,7 +55,7 @@ export function HomeEditorial({
         </div>
         {heroImageUrl ? (
           <figure className="home-hero-media">
-            <img src={heroImageUrl} alt="" loading="eager" />
+            <img src={heroImageUrl} alt="" loading="eager" style={cropToImageStyle(page.imageCrop)} />
           </figure>
         ) : null}
       </section>
@@ -67,7 +68,7 @@ export function HomeEditorial({
         >
           {focusImageUrl ? (
             <div className="home-focus-media">
-              <img src={focusImageUrl} alt="" loading="lazy" />
+              <img src={focusImageUrl} alt="" loading="lazy" style={cropToImageStyle(page.focusImageCrop)} />
             </div>
           ) : null}
           <div className="home-focus-copy">

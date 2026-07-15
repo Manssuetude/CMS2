@@ -12,6 +12,7 @@ import type {
   Theme,
 } from "@/types/cms";
 import { asBoolean, asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
+import { parseImageCrop } from "@/utils/imageCrop";
 
 const statusFilter = { status: "published" };
 
@@ -40,7 +41,9 @@ function mapPage(row: DataRow): Page {
     body: asNullableString(row.body),
     imageId: asNullableString(row.image_id),
     imageUrl: normalizeUrl(imageResource?.url),
+    imageCrop: parseImageCrop(row.image_crop),
     focusImageUrl: normalizeUrl(focusImageResource?.url),
+    focusImageCrop: parseImageCrop(row.focus_image_crop),
     quote: asNullableString(row.quote),
     primaryCtaLabel: asNullableString(row.primary_cta_label),
     primaryCtaTarget: asNullableString(row.primary_cta_target),

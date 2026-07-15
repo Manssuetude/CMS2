@@ -22,7 +22,9 @@ export async function saveHomepageFieldsAction(formData: FormData): Promise<void
     secondary_cta_label: formData.get("secondary_cta_label") || null,
     secondary_cta_target: formData.get("secondary_cta_target") || null,
     image_id: formData.get("image_id") || null,
+    image_crop: formData.get("image_crop") || null,
     seo_image_id: formData.get("seo_image_id") || null,
+    focus_image_crop: formData.get("focus_image_crop") || null,
     seo_title: formData.get("seo_title") || null,
     seo_description: formData.get("seo_description") || null,
   };

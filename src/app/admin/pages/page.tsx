@@ -1,5 +1,7 @@
 import { contentRepository } from "@/repositories/contentRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
+import { ImageCropField } from "@/components/media/ImageCropField";
+import { HERO_ASPECT } from "@/constants/imageAspects";
 import { savePageImageAction } from "./actions";
 
 const PAGE_LABELS: Record<string, string> = {
@@ -106,21 +108,19 @@ export default async function AdminPages() {
               </div>
 
               {/* Formulaire image picker */}
-              <form action={savePageImageAction} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <form
+                action={savePageImageAction}
+                style={{ display: "flex", gap: 8, alignItems: "flex-start", minWidth: 260 }}
+              >
                 <input type="hidden" name="slug" value={page.slug} />
-                <select
+                <ImageCropField
                   name="image_id"
-                  className="form-input"
-                  defaultValue={page.imageId ?? ""}
-                  style={{ minWidth: 220, fontSize: 13 }}
-                >
-                  <option value="">— image par défaut —</option>
-                  {images.map((img) => (
-                    <option key={img.id} value={img.id}>
-                      {img.title || img.filename}
-                    </option>
-                  ))}
-                </select>
+                  cropName="image_crop"
+                  images={images}
+                  defaultImageId={page.imageId ?? ""}
+                  defaultCrop={page.imageCrop ?? null}
+                  aspect={HERO_ASPECT}
+                />
                 <button type="submit" className="btn secondary" style={{ whiteSpace: "nowrap", fontSize: 13 }}>
                   Appliquer
                 </button>

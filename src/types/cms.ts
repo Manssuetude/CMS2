@@ -188,6 +188,19 @@ export type InternalComment = {
   createdAt: string;
 };
 
+/**
+ * Recadrage non destructif d'une image, appliqué en CSS à l'affichage.
+ * x, y, width, height = croppedArea de react-easy-crop (pourcentages de l'image).
+ * zoom = échelle de l'éditeur, conservée uniquement pour restaurer l'état d'édition.
+ */
+export type ImageCrop = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  zoom: number;
+};
+
 export type Page = {
   id: string;
   slug: string;
@@ -196,7 +209,9 @@ export type Page = {
   body?: string | null;
   imageId?: string | null;
   imageUrl?: string | null;
+  imageCrop?: ImageCrop | null;
   focusImageUrl?: string | null;
+  focusImageCrop?: ImageCrop | null;
   image?: Media | null;
   quote?: string | null;
   primaryCtaLabel?: string | null;

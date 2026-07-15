@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { requirePermission } from "@/lib/auth";
 import { contentRepository } from "@/repositories/contentRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
+import { ImageCropField } from "@/components/media/ImageCropField";
+import { HERO_ASPECT } from "@/constants/imageAspects";
 import { savePageContentAction } from "../actions";
 
 const PAGE_LABELS: Record<string, string> = {
@@ -14,12 +16,6 @@ const PAGE_LABELS: Record<string, string> = {
   projets: "Projets",
   themes: "Thèmes",
 };
-
-function toAbsoluteUrl(url: string | null | undefined): string {
-  if (!url) return "";
-  if (url.startsWith("http") || url.startsWith("/")) return url;
-  return `/${url}`;
-}
 
 export default async function EditPageBySlug({ params }: { params: Promise<{ slug: string }> }) {
   await requirePermission("pages:edit");
@@ -80,25 +76,16 @@ export default async function EditPageBySlug({ params }: { params: Promise<{ slu
         {/* ── Photo hero ─────────────────────────────────────────────── */}
         <div className="admin-form-section">
           <h2 className="admin-form-section-title">Photo hero</h2>
-          {page?.imageUrl && (
-            <div style={{ marginBottom: 12 }}>
-              <img
-                src={toAbsoluteUrl(page.imageUrl)}
-                alt="Photo actuelle"
-                style={{ height: 100, objectFit: "cover", borderRadius: 6, border: "1px solid var(--line)" }}
-              />
-            </div>
-          )}
           <div className="form-field">
-            <label className="form-label">Choisir une image</label>
-            <select name="image_id" className="form-input" defaultValue={page?.imageId ?? ""}>
-              <option value="">— image par défaut —</option>
-              {images.map((img) => (
-                <option key={img.id} value={img.id}>
-                  {img.title || img.filename}
-                </option>
-              ))}
-            </select>
+            <ImageCropField
+              label="Choisir une image"
+              name="image_id"
+              cropName="image_crop"
+              images={images}
+              defaultImageId={page?.imageId ?? ""}
+              defaultCrop={page?.imageCrop ?? null}
+              aspect={HERO_ASPECT}
+            />
           </div>
           {images.length === 0 && (
             <p style={{ fontSize: 13, color: "var(--muted)" }}>
