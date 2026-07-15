@@ -1,12 +1,8 @@
 import { contentRepository } from "@/repositories/contentRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
+import { ImageCropField } from "@/components/media/ImageCropField";
+import { FOCUS_ASPECT, HERO_ASPECT } from "@/constants/imageAspects";
 import { saveHomepageFieldsAction } from "./actions";
-
-function toAbsoluteUrl(url: string | null | undefined): string {
-  if (!url) return "";
-  if (url.startsWith("http") || url.startsWith("/")) return url;
-  return `/${url}`;
-}
 
 export default async function AdminHomepage() {
   const [page, media, themes] = await Promise.all([
@@ -96,26 +92,16 @@ export default async function AdminHomepage() {
             Choisissez une image depuis la médiathèque. Si aucune n&apos;est sélectionnée, l&apos;image par défaut
             s&apos;affiche.
           </p>
-          {page?.imageUrl && (
-            <div style={{ marginBottom: 12 }}>
-              <img
-                src={toAbsoluteUrl(page.imageUrl)}
-                alt="Image actuelle"
-                style={{ height: 100, objectFit: "cover", borderRadius: 6, border: "1px solid var(--line)" }}
-              />
-              <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>Image actuelle</p>
-            </div>
-          )}
           <div className="form-field">
-            <label className="form-label">Sélectionner une image</label>
-            <select name="image_id" className="form-input" defaultValue={page?.imageId ?? ""}>
-              <option value="">— image par défaut —</option>
-              {images.map((img) => (
-                <option key={img.id} value={img.id}>
-                  {img.title || img.filename}
-                </option>
-              ))}
-            </select>
+            <ImageCropField
+              label="Sélectionner une image"
+              name="image_id"
+              cropName="image_crop"
+              images={images}
+              defaultImageId={page?.imageId ?? ""}
+              defaultCrop={page?.imageCrop ?? null}
+              aspect={HERO_ASPECT}
+            />
           </div>
           {images.length === 0 && (
             <p style={{ fontSize: 13, color: "var(--muted)" }}>
@@ -162,23 +148,15 @@ export default async function AdminHomepage() {
             <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
               Image affichée à côté du sujet du moment. Sans image, le sujet s&apos;affiche en pleine largeur.
             </p>
-            {page?.focusImageUrl && (
-              <div style={{ marginBottom: 12 }}>
-                <img
-                  src={toAbsoluteUrl(page.focusImageUrl)}
-                  alt="Photo actuelle du sujet"
-                  style={{ height: 100, objectFit: "cover", borderRadius: 6, border: "1px solid var(--line)" }}
-                />
-              </div>
-            )}
-            <select name="seo_image_id" className="form-input" defaultValue={page?.seoImageId ?? ""}>
-              <option value="">— aucune image (pleine largeur) —</option>
-              {images.map((img) => (
-                <option key={img.id} value={img.id}>
-                  {img.title || img.filename}
-                </option>
-              ))}
-            </select>
+            <ImageCropField
+              name="seo_image_id"
+              cropName="focus_image_crop"
+              images={images}
+              defaultImageId={page?.seoImageId ?? ""}
+              defaultCrop={page?.focusImageCrop ?? null}
+              aspect={FOCUS_ASPECT}
+              emptyOptionLabel="— aucune image (pleine largeur) —"
+            />
           </div>
         </div>
 

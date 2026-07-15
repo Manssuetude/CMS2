@@ -1,9 +1,12 @@
 import Link from "next/link";
+import type { ImageCrop } from "@/types/cms";
+import { cropToImageStyle } from "@/utils/imageCrop";
 
 type CardItem = {
   title: string;
   description?: string | null;
   imageUrl?: string | null;
+  imageCrop?: ImageCrop | null;
   href: string;
   meta?: string | null;
   tags?: string[];
@@ -20,7 +23,12 @@ export function CardGrid({ title, items }: { title: string; items: CardItem[] })
           <Link className="card" href={item.href} key={item.href}>
             {item.imageUrl ? (
               <span className="card-image">
-                <img src={item.imageUrl} alt={item.title} loading="lazy" />
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  loading="lazy"
+                  style={{ objectFit: "cover", ...cropToImageStyle(item.imageCrop) }}
+                />
               </span>
             ) : null}
             <span className="card-body">

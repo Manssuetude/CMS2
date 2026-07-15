@@ -36,15 +36,17 @@ Comptes de l'équipe, synchronisés automatiquement depuis Supabase Auth via tri
 
 Pages publiques du site (accueil, à propos, etc.). La colonne `sections` stocke les blocs CMS en JSON.
 
-| Colonne                        | Type                | Notes                     |
-| ------------------------------ | ------------------- | ------------------------- |
-| `id`                           | uuid PK             |                           |
-| `slug`                         | text unique         | identifiant URL           |
-| `title`                        | text NOT NULL       |                           |
-| `sections`                     | jsonb               | tableau de `ContentBlock` |
-| `status`                       | content_status      | défaut `draft`            |
-| `seo_title`, `seo_description` | text                |                           |
-| `image_id`                     | uuid FK → resources |                           |
+| Colonne                        | Type                | Notes                                                          |
+| ------------------------------ | ------------------- | -------------------------------------------------------------- |
+| `id`                           | uuid PK             |                                                                |
+| `slug`                         | text unique         | identifiant URL                                                |
+| `title`                        | text NOT NULL       |                                                                |
+| `sections`                     | jsonb               | tableau de `ContentBlock`                                      |
+| `status`                       | content_status      | défaut `draft`                                                 |
+| `seo_title`, `seo_description` | text                |                                                                |
+| `image_id`                     | uuid FK → resources |                                                                |
+| `image_crop`                   | jsonb               | recadrage CSS non destructif de l'image hero (voir ci-dessous) |
+| `focus_image_crop`             | jsonb               | recadrage CSS de la photo du sujet du moment (`seo_image_id`)  |
 
 ### `themes`
 
@@ -229,6 +231,7 @@ Toutes en cascade sur suppression.
 
 - `users.role_key` → référence `roles.key` (source de vérité du rôle).
 - `activities.featured` (boolean) — mise en avant sur l'accueil.
+- `pages.image_crop`, `pages.focus_image_crop` (jsonb) — recadrage **non destructif** des images par emplacement : `{ x, y, width, height, zoom }` en % (croppedArea de react-easy-crop). Appliqué en CSS à l'affichage (point focal `object-position` + zoom via la propriété `scale`). Le fichier image n'est jamais modifié. `NULL` = cadrage par défaut (`object-fit: cover` centré).
 
 ### Enum
 
@@ -241,5 +244,6 @@ Toutes en cascade sur suppression.
 | `20260714_rbac.sql`                      | tables `roles`, `audit_logs`, colonne `users.role_key` |
 | `20260714_activities_featured.sql`       | colonne `activities.featured`                          |
 | `20260714_form_types_theme_activity.sql` | valeurs enum `form_type` : `theme`, `activity`         |
+| `20260715_image_crop.sql`                | colonnes `pages.image_crop`, `pages.focus_image_crop`  |
 
 > ⚠️ La table `form_submissions.attachments` n'est plus alimentée (pièce jointe retirée des formulaires) — colonne conservée, inerte.

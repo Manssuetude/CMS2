@@ -1,5 +1,6 @@
 import { CtaButton } from "@/components/forms/CtaButton";
-import type { CtaTarget } from "@/types/cms";
+import type { CtaTarget, ImageCrop } from "@/types/cms";
+import { cropToImageStyle } from "@/utils/imageCrop";
 
 export function Hero({
   eyebrow,
@@ -7,6 +8,7 @@ export function Hero({
   body,
   imageUrl,
   imageAlt,
+  imageCrop,
   primaryLabel,
   primaryTarget,
   secondaryLabel,
@@ -17,6 +19,7 @@ export function Hero({
   body?: string | null;
   imageUrl?: string | null;
   imageAlt?: string | null;
+  imageCrop?: ImageCrop | null;
   quote?: string | null;
   primaryLabel?: string | null;
   primaryTarget?: CtaTarget | null;
@@ -40,7 +43,12 @@ export function Hero({
       </div>
       {imageUrl ? (
         <div className="hero-image">
-          <img src={imageUrl} alt={imageAlt || title} loading="eager" />
+          <img
+            src={imageUrl}
+            alt={imageAlt || title}
+            loading="eager"
+            style={{ objectFit: "cover", ...cropToImageStyle(imageCrop) }}
+          />
         </div>
       ) : null}
     </section>
