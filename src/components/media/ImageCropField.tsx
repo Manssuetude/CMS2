@@ -76,7 +76,6 @@ export function ImageCropField({
       {selectedUrl ? (
         <div className="image-crop-preview-row">
           <div className="image-crop-preview" style={{ aspectRatio: String(aspect) }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={selectedUrl}
               alt="Aperçu du cadrage"
