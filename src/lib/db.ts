@@ -10,11 +10,3 @@ export function getSupabaseAdmin() {
     auth: { persistSession: false },
   });
 }
-
-export function getSupabaseBrowser() {
-  if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    throw new Error("Supabase public credentials are missing.");
-  }
-
-  return createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-}

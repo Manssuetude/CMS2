@@ -1,14 +1,5 @@
 import { env } from "@/lib/env";
 
-export type GoogleDrivePickedFile = {
-  id: string;
-  name: string;
-  mimeType: string;
-  url: string;
-  thumbnailUrl?: string;
-  size?: string;
-};
-
 export function getGooglePickerConfig() {
   return {
     clientId: env.GOOGLE_CLIENT_ID,

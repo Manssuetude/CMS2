@@ -13,8 +13,6 @@ const requiredFiles = [
   "docs/DATABASE.md",
   "docs/WORKFLOWS.md",
   "src/constants/collections.ts",
-  "src/constants/adminNavigation.ts",
-  "src/config/designTokens.ts",
   "src/lib/errors.ts",
   "src/lib/logger.ts",
   "src/lib/validation.ts",

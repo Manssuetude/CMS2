@@ -1,5 +1,3 @@
-export type UserRole = "admin" | "editor" | "contributor" | "viewer";
-
 // Rôle RBAC personnalisable (table `roles`). `isAdmin` = rôle tout-puissant figé.
 export type Role = {
   id: string;
@@ -44,15 +42,6 @@ export type RelationKind =
   | "produced-from"
   | "recommended"
   | "featured";
-export type PermissionKey =
-  | "homepage.edit"
-  | "productions.publish"
-  | "media.manage"
-  | "projects.validate"
-  | "forms.access"
-  | "seo.manage"
-  | "design.manage";
-
 export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "activity"}`;
 
 export type ContentBlock =
@@ -124,31 +113,6 @@ export type Media = {
   updatedAt: string;
 };
 
-export type Season = {
-  id: string;
-  slug: string;
-  title: string;
-  description?: string | null;
-  status: ContentStatus;
-  featured: boolean;
-  tags: string[];
-  startsAt?: string | null;
-  endsAt?: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type Member = {
-  id: string;
-  name: string;
-  email?: string | null;
-  role?: string | null;
-  commissions: string[];
-  visibility: Visibility;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type EntityRelation = {
   id: string;
   fromType: EntityType;
@@ -158,34 +122,6 @@ export type EntityRelation = {
   kind: RelationKind;
   weight: number;
   metadata: Record<string, unknown>;
-};
-
-export type TaxonomyEntry = {
-  id: string;
-  kind: "tag" | "type" | "format" | "usage" | "level" | "visibility";
-  label: string;
-  slug: string;
-  description?: string | null;
-};
-
-export type ContentVersion = {
-  id: string;
-  entityType: EntityType;
-  entityId: string;
-  version: number;
-  snapshot: Record<string, unknown>;
-  authorId?: string | null;
-  createdAt: string;
-};
-
-export type InternalComment = {
-  id: string;
-  entityType: EntityType;
-  entityId: string;
-  authorId?: string | null;
-  body: string;
-  resolved: boolean;
-  createdAt: string;
 };
 
 /**
@@ -309,20 +245,6 @@ export type FormSubmission = {
   receivedAt: string;
   updatedAt: string;
 };
-
-export type SiteSettings = {
-  id: string;
-  logoId?: string | null;
-  faviconId?: string | null;
-  primaryColor: string;
-  secondaryColor: string;
-  fallbackImageId?: string | null;
-  tagline?: string | null;
-  footerConfig: Record<string, unknown>;
-  homepageConfig: Record<string, unknown>;
-};
-
-export type CtaLinks = Record<string, CtaTarget>;
 
 export type FooterLink = {
   label: string;
