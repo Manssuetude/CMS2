@@ -6,4 +6,3 @@
  */
 export const HERO_ASPECT = 3 / 2;
 export const FOCUS_ASPECT = 4 / 3;
-export const CARD_ASPECT = 16 / 10;
