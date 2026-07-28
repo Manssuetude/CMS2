@@ -73,6 +73,15 @@ export const userRepository = {
     const db = getSupabaseAdmin();
     // Supprime le compte d'auth (cascade sur `users` via FK on delete cascade).
     const { error } = await db.auth.admin.deleteUser(id);
-    if (error) throw error;
+    // Si le compte d'auth a déjà disparu (ligne orpheline, double suppression ou
+    // suppression manuelle côté Supabase), on ignore l'erreur « User not found »
+    // au lieu de faire planter l'action, puis on nettoie explicitement ci-dessous.
+    const alreadyGone = error && (error.status === 404 || /user not found/i.test(error.message));
+    if (error && !alreadyGone) throw error;
+
+    // Filet de sécurité : supprime la ligne `users` au cas où la cascade FK
+    // n'a pas eu lieu (compte d'auth absent). No-op si la ligne est déjà partie.
+    const { error: rowErr } = await db.from("users").delete().eq("id", id);
+    if (rowErr) throw rowErr;
   },
 };
