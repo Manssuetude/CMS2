@@ -3,6 +3,7 @@ import { userRepository } from "@/repositories/userRepository";
 import { roleRepository } from "@/repositories/roleRepository";
 import { InviteUserForm } from "@/components/admin/InviteUserForm";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { ConfirmRoleButton } from "@/components/admin/ConfirmRoleButton";
 import { updateUserRoleAction, removeUserAction } from "./actions";
 
 export default async function AdminUsersPage() {
@@ -60,9 +61,7 @@ export default async function AdminUsersPage() {
                           </option>
                         ))}
                       </select>
-                      <button type="submit" className="btn-sm">
-                        OK
-                      </button>
+                      <ConfirmRoleButton />
                     </form>
                   )}
                 </td>
