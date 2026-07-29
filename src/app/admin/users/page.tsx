@@ -3,6 +3,7 @@ import { userRepository } from "@/repositories/userRepository";
 import { roleRepository } from "@/repositories/roleRepository";
 import { InviteUserForm } from "@/components/admin/InviteUserForm";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { CopyInviteLinkButton } from "@/components/admin/CopyInviteLinkButton";
 import { updateUserRoleAction, removeUserAction } from "./actions";
 
 export default async function AdminUsersPage() {
@@ -36,7 +37,14 @@ export default async function AdminUsersPage() {
             {users.map((u) => (
               <tr key={u.id}>
                 <td className="col-title">
-                  {u.name || <em style={{ color: "var(--muted)" }}>En attente d&apos;activation</em>}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    {u.name || <em style={{ color: "var(--muted)" }}>Sans nom</em>}
+                    {u.name ? (
+                      <span className="badge-status badge-published">Actif</span>
+                    ) : (
+                      <span className="badge-status badge-review">Invité — en attente</span>
+                    )}
+                  </span>
                 </td>
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>{u.email}</td>
                 <td>
@@ -67,10 +75,13 @@ export default async function AdminUsersPage() {
                   {u.id === admin.userId ? (
                     <span style={{ color: "var(--muted)", fontSize: 12 }}>Vous</span>
                   ) : (
-                    <form action={removeUserAction}>
-                      <input type="hidden" name="id" value={u.id} />
-                      <ConfirmDeleteButton />
-                    </form>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      {!u.name && <CopyInviteLinkButton userId={u.id} />}
+                      <form action={removeUserAction}>
+                        <input type="hidden" name="id" value={u.id} />
+                        <ConfirmDeleteButton />
+                      </form>
+                    </span>
                   )}
                 </td>
               </tr>

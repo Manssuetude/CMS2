@@ -56,6 +56,22 @@ export async function updateUserRoleAction(formData: FormData): Promise<void> {
   revalidatePath("/admin/users");
 }
 
+export type InviteLinkState = { link?: string; error?: string };
+
+// Régénère et renvoie un lien d'activation pour un compte en attente (copier-coller
+// manuel si l'e-mail n'est pas parti). Réservé aux administrateurs.
+export async function inviteLinkAction(id: string): Promise<InviteLinkState> {
+  await requireAdmin();
+  try {
+    const user = await userRepository.getById(id);
+    if (!user) return { error: "Utilisateur introuvable." };
+    const link = await userRepository.activationLink(user.email);
+    return { link };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Impossible de générer le lien." };
+  }
+}
+
 export async function removeUserAction(formData: FormData): Promise<void> {
   const admin = await requireAdmin();
   const id = String(formData.get("id") ?? "").trim();
