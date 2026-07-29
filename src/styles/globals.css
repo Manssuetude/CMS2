@@ -2783,6 +2783,9 @@ textarea {
 }
 .invite-link {
   margin-top: 10px;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
 }
 .invite-link input {
   width: 100%;
@@ -2854,36 +2857,268 @@ textarea {
 }
 
 /* ─── Carte d'activation de compte (invitation) ──────────────────────── */
-.activation-card {
-  text-align: center;
+/* ── Page d'activation de compte (onboarding) ──────────────────────── */
+.act-shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--paper);
+  background-image: radial-gradient(1100px 620px at 100% -5%, var(--orange-soft), transparent 62%);
 }
-.activation-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+.act-grid {
+  width: 100%;
+  max-width: 940px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -42px rgba(13, 13, 15, 0.42);
 }
-.activation-brand img {
-  width: 52px;
-  height: 52px;
+.act-aside {
+  padding: 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(158deg, var(--orange-soft), transparent 68%), var(--surface);
+  border-right: 1px solid var(--line);
+}
+.act-logo {
+  width: 46px;
+  height: 46px;
   object-fit: contain;
+  margin-bottom: 30px;
 }
-.activation-brand span {
+.act-eyebrow {
+  margin: 0 0 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--orange);
+}
+.act-welcome {
+  margin: 0 0 16px;
   font-family: var(--font-serif), Georgia, serif;
-  font-size: 20px;
+  font-size: 34px;
+  line-height: 1.08;
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--ink);
 }
-.activation-card .eyebrow {
-  display: inline-block;
+.act-lede {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 15px;
+  line-height: 1.62;
+  color: var(--ink-soft);
 }
-.activation-card form {
-  text-align: left;
+.act-panel {
+  padding: 52px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.activation-card .cta {
+.act-form-head {
+  margin-bottom: 26px;
+}
+.act-form-title {
+  margin: 0 0 6px;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.act-form-sub {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.act-form-sub strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.act-form {
+  display: grid;
+  gap: 18px;
+}
+.act-field {
+  display: grid;
+  gap: 7px;
+}
+.act-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.act-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.act-input {
   width: 100%;
-  margin-top: 6px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.act-input::placeholder {
+  color: var(--muted);
+}
+.act-input:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px var(--orange-soft);
+}
+.act-input-wrap .act-input {
+  padding-right: 44px;
+}
+.act-eye {
+  position: absolute;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.act-eye:hover {
+  color: var(--ink);
+}
+.act-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.act-error {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 13px;
+  color: #b42318;
+}
+.act-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--orange);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    filter 0.18s ease;
+}
+.act-submit:hover {
+  filter: brightness(1.05);
+}
+.act-submit:active {
+  transform: translateY(1px);
+}
+.act-submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.act-state {
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+.act-state__icon {
+  color: var(--orange);
+}
+.act-state__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.act-state__text {
+  margin: 0;
+  max-width: 32ch;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.act-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2.5px solid var(--line);
+  border-top-color: var(--orange);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .act-grid {
+    animation: act-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .act-spinner {
+    animation: act-spin 0.8s linear infinite;
+  }
+}
+@keyframes act-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes act-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+:root[data-theme="dark"] .act-error {
+  color: #f97066;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .act-error {
+    color: #f97066;
+  }
+}
+@media (max-width: 720px) {
+  .act-grid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+  .act-aside {
+    padding: 34px 28px 26px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .act-welcome {
+    font-size: 27px;
+  }
+  .act-panel {
+    padding: 30px 28px;
+  }
 }
 
 /* ── Éditeur de recadrage d'image ──────────────────────────────────── */

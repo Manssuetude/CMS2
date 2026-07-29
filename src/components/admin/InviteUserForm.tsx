@@ -1,11 +1,22 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { inviteUserAction, type InviteState } from "@/app/admin/users/actions";
 import type { Role } from "@/types/cms";
 
 export function InviteUserForm({ roles }: { roles: Role[] }) {
   const [state, action, pending] = useActionState<InviteState, FormData>(inviteUserAction, null);
+  const [copied, setCopied] = useState(false);
+
+  async function copyLink(link: string) {
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copiez le lien d'invitation :", link);
+    }
+  }
 
   return (
     <div className="admin-form-section">
@@ -51,6 +62,9 @@ export function InviteUserForm({ roles }: { roles: Role[] }) {
           </p>
           {!state.emailSent && state.link && (
             <div className="invite-link">
+              <button type="button" className="btn-sm" onClick={() => copyLink(state.link!)}>
+                {copied ? "✓ Copié" : "Copier"}
+              </button>
               <input readOnly value={state.link} onFocus={(e) => e.currentTarget.select()} />
             </div>
           )}
