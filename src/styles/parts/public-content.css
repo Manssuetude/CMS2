@@ -1,0 +1,309 @@
+/* ─── Rich text (CKEditor output on public pages) ───────────────────── */
+.rich-text {
+  font-size: 17px;
+  line-height: 1.78;
+  color: var(--ink);
+  max-width: 720px;
+}
+.rich-text > * + * {
+  margin-top: 1em;
+}
+.rich-text > *:first-child {
+  margin-top: 0;
+}
+.detail-layout .rich-text {
+  max-width: none;
+}
+.rich-text h2 {
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+.rich-text h3 {
+  font-size: clamp(17px, 1.8vw, 20px);
+  font-weight: 700;
+  margin-top: 1.6em;
+}
+.rich-text h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 1.4em;
+}
+.rich-text p {
+  margin: 0;
+}
+.rich-text ul,
+.rich-text ol {
+  padding-left: 1.5em;
+}
+.rich-text li {
+  margin-bottom: 0.35em;
+}
+.rich-text blockquote {
+  border-left: 3px solid var(--orange);
+  margin: 1.6em 0;
+  padding: 6px 22px;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 18px;
+}
+.rich-text a {
+  color: var(--orange);
+  text-decoration: underline;
+}
+.rich-text strong {
+  font-weight: 700;
+}
+.rich-text code {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.87em;
+  background: var(--soft);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+.rich-text pre {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  overflow-x: auto;
+  font-size: 14px;
+}
+.rich-text figure {
+  margin: 1.6em 0;
+}
+.rich-text figure img {
+  max-width: 100%;
+  border-radius: 0;
+}
+.rich-text figcaption {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.rich-text table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.rich-text th,
+.rich-text td {
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  text-align: left;
+}
+.rich-text th {
+  background: var(--soft);
+  font-weight: 600;
+}
+.rich-text hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 2em 0;
+}
+
+/* ─── Detail page layout ─────────────────────────────────────────────── */
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 56px;
+  align-items: start;
+}
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 13px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+}
+.detail-sidebar-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.detail-sidebar-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.theme-chip {
+  display: inline-flex;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    border-color 0.12s,
+    background 0.12s;
+}
+.theme-chip:hover {
+  background: var(--orange-soft);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* ─── Filter bar (productions, activités) ───────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 var(--page-px);
+  margin-bottom: 32px;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.12s,
+    background 0.12s,
+    color 0.12s;
+}
+.filter-chip:hover {
+  background: var(--orange-soft);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.filter-chip.active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+
+/* ─── Admin form sections ────────────────────────────────────────────── */
+.admin-form-section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.admin-form-section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+.admin-form-section-hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: -8px 0 0;
+}
+
+/* ─── Hero detail variants ───────────────────────────────────────────── */
+.hero-type-badge {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--orange);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.hero-progress {
+  position: absolute;
+  bottom: 10%;
+  left: 8%;
+  right: 8%;
+}
+.hero-progress > span {
+  display: block;
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.progress-track {
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--orange);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Project objectives ─────────────────────────────────────────────── */
+.objectives-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+.objectives-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+.objectives-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+.objectives-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.objectives-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.objectives-list li::before {
+  content: "→";
+  color: var(--orange);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── Responsive detail ──────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .objectives-grid {
+    grid-template-columns: 1fr;
+  }
+}

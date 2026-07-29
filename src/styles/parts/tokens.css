@@ -1,0 +1,77 @@
+:root {
+  --orange: #ff4d12;
+  --ink: #0d0d0f;
+  --ink-soft: #23252b;
+  --premium-black: #08090b;
+  --muted: #62646d;
+  --line: #e9e2dd;
+  --line-strong: #c9c4bf;
+  --line-dashed: #d7d0ca;
+  --paper: #fffdfb;
+  --soft: #fff4ed;
+  --soft-panel: #fffaf7;
+  --soft-gradient: #fff8f3;
+  --orange-soft: #fff0e8;
+  --white: #fff;
+  --surface: #fff;
+  --cream-text: #f6ded1;
+  --warning: #c86a21;
+  --focus-ring: rgba(255, 77, 18, 0.45);
+  --overlay: rgba(8, 8, 10, 0.62);
+  --radius: 8px;
+  --radius-pill: 999px;
+  --shadow: 0 18px 48px rgba(24, 20, 18, 0.1);
+  --shadow-subtle: 0 12px 30px rgba(24, 20, 18, 0.07);
+  --shadow-soft: 0 12px 30px rgba(24, 20, 18, 0.06);
+  --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.26);
+  --content-max: 1480px;
+  --page-x: clamp(18px, 4vw, 58px);
+}
+
+/* =============================================================
+   Thème sombre — admin & base (tokens globals).
+   Appliqué soit par choix explicite (html[data-theme="dark"]),
+   soit par préférence système quand aucun choix n'est fait.
+   ============================================================= */
+:root[data-theme="dark"] {
+  --ink: #f1eae0;
+  --ink-soft: #c4baac;
+  --muted: #948b7d;
+  --line: #322b22;
+  --line-strong: #473d30;
+  --line-dashed: #3c332a;
+  --paper: #14110d;
+  --soft: #1e1913;
+  --soft-panel: #1b1611;
+  --soft-gradient: #1b1611;
+  --orange-soft: #2a1a10;
+  --surface: #1f1a14;
+  --focus-ring: rgba(255, 120, 70, 0.5);
+  --overlay: rgba(0, 0, 0, 0.72);
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+  --shadow-subtle: 0 12px 30px rgba(0, 0, 0, 0.4);
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+  --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.65);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #f1eae0;
+    --ink-soft: #c4baac;
+    --muted: #948b7d;
+    --line: #322b22;
+    --line-strong: #473d30;
+    --line-dashed: #3c332a;
+    --paper: #14110d;
+    --soft: #1e1913;
+    --soft-panel: #1b1611;
+    --soft-gradient: #1b1611;
+    --orange-soft: #2a1a10;
+    --surface: #1f1a14;
+    --focus-ring: rgba(255, 120, 70, 0.5);
+    --overlay: rgba(0, 0, 0, 0.72);
+    --shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+    --shadow-subtle: 0 12px 30px rgba(0, 0, 0, 0.4);
+    --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
+    --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.65);
+  }
+}

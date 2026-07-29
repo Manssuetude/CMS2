@@ -1,0 +1,238 @@
+/* ─── Sidebar v2 ────────────────────────────────────────────────────── */
+.admin-shell .admin-sidebar {
+  position: static;
+  width: 240px;
+  height: 100%;
+  border: none;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  gap: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 20;
+}
+.admin-shell.sidebar-collapsed .admin-sidebar {
+  width: 56px;
+}
+
+.admin-shell .admin-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  height: 56px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  overflow: hidden;
+  margin: 0;
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.admin-sidebar-logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.admin-sidebar-brand-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  transition: opacity 0.18s;
+  overflow: hidden;
+}
+.admin-shell.sidebar-collapsed .admin-sidebar-brand-name {
+  opacity: 0;
+  width: 0;
+}
+
+.admin-nav {
+  flex: 1;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Override old .admin-sidebar a/button with higher-cascade specificity */
+.admin-nav a,
+.admin-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    background 0.1s,
+    color 0.1s;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.admin-nav a:hover,
+.admin-nav-btn:hover {
+  background: var(--soft);
+  color: var(--ink);
+}
+.admin-nav a[aria-current="page"] {
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-weight: 600;
+}
+.admin-nav a svg,
+.admin-nav-btn svg {
+  flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.1s;
+}
+.admin-nav a[aria-current="page"] svg {
+  opacity: 1;
+}
+
+.admin-nav-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    opacity 0.18s,
+    width 0.22s;
+}
+.admin-shell.sidebar-collapsed .admin-nav-label {
+  opacity: 0;
+  width: 0;
+}
+
+.admin-sidebar-footer {
+  padding: 8px 8px 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.admin-sidebar-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  width: 100%;
+  text-align: left;
+  transition:
+    background 0.1s,
+    color 0.1s;
+}
+.admin-sidebar-toggle:hover {
+  background: var(--soft);
+  color: var(--ink);
+}
+
+/* ─── Main column ────────────────────────────────────────────────────── */
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ─── Topbar ─────────────────────────────────────────────────────────── */
+.admin-topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 28px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.admin-topbar-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+.admin-topbar-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.admin-topbar-sep {
+  font-size: 13px;
+  color: var(--line-strong);
+}
+
+.admin-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 11px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f8fa;
+  color: var(--muted);
+  font-size: 13px;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    box-shadow 0.15s;
+  min-width: 220px;
+}
+.admin-search-wrap:focus-within {
+  border-color: var(--orange);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+.admin-search-wrap input {
+  border: 0;
+  background: transparent;
+  outline: none;
+  font: inherit;
+  color: var(--ink);
+  min-height: auto;
+  padding: 0;
+  width: 100%;
+}
+
+/* ─── Scrollable content ─────────────────────────────────────────────── */
+.admin-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 28px 32px;
+  min-width: 0;
+}
