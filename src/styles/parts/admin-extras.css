@@ -1,0 +1,571 @@
+/* ─── CKEditor overrides ─────────────────────────────────────────────── */
+.ck.ck-editor {
+  max-width: 100%;
+  border-radius: var(--radius) !important;
+}
+.ck.ck-toolbar {
+  flex-wrap: wrap !important;
+  border-radius: var(--radius) var(--radius) 0 0 !important;
+}
+.ck-editor__editable_inline {
+  min-height: 340px;
+  padding: 16px 20px !important;
+}
+.ck-word-count-bar {
+  display: flex;
+  justify-content: flex-end;
+}
+.ck-word-count-bar .ck-word-count {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--soft);
+}
+
+/* ─── Relation chips ─────────────────────────────────────────────────── */
+.form-relation-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+  min-height: 52px;
+}
+.form-relation-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    background 0.1s,
+    border-color 0.1s;
+  user-select: none;
+}
+.form-relation-chip.selected {
+  background: var(--orange-soft);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* ─── Topbar right side ──────────────────────────────────────────────── */
+.admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Responsive narrow ──────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .admin-shell .admin-sidebar {
+    width: 56px;
+  }
+  .admin-shell .admin-nav-label,
+  .admin-shell .admin-sidebar-brand-name {
+    opacity: 0;
+    width: 0;
+  }
+  .admin-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-content {
+    padding: 20px 18px;
+  }
+}
+
+/* ─── Responsive mobile (admin) : tableaux défilables, formulaires empilés ─── */
+@media (max-width: 720px) {
+  /* Les tableaux deviennent défilables horizontalement au lieu de déborder. */
+  .admin-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .admin-table thead th,
+  .admin-table tbody td {
+    white-space: nowrap;
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .admin-metrics {
+    grid-template-columns: 1fr;
+  }
+  .admin-topbar {
+    padding: 0 14px;
+  }
+  .admin-content {
+    padding: 16px 14px;
+  }
+  .admin-panel,
+  .admin-card {
+    padding: 18px 16px;
+  }
+  .admin-page-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+/* ─── Onboarding tour ────────────────────────────────────────────────── */
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(17, 17, 17, 0.48);
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.2s ease;
+}
+.tour-bubble {
+  position: fixed;
+  z-index: 1001;
+  width: 320px;
+  padding: 22px 22px 18px;
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: slideUp 0.22s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tour-bubble-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.tour-step-count {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--orange);
+}
+.tour-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--soft-panel);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.tour-close:hover {
+  background: var(--line);
+  color: var(--ink);
+}
+.tour-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.tour-body {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+.tour-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.tour-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.tour-help-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  border-radius: var(--radius);
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.tour-help-btn:hover {
+  background: var(--soft-panel);
+  color: var(--ink);
+}
+
+/* ─── BlockSettings specifics ────────────────────────────────────────── */
+.block-settings-inner {
+  display: grid;
+  gap: 12px;
+}
+.settings-field {
+  display: grid;
+  gap: 5px;
+  font-size: 13px;
+}
+.settings-field span {
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+.settings-field input,
+.settings-field textarea,
+.settings-field select {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  transition: border-color 0.15s;
+}
+.settings-field input:focus,
+.settings-field textarea:focus,
+.settings-field select:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.settings-hint {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background: var(--soft-panel);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.settings-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 0;
+}
+.button.danger {
+  color: #c0392b;
+  border-color: #fecaca;
+  background: #fff5f5;
+}
+.button.danger:hover {
+  background: #fecaca;
+}
+
+/* Bloc masqué dans la structure */
+.editor-structure button.is-hidden-block {
+  opacity: 0.45;
+}
+.editor-preview-item {
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: outline 0.1s;
+  outline: 2px solid transparent;
+}
+.editor-preview-item.is-selected-preview {
+  outline: 2px solid var(--orange);
+}
+
+/* ─── Bouton bascule thème clair/sombre ──────────────────────────────── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background 0.16s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--soft);
+}
+
+/* ─── Étoile « mise en avant » cliquable (admin) ─────────────────────── */
+.featured-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  /* Orange Manssuétude atténué à l'état vide, plein à l'état actif. */
+  color: color-mix(in srgb, var(--orange) 42%, transparent);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    transform 0.12s ease;
+}
+.featured-star:hover {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+.featured-star:active {
+  transform: scale(0.9);
+}
+.featured-star.is-on {
+  color: var(--orange);
+}
+.featured-star.is-limited {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.featured-star.is-limited:hover {
+  background: transparent;
+  color: color-mix(in srgb, var(--orange) 42%, transparent);
+}
+/* Bulle d'avertissement (limite vedette) — variante du toast unifié. */
+.featured-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 360px;
+  padding: 14px 18px;
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.45;
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: toastIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.featured-toast::before {
+  content: "!";
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* ─── Formulaires reçus : lignes dépliables + détail ─────────────────── */
+.forms-pending-badge {
+  margin-left: 10px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: 11px;
+  font-weight: 700;
+}
+.form-row-toggle {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--ink);
+}
+.form-row-toggle svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+.form-row-toggle:hover svg {
+  opacity: 1;
+  color: var(--orange);
+}
+.form-row-name {
+  display: block;
+  font-weight: 600;
+}
+.form-row-email {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.form-type-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.form-detail-row td {
+  background: var(--soft);
+  padding: 16px 20px;
+}
+.form-detail {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px 28px;
+  margin: 0;
+}
+.form-detail-item dt {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.form-detail-item dd {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* ─── Invitation utilisateur (résultat + lien) ───────────────────────── */
+.invite-result {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+.invite-link {
+  margin-top: 10px;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+.invite-link input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 12px;
+}
+
+/* ─── Matrice de permissions (rôles) ─────────────────────────────────── */
+.perm-matrix {
+  overflow-x: auto;
+}
+.perm-matrix input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--orange);
+  cursor: pointer;
+}
+
+/* ─── Toast de confirmation admin (succès) — design unifié ───────────── */
+.admin-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 360px;
+  padding: 14px 18px 14px 14px;
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.18),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  animation: toastIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.admin-toast-check {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #1f9d55;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
