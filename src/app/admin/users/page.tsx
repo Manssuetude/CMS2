@@ -3,7 +3,6 @@ import { userRepository } from "@/repositories/userRepository";
 import { roleRepository } from "@/repositories/roleRepository";
 import { InviteUserForm } from "@/components/admin/InviteUserForm";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
-import { CopyInviteLinkButton } from "@/components/admin/CopyInviteLinkButton";
 import { updateUserRoleAction, removeUserAction } from "./actions";
 
 export default async function AdminUsersPage() {
@@ -71,13 +70,10 @@ export default async function AdminUsersPage() {
                   {u.id === admin.userId ? (
                     <span style={{ color: "var(--muted)", fontSize: 12 }}>Vous</span>
                   ) : (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      <CopyInviteLinkButton userId={u.id} />
-                      <form action={removeUserAction}>
-                        <input type="hidden" name="id" value={u.id} />
-                        <ConfirmDeleteButton />
-                      </form>
-                    </span>
+                    <form action={removeUserAction}>
+                      <input type="hidden" name="id" value={u.id} />
+                      <ConfirmDeleteButton />
+                    </form>
                   )}
                 </td>
               </tr>
