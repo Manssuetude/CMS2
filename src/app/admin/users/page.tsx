@@ -39,11 +39,7 @@ export default async function AdminUsersPage() {
                 <td className="col-title">
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     {u.name || <em style={{ color: "var(--muted)" }}>Sans nom</em>}
-                    {u.name ? (
-                      <span className="badge-status badge-published">Actif</span>
-                    ) : (
-                      <span className="badge-status badge-review">Invité — en attente</span>
-                    )}
+                    {!u.name && <span className="badge-status badge-review">Invité — en attente</span>}
                   </span>
                 </td>
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>{u.email}</td>
@@ -76,7 +72,7 @@ export default async function AdminUsersPage() {
                     <span style={{ color: "var(--muted)", fontSize: 12 }}>Vous</span>
                   ) : (
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      {!u.name && <CopyInviteLinkButton userId={u.id} />}
+                      <CopyInviteLinkButton userId={u.id} />
                       <form action={removeUserAction}>
                         <input type="hidden" name="id" value={u.id} />
                         <ConfirmDeleteButton />
