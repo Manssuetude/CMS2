@@ -28,6 +28,32 @@ export const userRepository = {
     return (data as DataRow[]).map(mapUser);
   },
 
+  async getById(id: string): Promise<ManagedUser | null> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("users").select("*").eq("id", id).maybeSingle();
+    if (error) throw error;
+    return data ? mapUser(data as DataRow) : null;
+  },
+
+  // Régénère un lien d'activation frais pour un compte déjà invité mais pas encore
+  // activé (type « magiclink » : établit une session puis redirige vers /admin/activation
+  // où l'utilisateur définit son nom et son mot de passe). Les liens Supabase expirent,
+  // d'où la régénération à la demande plutôt qu'un stockage.
+  async activationLink(email: string): Promise<string> {
+    const db = getSupabaseAdmin();
+    const redirectTo = `${env.NEXT_PUBLIC_SITE_URL}/admin/activation`;
+    const { data, error } = await db.auth.admin.generateLink({
+      type: "magiclink",
+      email,
+      options: { redirectTo },
+    });
+    const link = data?.properties?.action_link;
+    if (error || !link) {
+      throw new Error(error?.message ?? "Impossible de générer le lien d'activation.");
+    }
+    return link;
+  },
+
   // Crée le compte (invité) + la ligne `users`, et renvoie le lien d'activation.
   async invite(email: string, roleKey: string): Promise<{ link: string; userId: string }> {
     const db = getSupabaseAdmin();
