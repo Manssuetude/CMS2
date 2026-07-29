@@ -1,15 +1,26 @@
 import { Resend } from "resend";
 import { env } from "@/lib/env";
+import { logger } from "@/lib/logger";
 
 // Envoi tolérant : si RESEND_API_KEY est absent, on n'envoie rien (le lien reste
-// affiché dans l'admin). Retourne true si l'email est parti.
+// affiché dans l'admin). Retourne true si l'email est parti. Les échecs sont journalisés
+// (visibles dans les logs Vercel) pour rester diagnosticables — bac à sable Resend,
+// domaine non vérifié, clé absente, etc.
 export async function sendEmail(to: string, subject: string, html: string): Promise<boolean> {
-  if (!env.RESEND_API_KEY) return false;
+  if (!env.RESEND_API_KEY) {
+    logger.warn("sendEmail: RESEND_API_KEY absente — e-mail non envoyé (redéploiement requis ?)", { to });
+    return false;
+  }
   try {
     const resend = new Resend(env.RESEND_API_KEY);
     const { error } = await resend.emails.send({ from: env.EMAIL_FROM, to, subject, html });
-    return !error;
-  } catch {
+    if (error) {
+      logger.error("sendEmail: Resend a refusé l'envoi", { to, from: env.EMAIL_FROM, reason: error.message });
+      return false;
+    }
+    return true;
+  } catch (e) {
+    logger.error("sendEmail: exception lors de l'envoi", { to, reason: e instanceof Error ? e.message : String(e) });
     return false;
   }
 }
