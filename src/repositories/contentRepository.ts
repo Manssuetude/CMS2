@@ -165,6 +165,16 @@ export const contentRepository = {
     return mapPage(data);
   },
 
+  // Résout l'URL (absolue/normalisée) d'une ressource média par son id. Utilisé pour
+  // les images Open Graph des fiches (thème, production, activité). Renvoie null si absente.
+  async getResourceUrl(id: string | null | undefined): Promise<string | null> {
+    if (!id) return null;
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("resources").select("url").eq("id", id).single();
+    if (error || !data) return null;
+    return normalizeUrl((data as { url?: string }).url);
+  },
+
   async listPages(includeDrafts = false) {
     const db = getSupabaseAdmin();
     let query = db

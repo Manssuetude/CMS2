@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Newsreader, Inter, Satisfy } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOGO } from "@/constants/site";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOGO, SITE_SOCIALS } from "@/constants/site";
 import "@/styles/globals.css";
 import "@/styles/editorial.css";
 
@@ -97,6 +97,7 @@ const jsonLd = {
       url: SITE_URL,
       logo: `${SITE_URL}${SITE_LOGO}`,
       description: SITE_DESCRIPTION,
+      sameAs: SITE_SOCIALS,
     },
     {
       "@type": "WebSite",

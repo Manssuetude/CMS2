@@ -21,3 +21,11 @@ export const SITE_DESCRIPTION = "Un espace de réflexion, de production et d'exp
 
 // Chemin (relatif) du logo utilisé pour les partages et les données structurées.
 export const SITE_LOGO = "/assets/photos/logo-manssuetude.png";
+
+// Profils sociaux officiels (source visuelle : SiteFooter). Injectés dans le
+// `sameAs` du JSON-LD Organization pour renforcer la fiche de marque Google.
+export const SITE_SOCIALS = [
+  "https://www.instagram.com/manssuetude",
+  "https://www.tiktok.com/@manssuetude",
+  "https://linkedin.com/company/manssu%C3%A9tude",
+];

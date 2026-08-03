@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductionDetail } from "@/components/public/ProductionDetail";
 import { contentRepository } from "@/repositories/contentRepository";
+import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -10,7 +11,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   try {
     const item = await contentRepository.getProduction(slug);
     if (!item) return {};
-    return { title: item.title, description: item.description ?? undefined };
+    const imageUrl = await contentRepository.getResourceUrl(item.thumbnailId);
+    return buildDetailMetadata({
+      title: item.title,
+      description: item.description,
+      path: `/productions/${item.slug}`,
+      imageUrl,
+      ogType: "article",
+    });
   } catch {
     return {};
   }
