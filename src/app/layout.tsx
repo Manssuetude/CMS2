@@ -48,9 +48,8 @@ export const metadata: Metadata = {
   authors: [{ name: SITE_NAME }],
   creator: SITE_NAME,
   publisher: SITE_NAME,
-  alternates: {
-    canonical: "/",
-  },
+  // Pas de canonique globale ici : elle serait héritée par toutes les pages et les
+  // ferait pointer vers l'accueil. Chaque page définit sa propre canonique (auto-référencée).
   icons: {
     icon: SITE_LOGO,
     shortcut: SITE_LOGO,
