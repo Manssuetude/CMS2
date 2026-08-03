@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: { absolute: page?.seoTitle ?? "Manssuétude" },
       description: page?.seoDescription ?? "Un espace de réflexion, de production et d'expérimentation collective.",
+      alternates: { canonical: "/" },
     };
   } catch {
     return {};
