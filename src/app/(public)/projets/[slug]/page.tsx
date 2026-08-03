@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjetDetail } from "@/components/public/ProjetDetail";
 import { contentRepository } from "@/repositories/contentRepository";
+import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -11,7 +12,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const items = await contentRepository.listProjects(true);
     const item = items.find((p) => p.slug === slug);
     if (!item) return {};
-    return { title: item.title, description: item.description ?? undefined };
+    return buildDetailMetadata({
+      title: item.title,
+      description: item.description,
+      path: `/projets/${item.slug}`,
+      ogType: "website",
+    });
   } catch {
     return {};
   }

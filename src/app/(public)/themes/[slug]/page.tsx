@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ThemeDetail } from "@/components/public/ThemeDetail";
 import { contentRepository } from "@/repositories/contentRepository";
+import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -10,10 +11,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   try {
     const item = await contentRepository.getTheme(slug);
     if (!item) return {};
-    return {
+    const imageUrl = await contentRepository.getResourceUrl(item.heroImageId ?? item.thumbnailId);
+    return buildDetailMetadata({
       title: item.title,
-      description: item.description ?? undefined,
-    };
+      description: item.longDescription ?? item.description,
+      path: `/themes/${item.slug}`,
+      imageUrl,
+      ogType: "website",
+    });
   } catch {
     return {};
   }
