@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   keywords: [
     "Manssuétude",
+    "Manssuetude",
+    "association Manssuétude",
+    "Manssuétude association",
     "association",
     "réflexion",
     "production intellectuelle",
@@ -44,6 +47,7 @@ export const metadata: Metadata = {
     "thèmes",
     "projets",
     "recherche collective",
+    "expérimentation collective",
   ],
   authors: [{ name: SITE_NAME }],
   creator: SITE_NAME,
@@ -94,6 +98,9 @@ const jsonLd = {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
+      // Variantes du nom (sans accent, avec « association ») pour que Google rattache
+      // toutes ces requêtes de marque à la même entité « Manssuétude ».
+      alternateName: ["Manssuetude", "Association Manssuétude", "Manssuétude association"],
       url: SITE_URL,
       logo: `${SITE_URL}${SITE_LOGO}`,
       description: SITE_DESCRIPTION,
@@ -103,6 +110,7 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
       name: SITE_NAME,
+      alternateName: ["Manssuetude", "Association Manssuétude"],
       url: SITE_URL,
       description: SITE_DESCRIPTION,
       inLanguage: "fr-FR",
