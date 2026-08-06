@@ -26,8 +26,13 @@ export async function sendEmail(to: string, subject: string, html: string): Prom
 }
 
 export function inviteEmailHtml(link: string, roleLabel: string): string {
+  const logoUrl = `${env.NEXT_PUBLIC_SITE_URL}/assets/photos/logo-manssuetude.png`;
   return `
   <div style="font-family:Inter,Arial,sans-serif;max-width:520px;margin:0 auto;color:#1c1714">
+    <p style="text-align:center;margin:0 0 20px">
+      <img src="${logoUrl}" alt="Manssuétude" width="64" height="64"
+           style="width:64px;height:64px;display:inline-block;border:0" />
+    </p>
     <h1 style="font-family:Georgia,serif;font-size:22px;color:#1c1714">Bienvenue chez Manssuétude</h1>
     <p style="font-size:15px;line-height:1.6;color:#574f48">
       Vous avez été invité·e à rejoindre l'espace d'administration de Manssuétude
