@@ -132,7 +132,9 @@ function CropModal({
     ? { x: initialCrop.x, y: initialCrop.y, width: initialCrop.width, height: initialCrop.height }
     : undefined;
 
-  function handleCropComplete(_: Area, percentages: Area) {
+  // react-easy-crop appelle onCropComplete(croppedArea, croppedAreaPixels) :
+  // le 1er argument est en POURCENTAGES (ce qu'on stocke), le 2nd en pixels.
+  function handleCropComplete(percentages: Area, _pixels: Area) {
     setArea({ x: percentages.x, y: percentages.y, width: percentages.width, height: percentages.height, zoom });
   }
 
