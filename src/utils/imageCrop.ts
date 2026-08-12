@@ -5,12 +5,6 @@ function isFiniteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
-function clampPercent(value: number): number {
-  if (value < 0) return 0;
-  if (value > 100) return 100;
-  return value;
-}
-
 /**
  * Parse défensif du JSONB `image_crop` (venu de la base ou d'un champ de formulaire).
  * Retourne null si la valeur est absente, mal formée ou incomplète.
@@ -38,22 +32,31 @@ export function parseImageCrop(value: unknown): ImageCrop | null {
 }
 
 /**
- * Style CSS à appliquer sur le `<img>` (qui doit rester en `object-fit: cover`) pour
- * reproduire le recadrage : point focal via `object-position`, zoom via la propriété
- * CSS `scale` (indépendante de `transform`, donc sans conflit avec un effet de survol).
- * Le même style est utilisé côté public ET dans l'aperçu admin → rendu cohérent.
- * Sans crop → objet vide (le comportement `object-fit: cover` centré par défaut s'applique).
+ * Style CSS à appliquer sur le `<img>` pour reproduire **exactement** le rectangle de
+ * recadrage choisi dans `react-easy-crop` (croppedAreaPercentages : x, y, width, height
+ * en % de l'image d'origine). L'image est agrandie et décalée en position absolue pour
+ * que ce rectangle remplisse précisément le conteneur (WYSIWYG fidèle, y compris zoomé).
+ *
+ * Conditions côté conteneur (voir styles) : `position: relative; overflow: hidden` et un
+ * `aspect-ratio` identique à celui du recadrage (constants/imageAspects.ts). Le conteneur
+ * porte le ratio ; l'image est positionnée dedans.
+ *
+ * Le même style est utilisé côté public ET dans l'aperçu admin → rendu identique à la modale.
+ * Sans crop → objet vide (le `object-fit: cover` par défaut du conteneur s'applique).
+ *
+ * Démonstration : si le recadrage prend `width` % de la largeur d'origine, l'image doit
+ * mesurer `100 / width` fois la largeur du conteneur ; son bord gauche recule de `x` % de
+ * cette largeur d'image. La boîte résultante a exactement le ratio naturel de l'image, donc
+ * pas de déformation. Idem en vertical avec `height` / `y`.
  */
 export function cropToImageStyle(crop: ImageCrop | null | undefined): CSSProperties {
   if (!crop) return {};
-  const cx = clampPercent(crop.x + crop.width / 2);
-  const cy = clampPercent(crop.y + crop.height / 2);
-  const style: CSSProperties = {
-    objectPosition: `${cx.toFixed(3)}% ${cy.toFixed(3)}%`,
+  return {
+    position: "absolute",
+    width: `${(10000 / crop.width).toFixed(3)}%`,
+    height: `${(10000 / crop.height).toFixed(3)}%`,
+    left: `${(-(crop.x / crop.width) * 100).toFixed(3)}%`,
+    top: `${(-(crop.y / crop.height) * 100).toFixed(3)}%`,
+    maxWidth: "none",
   };
-  if (crop.zoom && crop.zoom !== 1) {
-    style.scale = String(crop.zoom);
-    style.transformOrigin = `${cx.toFixed(3)}% ${cy.toFixed(3)}%`;
-  }
-  return style;
 }

@@ -416,10 +416,14 @@
 }
 .site-shell .hero-image {
   position: relative;
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  min-height: 0; /* neutralise le min-height:430px de public-site.css pour garder le ratio exact */
 }
 .site-shell .hero-image img {
   width: 100%;
-  aspect-ratio: 5 / 4;
+  height: 100%;
+  min-height: 0;
   object-fit: cover;
   border-radius: 0;
 }
@@ -592,12 +596,14 @@
 }
 .site-shell .home-hero-media {
   margin: 0;
+  position: relative;
   overflow: hidden;
+  aspect-ratio: 5 / 4;
   border-radius: 0;
 }
 .site-shell .home-hero-media img {
   width: 100%;
-  aspect-ratio: 5 / 4;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -632,12 +638,14 @@
   grid-template-columns: 1fr;
 }
 .site-shell .home-focus-media {
+  position: relative;
   overflow: hidden;
+  aspect-ratio: 5 / 4;
   border-radius: 0;
 }
 .site-shell .home-focus-media img {
   width: 100%;
-  aspect-ratio: 5 / 4;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }

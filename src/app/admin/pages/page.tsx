@@ -110,7 +110,7 @@ export default async function AdminPages() {
               {/* Formulaire image picker */}
               <form
                 action={savePageImageAction}
-                style={{ display: "flex", gap: 8, alignItems: "flex-start", minWidth: 260 }}
+                style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "stretch", minWidth: 260 }}
               >
                 <input type="hidden" name="slug" value={page.slug} />
                 <ImageCropField
@@ -121,8 +121,8 @@ export default async function AdminPages() {
                   defaultCrop={page.imageCrop ?? null}
                   aspect={HERO_ASPECT}
                 />
-                <button type="submit" className="btn secondary" style={{ whiteSpace: "nowrap", fontSize: 13 }}>
-                  Appliquer
+                <button type="submit" className="cta" style={{ whiteSpace: "nowrap", alignSelf: "flex-end" }}>
+                  Appliquer les changements
                 </button>
               </form>
             </div>
