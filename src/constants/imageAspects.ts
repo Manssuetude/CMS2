@@ -4,5 +4,5 @@
  * L'éditeur crope à ce ratio ET le conteneur d'affichage l'impose : le cadrage
  * enregistré correspond exactement à ce qui est rendu.
  */
-export const HERO_ASPECT = 3 / 2;
-export const FOCUS_ASPECT = 4 / 3;
+export const HERO_ASPECT = 5 / 4;
+export const FOCUS_ASPECT = 5 / 4;
