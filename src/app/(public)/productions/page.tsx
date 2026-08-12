@@ -56,6 +56,7 @@ export default async function ProductionsPage({ searchParams }: { searchParams: 
           title={page.title}
           body={page.body}
           imageUrl={page.imageUrl ?? undefined}
+          imageCrop={page.imageCrop}
           quote={page.quote}
           primaryLabel={page.primaryCtaLabel}
           primaryTarget={page.primaryCtaTarget}

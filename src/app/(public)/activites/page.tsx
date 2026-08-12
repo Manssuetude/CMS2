@@ -56,6 +56,7 @@ export default async function ActivitesPage({ searchParams }: { searchParams: Pr
           title={page.title}
           body={page.body}
           imageUrl={page.imageUrl ?? undefined}
+          imageCrop={page.imageCrop}
           quote={page.quote}
         />
         <Suspense>
