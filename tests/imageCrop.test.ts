@@ -41,21 +41,31 @@ test("cropToImageStyle — sans crop → objet vide", () => {
   assert.deepEqual(cropToImageStyle(undefined), {});
 });
 
-test("cropToImageStyle — point focal centré sur la zone recadrée", () => {
+test("cropToImageStyle — reproduit exactement le rectangle de recadrage (position absolue)", () => {
+  // Le recadrage prend 40 % de la largeur et 40 % de la hauteur d'origine, à partir de (10, 20).
   const style = cropToImageStyle({ x: 10, y: 20, width: 40, height: 40, zoom: 1 });
-  // centre = (10 + 40/2, 20 + 40/2) = (30, 40)
-  assert.equal(style.objectPosition, "30.000% 40.000%");
-  assert.equal(style.scale, undefined);
+  assert.equal(style.position, "absolute");
+  // image agrandie : 100 / 0,40 = 250 % du conteneur
+  assert.equal(style.width, "250.000%");
+  assert.equal(style.height, "250.000%");
+  // décalage : -x/width et -y/height
+  assert.equal(style.left, "-25.000%");
+  assert.equal(style.top, "-50.000%");
+  assert.equal(style.maxWidth, "none");
 });
 
-test("cropToImageStyle — zoom appliqué via la propriété scale", () => {
-  const style = cropToImageStyle({ x: 0, y: 0, width: 50, height: 50, zoom: 2 });
-  assert.equal(style.scale, "2");
-  assert.equal(style.objectPosition, "25.000% 25.000%");
-  assert.equal(style.transformOrigin, "25.000% 25.000%");
+test("cropToImageStyle — recadrage plein cadre = image inchangée", () => {
+  const style = cropToImageStyle({ x: 0, y: 0, width: 100, height: 100, zoom: 1 });
+  assert.equal(style.width, "100.000%");
+  assert.equal(style.height, "100.000%");
+  assert.equal(style.left, "0.000%");
+  assert.equal(style.top, "0.000%");
 });
 
-test("cropToImageStyle — point focal borné à [0, 100]", () => {
-  const style = cropToImageStyle({ x: 90, y: 90, width: 40, height: 40, zoom: 1 });
-  assert.equal(style.objectPosition, "100.000% 100.000%");
+test("cropToImageStyle — zoom n'a plus d'effet direct (déjà encodé dans width/height)", () => {
+  // Deux crops de même rectangle mais zoom différent → même style (le zoom est intégré au rectangle).
+  const a = cropToImageStyle({ x: 0, y: 0, width: 50, height: 50, zoom: 1 });
+  const b = cropToImageStyle({ x: 0, y: 0, width: 50, height: 50, zoom: 3 });
+  assert.deepEqual(a, b);
+  assert.equal(a.width, "200.000%");
 });
