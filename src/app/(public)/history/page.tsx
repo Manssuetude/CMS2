@@ -3,7 +3,10 @@ import { HistoryEditorial } from "@/components/public/HistoryEditorial";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 import { contentRepository } from "@/repositories/contentRepository";
 
-export const revalidate = 60;
+// Cette page bascule dynamiquement entre "en cours de rédaction" et le contenu réel
+// dès la première rédaction ; le rendu doit donc toujours refléter l'état actuel de la
+// base, sans dépendre d'un cache ISR intermédiaire.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
