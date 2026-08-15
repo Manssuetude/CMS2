@@ -11,6 +11,7 @@ const updateSchema = z.object({
   themeId: z.string().min(1, "Le thème parent est requis."),
   description: z.string().optional().nullable(),
   longDescription: z.string().optional().nullable(),
+  date: z.string().optional().nullable(),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
 });
 
@@ -23,6 +24,7 @@ const createSchema = z.object({
   themeId: z.string().min(1, "Le thème parent est requis."),
   description: z.string().optional().nullable(),
   longDescription: z.string().optional().nullable(),
+  date: z.string().optional().nullable(),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
 });
 
@@ -33,6 +35,7 @@ export async function createSubThemeAction(_: string | null, formData: FormData)
     themeId: formData.get("themeId") || "",
     description: formData.get("description") || null,
     longDescription: formData.get("longDescription") || null,
+    date: formData.get("date") || null,
     status: formData.get("status") || "draft",
   });
 
@@ -48,6 +51,7 @@ export async function createSubThemeAction(_: string | null, formData: FormData)
       theme_id: parsed.data.themeId,
       description: parsed.data.description ?? null,
       long_description: parsed.data.longDescription ?? null,
+      date: parsed.data.date || null,
       status: parsed.data.status,
     });
   } catch {
@@ -72,6 +76,7 @@ export async function updateSubThemeAction(_: string | null, formData: FormData)
     themeId: formData.get("themeId") || "",
     description: formData.get("description") || null,
     longDescription: formData.get("longDescription") || null,
+    date: formData.get("date") || null,
     status: formData.get("status") || "draft",
   });
 
@@ -85,6 +90,7 @@ export async function updateSubThemeAction(_: string | null, formData: FormData)
       theme_id: parsed.data.themeId,
       description: parsed.data.description || null,
       long_description: parsed.data.longDescription || null,
+      date: parsed.data.date || null,
       status: parsed.data.status,
     });
   } catch {

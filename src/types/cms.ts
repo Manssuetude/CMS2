@@ -210,6 +210,7 @@ export type SubTheme = {
   title: string;
   description?: string | null;
   longDescription?: string | null;
+  date?: string | null;
   status: ContentStatus;
   tags: string[];
   createdAt: string;

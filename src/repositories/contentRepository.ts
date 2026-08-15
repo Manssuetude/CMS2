@@ -162,6 +162,7 @@ function mapSubTheme(row: DataRow): SubTheme {
     title: asString(row.title),
     description: asNullableString(row.description),
     longDescription: asNullableString(row.long_description),
+    date: asNullableString(row.date),
     status: asString(row.status, "draft") as ContentStatus,
     tags: asStringArray(row.tags),
     createdAt: asString(row.created_at),
