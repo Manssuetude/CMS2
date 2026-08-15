@@ -343,7 +343,7 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .site-shell .nav-toggle {
     display: flex;
   }
