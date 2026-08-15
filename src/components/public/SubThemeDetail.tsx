@@ -12,6 +12,10 @@ const TYPE_LABEL: Record<string, string> = {
   Infographie: "Infographie",
 };
 
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+}
+
 interface Props {
   theme: Theme;
   item: SubTheme;
@@ -32,6 +36,11 @@ export function SubThemeDetail({ theme, item, productions }: Props) {
           </p>
           <h1>{item.title}</h1>
           {(item.longDescription ?? item.description) && <p>{item.longDescription ?? item.description}</p>}
+          {item.date && (
+            <div className="detail-meta">
+              <span className="meta-pill">Sujet traité le {formatDate(item.date)}</span>
+            </div>
+          )}
           <div className="actions">
             <CtaButton label="Retour au thème" target={`/themes/${theme.slug}`} variant="secondary" />
             <CtaButton label="Contribuer" target="contribution" variant="primary" />

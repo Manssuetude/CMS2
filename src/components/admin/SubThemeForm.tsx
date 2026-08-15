@@ -104,6 +104,13 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
               placeholder="Description complète du sous-thème, affichée sur la page dédiée..."
             />
           </div>
+
+          <div className="form-field" style={{ maxWidth: 280 }}>
+            <label className="field-label" htmlFor="date">
+              Sujet traité le
+            </label>
+            <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
+          </div>
         </div>
 
         <div className="form-section">
