@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
-import { contentRepository } from "@/repositories/contentRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { ProductionForm } from "@/components/admin/ProductionForm";
 import { updateProductionAction } from "../../actions";
 
@@ -12,9 +14,9 @@ interface Props {
 export default async function EditProductionPage({ params }: Props) {
   const { id } = await params;
   const [item, themes, subThemes] = await Promise.all([
-    contentRepository.getProductionById(id),
-    contentRepository.listThemes(true),
-    contentRepository.listSubThemes(true),
+    productionRepository.getProductionById(id),
+    themeRepository.listThemes(true),
+    subThemeRepository.listSubThemes(true),
   ]);
   if (!item) notFound();
 

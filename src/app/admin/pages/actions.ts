@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { requirePermission } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 
@@ -23,7 +23,7 @@ export async function savePageImageAction(formData: FormData): Promise<void> {
   const imageId = formData.get("image_id") || null;
   const imageCrop = formData.get("image_crop") || null;
   if (!slug) return;
-  await contentRepository.updatePage(slug, { image_id: imageId, image_crop: imageCrop });
+  await pageRepository.updatePage(slug, { image_id: imageId, image_crop: imageCrop });
   await logAction("update", { entityType: "page", entityId: slug, summary: `Photo de la page « ${slug} » modifiée` });
   revalidatePath(SLUG_TO_PATH[slug] ?? `/${slug}`);
   redirect("/admin/pages?saved=1");
@@ -42,7 +42,7 @@ export async function savePageContentAction(formData: FormData): Promise<void> {
     seo_title: formData.get("seo_title") || null,
     seo_description: formData.get("seo_description") || null,
   };
-  await contentRepository.updatePage(slug, fields);
+  await pageRepository.updatePage(slug, fields);
   await logAction("update", { entityType: "page", entityId: slug, summary: `Contenu de la page « ${slug} » modifié` });
   revalidatePath(SLUG_TO_PATH[slug] ?? `/${slug}`);
   redirect(`/admin/pages/${slug}?saved=1`);

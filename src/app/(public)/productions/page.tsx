@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { Hero } from "@/components/public/Hero";
 import { FilterBar } from "@/components/public/FilterBar";
 import { CardGrid } from "@/components/cards/CardGrid";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
+import { productionRepository } from "@/repositories/productionRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
@@ -26,7 +27,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("productions");
+    const page = await pageRepository.getPage("productions");
     if (!page) return {};
     return {
       title: { absolute: page.seoTitle ?? page.title },
@@ -40,8 +41,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ProductionsPage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
   try {
     const { type } = await searchParams;
-    const page = await contentRepository.getPage("productions");
-    const all = await contentRepository.listProductions();
+    const page = await pageRepository.getPage("productions");
+    const all = await productionRepository.listProductions();
     if (!page) notFound();
 
     const filtered = type ? all.filter((p) => p.type === type) : all;

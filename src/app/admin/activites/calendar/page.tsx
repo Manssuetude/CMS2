@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
 import { ActivityCalendar } from "./ActivityCalendar";
 
 export default async function CalendarPage() {
-  const activities = await contentRepository.listActivities(true);
+  const activities = await activityRepository.listActivities(true);
 
   return (
     <section className="admin-panel">

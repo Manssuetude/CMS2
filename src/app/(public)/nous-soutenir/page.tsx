@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("nous-soutenir");
+    const page = await pageRepository.getPage("nous-soutenir");
     if (!page) return {};
     return {
       title: { absolute: page.seoTitle ?? page.title },
@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function SupportPage() {
   try {
-    const page = await contentRepository.getPage("nous-soutenir");
+    const page = await pageRepository.getPage("nous-soutenir");
     if (!page) notFound();
     return <PublicPage page={page} heroImageUrl={page.imageUrl ?? undefined} />;
   } catch (error) {

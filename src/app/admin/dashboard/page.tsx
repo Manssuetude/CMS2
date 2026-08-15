@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CalendarDays, FileText, FolderKanban, Inbox, Clock, ArrowRight } from "lucide-react";
-import { contentRepository } from "@/repositories/contentRepository";
+import { dashboardRepository } from "@/repositories/dashboardRepository";
 
 const STATUS_LABEL: Record<string, string> = {
   published: "Publié",
@@ -17,7 +17,7 @@ const FORM_TYPE_LABEL: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const { activities, productions, projects, forms } = await contentRepository.getMetrics();
+  const { activities, productions, projects, forms } = await dashboardRepository.getMetrics();
 
   const now = new Date();
 

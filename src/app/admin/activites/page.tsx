@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Pencil, Plus, CalendarDays } from "lucide-react";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { ProgressTag } from "@/components/admin/ProgressTag";
@@ -12,7 +12,7 @@ import { deleteActivityAction, toggleActivityStatusAction } from "./actions";
 
 export default async function AdminActivitesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
-  const all = await contentRepository.listActivities(true);
+  const all = await activityRepository.listActivities(true);
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "f");

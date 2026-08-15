@@ -1,4 +1,5 @@
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { FOCUS_ASPECT, HERO_ASPECT } from "@/constants/imageAspects";
@@ -6,9 +7,9 @@ import { saveHomepageFieldsAction } from "./actions";
 
 export default async function AdminHomepage() {
   const [page, media, themes] = await Promise.all([
-    contentRepository.getPage("accueil"),
+    pageRepository.getPage("accueil"),
     mediaRepository.list(),
-    contentRepository.listThemes(true),
+    themeRepository.listThemes(true),
   ]);
 
   const images = media.filter((m) => m.type === "image");

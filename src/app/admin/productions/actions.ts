@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { contentRepository } from "@/repositories/contentRepository";
+import { productionRepository } from "@/repositories/productionRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
@@ -13,11 +13,11 @@ export async function toggleProductionFeaturedAction(formData: FormData): Promis
   if (!id) return;
   // Garde-fou : maximum 4 productions en vedette sur l'accueil.
   if (featured) {
-    const all = await contentRepository.listProductions(true);
+    const all = await productionRepository.listProductions(true);
     const count = all.filter((p) => p.featured).length;
     if (count >= 4) return;
   }
-  await contentRepository.updateProduction(id, { featured });
+  await productionRepository.updateProduction(id, { featured });
   revalidatePath("/admin/productions");
   revalidatePath("/");
 }
@@ -75,7 +75,7 @@ export async function createProductionAction(_: string | null, formData: FormDat
 
   let production;
   try {
-    production = await contentRepository.createProduction({ slug, ...toInput(parsed.data) });
+    production = await productionRepository.createProduction({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -112,7 +112,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
   }
 
   try {
-    await contentRepository.updateProduction(id, toInput(parsed.data));
+    await productionRepository.updateProduction(id, toInput(parsed.data));
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -129,7 +129,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
 export async function deleteProductionAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return;
-  await contentRepository.deleteProduction(id);
+  await productionRepository.deleteProduction(id);
   await logAction("delete", { entityType: "production", entityId: id, summary: "Production supprimée" });
   revalidatePath("/admin/productions");
 }
@@ -138,6 +138,6 @@ export async function toggleProductionStatusAction(formData: FormData): Promise<
   const id = (formData.get("id") as string | null)?.trim();
   const status = (formData.get("status") as string | null)?.trim();
   if (!id || !status) return;
-  await contentRepository.toggleStatus("productions", id, status);
+  await productionRepository.toggleStatus(id, status);
   revalidatePath("/admin/productions");
 }

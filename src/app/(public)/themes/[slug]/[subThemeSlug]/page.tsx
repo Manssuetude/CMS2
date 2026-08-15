@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SubThemeDetail } from "@/components/public/SubThemeDetail";
-import { contentRepository } from "@/repositories/contentRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -13,8 +15,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug, subThemeSlug } = await params;
   try {
-    const theme = await contentRepository.getTheme(slug);
-    const item = await contentRepository.getSubTheme(subThemeSlug);
+    const theme = await themeRepository.getTheme(slug);
+    const item = await subThemeRepository.getSubTheme(subThemeSlug);
     if (!theme || !item || item.themeId !== theme.id) return {};
     return buildDetailMetadata({
       title: `${item.title} · ${theme.title}`,
@@ -30,8 +32,8 @@ export async function generateMetadata({
 export async function generateStaticParams() {
   try {
     const [themes, subThemes] = await Promise.all([
-      contentRepository.listThemes(true),
-      contentRepository.listSubThemes(true),
+      themeRepository.listThemes(true),
+      subThemeRepository.listSubThemes(true),
     ]);
     const themeById = new Map(themes.map((t) => [t.id, t]));
     return subThemes
@@ -48,10 +50,10 @@ export async function generateStaticParams() {
 
 export default async function SubThemePage({ params }: { params: Promise<{ slug: string; subThemeSlug: string }> }) {
   const { slug, subThemeSlug } = await params;
-  const theme = await contentRepository.getTheme(slug);
+  const theme = await themeRepository.getTheme(slug);
   if (!theme) notFound();
-  const item = await contentRepository.getSubTheme(subThemeSlug);
+  const item = await subThemeRepository.getSubTheme(subThemeSlug);
   if (!item || item.themeId !== theme.id) notFound();
-  const productions = await contentRepository.getProductionsBySubTheme(item.id);
+  const productions = await productionRepository.getProductionsBySubTheme(item.id);
   return <SubThemeDetail theme={theme} item={item} productions={productions} />;
 }

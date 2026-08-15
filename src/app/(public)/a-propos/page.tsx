@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AboutEditorial } from "@/components/public/AboutEditorial";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("a-propos");
+    const page = await pageRepository.getPage("a-propos");
     if (!page) return {};
     return {
       title: { absolute: page.seoTitle ?? page.title },
@@ -21,10 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   try {
-    const [page, percaPage] = await Promise.all([
-      contentRepository.getPage("a-propos"),
-      contentRepository.getPage("perca"),
-    ]);
+    const [page, percaPage] = await Promise.all([pageRepository.getPage("a-propos"), pageRepository.getPage("perca")]);
     if (!page) notFound();
     // "Voir notre impact" renvoie vers la page de maintenance (contenu à venir).
     const aboutPage =

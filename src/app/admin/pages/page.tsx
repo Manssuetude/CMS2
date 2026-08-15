@@ -1,4 +1,4 @@
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { HERO_ASPECT } from "@/constants/imageAspects";
@@ -22,7 +22,7 @@ function toAbsoluteUrl(url: string | null | undefined): string {
 }
 
 export default async function AdminPages() {
-  const [pages, media] = await Promise.all([contentRepository.listPages(true), mediaRepository.list()]);
+  const [pages, media] = await Promise.all([pageRepository.listPages(true), mediaRepository.list()]);
 
   const images = media.filter((m) => m.type === "image");
 

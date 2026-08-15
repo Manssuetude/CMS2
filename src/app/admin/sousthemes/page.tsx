@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
-import { contentRepository } from "@/repositories/contentRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
@@ -27,7 +28,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export default async function AdminSubThemesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
-  const [all, themes] = await Promise.all([contentRepository.listSubThemes(true), contentRepository.listThemes(true)]);
+  const [all, themes] = await Promise.all([subThemeRepository.listSubThemes(true), themeRepository.listThemes(true)]);
   const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;

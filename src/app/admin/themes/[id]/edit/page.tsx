@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
-import { contentRepository } from "@/repositories/contentRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { ThemeForm } from "@/components/admin/ThemeForm";
 import { updateThemeAction } from "../../actions";
 
@@ -11,7 +11,7 @@ interface Props {
 
 export default async function EditThemePage({ params }: Props) {
   const { id } = await params;
-  const item = await contentRepository.getThemeById(id);
+  const item = await themeRepository.getThemeById(id);
   if (!item) notFound();
 
   return (

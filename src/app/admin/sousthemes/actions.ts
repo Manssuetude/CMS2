@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { contentRepository } from "@/repositories/contentRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { logAction } from "@/lib/audit";
 
 const updateSchema = z.object({
@@ -45,7 +45,7 @@ export async function createSubThemeAction(_: string | null, formData: FormData)
 
   let subTheme;
   try {
-    subTheme = await contentRepository.createSubTheme({
+    subTheme = await subThemeRepository.createSubTheme({
       title: parsed.data.title,
       slug: parsed.data.slug,
       theme_id: parsed.data.themeId,
@@ -85,7 +85,7 @@ export async function updateSubThemeAction(_: string | null, formData: FormData)
   }
 
   try {
-    await contentRepository.updateSubTheme(id, {
+    await subThemeRepository.updateSubTheme(id, {
       title: parsed.data.title,
       theme_id: parsed.data.themeId,
       description: parsed.data.description || null,
@@ -105,7 +105,7 @@ export async function updateSubThemeAction(_: string | null, formData: FormData)
 export async function deleteSubThemeAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return;
-  await contentRepository.deleteSubTheme(id);
+  await subThemeRepository.deleteSubTheme(id);
   await logAction("delete", { entityType: "sub_theme", entityId: id, summary: "Sous-thème supprimé" });
   revalidatePath("/admin/sousthemes");
 }

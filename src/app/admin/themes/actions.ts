@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { contentRepository } from "@/repositories/contentRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { logAction } from "@/lib/audit";
 
 const schema = z.object({
@@ -40,7 +40,7 @@ export async function createThemeAction(_: string | null, formData: FormData): P
   }
 
   try {
-    await contentRepository.createTheme({
+    await themeRepository.createTheme({
       title: parsed.data.title,
       slug: parsed.data.slug,
       description: parsed.data.description ?? null,
@@ -61,7 +61,7 @@ export async function toggleThemeFeaturedAction(formData: FormData): Promise<voi
   const id = (formData.get("id") as string | null)?.trim();
   const featured = formData.get("featured") === "true";
   if (!id) return;
-  await contentRepository.updateTheme(id, { featured });
+  await themeRepository.updateTheme(id, { featured });
   revalidatePath("/admin/themes");
   revalidatePath("/");
 }
@@ -82,7 +82,7 @@ export async function updateThemeAction(_: string | null, formData: FormData): P
   }
 
   try {
-    await contentRepository.updateTheme(id, {
+    await themeRepository.updateTheme(id, {
       description: parsed.data.description || null,
       long_description: parsed.data.longDescription || null,
       status: parsed.data.status,

@@ -5,7 +5,8 @@ import { Hero } from "@/components/public/Hero";
 import { FilterBar } from "@/components/public/FilterBar";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { ProposeSection } from "@/components/public/ProposeSection";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
@@ -26,7 +27,7 @@ const FORMAT_LABEL: Record<string, string> = {
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("activites");
+    const page = await pageRepository.getPage("activites");
     if (!page) return {};
     return {
       title: { absolute: page.seoTitle ?? page.title },
@@ -40,8 +41,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ActivitesPage({ searchParams }: { searchParams: Promise<{ format?: string }> }) {
   try {
     const { format } = await searchParams;
-    const page = await contentRepository.getPage("activites");
-    const all = await contentRepository.listActivities();
+    const page = await pageRepository.getPage("activites");
+    const all = await activityRepository.listActivities();
     if (!page) notFound();
 
     const filtered = format ? all.filter((a) => a.format === format) : all;

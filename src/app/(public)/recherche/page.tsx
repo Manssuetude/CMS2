@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { projectRepository } from "@/repositories/projectRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 
 export const revalidate = 60;
 
@@ -63,11 +67,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
     try {
       const [themes, subThemes, productions, activities, projects] = await Promise.all([
-        contentRepository.listThemes(),
-        contentRepository.listSubThemes(),
-        contentRepository.listProductions(),
-        contentRepository.listActivities(),
-        contentRepository.listProjects(),
+        themeRepository.listThemes(),
+        subThemeRepository.listSubThemes(),
+        productionRepository.listProductions(),
+        activityRepository.listActivities(),
+        projectRepository.listProjects(),
       ]);
       const themeSlugById = new Map(themes.map((t) => [t.id, t.slug]));
 

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { contentRepository } from "@/repositories/contentRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { SubThemeForm } from "@/components/admin/SubThemeForm";
 import { createSubThemeAction } from "../actions";
 
 export default async function NewSubThemePage() {
-  const themes = await contentRepository.listThemes(true);
+  const themes = await themeRepository.listThemes(true);
 
   return (
     <section className="admin-panel">

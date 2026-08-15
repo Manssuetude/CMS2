@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { contentRepository } from "@/repositories/contentRepository";
+import { projectRepository } from "@/repositories/projectRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
@@ -50,7 +50,7 @@ export async function createProjectAction(_: string | null, formData: FormData):
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
 
   try {
-    await contentRepository.createProject({ slug, ...toInput(parsed.data) });
+    await projectRepository.createProject({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -80,7 +80,7 @@ export async function updateProjectAction(_: string | null, formData: FormData):
   }
 
   try {
-    await contentRepository.updateProject(id, toInput(parsed.data));
+    await projectRepository.updateProject(id, toInput(parsed.data));
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -93,7 +93,7 @@ export async function updateProjectAction(_: string | null, formData: FormData):
 export async function deleteProjectAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return;
-  await contentRepository.deleteProject(id);
+  await projectRepository.deleteProject(id);
   await logAction("delete", { entityType: "project", entityId: id, summary: "Projet supprimé" });
   revalidatePath("/admin/projets");
 }
@@ -102,6 +102,6 @@ export async function toggleProjectStatusAction(formData: FormData): Promise<voi
   const id = (formData.get("id") as string | null)?.trim();
   const status = (formData.get("status") as string | null)?.trim();
   if (!id || !status) return;
-  await contentRepository.toggleStatus("projects", id, status);
+  await projectRepository.toggleStatus(id, status);
   revalidatePath("/admin/projets");
 }
