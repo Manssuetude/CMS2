@@ -25,40 +25,6 @@
   background: var(--soft);
 }
 
-/* ─── Relation chips ─────────────────────────────────────────────────── */
-.form-relation-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--soft);
-  min-height: 52px;
-}
-.form-relation-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--line-strong);
-  background: var(--surface);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-soft);
-  cursor: pointer;
-  transition:
-    background 0.1s,
-    border-color 0.1s;
-  user-select: none;
-}
-.form-relation-chip.selected {
-  background: var(--orange-soft);
-  border-color: var(--orange);
-  color: var(--orange);
-}
-
 /* ─── Topbar right side ──────────────────────────────────────────────── */
 .admin-topbar-actions {
   display: flex;
