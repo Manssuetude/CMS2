@@ -290,12 +290,29 @@
   gap: 1.1rem;
 }
 .site-shell .site-nav .header-actions .support-link {
+  position: relative;
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--ed-ink-soft);
+  padding: 0.25rem 0;
 }
 .site-shell .site-nav .header-actions .support-link:hover {
   color: var(--ed-ink);
+}
+.site-shell .site-nav .header-actions .support-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--ed-clay);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.site-shell .site-nav .header-actions .support-link:hover::after {
+  transform: scaleX(1);
 }
 
 /* Burger mobile */

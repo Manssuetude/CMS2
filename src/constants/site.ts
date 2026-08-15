@@ -29,3 +29,7 @@ export const SITE_SOCIALS = [
   "https://www.tiktok.com/@manssuetude",
   "https://linkedin.com/company/manssu%C3%A9tude",
 ];
+
+// Portail membre, sous-domaine séparé (hors de ce dépôt). Lien affiché dans le
+// header et le footer publics (SiteHeader, SiteFooter).
+export const MEMBER_SPACE_URL = "https://membre.manssuetude.com";
