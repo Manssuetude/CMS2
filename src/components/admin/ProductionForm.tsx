@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
-import type { Production, Theme } from "@/types/cms";
+import type { Production, SubTheme, Theme } from "@/types/cms";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -44,18 +44,22 @@ interface Props {
   initialData?: Production;
   action: ActionFn;
   themes?: Theme[];
-  initialThemeIds?: string[];
+  subThemes?: SubTheme[];
 }
 
-export function ProductionForm({ initialData, action, themes = [], initialThemeIds = [] }: Props) {
+export function ProductionForm({ initialData, action, themes = [], subThemes = [] }: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [body, setBody] = useState(initialData?.body ?? "");
-  const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
 
-  const toggleTheme = (id: string) =>
-    setSelectedThemes((prev) => (prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]));
+  const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
+  const subThemesByTheme = new Map<string, SubTheme[]>();
+  for (const st of subThemes) {
+    const list = subThemesByTheme.get(st.themeId) ?? [];
+    list.push(st);
+    subThemesByTheme.set(st.themeId, list);
+  }
 
   const publicHref = isEdit ? `/productions/${initialData.slug}` : null;
 
@@ -64,7 +68,6 @@ export function ProductionForm({ initialData, action, themes = [], initialThemeI
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="body" value={body} />
-      <input type="hidden" name="themeIds" value={selectedThemes.join(",")} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -85,11 +88,6 @@ export function ProductionForm({ initialData, action, themes = [], initialThemeI
                 if (!isEdit) setSlug(toSlug(e.target.value));
               }}
             />
-          </div>
-
-          <div className="form-field">
-            <label className="field-label">Identifiant URL</label>
-            <div className="slug-preview">/{isEdit ? initialData.slug : slug || "genere-depuis-le-titre"}</div>
           </div>
 
           <div className="form-row">
@@ -167,24 +165,26 @@ export function ProductionForm({ initialData, action, themes = [], initialThemeI
           <RichTextEditor value={body} onChange={setBody} />
         </div>
 
-        {/* Relations themes */}
-        {themes.length > 0 && (
+        {/* Relation sous-thème */}
+        {subThemes.length > 0 && (
           <div className="form-section">
-            <p className="form-section-title">Thèmes associés</p>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Cliquez pour lier/délier cette production à un ou plusieurs thèmes.
-            </p>
-            <div className="form-relation-list">
-              {themes.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  className={`form-relation-chip${selectedThemes.includes(t.id) ? " selected" : ""}`}
-                  onClick={() => toggleTheme(t.id)}
-                >
-                  {t.title}
-                </button>
-              ))}
+            <p className="form-section-title">Sous-thème</p>
+            <div className="form-field">
+              <label className="field-label" htmlFor="subThemeId">
+                Sujet traité
+              </label>
+              <select id="subThemeId" name="subThemeId" defaultValue={initialData?.subThemeId ?? ""}>
+                <option value="">Aucun sous-thème</option>
+                {[...subThemesByTheme.entries()].map(([themeId, items]) => (
+                  <optgroup key={themeId} label={themeTitleById.get(themeId) ?? "Thème"}>
+                    {items.map((st) => (
+                      <option key={st.id} value={st.id}>
+                        {st.title}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
             </div>
           </div>
         )}

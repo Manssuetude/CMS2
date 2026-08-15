@@ -29,11 +29,6 @@ export function ThemeForm({ initialData, action }: Props) {
               {initialData.title}
             </div>
           </div>
-
-          <div className="form-field">
-            <label className="field-label">Identifiant URL</label>
-            <div className="slug-preview">/{initialData.slug}</div>
-          </div>
         </div>
 
         <div className="form-section">

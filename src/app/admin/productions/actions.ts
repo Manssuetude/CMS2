@@ -33,6 +33,7 @@ const schema = z.object({
   featured: z.boolean().default(false),
   description: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
+  subThemeId: z.string().optional().nullable(),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -47,6 +48,7 @@ function toInput(data: z.infer<typeof schema>) {
     featured: data.featured,
     description: data.description || null,
     body: data.body || null,
+    sub_theme_id: data.subThemeId || null,
   };
 }
 
@@ -62,6 +64,7 @@ export async function createProductionAction(_: string | null, formData: FormDat
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
     body: formData.get("body") || null,
+    subThemeId: formData.get("subThemeId") || null,
   });
 
   if (!parsed.success) {
@@ -75,14 +78,6 @@ export async function createProductionAction(_: string | null, formData: FormDat
     production = await contentRepository.createProduction({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
-  }
-
-  const themeIds = ((formData.get("themeIds") as string | null) ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  if (themeIds.length > 0) {
-    await contentRepository.setProductionThemes(production.id, themeIds);
   }
 
   await logAction("create", {
@@ -109,6 +104,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
     body: formData.get("body") || null,
+    subThemeId: formData.get("subThemeId") || null,
   });
 
   if (!parsed.success) {
@@ -120,12 +116,6 @@ export async function updateProductionAction(_: string | null, formData: FormDat
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
-
-  const themeIds = ((formData.get("themeIds") as string | null) ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  await contentRepository.setProductionThemes(id, themeIds);
 
   await logAction("update", {
     entityType: "production",

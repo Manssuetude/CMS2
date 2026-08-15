@@ -36,12 +36,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Entités dynamiques (uniquement le contenu publié — includeDrafts par défaut = false).
   try {
-    const [themes, productions, activities, projects] = await Promise.all([
+    const [themes, subThemes, productions, activities, projects] = await Promise.all([
       contentRepository.listThemes(),
+      contentRepository.listSubThemes(),
       contentRepository.listProductions(),
       contentRepository.listActivities(),
       contentRepository.listProjects(),
     ]);
+    const themeSlugById = new Map(themes.map((t) => [t.id, t.slug]));
 
     const dynamicEntries: MetadataRoute.Sitemap = [
       ...themes.map((t) => ({
@@ -50,6 +52,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly" as const,
         priority: 0.7,
       })),
+      ...subThemes.flatMap((st) => {
+        const themeSlug = themeSlugById.get(st.themeId);
+        return themeSlug
+          ? [
+              {
+                url: `${SITE_URL}/themes/${themeSlug}/${st.slug}`,
+                lastModified: new Date(st.updatedAt),
+                changeFrequency: "monthly" as const,
+                priority: 0.6,
+              },
+            ]
+          : [];
+      }),
       ...productions.map((p) => ({
         url: `${SITE_URL}/productions/${p.slug}`,
         lastModified: new Date(p.updatedAt),

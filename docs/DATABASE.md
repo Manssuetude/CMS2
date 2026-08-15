@@ -152,15 +152,15 @@ Paramètres globaux du site (singleton, id = `'default'`).
 
 ## Tables de jonction
 
-| Table                   | Relation              |
-| ----------------------- | --------------------- |
-| `theme_productions`     | theme ↔ production    |
-| `theme_projects`        | theme ↔ project       |
-| `theme_activities`      | theme ↔ activity      |
-| `production_projects`   | production ↔ project  |
-| `production_activities` | production ↔ activity |
-| `activity_resources`    | activity ↔ resource   |
-| `project_resources`     | project ↔ resource    |
+| Table                   | Relation               |
+| ----------------------- | ---------------------- |
+| `sub_theme_productions` | sub_theme ↔ production |
+| `theme_projects`        | theme ↔ project        |
+| `theme_activities`      | theme ↔ activity       |
+| `production_projects`   | production ↔ project   |
+| `production_activities` | production ↔ activity  |
+| `activity_resources`    | activity ↔ resource    |
+| `project_resources`     | project ↔ resource     |
 
 Toutes en cascade sur suppression.
 
@@ -247,3 +247,27 @@ Toutes en cascade sur suppression.
 | `20260715_image_crop.sql`                | colonnes `pages.image_crop`, `pages.focus_image_crop`  |
 
 > ⚠️ La table `form_submissions.attachments` n'est plus alimentée (pièce jointe retirée des formulaires) — colonne conservée, inerte.
+
+---
+
+## Mise à jour — Sous-thèmes
+
+### `sub_themes`
+
+Sujets traités au sein d'un thème (ex. thème « Écologie » → sous-thème « Sobriété énergétique »). Page publique `/themes/[slug]/[subThemeSlug]`.
+
+| Colonne                           | Type             | Notes                   |
+| --------------------------------- | ---------------- | ----------------------- |
+| `id`                              | uuid PK          |                         |
+| `theme_id`                        | uuid FK → themes | cascade sur suppression |
+| `slug`                            | text unique      |                         |
+| `title`                           | text NOT NULL    |                         |
+| `description`, `long_description` | text             |                         |
+| `status`                          | content_status   | défaut `draft`          |
+| `tags`                            | text[]           |                         |
+
+**`sub_theme_productions`** — relation many-to-many sous-thème ↔ production (remplace l'ancienne `theme_productions`, retirée). Une production est reliée à 0, 1 ou plusieurs sous-thèmes ; un sous-thème peut regrouper 0, 1 ou plusieurs productions.
+
+### Migration (`supabase/migrations/20260815_sub_themes.sql`)
+
+Crée `sub_themes` / `sub_theme_productions`, puis migre les données existantes : pour chaque thème ayant déjà des productions liées via l'ancienne `theme_productions`, un sous-thème « À classer » (statut `draft`, donc invisible côté public) est créé avec les liens repris. La table `theme_productions` est ensuite supprimée. L'équipe éditoriale doit répartir manuellement le contenu de ces sous-thèmes provisoires dans de vrais sous-thèmes via `/admin/sousthemes`.

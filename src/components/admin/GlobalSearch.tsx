@@ -17,6 +17,7 @@ const TYPE_LABELS: Record<string, string> = {
   production: "Productions",
   project: "Projets",
   theme: "Thèmes",
+  sub_theme: "Sous-thèmes",
 };
 
 const STATUS_LABELS: Record<string, string> = {
