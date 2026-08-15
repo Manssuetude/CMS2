@@ -75,6 +75,8 @@ SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.s
 
 **Recadrage d'image (non destructif)** — chaque emplacement peut cadrer une image **sans modifier le fichier** (les ressources sont partagées). Le cadrage est stocké par emplacement en jsonb (`pages.image_crop`, `pages.focus_image_crop`) au format `{ x, y, width, height, zoom }` (% — croppedArea de `react-easy-crop`) et appliqué en CSS à l'affichage : point focal `object-position` + zoom via la propriété CSS `scale` (composable avec un `transform` de survol). Éditeur admin réutilisable : `<ImageCropField>` (`src/components/media/ImageCropField.tsx`, bouton « Éditer l'image » → modale `react-easy-crop`) ; affichage : helper `cropToImageStyle` (`src/utils/imageCrop.ts`), utilisé côté public **et** dans l'aperçu admin (WYSIWYG). Ratios partagés dans `src/constants/imageAspects.ts`. Étendre à un nouvel emplacement = colonne `xxx_crop jsonb` + `<ImageCropField>` + `cropToImageStyle` sur son `<img>`.
 
+**Thèmes & sous-thèmes** — les thèmes (`/themes`) sont les axes éditoriaux principaux. En cliquant sur un thème, le visiteur voit ses **sous-thèmes** (sujets traités sous ce thème, table `sub_themes`), pas directement des productions. Un sous-thème est optionnellement relié à 0, 1 ou plusieurs productions (table `sub_theme_productions`, many-to-many). Page publique sous-thème : `/themes/[slug]/[subThemeSlug]`. Gestion admin : `/admin/sousthemes` (CRUD, thème parent obligatoire) ; le lien vers les productions se gère depuis `/admin/productions` (sélecteur de sous-thèmes, groupé par thème). L'ancienne relation directe thème↔production (`theme_productions`) a été retirée.
+
 **Formulaires publics** — les CTA `FORM:join|project|content|partner|don|theme|activity` ouvrent `FormModal`. Les pages Activités/Thèmes/Projets ont une section « Proposer … » en bas (`ProposeSection`). Soumissions en DB (`form_submissions`) → `/admin/forms` (détail dépliable, filtres par type, export CSV, statut reçu → en cours → traité → archivé). Plus de pièce jointe.
 
 **RBAC (rôles & permissions)** — le rôle vient de `users.role_key` (table `roles`, permissions JSONB `section:action`). `getSession()` renvoie `{ roleKey, isAdmin, permissions }`. Garde-fous : `requireRole` / `requireAdmin` / `requirePermission` (`lib/auth.ts`), `can()` (`lib/permissions.ts`), catalogue dans `constants/permissions.ts`. Enforcement : middleware (`x-pathname`) + layout admin + sidebar masquée. **Ne jamais réintroduire de rôle « admin » par défaut.** Détails : `docs/AUTH.md`.
@@ -88,6 +90,7 @@ SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.s
 - `/admin/homepage` : texte, CTAs (libellé + lien), photo hero, sujet du moment (thème + photo), SEO
 - `/admin/perca`, `/admin/history` : contenu riche (comme les articles)
 - `/admin/pages` : photo hero des pages statiques
+- `/admin/sousthemes` : sous-thèmes (sujets traités sous un thème) — thème parent, contenu éditorial, statut. Les productions sont reliées aux sous-thèmes (pas directement aux thèmes) depuis `/admin/productions`
 - `/admin/forms` : soumissions (détail, filtres, export)
 - `/admin/users`, `/admin/roles`, `/admin/journal` : **admin only** (gestion RBAC + historique)
 - Mise en avant accueil : étoile cliquable (thèmes / productions max 4 / activités max 3)

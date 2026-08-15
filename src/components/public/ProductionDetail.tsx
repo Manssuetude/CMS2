@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Production, Theme } from "@/types/cms";
+import type { Production, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
@@ -20,11 +20,14 @@ function formatDate(d: string) {
 interface Props {
   item: Production;
   allThemes: Theme[];
+  allSubThemes: SubTheme[];
   relatedProductions?: Production[];
 }
 
-export function ProductionDetail({ item, allThemes, relatedProductions = [] }: Props) {
-  const themes = allThemes.filter((t) => item.themeIds?.includes(t.id));
+export function ProductionDetail({ item, allThemes, allSubThemes, relatedProductions = [] }: Props) {
+  const themeById = new Map(allThemes.map((t) => [t.id, t]));
+  const subTheme = allSubThemes.find((st) => st.id === item.subThemeId) ?? null;
+  const parentTheme = subTheme ? themeById.get(subTheme.themeId) : null;
   const typeLabel = TYPE_LABEL[item.type] ?? item.type;
 
   return (
@@ -53,7 +56,7 @@ export function ProductionDetail({ item, allThemes, relatedProductions = [] }: P
 
       {/* ── Contenu principal ──────────────────────────────────── */}
       <section className="section">
-        <div className={`detail-layout${themes.length === 0 && item.tags.length === 0 ? " no-sidebar" : ""}`}>
+        <div className={`detail-layout${!subTheme && item.tags.length === 0 ? " no-sidebar" : ""}`}>
           {/* Corps */}
           <div>
             {item.body ? (
@@ -66,17 +69,15 @@ export function ProductionDetail({ item, allThemes, relatedProductions = [] }: P
           </div>
 
           {/* Sidebar */}
-          {(themes.length > 0 || item.tags.length > 0) && (
+          {(subTheme || item.tags.length > 0) && (
             <aside>
-              {themes.length > 0 && (
+              {subTheme && parentTheme && (
                 <div className="detail-sidebar-card">
-                  <p className="detail-sidebar-label">Thèmes</p>
+                  <p className="detail-sidebar-label">Sous-thème</p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {themes.map((t) => (
-                      <Link key={t.id} href={`/themes/${t.slug}`} className="theme-chip">
-                        {t.title}
-                      </Link>
-                    ))}
+                    <Link href={`/themes/${parentTheme.slug}/${subTheme.slug}`} className="theme-chip">
+                      {subTheme.title}
+                    </Link>
                   </div>
                 </div>
               )}
@@ -105,7 +106,7 @@ export function ProductionDetail({ item, allThemes, relatedProductions = [] }: P
       {/* ── Productions liées ─────────────────────────────────── */}
       {relatedProductions.length > 0 && (
         <CardGrid
-          title="Dans le même thème"
+          title="Dans le même sous-thème"
           items={relatedProductions
             .filter((p) => p.id !== item.id)
             .slice(0, 3)

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   BookOpen,
+  ListTree,
   CalendarDays,
   FileText,
   FolderKanban,
@@ -29,6 +30,7 @@ const NAV = [
   { id: "history", label: "Page Histoire", icon: Clock },
   { id: "pages", label: "Photos des pages", icon: ImagePlus },
   { id: "themes", label: "Thèmes", icon: BookOpen },
+  { id: "sousthemes", label: "Sous-thèmes", icon: ListTree },
   { id: "activites", label: "Activités", icon: CalendarDays },
   { id: "productions", label: "Productions", icon: FileText },
   { id: "projets", label: "Projets", icon: FolderKanban },

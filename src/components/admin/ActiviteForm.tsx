@@ -83,11 +83,6 @@ export function ActiviteForm({ initialData, action }: Props) {
             />
           </div>
 
-          <div className="form-field">
-            <label className="field-label">Identifiant URL</label>
-            <div className="slug-preview">/{isEdit ? initialData.slug : slug || "genere-depuis-le-titre"}</div>
-          </div>
-
           <div className="form-row">
             <div className="form-field">
               <label className="field-label">Format *</label>

@@ -9,6 +9,7 @@ import type {
   Production,
   ProgressStatus,
   Project,
+  SubTheme,
   Theme,
 } from "@/types/cms";
 import { asBoolean, asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
@@ -96,6 +97,7 @@ function mapProduction(row: DataRow): Production {
     tags: asStringArray(row.tags),
     status: asString(row.status, "draft") as ContentStatus,
     featured: asBoolean(row.featured),
+    subThemeId: asNullableString(row.sub_theme_id),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };
@@ -146,6 +148,21 @@ function mapTheme(row: DataRow): Theme {
     status: asString(row.status, "draft") as ContentStatus,
     progressStatus: asNullableString(row.progress_status) as ProgressStatus | null,
     featured: asBoolean(row.featured),
+    tags: asStringArray(row.tags),
+    createdAt: asString(row.created_at),
+    updatedAt: asString(row.updated_at),
+  };
+}
+
+function mapSubTheme(row: DataRow): SubTheme {
+  return {
+    id: asString(row.id),
+    themeId: asString(row.theme_id),
+    slug: asString(row.slug),
+    title: asString(row.title),
+    description: asNullableString(row.description),
+    longDescription: asNullableString(row.long_description),
+    status: asString(row.status, "draft") as ContentStatus,
     tags: asStringArray(row.tags),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
@@ -251,6 +268,62 @@ export const contentRepository = {
       .single();
     if (error) throw error;
     return mapTheme(data as DataRow);
+  },
+
+  // ── Sous-thèmes ──────────────────────────────────────────────
+  async listSubThemes(includeDrafts = false): Promise<SubTheme[]> {
+    const db = getSupabaseAdmin();
+    let query = db.from("sub_themes").select("*").order("title");
+    if (!includeDrafts) query = query.eq("status", "published");
+    const { data, error } = await query;
+    if (error) throw error;
+    return data.map(mapSubTheme);
+  },
+
+  async listSubThemesByTheme(themeId: string, includeDrafts = false): Promise<SubTheme[]> {
+    const db = getSupabaseAdmin();
+    let query = db.from("sub_themes").select("*").eq("theme_id", themeId).order("title");
+    if (!includeDrafts) query = query.eq("status", "published");
+    const { data, error } = await query;
+    if (error) throw error;
+    return data.map(mapSubTheme);
+  },
+
+  async getSubTheme(slug: string): Promise<SubTheme | null> {
+    const subThemes = await this.listSubThemes(true);
+    return subThemes.find((s) => s.slug === slug) ?? null;
+  },
+
+  async getSubThemeById(id: string): Promise<SubTheme | null> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("sub_themes").select("*").eq("id", id).single();
+    if (error || !data) return null;
+    return mapSubTheme(data as DataRow);
+  },
+
+  async createSubTheme(input: Record<string, unknown>): Promise<SubTheme> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("sub_themes").insert(input).select().single();
+    if (error) throw error;
+    return mapSubTheme(data as DataRow);
+  },
+
+  async updateSubTheme(id: string, input: Record<string, unknown>): Promise<SubTheme> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db
+      .from("sub_themes")
+      .update({ ...input, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw error;
+    return mapSubTheme(data as DataRow);
+  },
+
+  async deleteSubTheme(id: string): Promise<void> {
+    const db = getSupabaseAdmin();
+    const { error } = await db.from("sub_themes").delete().eq("id", id);
+    if (error) throw error;
   },
 
   // ── Productions ──────────────────────────────────────────────
@@ -396,36 +469,17 @@ export const contentRepository = {
     if (error) throw error;
   },
 
-  // ── Production ↔ Theme relations ─────────────────────────────
-  async getProductionThemeIds(productionId: string): Promise<string[]> {
+  // ── Production ↔ Sous-thème (une production = un seul sous-thème) ──
+  async getProductionsBySubTheme(subThemeId: string): Promise<Production[]> {
     const db = getSupabaseAdmin();
-    const { data } = await db.from("theme_productions").select("theme_id").eq("production_id", productionId);
-    return (data ?? []).map((r) => String(r.theme_id));
-  },
-
-  async setProductionThemes(productionId: string, themeIds: string[]): Promise<void> {
-    const db = getSupabaseAdmin();
-    await db.from("theme_productions").delete().eq("production_id", productionId);
-    if (themeIds.length > 0) {
-      const rows = themeIds.map((tid) => ({ production_id: productionId, theme_id: tid }));
-      const { error } = await db.from("theme_productions").insert(rows);
-      if (error) throw error;
-    }
-  },
-
-  async getProductionsByTheme(themeId: string): Promise<Production[]> {
-    const db = getSupabaseAdmin();
-    const { data } = await db.from("theme_productions").select("production_id").eq("theme_id", themeId);
-    const ids = (data ?? []).map((r) => String(r.production_id));
-    if (ids.length === 0) return [];
-    const { data: rows, error } = await db
+    const { data, error } = await db
       .from("productions")
       .select("*")
-      .in("id", ids)
+      .eq("sub_theme_id", subThemeId)
       .eq("status", "published")
       .order("date", { ascending: false });
     if (error) throw error;
-    return (rows ?? []).map(mapProduction);
+    return (data ?? []).map(mapProduction);
   },
 
   // ── Dashboard metrics ────────────────────────────────────────

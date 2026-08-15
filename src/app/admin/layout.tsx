@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 // Sections de contenu soumises à la permission "<section>:view".
 const GATED_SECTIONS = [
   "themes",
+  "sousthemes",
   "activites",
   "productions",
   "projets",

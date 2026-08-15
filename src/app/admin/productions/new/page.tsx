@@ -4,7 +4,10 @@ import { ProductionForm } from "@/components/admin/ProductionForm";
 import { createProductionAction } from "../actions";
 
 export default async function NewProductionPage() {
-  const themes = await contentRepository.listThemes(true);
+  const [themes, subThemes] = await Promise.all([
+    contentRepository.listThemes(true),
+    contentRepository.listSubThemes(true),
+  ]);
 
   return (
     <section className="admin-panel">
@@ -17,7 +20,7 @@ export default async function NewProductionPage() {
           <p>Créez un article, rapport, vidéo ou podcast. Elle sera en brouillon jusqu&apos;à publication.</p>
         </div>
       </div>
-      <ProductionForm action={createProductionAction} themes={themes} />
+      <ProductionForm action={createProductionAction} themes={themes} subThemes={subThemes} />
     </section>
   );
 }

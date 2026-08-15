@@ -39,14 +39,19 @@ export default async function ProductionPage({ params }: { params: Promise<{ slu
   const item = await contentRepository.getProduction(slug);
   if (!item) notFound();
 
-  const [themeIds, allThemes] = await Promise.all([
-    contentRepository.getProductionThemeIds(item.id),
+  const [allThemes, allSubThemes] = await Promise.all([
     contentRepository.listThemes(false),
+    contentRepository.listSubThemes(false),
   ]);
 
-  const enriched = { ...item, themeIds };
+  const relatedProductions = item.subThemeId ? await contentRepository.getProductionsBySubTheme(item.subThemeId) : [];
 
-  const relatedProductions = themeIds.length > 0 ? await contentRepository.getProductionsByTheme(themeIds[0]) : [];
-
-  return <ProductionDetail item={enriched} allThemes={allThemes} relatedProductions={relatedProductions} />;
+  return (
+    <ProductionDetail
+      item={item}
+      allThemes={allThemes}
+      allSubThemes={allSubThemes}
+      relatedProductions={relatedProductions}
+    />
+  );
 }

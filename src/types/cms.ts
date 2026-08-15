@@ -196,7 +196,22 @@ export type Production = {
   tags: string[];
   status: ContentStatus;
   featured: boolean;
-  themeIds?: string[];
+  subThemeId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Sujet traité au sein d'un thème (ex. thème "Écologie" → sous-thème "Sobriété énergétique").
+// Peut regrouper 0, 1 ou plusieurs productions.
+export type SubTheme = {
+  id: string;
+  themeId: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  longDescription?: string | null;
+  status: ContentStatus;
+  tags: string[];
   createdAt: string;
   updatedAt: string;
 };

@@ -20,6 +20,7 @@ export const ACTION_LABELS: Record<PermissionAction, string> = {
 // Sections gérables par la matrice de rôles. (users / roles / journal = admin uniquement, hors matrice.)
 export const permissionCatalog: PermissionSection[] = [
   { key: "themes", label: "Thèmes", actions: ["view", "create", "edit", "delete", "publish"] },
+  { key: "sousthemes", label: "Sous-thèmes", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "activites", label: "Activités", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "productions", label: "Productions", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "projets", label: "Projets", actions: ["view", "create", "edit", "delete", "publish"] },

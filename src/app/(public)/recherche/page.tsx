@@ -25,6 +25,7 @@ function matches(query: string, ...fields: Array<string | null | undefined>) {
 const KIND_LABEL: Record<string, string> = {
   page: "Page",
   theme: "Thème",
+  "sub-theme": "Sous-thème",
   production: "Production",
   activity: "Activité",
   project: "Projet",
@@ -61,12 +62,14 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     }));
 
     try {
-      const [themes, productions, activities, projects] = await Promise.all([
+      const [themes, subThemes, productions, activities, projects] = await Promise.all([
         contentRepository.listThemes(),
+        contentRepository.listSubThemes(),
         contentRepository.listProductions(),
         contentRepository.listActivities(),
         contentRepository.listProjects(),
       ]);
+      const themeSlugById = new Map(themes.map((t) => [t.id, t.slug]));
 
       const themeResults: Result[] = themes
         .filter((t) => matches(query, t.title, t.shortTitle, t.description, t.tags?.join(" ")))
@@ -77,6 +80,23 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           href: `/themes/${t.slug}`,
           tags: t.tags,
         }));
+
+      const subThemeResults: Result[] = subThemes
+        .filter((st) => matches(query, st.title, st.description, st.tags?.join(" ")))
+        .flatMap((st) => {
+          const themeSlug = themeSlugById.get(st.themeId);
+          return themeSlug
+            ? [
+                {
+                  kind: "sub-theme",
+                  title: st.title,
+                  description: st.description,
+                  href: `/themes/${themeSlug}/${st.slug}`,
+                  tags: st.tags,
+                },
+              ]
+            : [];
+        });
 
       const prodResults: Result[] = productions
         .filter((p) => matches(query, p.title, p.description, p.type, p.author, p.tags?.join(" ")))
@@ -96,7 +116,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         .filter((p) => matches(query, p.title, p.description, p.category))
         .map((p) => ({ kind: "project", title: p.title, description: p.description, href: `/projets/${p.slug}` }));
 
-      results = [...pageResults, ...themeResults, ...prodResults, ...actResults, ...projResults];
+      results = [...pageResults, ...themeResults, ...subThemeResults, ...prodResults, ...actResults, ...projResults];
     } catch {
       // DB indisponible : on affiche au moins les pages du site qui correspondent.
       results = pageResults;

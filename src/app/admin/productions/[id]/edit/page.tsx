@@ -11,10 +11,10 @@ interface Props {
 
 export default async function EditProductionPage({ params }: Props) {
   const { id } = await params;
-  const [item, themes, initialThemeIds] = await Promise.all([
+  const [item, themes, subThemes] = await Promise.all([
     contentRepository.getProductionById(id),
     contentRepository.listThemes(true),
-    contentRepository.getProductionThemeIds(id),
+    contentRepository.listSubThemes(true),
   ]);
   if (!item) notFound();
 
@@ -44,12 +44,7 @@ export default async function EditProductionPage({ params }: Props) {
           )}
         </a>
       </div>
-      <ProductionForm
-        initialData={item}
-        action={updateProductionAction}
-        themes={themes}
-        initialThemeIds={initialThemeIds}
-      />
+      <ProductionForm initialData={item} action={updateProductionAction} themes={themes} subThemes={subThemes} />
     </section>
   );
 }
