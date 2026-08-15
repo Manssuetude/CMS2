@@ -1,12 +1,13 @@
 import Link from "next/link";
-import { contentRepository } from "@/repositories/contentRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { ProductionForm } from "@/components/admin/ProductionForm";
 import { createProductionAction } from "../actions";
 
 export default async function NewProductionPage() {
   const [themes, subThemes] = await Promise.all([
-    contentRepository.listThemes(true),
-    contentRepository.listSubThemes(true),
+    themeRepository.listThemes(true),
+    subThemeRepository.listSubThemes(true),
   ]);
 
   return (

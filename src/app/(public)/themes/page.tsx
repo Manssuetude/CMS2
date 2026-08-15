@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
 import { ProposeSection } from "@/components/public/ProposeSection";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("themes");
+    const page = await pageRepository.getPage("themes");
     if (!page) return {};
     return {
       title: { absolute: page.seoTitle ?? page.title },
@@ -22,8 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ThemesPage() {
   try {
-    const page = await contentRepository.getPage("themes");
-    const themes = await contentRepository.listThemes();
+    const page = await pageRepository.getPage("themes");
+    const themes = await themeRepository.listThemes();
     if (!page) notFound();
     // Retire les CTA du hero (« thème actif », etc.) — proposition déplacée en bas.
     const pageNoCta = {

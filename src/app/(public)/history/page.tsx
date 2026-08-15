@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { HistoryEditorial } from "@/components/public/HistoryEditorial";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 
 // Cette page bascule dynamiquement entre "en cours de rédaction" et le contenu réel
 // dès la première rédaction ; le rendu doit donc toujours refléter l'état actuel de la
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("history");
+    const page = await pageRepository.getPage("history");
     if (!page) return { title: "Notre histoire" };
     return {
       title: { absolute: page.seoTitle ?? page.title },
@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HistoryPage() {
   try {
-    const page = await contentRepository.getPage("history");
+    const page = await pageRepository.getPage("history");
     if (!page) {
       return (
         <MaintenanceNotice

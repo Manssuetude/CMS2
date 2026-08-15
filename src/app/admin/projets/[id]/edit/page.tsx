@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
-import { contentRepository } from "@/repositories/contentRepository";
+import { projectRepository } from "@/repositories/projectRepository";
 import { ProjetForm } from "@/components/admin/ProjetForm";
 import { updateProjectAction } from "../../actions";
 
@@ -11,7 +11,7 @@ interface Props {
 
 export default async function EditProjetPage({ params }: Props) {
   const { id } = await params;
-  const item = await contentRepository.getProjectById(id);
+  const item = await projectRepository.getProjectById(id);
   if (!item) notFound();
 
   return (

@@ -1,9 +1,9 @@
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
 import { saveHistoryFieldsAction } from "./actions";
 
 export default async function AdminHistory() {
-  const page = await contentRepository.getPage("history");
+  const page = await pageRepository.getPage("history");
 
   return (
     <section className="admin-panel">

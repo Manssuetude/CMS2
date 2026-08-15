@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
@@ -47,7 +47,7 @@ export async function createActivityAction(_: string | null, formData: FormData)
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
 
   try {
-    await contentRepository.createActivity({ slug, ...toInput(parsed.data) });
+    await activityRepository.createActivity({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -76,7 +76,7 @@ export async function updateActivityAction(_: string | null, formData: FormData)
   }
 
   try {
-    await contentRepository.updateActivity(id, toInput(parsed.data));
+    await activityRepository.updateActivity(id, toInput(parsed.data));
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -93,7 +93,7 @@ export async function updateActivityAction(_: string | null, formData: FormData)
 export async function deleteActivityAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return;
-  await contentRepository.deleteActivity(id);
+  await activityRepository.deleteActivity(id);
   await logAction("delete", { entityType: "activity", entityId: id, summary: "Activité supprimée" });
   revalidatePath("/admin/activites");
 }
@@ -102,7 +102,7 @@ export async function toggleActivityStatusAction(formData: FormData): Promise<vo
   const id = (formData.get("id") as string | null)?.trim();
   const status = (formData.get("status") as string | null)?.trim();
   if (!id || !status) return;
-  await contentRepository.toggleStatus("activities", id, status);
+  await activityRepository.toggleStatus(id, status);
   revalidatePath("/admin/activites");
 }
 
@@ -112,11 +112,11 @@ export async function toggleActivityFeaturedAction(formData: FormData): Promise<
   if (!id) return;
   // Garde-fou : maximum 3 activités en vedette sur l'accueil.
   if (featured) {
-    const all = await contentRepository.listActivities(true);
+    const all = await activityRepository.listActivities(true);
     const count = all.filter((a) => a.featured).length;
     if (count >= 3) return;
   }
-  await contentRepository.updateActivity(id, { featured });
+  await activityRepository.updateActivity(id, { featured });
   revalidatePath("/admin/activites");
   revalidatePath("/");
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
-import { contentRepository } from "@/repositories/contentRepository";
+import { productionRepository } from "@/repositories/productionRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
@@ -11,7 +11,7 @@ import { deleteProductionAction, toggleProductionStatusAction } from "./actions"
 
 export default async function AdminProductionsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
-  const all = await contentRepository.listProductions(true);
+  const all = await productionRepository.listProductions(true);
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "f");

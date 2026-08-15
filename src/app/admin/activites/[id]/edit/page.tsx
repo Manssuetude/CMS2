@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
 import { ActiviteForm } from "@/components/admin/ActiviteForm";
 import { updateActivityAction } from "../../actions";
 
@@ -11,7 +11,7 @@ interface Props {
 
 export default async function EditActivitePage({ params }: Props) {
   const { id } = await params;
-  const item = await contentRepository.getActivityById(id);
+  const item = await activityRepository.getActivityById(id);
   if (!item) notFound();
 
   return (

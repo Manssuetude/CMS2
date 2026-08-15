@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HomeEditorial } from "@/components/public/HomeEditorial";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
+import { pageRepository } from "@/repositories/pageRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("accueil");
+    const page = await pageRepository.getPage("accueil");
     return {
       title: { absolute: page?.seoTitle ?? "Manssuétude" },
       description: page?.seoDescription ?? "Un espace de réflexion, de production et d'expérimentation collective.",
@@ -21,11 +24,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   try {
-    const page = await contentRepository.getPage("accueil");
+    const page = await pageRepository.getPage("accueil");
     const [productions, activities, themes] = await Promise.all([
-      contentRepository.listProductions(),
-      contentRepository.listActivities(),
-      contentRepository.listThemes(),
+      productionRepository.listProductions(),
+      activityRepository.listActivities(),
+      themeRepository.listThemes(),
     ]);
     if (!page) notFound();
 

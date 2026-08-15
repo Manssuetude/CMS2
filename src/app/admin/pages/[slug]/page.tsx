@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePermission } from "@/lib/auth";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { HERO_ASPECT } from "@/constants/imageAspects";
@@ -22,7 +22,7 @@ export default async function EditPageBySlug({ params }: { params: Promise<{ slu
   const { slug } = await params;
   if (!PAGE_LABELS[slug]) notFound();
 
-  const [page, media] = await Promise.all([contentRepository.getPage(slug), mediaRepository.list()]);
+  const [page, media] = await Promise.all([pageRepository.getPage(slug), mediaRepository.list()]);
   const images = media.filter((m) => m.type === "image");
 
   return (

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
-import { contentRepository } from "@/repositories/contentRepository";
+import { projectRepository } from "@/repositories/projectRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { ProgressTag } from "@/components/admin/ProgressTag";
@@ -11,7 +11,7 @@ import { deleteProjectAction, toggleProjectStatusAction } from "./actions";
 
 export default async function AdminProjetsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
-  const all = await contentRepository.listProjects(true);
+  const all = await projectRepository.listProjects(true);
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "m");

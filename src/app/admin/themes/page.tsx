@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
-import { contentRepository } from "@/repositories/contentRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
 import {
@@ -25,7 +25,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export default async function AdminThemesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
-  const all = await contentRepository.listThemes(true);
+  const all = await themeRepository.listThemes(true);
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "m");

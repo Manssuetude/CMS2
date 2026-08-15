@@ -1,9 +1,9 @@
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
 import { savePercaFieldsAction } from "./actions";
 
 export default async function AdminPerca() {
-  const page = await contentRepository.getPage("perca");
+  const page = await pageRepository.getPage("perca");
 
   return (
     <section className="admin-panel">

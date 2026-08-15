@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PercaEditorial } from "@/components/public/PercaEditorial";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await contentRepository.getPage("perca");
+    const page = await pageRepository.getPage("perca");
     if (!page) return {};
     return {
       title: { absolute: page.seoTitle ?? page.title },
@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function PercaPage() {
   try {
-    const page = await contentRepository.getPage("perca");
+    const page = await pageRepository.getPage("perca");
     if (!page) notFound();
     return <PercaEditorial page={page} />;
   } catch (error) {

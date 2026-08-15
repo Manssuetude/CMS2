@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
-import { contentRepository } from "@/repositories/contentRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import { SubThemeForm } from "@/components/admin/SubThemeForm";
 import { updateSubThemeAction } from "../../actions";
 
@@ -11,7 +12,7 @@ interface Props {
 
 export default async function EditSubThemePage({ params }: Props) {
   const { id } = await params;
-  const [item, themes] = await Promise.all([contentRepository.getSubThemeById(id), contentRepository.listThemes(true)]);
+  const [item, themes] = await Promise.all([subThemeRepository.getSubThemeById(id), themeRepository.listThemes(true)]);
   if (!item) notFound();
   const parentTheme = themes.find((t) => t.id === item.themeId);
 

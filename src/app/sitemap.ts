@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/constants/site";
-import { contentRepository } from "@/repositories/contentRepository";
+import { activityRepository } from "@/repositories/activityRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { projectRepository } from "@/repositories/projectRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 
 // Régénéré au plus toutes les 60s (cohérent avec l'ISR des pages publiques).
 export const revalidate = 60;
@@ -37,11 +41,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Entités dynamiques (uniquement le contenu publié — includeDrafts par défaut = false).
   try {
     const [themes, subThemes, productions, activities, projects] = await Promise.all([
-      contentRepository.listThemes(),
-      contentRepository.listSubThemes(),
-      contentRepository.listProductions(),
-      contentRepository.listActivities(),
-      contentRepository.listProjects(),
+      themeRepository.listThemes(),
+      subThemeRepository.listSubThemes(),
+      productionRepository.listProductions(),
+      activityRepository.listActivities(),
+      projectRepository.listProjects(),
     ]);
     const themeSlugById = new Map(themes.map((t) => [t.id, t.slug]));
 

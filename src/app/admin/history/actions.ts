@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { contentRepository } from "@/repositories/contentRepository";
+import { pageRepository } from "@/repositories/pageRepository";
 import { logAction } from "@/lib/audit";
 
 export async function saveHistoryFieldsAction(formData: FormData): Promise<void> {
@@ -17,7 +17,7 @@ export async function saveHistoryFieldsAction(formData: FormData): Promise<void>
     updated_at: new Date().toISOString(),
   };
   // upsert : crée la page « history » au premier enregistrement, la met à jour ensuite.
-  await contentRepository.upsertPage(payload);
+  await pageRepository.upsertPage(payload);
   await logAction("update", { entityType: "page", entityId: "history", summary: "Page Histoire modifiée" });
   revalidatePath("/history");
   redirect("/admin/history?saved=1");

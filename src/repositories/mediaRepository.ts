@@ -4,6 +4,12 @@ import type { Media, MediaSource, MediaType, Visibility } from "@/types/cms";
 import { asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
 import { parseTags } from "@/utils/tags";
 
+export function normalizeUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("http") || url.startsWith("/")) return url;
+  return `/${url}`;
+}
+
 function mapMedia(row: DataRow): Media {
   return {
     id: asString(row.id),
@@ -67,5 +73,15 @@ export const mediaRepository = {
     const db = getSupabaseAdmin();
     const { error } = await db.from("resources").delete().eq("id", id);
     if (error) throw error;
+  },
+
+  // Résout l'URL (absolue/normalisée) d'une ressource média par son id. Utilisé pour
+  // les images Open Graph des fiches (thème, production, activité). Renvoie null si absente.
+  async getResourceUrl(id: string | null | undefined): Promise<string | null> {
+    if (!id) return null;
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("resources").select("url").eq("id", id).single();
+    if (error || !data) return null;
+    return normalizeUrl((data as { url?: string }).url);
   },
 };

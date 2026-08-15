@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Download } from "lucide-react";
-import { contentRepository } from "@/repositories/contentRepository";
+import { formSubmissionRepository } from "@/repositories/formSubmissionRepository";
 import { updateFormStatusAction } from "./actions";
 import { FormSubmissionRow } from "@/components/admin/FormSubmissionRow";
 
@@ -21,7 +21,7 @@ export default async function AdminFormsPage({ searchParams }: { searchParams: P
   const { type } = await searchParams;
   const activeType = TYPE_TABS.some((t) => t.value === type && t.value !== "") ? type : "";
 
-  const all = await contentRepository.listFormSubmissions();
+  const all = await formSubmissionRepository.listFormSubmissions();
   const forms = activeType ? all.filter((f) => f.formType === activeType) : all;
   const pending = forms.filter((f) => f.status === "reçu").length;
 
