@@ -1,6 +1,7 @@
 import type { Theme, SubTheme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { CardGrid } from "@/components/cards/CardGrid";
+import { titleFontSize } from "@/utils/titleSize";
 
 interface Props {
   item: Theme;
@@ -14,7 +15,7 @@ export function ThemeDetail({ item, subThemes }: Props) {
       <section className="hero hero--detail">
         <div className="hero-copy">
           <p className="eyebrow">Thème éditorial</p>
-          <h1>{item.title}</h1>
+          <h1 style={{ fontSize: titleFontSize(item.title) }}>{item.title}</h1>
           {(item.longDescription ?? item.description) && <p>{item.longDescription ?? item.description}</p>}
           <div className="actions">
             <CtaButton label="Retour aux thèmes" target="/themes" variant="secondary" />
