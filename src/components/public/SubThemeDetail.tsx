@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Theme, SubTheme, Production } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { CardGrid } from "@/components/cards/CardGrid";
+import { titleFontSize } from "@/utils/titleSize";
 
 const TYPE_LABEL: Record<string, string> = {
   Article: "Article",
@@ -34,7 +35,7 @@ export function SubThemeDetail({ theme, item, productions }: Props) {
             </Link>{" "}
             · Sous-thème
           </p>
-          <h1>{item.title}</h1>
+          <h1 style={{ fontSize: titleFontSize(item.title) }}>{item.title}</h1>
           {(item.longDescription ?? item.description) && <p>{item.longDescription ?? item.description}</p>}
           {item.date && (
             <div className="detail-meta">
