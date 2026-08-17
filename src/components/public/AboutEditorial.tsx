@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Hero } from "@/components/public/Hero";
 import type { Page } from "@/types/cms";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 // PERCA = le cadre méthodologique de Manssuétude (source : page perca en base).
 const perca: Array<[string, string]> = [
@@ -37,7 +38,12 @@ export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Pa
           <p className="eyebrow">Notre méthode</p>
           <h2>PERCA</h2>
         </div>
-        {percaPage?.body ? <p className="about-perca-intro">{percaPage.body}</p> : null}
+        {percaPage?.body ? (
+          <div
+            className="about-perca-intro rich-text"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(percaPage.body) }}
+          />
+        ) : null}
         <ol className="perca-steps">
           {perca.map(([letter, word]) => (
             <li key={letter}>
