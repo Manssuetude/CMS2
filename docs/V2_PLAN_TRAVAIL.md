@@ -8,10 +8,10 @@
 
 ## 0. Alertes à trancher avant de coder
 
-- [ ] Nom du "Journal éditorial" : le journal d'audit RBAC est renommé `/admin/historique` (« Historique »). "Journal" est libéré pour le chapitre 5. Fait.
+- [ ] Nom du "Journal éditorial" : renommer le journal d'audit RBAC existant (`/admin/journal`) en `/admin/historique` (« Historique ») pour libérer "Journal" pour le chapitre 5. Décidé, mais **à refaire** — ce renommage avait été fait une première fois puis perdu avec la suppression de l'ancienne branche `v2`.
 - [ ] Modèle relationnel : on repart sur un schéma propre par relation, au moment de construire chacune (même approche que thème↔sous-thème). Décidé, rien à coder ici — s'applique au chapitre 4.
 - [ ] Médiathèque réutilisable : `MediaField.tsx`/`/admin/identity` seront reconstruits proprement (pas réparés) au chapitre 2. Décidé.
-- [ ] `/admin/backup` retirée (page vide sans logique). Fait.
+- [ ] `/admin/backup` à retirer (page vide sans logique). Avait été fait puis perdu avec la suppression de l'ancienne branche `v2` — la page existe encore.
 
 ---
 
