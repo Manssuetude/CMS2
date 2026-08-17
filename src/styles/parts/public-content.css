@@ -4,6 +4,7 @@
   line-height: 1.78;
   color: var(--ink);
   max-width: 720px;
+  overflow-wrap: break-word;
 }
 .rich-text > * + * {
   margin-top: 1em;
@@ -39,6 +40,15 @@
   margin: 0;
   text-align: justify;
   text-wrap: pretty;
+}
+/* La justification a besoin d'assez de mots par ligne pour répartir l'espace
+   proprement — sur mobile (colonne étroite), elle crée de grands vides
+   disgracieux entre les mots. On revient à un alignement à gauche classique
+   en dessous de ce seuil. */
+@media (max-width: 640px) {
+  .rich-text p {
+    text-align: left;
+  }
 }
 .rich-text ul,
 .rich-text ol {
@@ -77,6 +87,14 @@
   overflow-x: auto;
   font-size: 14px;
 }
+/* Toute image collée dans le corps (y compris hors <figure>, cas fréquent
+   du copier-coller Google Docs/Word avec une largeur figée en attribut HTML)
+   doit rester contenue dans la colonne — sinon débordement horizontal sur
+   mobile. */
+.rich-text img {
+  max-width: 100%;
+  height: auto;
+}
 .rich-text figure {
   margin: 1.6em 0;
 }
@@ -90,7 +108,10 @@
   margin-top: 6px;
 }
 .rich-text table {
+  display: block;
   width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
   font-size: 15px;
 }
