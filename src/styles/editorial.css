@@ -537,6 +537,56 @@
   border-color: var(--ed-brand);
   transform: translateY(-2px);
 }
+/* Formulaire d'inscription newsletter — footer (compact) et homepage */
+.site-shell .newsletter-form-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.site-shell .newsletter-form-row input[type="email"] {
+  min-width: 200px;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: var(--ed-radius);
+  background: var(--ed-raise);
+  color: var(--ed-ink);
+  font-size: 0.9rem;
+}
+.site-shell .newsletter-form-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--ed-muted);
+  max-width: 340px;
+  cursor: pointer;
+}
+.site-shell .newsletter-form-consent input {
+  margin-top: 0.15rem;
+}
+.site-shell .newsletter-form-error {
+  color: var(--ed-brand);
+  font-size: 0.78rem;
+  margin: 0.4rem 0 0;
+}
+.site-shell .newsletter-form-success {
+  font-size: 0.85rem;
+  color: var(--ed-clay);
+  font-weight: 600;
+}
+.site-shell .newsletter-form.is-compact {
+  max-width: 300px;
+}
+.site-shell .newsletter-form.is-compact .newsletter-form-row input[type="email"] {
+  min-width: 0;
+  flex: 1;
+}
+.site-shell .newsletter-form.is-compact .newsletter-form-consent {
+  font-size: 0.66rem;
+  max-width: none;
+}
+
 .site-shell .footer-bottom {
   max-width: var(--ed-container);
   margin: 1.1rem auto 0;
@@ -946,6 +996,27 @@
 }
 
 /* 6 — Rejoindre */
+.site-shell .home-newsletter {
+  background: var(--ed-sink);
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+.site-shell .home-newsletter-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+.site-shell .home-newsletter-inner h2 {
+  font-size: var(--ed-step-4);
+  margin: 0 0 0.5rem;
+}
+.site-shell .home-newsletter-inner > p {
+  color: var(--ed-ink-soft);
+  margin: 0 0 1.5rem;
+}
+.site-shell .home-newsletter-inner .newsletter-form-row {
+  justify-content: center;
+}
+
 .site-shell .home-join {
   text-align: center;
   padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(3rem, 6vw, 5rem);

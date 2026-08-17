@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
+import { NewsletterForm } from "@/components/public/NewsletterForm";
 import type { Page, Production, Activity, Theme, JournalEntry } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
 
@@ -172,6 +173,15 @@ export function HomeEditorial({
       </section>
 
       {/* 6 — Appel à rejoindre */}
+      {/* 6 — Newsletter */}
+      <section className="home-section home-newsletter">
+        <div className="home-newsletter-inner">
+          <h2>Recevez nos actualités</h2>
+          <p>Productions, activités et entrées du Journal — un email de temps en temps, pas plus.</p>
+          <NewsletterForm />
+        </div>
+      </section>
+
       <section className="home-join">
         <h2>Rejoindre une communauté qui pense, débat et produit.</h2>
         <div className="home-join-actions">

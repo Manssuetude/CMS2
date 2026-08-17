@@ -71,9 +71,9 @@
 
 ### 7. Newsletter
 
-- [ ] Choisir/valider l'outil d'emailing (Brevo pressenti) avec l'équipe.
-- [ ] Ajouter un formulaire d'inscription newsletter (footer, homepage, fin de contenu).
-- [ ] Intégrer l'API de l'outil retenu : synchronisation des inscrits, gestion du consentement et de la désinscription.
+- [x] Choisir/valider l'outil d'emailing — Brevo confirmé, clé API fournie et testée en conditions réelles.
+- [x] Ajouter un formulaire d'inscription newsletter (footer sur toutes les pages, homepage). Pas de bloc "fin de contenu" dédié — le footer couvre déjà cette position sur les fiches production/journal/activité.
+- [x] Intégrer l'API Brevo : synchronisation des inscrits (création/mise à jour de contact, appel REST direct plutôt que le SDK complet `@getbrevo/brevo` — trop large pour un seul endpoint), consentement RGPD explicite (case à cocher obligatoire, même sur la variante compacte du footer). Désinscription gérée nativement par Brevo (lien automatique dans leurs emails) — rien à construire côté application.
 
 ### 8. Rejoindre / candidater
 

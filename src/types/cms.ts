@@ -302,5 +302,4 @@ export type FooterConfig = {
   columns?: FooterColumn[];
   socialLinks?: FooterLink[];
   legalLinks?: FooterLink[];
-  newsletterEnabled?: boolean;
 };
