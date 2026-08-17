@@ -28,7 +28,6 @@ function mapMedia(row: DataRow): Media {
     tags: asStringArray(row.tags),
     visibility: asString(row.visibility, "draft") as Visibility,
     uploadedBy: asNullableString(row.uploaded_by),
-    driveFileId: asNullableString(row.drive_file_id),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };

@@ -22,26 +22,6 @@ export type Visibility =
   | "draft";
 export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "activity";
 export type FormStatus = "reçu" | "en cours" | "traité" | "archivé";
-export type EntityType =
-  | "theme"
-  | "production"
-  | "activity"
-  | "project"
-  | "resource"
-  | "season"
-  | "member"
-  | "media"
-  | "page"
-  | "cta"
-  | "collection";
-export type RelationKind =
-  | "related"
-  | "contains"
-  | "supports"
-  | "references"
-  | "produced-from"
-  | "recommended"
-  | "featured";
 export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "activity"}`;
 
 export type ContentBlock =
@@ -108,20 +88,8 @@ export type Media = {
   tags: string[];
   visibility: Visibility;
   uploadedBy?: string | null;
-  driveFileId?: string | null;
   createdAt: string;
   updatedAt: string;
-};
-
-export type EntityRelation = {
-  id: string;
-  fromType: EntityType;
-  fromId: string;
-  toType: EntityType;
-  toId: string;
-  kind: RelationKind;
-  weight: number;
-  metadata: Record<string, unknown>;
 };
 
 /**
