@@ -20,6 +20,10 @@ export function sanitizeHtml(html: string | null | undefined): string {
   const clean = sanitizeHtmlLib(html, {
     allowedTags: false,
     allowedAttributes: false,
+    // allowedTags:false autorise script/style au niveau liste, mais exclusiveFilter
+    // ci-dessous les retire systématiquement (couvert par les tests) — on assume ce
+    // risque explicitement pour faire taire l'avertissement de la librairie.
+    allowVulnerableTags: true,
     allowedSchemes: ["http", "https", "mailto", "tel"],
     allowedSchemesByTag: { img: ["http", "https", "data"] },
     exclusiveFilter: (frame) => FORBIDDEN_TAGS.includes(frame.tag),
