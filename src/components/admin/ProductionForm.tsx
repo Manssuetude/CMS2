@@ -188,29 +188,33 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
         {subThemes.length > 0 && (
           <div className="form-section">
             <p className="form-section-title">Sous-thèmes</p>
-            <div className="form-field">
-              <label className="field-label" htmlFor="subThemeIds">
-                Sujets traités
-              </label>
-              <select
-                id="subThemeIds"
-                multiple
-                size={Math.min(8, Math.max(4, subThemes.length))}
-                value={selectedSubThemes}
-                onChange={(e) => setSelectedSubThemes([...e.target.selectedOptions].map((o) => o.value))}
-              >
-                {[...subThemesByTheme.entries()].map(([themeId, items]) => (
-                  <optgroup key={themeId} label={themeTitleById.get(themeId) ?? "Thème"}>
-                    {items.map((st) => (
-                      <option key={st.id} value={st.id}>
-                        {st.title}
-                      </option>
-                    ))}
-                  </optgroup>
-                ))}
-              </select>
-              <span className="field-hint">Cmd/Ctrl + clic pour sélectionner plusieurs sous-thèmes.</span>
-            </div>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Cochez les sujets traités par cette production.
+            </p>
+            {[...subThemesByTheme.entries()].map(([themeId, items]) => (
+              <div key={themeId} style={{ marginBottom: 14 }}>
+                <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 600, color: "var(--ink)" }}>
+                  {themeTitleById.get(themeId) ?? "Thème"}
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {items.map((st) => (
+                    <div className="form-checkbox" key={st.id}>
+                      <input
+                        type="checkbox"
+                        id={`subtheme-${st.id}`}
+                        checked={selectedSubThemes.includes(st.id)}
+                        onChange={(e) =>
+                          setSelectedSubThemes((prev) =>
+                            e.target.checked ? [...prev, st.id] : prev.filter((id) => id !== st.id),
+                          )
+                        }
+                      />
+                      <label htmlFor={`subtheme-${st.id}`}>{st.title}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
