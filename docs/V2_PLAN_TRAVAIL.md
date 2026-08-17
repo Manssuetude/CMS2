@@ -77,10 +77,10 @@
 
 ### 8. Rejoindre / candidater
 
-- [ ] Ajouter les champs manquants au formulaire "join" : compétences, disponibilités, commissions souhaitées.
-- [ ] Activer l'upload de CV (le type de champ existe déjà dans le modèle, juste jamais utilisé).
-- [ ] Envoyer une confirmation automatique au candidat + page de confirmation expliquant la suite.
-- [ ] Construire un suivi de statut de candidature dédié (au-delà du statut générique de soumission).
+- [x] Ajouter les champs manquants au formulaire "join" : compétences, disponibilités, commission souhaitée.
+- [ ] **⚠️ Conflit détecté, non fait délibérément** : "Activer l'upload de CV" contredit une décision déjà prise et testée sur ce projet — `CLAUDE.md` documente "Plus de pièce jointe" pour les formulaires publics, et `tests/forms.test.ts` a un test dédié (« pas de champ de type file (pièce jointe retirée) ») qui casserait si on l'ajoutait. Le point du backlog d'origine ("le type de champ existe déjà, juste jamais utilisé") est donc obsolète — le champ file a été retiré intentionnellement depuis. **À trancher avec l'équipe avant d'y toucher.**
+- [x] Envoyer une confirmation automatique au candidat (chapitre 6, déjà branché sur les 7 formulaires) + message de confirmation détaillé expliquant la suite (délai de réponse, prochaine étape) spécifique à la candidature, affiché dans la modale après envoi.
+- [ ] Construire un suivi de statut de candidature dédié — non fait, même raison que le workflow du chapitre 6 (statut partagé entre les 7 types de formulaires).
 
 ### 9. Soutenir Manssuétude
 

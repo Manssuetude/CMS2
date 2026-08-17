@@ -16,6 +16,14 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
     { name: "phone", label: "Téléphone", type: "text", required: true },
     { name: "city", label: "Ville ou région", type: "text", required: true },
     { name: "interests", label: "Centres d'intérêt", type: "text" },
+    {
+      name: "skills",
+      label: "Compétences",
+      type: "text",
+      hint: "Ce que vous savez faire et pourriez mettre à profit.",
+    },
+    { name: "availability", label: "Disponibilités", type: "text", hint: "Ex. : soirs de semaine, week-ends..." },
+    { name: "commission", label: "Commission souhaitée", type: "text" },
     { name: "motivation", label: "Motivation", type: "text" },
     {
       name: "consent",
