@@ -66,8 +66,8 @@
 
 ### 6. Contributions extérieures
 
-- [ ] Envoyer un accusé de réception automatique par email au visiteur (Resend déjà en place, juste pas branché sur ce flux).
-- [ ] Étendre le statut générique (reçu/en cours/traité/archivé) vers un vrai workflow éditorial (soumis → en étude → accepté/refusé → en rédaction/révision → publié).
+- [x] Envoyer un accusé de réception automatique par email au visiteur — branché sur les 7 formulaires publics (un message adapté par type), best-effort (n'échoue jamais la soumission si l'email ne part pas), vérifié en local (log gracieux sans clé Resend, comme le flux d'invitation existant).
+- [ ] Étendre le statut générique (reçu/en cours/traité/archivé) vers un vrai workflow éditorial (soumis → en étude → accepté/refusé → en rédaction/révision → publié) — non fait : le statut est une colonne partagée par les 7 types de formulaires, un workflow spécifique aux contributions demanderait de la sortir de ce système commun. À concevoir avec l'équipe plutôt qu'à improviser cette nuit.
 
 ### 7. Newsletter
 
