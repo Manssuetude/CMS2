@@ -1,4 +1,5 @@
 import { createRequire } from "node:module";
+import { fixTableOfContentsLinks } from "@/utils/tableOfContents";
 
 // `isomorphic-dompurify` (via jsdom → html-encoding-sniffer) peut faire un require()
 // d'un module ESM pur qui casse selon l'environnement Node du déploiement
@@ -33,11 +34,12 @@ export function sanitizeHtml(html: string | null | undefined): string {
   const DOMPurify = loadDomPurify();
   if (!DOMPurify) return stripAllTags(html);
   try {
-    return DOMPurify.sanitize(html, {
+    const clean = DOMPurify.sanitize(html, {
       USE_PROFILES: { html: true },
       FORBID_TAGS: ["style", "script", "iframe", "object", "embed", "form"],
       FORBID_ATTR: ["style", "onerror", "onload", "onclick"],
     });
+    return fixTableOfContentsLinks(clean);
   } catch {
     return stripAllTags(html);
   }

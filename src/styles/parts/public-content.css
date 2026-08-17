@@ -14,6 +14,11 @@
 .detail-layout .rich-text {
   max-width: none;
 }
+.rich-text h2,
+.rich-text h3,
+.rich-text h4 {
+  scroll-margin-top: 96px;
+}
 .rich-text h2 {
   font-size: clamp(20px, 2.2vw, 26px);
   font-weight: 700;

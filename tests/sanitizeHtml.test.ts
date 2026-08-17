@@ -3,7 +3,7 @@ import test from "node:test";
 import { sanitizeHtml } from "../src/utils/sanitizeHtml.ts";
 
 test("sanitizeHtml — retire les balises script", () => {
-  const out = sanitizeHtml('<p>ok</p><script>alert(1)</script>');
+  const out = sanitizeHtml("<p>ok</p><script>alert(1)</script>");
   assert.ok(out.includes("<p>ok</p>"));
   assert.ok(!out.toLowerCase().includes("<script"));
 });
@@ -15,8 +15,8 @@ test("sanitizeHtml — retire les handlers inline (onerror/onclick)", () => {
 });
 
 test("sanitizeHtml — conserve le formatage riche légitime", () => {
-  const out = sanitizeHtml("<h2>Titre</h2><p><strong>gras</strong> et <a href=\"/x\">lien</a></p><ul><li>a</li></ul>");
-  assert.ok(out.includes("<h2>"));
+  const out = sanitizeHtml('<h2>Titre</h2><p><strong>gras</strong> et <a href="/x">lien</a></p><ul><li>a</li></ul>');
+  assert.match(out, /<h2[^>]*>Titre<\/h2>/);
   assert.ok(out.includes("<strong>"));
   assert.ok(out.includes("<li>"));
 });
