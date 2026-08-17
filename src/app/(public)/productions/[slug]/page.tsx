@@ -42,21 +42,24 @@ export default async function ProductionPage({ params }: { params: Promise<{ slu
   const item = await productionRepository.getProduction(slug);
   if (!item) notFound();
 
-  const [allThemes, allSubThemes] = await Promise.all([
+  const [allThemes, allSubThemes, subThemeIds, fileUrl] = await Promise.all([
     themeRepository.listThemes(false),
     subThemeRepository.listSubThemes(false),
+    productionRepository.getProductionSubThemeIds(item.id),
+    mediaRepository.getResourceUrl(item.fileId),
   ]);
 
-  const relatedProductions = item.subThemeId
-    ? await productionRepository.getProductionsBySubTheme(item.subThemeId)
-    : [];
+  const enriched = { ...item, subThemeIds };
+  const relatedProductions =
+    subThemeIds.length > 0 ? await productionRepository.getProductionsBySubTheme(subThemeIds[0]) : [];
 
   return (
     <ProductionDetail
-      item={item}
+      item={enriched}
       allThemes={allThemes}
       allSubThemes={allSubThemes}
       relatedProductions={relatedProductions}
+      fileUrl={fileUrl}
     />
   );
 }

@@ -3,8 +3,9 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, FileText, X } from "lucide-react";
 import type { Production, SubTheme, Theme } from "@/types/cms";
+import { mediaClientService } from "@/services/mediaClientService";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -45,13 +46,29 @@ interface Props {
   action: ActionFn;
   themes?: Theme[];
   subThemes?: SubTheme[];
+  initialSubThemeIds?: string[];
 }
 
-export function ProductionForm({ initialData, action, themes = [], subThemes = [] }: Props) {
+export function ProductionForm({ initialData, action, themes = [], subThemes = [], initialSubThemeIds = [] }: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [body, setBody] = useState(initialData?.body ?? "");
+  const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
+  const [fileId, setFileId] = useState(initialData?.fileId ?? "");
+  const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
+  const [uploading, setUploading] = useState(false);
+
+  async function handlePdfUpload(file: File) {
+    setUploading(true);
+    try {
+      const media = await mediaClientService.uploadFile(file);
+      setFileId(media.id);
+      setFileName(media.title);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
   const subThemesByTheme = new Map<string, SubTheme[]>();
@@ -68,6 +85,8 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="body" value={body} />
+      <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
+      <input type="hidden" name="fileId" value={fileId} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -165,16 +184,21 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
           <RichTextEditor value={body} onChange={setBody} />
         </div>
 
-        {/* Relation sous-thème */}
+        {/* Relations sous-thèmes */}
         {subThemes.length > 0 && (
           <div className="form-section">
-            <p className="form-section-title">Sous-thème</p>
+            <p className="form-section-title">Sous-thèmes</p>
             <div className="form-field">
-              <label className="field-label" htmlFor="subThemeId">
-                Sujet traité
+              <label className="field-label" htmlFor="subThemeIds">
+                Sujets traités
               </label>
-              <select id="subThemeId" name="subThemeId" defaultValue={initialData?.subThemeId ?? ""}>
-                <option value="">Aucun sous-thème</option>
+              <select
+                id="subThemeIds"
+                multiple
+                size={Math.min(8, Math.max(4, subThemes.length))}
+                value={selectedSubThemes}
+                onChange={(e) => setSelectedSubThemes([...e.target.selectedOptions].map((o) => o.value))}
+              >
                 {[...subThemesByTheme.entries()].map(([themeId, items]) => (
                   <optgroup key={themeId} label={themeTitleById.get(themeId) ?? "Thème"}>
                     {items.map((st) => (
@@ -185,9 +209,59 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
                   </optgroup>
                 ))}
               </select>
+              <span className="field-hint">Cmd/Ctrl + clic pour sélectionner plusieurs sous-thèmes.</span>
             </div>
           </div>
         )}
+
+        {/* PDF joint */}
+        <div className="form-section">
+          <p className="form-section-title">Document PDF</p>
+          <div className="form-field">
+            <label className="field-label">Fichier</label>
+            {fileName ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--ink)" }}>
+                  <FileText size={15} strokeWidth={1.75} />
+                  {fileName}
+                </span>
+                <button
+                  type="button"
+                  className="btn-sm"
+                  onClick={() => {
+                    setFileId("");
+                    setFileName(null);
+                  }}
+                >
+                  <X size={13} strokeWidth={2} />
+                  Retirer
+                </button>
+              </div>
+            ) : (
+              <label className="button" style={{ width: "fit-content" }}>
+                {uploading ? "Import en cours..." : "Importer un PDF"}
+                <input
+                  hidden
+                  type="file"
+                  accept="application/pdf"
+                  disabled={uploading}
+                  onChange={(e) => e.target.files?.[0] && handlePdfUpload(e.target.files[0])}
+                />
+              </label>
+            )}
+          </div>
+          <div className="form-field">
+            <label className="field-label" htmlFor="downloadLabel">
+              Libellé du bouton de téléchargement
+            </label>
+            <input
+              id="downloadLabel"
+              name="downloadLabel"
+              defaultValue={initialData?.downloadLabel ?? ""}
+              placeholder="Ex. : Télécharger le rapport complet (PDF)"
+            />
+          </div>
+        </div>
 
         {/* Publication */}
         <div className="form-section">

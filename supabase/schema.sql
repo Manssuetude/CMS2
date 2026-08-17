@@ -117,11 +117,28 @@ create table if not exists productions (
   date date,
   thumbnail_id uuid references resources(id) on delete set null,
   file_id uuid references resources(id) on delete set null,
+  download_label text,
   reading_time text,
   pages text,
   tags text[] not null default '{}',
   status content_status not null default 'draft',
   featured boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- Sujet traité au sein d'un thème (ex. thème "Écologie" → sous-thème
+-- "Sobriété énergétique"). Peut regrouper 0, 1 ou plusieurs productions.
+create table if not exists sub_themes (
+  id uuid primary key default gen_random_uuid(),
+  theme_id uuid not null references themes(id) on delete cascade,
+  slug text unique not null,
+  title text not null,
+  description text,
+  long_description text,
+  date date,
+  status content_status not null default 'draft',
+  tags text[] not null default '{}',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -159,7 +176,7 @@ create table if not exists projects (
   updated_at timestamptz not null default now()
 );
 
-create table if not exists theme_productions (theme_id uuid references themes(id) on delete cascade, production_id uuid references productions(id) on delete cascade, primary key (theme_id, production_id));
+create table if not exists sub_theme_productions (sub_theme_id uuid references sub_themes(id) on delete cascade, production_id uuid references productions(id) on delete cascade, primary key (sub_theme_id, production_id));
 create table if not exists theme_projects (theme_id uuid references themes(id) on delete cascade, project_id uuid references projects(id) on delete cascade, primary key (theme_id, project_id));
 create table if not exists theme_activities (theme_id uuid references themes(id) on delete cascade, activity_id uuid references activities(id) on delete cascade, primary key (theme_id, activity_id));
 create table if not exists production_projects (production_id uuid references productions(id) on delete cascade, project_id uuid references projects(id) on delete cascade, primary key (production_id, project_id));
@@ -192,6 +209,8 @@ create table if not exists site_settings (
 
 create index if not exists pages_slug_idx on pages(slug);
 create index if not exists themes_slug_idx on themes(slug);
+create index if not exists sub_themes_slug_idx on sub_themes(slug);
+create index if not exists sub_themes_theme_id_idx on sub_themes(theme_id);
 create index if not exists productions_slug_idx on productions(slug);
 create index if not exists activities_slug_idx on activities(slug);
 create index if not exists projects_slug_idx on projects(slug);

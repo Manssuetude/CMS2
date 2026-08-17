@@ -19,6 +19,7 @@ export default async function EditProductionPage({ params }: Props) {
     subThemeRepository.listSubThemes(true),
   ]);
   if (!item) notFound();
+  const initialSubThemeIds = await productionRepository.getProductionSubThemeIds(id);
 
   return (
     <section className="admin-panel">
@@ -46,7 +47,13 @@ export default async function EditProductionPage({ params }: Props) {
           )}
         </a>
       </div>
-      <ProductionForm initialData={item} action={updateProductionAction} themes={themes} subThemes={subThemes} />
+      <ProductionForm
+        initialData={item}
+        action={updateProductionAction}
+        themes={themes}
+        subThemes={subThemes}
+        initialSubThemeIds={initialSubThemeIds}
+      />
     </section>
   );
 }

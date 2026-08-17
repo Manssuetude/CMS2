@@ -11,6 +11,97 @@
   min-height: 340px;
   padding: 16px 20px !important;
 }
+
+/* Reproduit la typographie publique (.rich-text, public-content.css) dans
+   l'éditeur, pour que ce que l'auteur voit corresponde à ce qui s'affichera. */
+.ck-content {
+  font-size: 17px;
+  line-height: 1.78;
+  color: var(--ink);
+}
+.ck-content > * + * {
+  margin-top: 1em;
+}
+.ck-content > *:first-child {
+  margin-top: 0;
+}
+.ck-content h2 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+.ck-content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 1.6em;
+}
+.ck-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 1.4em;
+}
+.ck-content p {
+  margin: 0;
+}
+.ck-content ul,
+.ck-content ol {
+  padding-left: 1.5em;
+}
+.ck-content li {
+  margin-bottom: 0.35em;
+}
+.ck-content blockquote {
+  border-left: 3px solid var(--orange);
+  margin: 1.6em 0;
+  padding: 6px 22px;
+  color: var(--muted);
+  font-style: italic;
+  font-size: 18px;
+}
+.ck-content a {
+  color: var(--orange);
+}
+.ck-content strong {
+  font-weight: 700;
+}
+.ck-content code {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.87em;
+  background: var(--soft);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+.ck-content pre {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 14px;
+}
+.ck-content figcaption {
+  font-size: 13px;
+  color: var(--muted);
+}
+.ck-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.ck-content th,
+.ck-content td {
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+}
+.ck-content th {
+  background: var(--soft);
+  font-weight: 600;
+}
+.ck-content hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 2em 0;
+}
 .ck-word-count-bar {
   display: flex;
   justify-content: flex-end;
