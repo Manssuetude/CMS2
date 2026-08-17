@@ -9,6 +9,7 @@ import { extractHeadings } from "@/utils/tableOfContents";
 import { TableOfContents } from "@/components/public/TableOfContents";
 import { ShareButtons } from "@/components/public/ShareButtons";
 import { SITE_URL } from "@/constants/site";
+import { getEmbedUrl } from "@/utils/videoEmbed";
 
 const TYPE_LABEL: Record<string, string> = {
   Article: "Article",
@@ -48,6 +49,8 @@ export function ProductionDetail({
   const readingTime = item.readingTime || estimateReadingTime(item.body);
   const sanitizedBody = item.body ? sanitizeHtml(item.body) : "";
   const headings = sanitizedBody ? extractHeadings(sanitizedBody) : [];
+  const isAudioFile = item.videoUrl ? /\.(mp3|wav|m4a|ogg)$/i.test(item.videoUrl) : false;
+  const videoEmbedUrl = item.videoUrl && !isAudioFile ? getEmbedUrl(item.videoUrl) : null;
 
   return (
     <>
@@ -117,6 +120,33 @@ export function ProductionDetail({
           </aside>
         )}
       </section>
+
+      {/* ── Vidéo ────────────────────────────────────────────────── */}
+      {videoEmbedUrl && (
+        <section className="section">
+          <div className="detail-body">
+            <div className="video-embed">
+              <iframe
+                src={videoEmbedUrl}
+                title={item.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Audio (podcast) ─────────────────────────────────────── */}
+      {isAudioFile && item.videoUrl && (
+        <section className="section">
+          <div className="detail-body">
+            <audio controls src={item.videoUrl} className="audio-player">
+              Votre navigateur ne prend pas en charge la lecture audio.
+            </audio>
+          </div>
+        </section>
+      )}
 
       {/* ── Contenu principal ──────────────────────────────────── */}
       <section className="section">

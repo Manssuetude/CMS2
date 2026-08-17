@@ -160,6 +160,7 @@ export type Production = {
   thumbnailId?: string | null;
   fileId?: string | null;
   downloadLabel?: string | null;
+  videoUrl?: string | null;
   readingTime?: string | null;
   pages?: string | null;
   tags: string[];

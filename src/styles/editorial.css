@@ -1667,6 +1667,28 @@
   color: var(--ed-ink);
 }
 
+/* Vidéo intégrée (production de type Video) — 16:9 responsive, sans dépendance JS */
+.site-shell .video-embed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--ed-radius-lg);
+  overflow: hidden;
+  background: var(--ed-sink);
+  margin-bottom: 2rem;
+}
+.site-shell .video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.site-shell .audio-player {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
 /* Sommaire auto-généré (titres h2/h3 du corps) — encart en tête d'article */
 .site-shell .toc {
   border: 1px solid var(--ed-line-strong);

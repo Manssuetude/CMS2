@@ -35,6 +35,7 @@ const schema = z.object({
   description: z.string().optional().nullable(),
   fileId: z.string().optional().nullable(),
   downloadLabel: z.string().optional().nullable(),
+  videoUrl: z.string().optional().nullable(),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -50,6 +51,7 @@ function toInput(data: z.infer<typeof schema>) {
     description: data.description || null,
     file_id: data.fileId || null,
     download_label: data.downloadLabel || null,
+    video_url: data.videoUrl || null,
   };
 }
 
@@ -73,6 +75,7 @@ export async function createProductionAction(_: string | null, formData: FormDat
     description: formData.get("description") || null,
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
+    videoUrl: formData.get("videoUrl") || null,
   });
 
   if (!parsed.success) {
@@ -126,6 +129,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     description: formData.get("description") || null,
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
+    videoUrl: formData.get("videoUrl") || null,
   });
 
   if (!parsed.success) {

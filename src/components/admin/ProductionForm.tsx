@@ -46,6 +46,7 @@ export function ProductionForm({
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
+  const [type, setType] = useState(initialData?.type ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
   const [selectedAuthors, setSelectedAuthors] = useState<string[]>(initialAuthorIds);
   const [selectedResources, setSelectedResources] = useState<string[]>(initialResourceIds);
@@ -107,7 +108,7 @@ export function ProductionForm({
           <div className="form-row">
             <div className="form-field">
               <label className="field-label">Type *</label>
-              <select name="type" defaultValue={initialData?.type ?? ""} required>
+              <select name="type" value={type} onChange={(e) => setType(e.target.value)} required>
                 <option value="" disabled>
                   Choisir un type...
                 </option>
@@ -129,18 +130,36 @@ export function ProductionForm({
             </div>
           </div>
 
+          {(type === "Video" || type === "Podcast") && (
+            <div className="form-field">
+              <label className="field-label">
+                {type === "Video" ? "URL vidéo (YouTube ou Vimeo)" : "URL audio (fichier .mp3 ou lien YouTube/Vimeo)"}
+              </label>
+              <input
+                type="url"
+                name="videoUrl"
+                defaultValue={initialData?.videoUrl ?? ""}
+                placeholder={type === "Video" ? "https://www.youtube.com/watch?v=..." : "https://.../episode.mp3"}
+              />
+            </div>
+          )}
+
           <div className="form-row">
             <div className="form-field">
               <label className="field-label">Date de publication</label>
               <input type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
             <div className="form-field">
-              <label className="field-label">Temps de lecture (optionnel)</label>
+              <label className="field-label">
+                {type === "Video" || type === "Podcast" ? "Durée" : "Temps de lecture (optionnel)"}
+              </label>
               <input
                 type="text"
                 name="readingTime"
                 defaultValue={initialData?.readingTime ?? ""}
-                placeholder="Calculé automatiquement si laissé vide"
+                placeholder={
+                  type === "Video" || type === "Podcast" ? "Ex. : 12 min" : "Calculé automatiquement si laissé vide"
+                }
               />
             </div>
           </div>

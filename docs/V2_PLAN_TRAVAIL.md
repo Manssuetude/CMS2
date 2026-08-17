@@ -29,12 +29,12 @@
 
 ### 2. Vidéos, audio et médias
 
-- [ ] Construire un vrai formulaire d'ajout vidéo (upload ou URL YouTube/Vimeo) avec miniature, titre, description, durée, intervenants — remplace l'embed brut CKEditor.
-- [ ] Décider d'un hébergement vidéo adapté (CDN dédié) plutôt que de servir les fichiers depuis Supabase Storage.
-- [ ] Finaliser l'assistant d'import média pour YouTube/Vimeo (actuellement un placeholder non fonctionnel).
-- [ ] Construire l'association vidéo ↔ thème/projet/activité/production (dépend du modèle relationnel du chapitre 4).
-- [ ] Ajouter une gestion audio/podcast dédiée (lecteur, durée, épisodes) — distincte de la simple catégorie "Podcast" actuelle.
-- [ ] Câbler la réutilisation d'un média déjà uploadé (réparer `MediaField.tsx` : boutons "médiathèque"/"Google Drive" actuellement sans action) et l'intégrer aux formulaires (ProductionForm, ActiviteForm...).
+- [x] Construire un vrai formulaire d'ajout vidéo (URL YouTube/Vimeo) avec miniature (thumbnail existant), titre, description, durée, auteurs/intervenants (fiches auteur du chapitre 4) — remplace l'embed brut CKEditor. Champ `videoUrl` dédié sur les productions de type Video, rendu en lecteur intégré responsive (16:9) sur la fiche publique.
+- [ ] Décider d'un hébergement vidéo adapté (CDN dédié) — écarté volontairement : on reste sur des embeds YouTube/Vimeo, pas de nouveau prestataire.
+- [x] Finaliser l'assistant d'import média pour YouTube/Vimeo — formulaire fonctionnel + récupération automatique titre/miniature via oEmbed public (YouTube/Vimeo, sans clé API), vérifié contre l'API réelle.
+- [x] Construire l'association vidéo ↔ thème/projet/production — une vidéo est une production (type Video), donc héritée du modèle relationnel du chapitre 4 (production↔projet, thème indirect via sous-thème). Vidéo↔activité non modélisée (pas demandé par le chapitre 4).
+- [x] Ajouter une gestion audio/podcast dédiée (lecteur natif `<audio>`, durée) — même champ `videoUrl` réutilisé (fichier direct ou lien). "Épisodes" (regroupement d'une série) non construit — chaque épisode reste une production Podcast individuelle pour l'instant.
+- [x] Câbler la réutilisation d'un média déjà uploadé — résolu autrement que prévu : `MediaField.tsx` était cassé et **plus utilisé nulle part** (page `/admin/identity` orpheline supprimée), donc retiré comme code mort plutôt que réparé. La réutilisation existe déjà via `ImageCropField` (images hero), le sélecteur photo des auteurs, et `CheckboxMultiSelect` (ressources/auteurs/thèmes/projets/activités) sur les formulaires de contenu.
 
 ### 3. Agenda et événements
 

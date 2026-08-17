@@ -5,6 +5,7 @@ import { errorResponse } from "@/lib/errors";
 import { externalMediaSchema, mediaMetadataSchema } from "@/lib/validation";
 import { logger } from "@/lib/logger";
 import { parseTags } from "@/utils/tags";
+import { fetchVideoOEmbed } from "@/utils/videoEmbed";
 
 export async function GET() {
   try {
@@ -44,20 +45,35 @@ export async function POST(request: Request) {
       visibility: String(formData.get("visibility") || "draft"),
     });
 
+    const source = externalMedia.externalUrl.includes("drive.google")
+      ? "google-drive"
+      : externalMedia.externalUrl.includes("youtube")
+        ? "youtube"
+        : externalMedia.externalUrl.includes("vimeo")
+          ? "vimeo"
+          : "external-url";
+
+    // Vidéo YouTube/Vimeo : récupère titre + miniature via oEmbed public (pas de clé API)
+    // si l'équipe n'a pas déjà renseigné un titre elle-même.
+    let thumbnailUrl: string | null = null;
+    let title = externalMedia.title;
+    if (externalMedia.type === "video" && (source === "youtube" || source === "vimeo")) {
+      const oEmbed = await fetchVideoOEmbed(externalMedia.externalUrl);
+      if (oEmbed) {
+        thumbnailUrl = oEmbed.thumbnailUrl;
+        if (!title) title = oEmbed.title;
+      }
+    }
+
     const media = await mediaRepository.create({
-      title: externalMedia.title || externalMedia.externalUrl,
+      title: title || externalMedia.externalUrl,
       filename: externalMedia.externalUrl.split("/").pop() || "external-media",
-      source: externalMedia.externalUrl.includes("drive.google")
-        ? "google-drive"
-        : externalMedia.externalUrl.includes("youtube")
-          ? "youtube"
-          : externalMedia.externalUrl.includes("vimeo")
-            ? "vimeo"
-            : "external-url",
+      source,
       type: externalMedia.type || "document",
       mime_type: "application/octet-stream",
       url: externalMedia.externalUrl,
       preview_url: externalMedia.externalUrl,
+      thumbnail_url: thumbnailUrl,
       tags: parseTags(externalMedia.tags),
       visibility: externalMedia.visibility,
     });

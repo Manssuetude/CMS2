@@ -20,6 +20,7 @@ function mapProduction(row: DataRow): Production {
     date: asNullableString(row.date),
     thumbnailId: asNullableString(row.thumbnail_id),
     fileId: asNullableString(row.file_id),
+    videoUrl: asNullableString(row.video_url),
     readingTime: asNullableString(row.reading_time),
     pages: asNullableString(row.pages),
     tags: asStringArray(row.tags),
