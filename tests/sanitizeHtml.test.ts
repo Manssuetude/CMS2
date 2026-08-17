@@ -26,3 +26,25 @@ test("sanitizeHtml — valeur vide/nulle → chaîne vide", () => {
   assert.equal(sanitizeHtml(undefined), "");
   assert.equal(sanitizeHtml(""), "");
 });
+
+test("sanitizeHtml — neutralise les URLs javascript: (XSS via lien/image)", () => {
+  const out = sanitizeHtml('<a href="javascript:alert(1)">clic</a><img src="javascript:alert(2)">');
+  assert.ok(!out.toLowerCase().includes("javascript:"));
+});
+
+test("sanitizeHtml — conserve les images en data URI (captures collées depuis Google Docs/Word)", () => {
+  const out = sanitizeHtml('<img src="data:image/png;base64,iVBORw0KGgo=">');
+  assert.ok(out.includes('src="data:image/png;base64,iVBORw0KGgo="'));
+});
+
+test("sanitizeHtml — retire style/iframe/object/embed/form", () => {
+  const out = sanitizeHtml(
+    '<style>body{}</style><iframe src="//evil"></iframe><object></object><embed src="x"><form></form><p>ok</p>',
+  );
+  assert.ok(!out.toLowerCase().includes("<style"));
+  assert.ok(!out.toLowerCase().includes("<iframe"));
+  assert.ok(!out.toLowerCase().includes("<object"));
+  assert.ok(!out.toLowerCase().includes("<embed"));
+  assert.ok(!out.toLowerCase().includes("<form"));
+  assert.ok(out.includes("<p>ok</p>"));
+});
