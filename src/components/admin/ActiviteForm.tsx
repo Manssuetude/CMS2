@@ -124,6 +124,60 @@ export function ActiviteForm({
               <input type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
           </div>
+
+          <div className="form-row">
+            <div className="form-field">
+              <label className="field-label">Heure de début</label>
+              <input type="time" name="startTime" defaultValue={initialData?.startTime ?? ""} />
+            </div>
+            <div className="form-field">
+              <label className="field-label">Heure de fin</label>
+              <input type="time" name="endTime" defaultValue={initialData?.endTime ?? ""} />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-field">
+              <label className="field-label">Lieu / adresse</label>
+              <input
+                type="text"
+                name="location"
+                defaultValue={initialData?.location ?? ""}
+                placeholder="Ex. : 12 rue de la République, Paris"
+              />
+            </div>
+            <div className="form-field">
+              <label className="field-label">Capacité</label>
+              <input
+                type="text"
+                name="capacity"
+                defaultValue={initialData?.capacity ?? ""}
+                placeholder="Ex. : 50 places"
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-field">
+              <label className="field-label">Lien EventBrite</label>
+              <input
+                type="url"
+                name="eventbriteUrl"
+                defaultValue={initialData?.eventbriteUrl ?? ""}
+                placeholder="https://www.eventbrite.fr/e/..."
+              />
+            </div>
+            <div className="form-field">
+              <label className="field-label">Statut d&apos;inscription</label>
+              <select name="registrationStatus" defaultValue={initialData?.registrationStatus ?? ""}>
+                <option value="">Automatique (selon la date)</option>
+                <option value="a-venir">À venir</option>
+                <option value="ouvertes">Inscriptions ouvertes</option>
+                <option value="complet">Complet</option>
+                <option value="termine">Terminé</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <div className="form-section">

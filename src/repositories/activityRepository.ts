@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from "@/lib/db";
-import type { Activity, ContentStatus, ProgressStatus, Speaker } from "@/types/cms";
+import type { Activity, ContentStatus, ProgressStatus, RegistrationStatus, Speaker } from "@/types/cms";
 import { asBoolean, asNullableString, asRecordArray, asString, asStringArray, type DataRow } from "@/utils/row";
 
 function mapSpeaker(row: Record<string, unknown>): Speaker {
@@ -15,6 +15,12 @@ function mapActivity(row: DataRow): Activity {
     description: asNullableString(row.description),
     body: asNullableString(row.body),
     date: asNullableString(row.date),
+    startTime: asNullableString(row.start_time),
+    endTime: asNullableString(row.end_time),
+    location: asNullableString(row.location),
+    capacity: asNullableString(row.capacity),
+    eventbriteUrl: asNullableString(row.eventbrite_url),
+    registrationStatus: asNullableString(row.registration_status) as RegistrationStatus | null,
     status: asString(row.status, "draft") as ContentStatus,
     progressStatus: asNullableString(row.progress_status) as ProgressStatus | null,
     gallery: asStringArray(row.gallery),

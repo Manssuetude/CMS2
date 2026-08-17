@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Activity } from "@/types/cms";
+import { buildCalendarCells, dateKey, groupByDateKey, isSameDay } from "@/utils/calendarGrid";
 
 const DAYS_FR = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const MONTHS_FR = [
@@ -47,33 +48,9 @@ export function ActivityCalendar({ activities }: Props) {
     setMonth(today.getMonth());
   };
 
-  // Build calendar grid (Mon-Sun weeks)
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-
-  // Monday-first: 0=Mon … 6=Sun
-  const startDow = (firstDay.getDay() + 6) % 7;
-  const totalCells = Math.ceil((startDow + lastDay.getDate()) / 7) * 7;
-
-  const cells: Array<{ date: Date; current: boolean }> = [];
-  for (let i = 0; i < totalCells; i++) {
-    const d = new Date(year, month, 1 - startDow + i);
-    cells.push({ date: d, current: d.getMonth() === month });
-  }
-
-  // Map activities by date string "YYYY-MM-DD"
-  const byDate = new Map<string, Activity[]>();
-  for (const a of activities) {
-    if (!a.date) continue;
-    const key = a.date.slice(0, 10);
-    (byDate.get(key) ?? byDate.set(key, []).get(key)!).push(a);
-  }
-
-  const isToday = (d: Date) =>
-    d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-
-  const dateKey = (d: Date) =>
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const cells = buildCalendarCells(year, month);
+  const byDate = groupByDateKey(activities, (a) => a.date);
+  const isToday = (d: Date) => isSameDay(d, today);
 
   return (
     <div>

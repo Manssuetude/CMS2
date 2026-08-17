@@ -194,6 +194,8 @@ export type Speaker = {
   role?: string;
 };
 
+export type RegistrationStatus = "a-venir" | "ouvertes" | "complet" | "termine";
+
 export type Activity = {
   id: string;
   slug: string;
@@ -202,6 +204,12 @@ export type Activity = {
   description?: string | null;
   body?: string | null;
   date?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  location?: string | null;
+  capacity?: string | null;
+  eventbriteUrl?: string | null;
+  registrationStatus?: RegistrationStatus | null;
   status: ContentStatus;
   progressStatus?: ProgressStatus | null;
   gallery: string[];

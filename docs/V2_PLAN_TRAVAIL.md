@@ -38,11 +38,11 @@
 
 ### 3. Agenda et événements
 
-- [ ] Construire une vue calendrier publique sur `/activites` (au-delà de la liste filtrable actuelle).
-- [ ] Étendre le type `Activity` : horaires précis, adresse/lieu, capacité, intervenants, programme.
-- [ ] Ajouter un champ lien EventBrite sur les activités.
-- [ ] Ajouter un statut d'inscription (à venir / inscriptions ouvertes / complet / terminé), au-delà du badge à venir/passée calculé côté client.
-- [ ] Afficher publiquement la galerie photo (`gallery`) des activités passées (actuellement uploadée mais jamais montrée), + section "compte-rendu" structurée.
+- [x] Construire une vue calendrier publique sur `/activites` (bascule Liste/Calendrier, en plus de la liste filtrable existante). Grille mensuelle responsive (colonne unique sous 640px), logique de grille extraite en utilitaire pur partagé avec le calendrier admin (`calendarGrid.ts`, testé).
+- [x] Étendre le type `Activity` : horaires précis (début/fin), adresse/lieu, capacité, intervenants (chapitre 4). Programme = corps riche existant (CKEditor), pas de champ dédié séparé.
+- [x] Ajouter un champ lien EventBrite sur les activités — bouton d'inscription dédié sur la fiche publique s'il est renseigné.
+- [x] Ajouter un statut d'inscription (à venir / inscriptions ouvertes / complet / terminé) — saisie manuelle admin, sinon déduit automatiquement de la date (`resolveRegistrationStatus`, testé).
+- [x] Afficher publiquement la galerie photo (`gallery`) des activités passées (actuellement uploadée mais jamais montrée), + section "compte-rendu" structurée — grille photo affichée sous "Compte-rendu en images" pour les activités passées uniquement.
 
 ### 4. Architecture éditoriale relationnelle
 

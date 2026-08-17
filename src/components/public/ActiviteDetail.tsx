@@ -1,6 +1,8 @@
+import { ExternalLink, MapPin, Users } from "lucide-react";
 import type { Activity } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { resolveRegistrationStatus, registrationStatusLabel } from "@/utils/registrationStatus";
 
 const FORMAT_LABEL: Record<string, string> = {
   "Debat & Conference": "Débat & Conférence",
@@ -23,6 +25,7 @@ export function ActiviteDetail({ item }: { item: Activity }) {
   const eventDate = item.date ? new Date(item.date) : null;
   const isUpcoming = eventDate ? eventDate >= now : false;
   const formatLabel = FORMAT_LABEL[item.format] ?? item.format;
+  const registrationStatus = resolveRegistrationStatus(item.registrationStatus, item.date, now);
 
   return (
     <>
@@ -42,24 +45,36 @@ export function ActiviteDetail({ item }: { item: Activity }) {
                   month: "long",
                   year: "numeric",
                 })}
+                {item.startTime && ` · ${item.startTime}${item.endTime ? `–${item.endTime}` : ""}`}
               </span>
             )}
-            {isUpcoming && (
-              <span
-                className="meta-pill"
-                style={{ background: "rgba(255,77,18,0.18)", borderColor: "var(--orange)", color: "#fff" }}
-              >
-                À venir
+            {item.location && (
+              <span className="meta-pill">
+                <MapPin size={13} strokeWidth={1.75} style={{ marginRight: 4 }} />
+                {item.location}
               </span>
             )}
-            {!isUpcoming && eventDate && <span className="meta-pill">Passée</span>}
+            {item.capacity && (
+              <span className="meta-pill">
+                <Users size={13} strokeWidth={1.75} style={{ marginRight: 4 }} />
+                {item.capacity}
+              </span>
+            )}
+            {registrationStatus && <span className="meta-pill">{registrationStatusLabel(registrationStatus)}</span>}
             {item.progressStatus && (
               <span className="meta-pill">{PROGRESS_LABEL[item.progressStatus] ?? item.progressStatus}</span>
             )}
           </div>
           <div className="actions">
             <CtaButton label="Retour aux activités" target="/activites" variant="secondary" />
-            {isUpcoming && <CtaButton label="Nous rejoindre" target="memberApplication" variant="primary" />}
+            {item.eventbriteUrl ? (
+              <a href={item.eventbriteUrl} target="_blank" rel="noopener noreferrer" className="button primary">
+                <ExternalLink size={15} strokeWidth={1.75} />
+                S&apos;inscrire sur EventBrite
+              </a>
+            ) : (
+              isUpcoming && <CtaButton label="Nous rejoindre" target="memberApplication" variant="primary" />
+            )}
           </div>
         </div>
         <div className="hero-image" aria-hidden="true" />
@@ -86,6 +101,20 @@ export function ActiviteDetail({ item }: { item: Activity }) {
                 <p style={{ margin: 0, fontWeight: 600, color: "var(--ed-ink)" }}>{speaker.name}</p>
                 {speaker.role && <p style={{ margin: 0, fontSize: 13, color: "var(--ed-muted)" }}>{speaker.role}</p>}
               </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Galerie photo (compte-rendu) ──────────────────────── */}
+      {!isUpcoming && item.gallery.length > 0 && (
+        <section className="section">
+          <div className="section-head">
+            <h2>Compte-rendu en images</h2>
+          </div>
+          <div className="activity-gallery">
+            {item.gallery.map((url, i) => (
+              <img key={i} src={url} alt={`${item.title} — photo ${i + 1}`} loading="lazy" />
             ))}
           </div>
         </section>

@@ -1849,6 +1849,126 @@
   gap: 0.75rem;
 }
 
+/* Galerie photo (compte-rendu d'activité passée) — grille responsive */
+.site-shell .activity-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+.site-shell .activity-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--ed-radius);
+}
+
+/* Calendrier public des activités (/activites) — vue mensuelle, lien direct
+   vers chaque activité publiée. Grille responsive : jours empilés en colonne
+   unique sous 640px plutôt que 7 colonnes illisibles. */
+.site-shell .event-calendar {
+  max-width: 900px;
+  margin: 0 auto 3rem;
+}
+.site-shell .event-calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.site-shell .event-calendar-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--ed-step-2);
+  min-width: 12ch;
+  text-align: center;
+}
+.site-shell .event-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--ed-line);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius);
+  overflow: hidden;
+}
+.site-shell .event-calendar-day-header {
+  background: var(--ed-raise);
+  padding: 0.5rem;
+  text-align: center;
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  color: var(--ed-ink-soft);
+}
+.site-shell .event-calendar-cell {
+  background: var(--ed-paper);
+  min-height: 90px;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.site-shell .event-calendar-cell.is-outside {
+  background: var(--ed-sink);
+}
+.site-shell .event-calendar-cell.is-outside .event-calendar-daynum {
+  color: var(--ed-muted);
+}
+.site-shell .event-calendar-cell.is-today .event-calendar-daynum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--ed-brand);
+  color: #fff;
+}
+.site-shell .event-calendar-daynum {
+  font-size: var(--ed-step-small);
+  color: var(--ed-ink-soft);
+}
+.site-shell .event-calendar-event {
+  display: block;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ed-clay) 12%, var(--ed-paper));
+  color: var(--ed-clay);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.site-shell .event-calendar-event:hover {
+  background: var(--ed-clay);
+  color: #fff;
+}
+@media (max-width: 640px) {
+  .site-shell .event-calendar-grid {
+    grid-template-columns: 1fr;
+  }
+  .site-shell .event-calendar-day-header {
+    display: none;
+  }
+  .site-shell .event-calendar-cell {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 0;
+    padding: 0.6rem;
+  }
+  .site-shell .event-calendar-cell.is-outside {
+    display: none;
+  }
+  .site-shell .event-calendar-daynum {
+    font-weight: 600;
+    min-width: 2.5ch;
+  }
+  .site-shell .event-calendar-event {
+    white-space: normal;
+  }
+}
+
 /* Tri / filtres (Activités, Productions) — refonte éditoriale.
    globals.css les rendait en pastilles orange criardes (tokens froids).
    Ici : rangée sobre sous un filet, actif = encre (accent orange gardé rare). */
@@ -1862,6 +1982,9 @@
   margin: 0 0 2rem;
 }
 .site-shell .filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   padding: 0.42rem 1rem;
   border: 1px solid var(--ed-line-strong);
   border-radius: 999px;
