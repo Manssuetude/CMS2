@@ -33,7 +33,8 @@ const schema = z.object({
   featured: z.boolean().default(false),
   description: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
-  subThemeId: z.string().optional().nullable(),
+  fileId: z.string().optional().nullable(),
+  downloadLabel: z.string().optional().nullable(),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -48,8 +49,16 @@ function toInput(data: z.infer<typeof schema>) {
     featured: data.featured,
     description: data.description || null,
     body: data.body || null,
-    sub_theme_id: data.subThemeId || null,
+    file_id: data.fileId || null,
+    download_label: data.downloadLabel || null,
   };
+}
+
+function parseSubThemeIds(formData: FormData): string[] {
+  return ((formData.get("subThemeIds") as string | null) ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export async function createProductionAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -64,7 +73,8 @@ export async function createProductionAction(_: string | null, formData: FormDat
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
     body: formData.get("body") || null,
-    subThemeId: formData.get("subThemeId") || null,
+    fileId: formData.get("fileId") || null,
+    downloadLabel: formData.get("downloadLabel") || null,
   });
 
   if (!parsed.success) {
@@ -78,6 +88,11 @@ export async function createProductionAction(_: string | null, formData: FormDat
     production = await productionRepository.createProduction({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+  }
+
+  const subThemeIds = parseSubThemeIds(formData);
+  if (subThemeIds.length > 0) {
+    await productionRepository.setProductionSubThemes(production.id, subThemeIds);
   }
 
   await logAction("create", {
@@ -104,7 +119,8 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
     body: formData.get("body") || null,
-    subThemeId: formData.get("subThemeId") || null,
+    fileId: formData.get("fileId") || null,
+    downloadLabel: formData.get("downloadLabel") || null,
   });
 
   if (!parsed.success) {
@@ -116,6 +132,8 @@ export async function updateProductionAction(_: string | null, formData: FormDat
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
+
+  await productionRepository.setProductionSubThemes(id, parseSubThemeIds(formData));
 
   await logAction("update", {
     entityType: "production",

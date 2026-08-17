@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FileDown } from "lucide-react";
 import type { Production, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
@@ -22,12 +23,12 @@ interface Props {
   allThemes: Theme[];
   allSubThemes: SubTheme[];
   relatedProductions?: Production[];
+  fileUrl?: string | null;
 }
 
-export function ProductionDetail({ item, allThemes, allSubThemes, relatedProductions = [] }: Props) {
+export function ProductionDetail({ item, allThemes, allSubThemes, relatedProductions = [], fileUrl }: Props) {
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
-  const subTheme = allSubThemes.find((st) => st.id === item.subThemeId) ?? null;
-  const parentTheme = subTheme ? themeById.get(subTheme.themeId) : null;
+  const subThemes = allSubThemes.filter((st) => item.subThemeIds?.includes(st.id));
   const typeLabel = TYPE_LABEL[item.type] ?? item.type;
 
   return (
@@ -44,6 +45,18 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
             {item.readingTime && <span className="meta-pill">{item.readingTime} de lecture</span>}
             {item.pages && <span className="meta-pill">{item.pages} pages</span>}
           </div>
+          {fileUrl && (
+            <a
+              href={fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="button primary"
+              style={{ marginBottom: 16 }}
+            >
+              <FileDown size={16} strokeWidth={1.75} />
+              {item.downloadLabel || "Télécharger le PDF"}
+            </a>
+          )}
           <div className="actions">
             <CtaButton label="Retour aux productions" target="/productions" variant="secondary" />
             <CtaButton label="Contribuer" target="contribution" variant="primary" />
@@ -56,7 +69,7 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
 
       {/* ── Contenu principal ──────────────────────────────────── */}
       <section className="section">
-        <div className={`detail-layout${!subTheme && item.tags.length === 0 ? " no-sidebar" : ""}`}>
+        <div className={`detail-layout${subThemes.length === 0 && item.tags.length === 0 ? " no-sidebar" : ""}`}>
           {/* Corps */}
           <div>
             {item.body ? (
@@ -69,15 +82,20 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
           </div>
 
           {/* Sidebar */}
-          {(subTheme || item.tags.length > 0) && (
+          {(subThemes.length > 0 || item.tags.length > 0) && (
             <aside>
-              {subTheme && parentTheme && (
+              {subThemes.length > 0 && (
                 <div className="detail-sidebar-card">
-                  <p className="detail-sidebar-label">Sous-thème</p>
+                  <p className="detail-sidebar-label">Sous-thèmes</p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    <Link href={`/themes/${parentTheme.slug}/${subTheme.slug}`} className="theme-chip">
-                      {subTheme.title}
-                    </Link>
+                    {subThemes.map((st) => {
+                      const parentTheme = themeById.get(st.themeId);
+                      return parentTheme ? (
+                        <Link key={st.id} href={`/themes/${parentTheme.slug}/${st.slug}`} className="theme-chip">
+                          {st.title}
+                        </Link>
+                      ) : null;
+                    })}
                   </div>
                 </div>
               )}

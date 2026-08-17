@@ -25,7 +25,7 @@ function mapProduction(row: DataRow): Production {
     tags: asStringArray(row.tags),
     status: asString(row.status, "draft") as ContentStatus,
     featured: asBoolean(row.featured),
-    subThemeId: asNullableString(row.sub_theme_id),
+    downloadLabel: asNullableString(row.download_label),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };
@@ -88,16 +88,35 @@ export const productionRepository = {
     if (error) throw error;
   },
 
-  // Une production appartient à un seul sous-thème (colonne sub_theme_id).
+  // ── Production ↔ Sous-thèmes (many-to-many) ─────────────────────────
+  async getProductionSubThemeIds(productionId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("sub_theme_productions").select("sub_theme_id").eq("production_id", productionId);
+    return (data ?? []).map((r) => String(r.sub_theme_id));
+  },
+
+  async setProductionSubThemes(productionId: string, subThemeIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("sub_theme_productions").delete().eq("production_id", productionId);
+    if (subThemeIds.length > 0) {
+      const rows = subThemeIds.map((sid) => ({ production_id: productionId, sub_theme_id: sid }));
+      const { error } = await db.from("sub_theme_productions").insert(rows);
+      if (error) throw error;
+    }
+  },
+
   async getProductionsBySubTheme(subThemeId: string): Promise<Production[]> {
     const db = getSupabaseAdmin();
-    const { data, error } = await db
+    const { data } = await db.from("sub_theme_productions").select("production_id").eq("sub_theme_id", subThemeId);
+    const ids = (data ?? []).map((r) => String(r.production_id));
+    if (ids.length === 0) return [];
+    const { data: rows, error } = await db
       .from("productions")
       .select("*")
-      .eq("sub_theme_id", subThemeId)
+      .in("id", ids)
       .eq("status", "published")
       .order("date", { ascending: false });
     if (error) throw error;
-    return (data ?? []).map(mapProduction);
+    return (rows ?? []).map(mapProduction);
   },
 };

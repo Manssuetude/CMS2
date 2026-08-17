@@ -191,12 +191,13 @@ export type Production = {
   date?: string | null;
   thumbnailId?: string | null;
   fileId?: string | null;
+  downloadLabel?: string | null;
   readingTime?: string | null;
   pages?: string | null;
   tags: string[];
   status: ContentStatus;
   featured: boolean;
-  subThemeId?: string | null;
+  subThemeIds?: string[];
   createdAt: string;
   updatedAt: string;
 };
