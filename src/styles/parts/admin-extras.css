@@ -43,6 +43,7 @@
 }
 .ck-content p {
   margin: 0;
+  text-align: justify;
 }
 .ck-content ul,
 .ck-content ol {

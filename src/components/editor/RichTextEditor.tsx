@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import type { EditorConfig } from "ckeditor5";
 import {
-  Alignment,
   Autoformat,
   AutoLink,
   Base64UploadAdapter,
@@ -68,7 +67,6 @@ import {
 import "ckeditor5/ckeditor5.css";
 
 const PLUGINS = [
-  Alignment,
   Autoformat,
   AutoLink,
   Base64UploadAdapter,
