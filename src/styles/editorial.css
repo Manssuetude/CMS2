@@ -1169,8 +1169,14 @@
 .site-shell .about-perca-intro {
   font-size: var(--ed-step-1);
   color: var(--ed-ink-soft);
-  max-width: none;
-  margin: 0 0 2.5rem;
+  max-width: 720px;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+.site-shell .about-perca-intro p,
+.site-shell .about-perca-intro h2,
+.site-shell .about-perca-intro h3 {
+  text-align: center;
 }
 .site-shell .perca-steps {
   list-style: none;
