@@ -19,12 +19,12 @@
 
 ### 1. Productions, articles et contenus
 
-- [ ] Ajouter un filtre par thème/sous-thème, date et tri chronologique sur `/productions` (en plus du filtre type existant).
-- [ ] Rendre les tags cliquables (page `/tags/[tag]` ou filtre équivalent) sur les fiches et les cartes.
-- [ ] Étendre le bloc "À lire aussi" à une recommandation par tag commun (pas seulement par sous-thème partagé).
-- [ ] Calculer le temps de lecture automatiquement à partir de la longueur du corps (au lieu d'un champ saisi à la main).
-- [ ] Ajouter des boutons de partage natif (LinkedIn, X, WhatsApp, copier le lien) sur les fiches publiques.
-- [ ] Générer et afficher un sommaire automatique (pas seulement corriger les liens collés) sur les contenus longs.
+- [x] Ajouter un filtre par thème/sous-thème, date et tri chronologique sur `/productions` (en plus du filtre type existant).
+- [x] Rendre les tags cliquables (page `/tags/[tag]` ou filtre équivalent) sur les fiches et les cartes.
+- [x] Étendre le bloc "À lire aussi" à une recommandation par tag commun (pas seulement par sous-thème partagé).
+- [x] Calculer le temps de lecture automatiquement à partir de la longueur du corps (au lieu d'un champ saisi à la main).
+- [x] Ajouter des boutons de partage natif (LinkedIn, X, WhatsApp, copier le lien) sur les fiches publiques.
+- [x] Générer et afficher un sommaire automatique (pas seulement corriger les liens collés) sur les contenus longs.
 - [ ] Étudier un mécanisme de notes de bas de page / bibliographie structurée pour les contenus longs.
 
 ### 2. Vidéos, audio et médias
