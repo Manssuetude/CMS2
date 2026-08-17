@@ -2,33 +2,11 @@
 
 import { useActionState, useState } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { ExternalLink, FileText, X } from "lucide-react";
+import { ExternalLink, FileText, PenLine, X } from "lucide-react";
 import type { Production, SubTheme, Theme } from "@/types/cms";
 import { mediaClientService } from "@/services/mediaClientService";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
-
-const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
-  ssr: false,
-  loading: () => (
-    <div
-      style={{
-        minHeight: 400,
-        border: "1px solid var(--line)",
-        borderRadius: "var(--radius)",
-        background: "var(--soft)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "var(--muted)",
-        fontSize: 13,
-      }}
-    >
-      Chargement de l&apos;éditeur...
-    </div>
-  ),
-});
 
 const TYPES = ["Article", "Note & Synthese", "Etude & Rapport", "Video", "Podcast", "Infographie"];
 
@@ -53,7 +31,6 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
-  const [body, setBody] = useState(initialData?.body ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
   const [fileId, setFileId] = useState(initialData?.fileId ?? "");
   const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
@@ -84,7 +61,6 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
     <form action={formAction}>
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
-      <input type="hidden" name="body" value={body} />
       <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
       <input type="hidden" name="fileId" value={fileId} />
 
@@ -181,7 +157,28 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
         {/* Corps du document */}
         <div className="form-section">
           <p className="form-section-title">Contenu principal</p>
-          <RichTextEditor value={body} onChange={setBody} />
+          {isEdit ? (
+            <>
+              <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+                S&apos;édite dans un onglet dédié, avec le même rendu que sur le site public.
+              </p>
+              <button
+                type="button"
+                className="button"
+                style={{ width: "fit-content" }}
+                onClick={() =>
+                  window.open(`/admin/productions/${initialData.id}/edit/contenu`, "_blank", "noopener,noreferrer")
+                }
+              >
+                <PenLine size={15} strokeWidth={1.75} />
+                Modifier le contenu principal
+              </button>
+            </>
+          ) : (
+            <p style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
+              Disponible après le premier enregistrement de la production.
+            </p>
+          )}
         </div>
 
         {/* Relations sous-thèmes */}
