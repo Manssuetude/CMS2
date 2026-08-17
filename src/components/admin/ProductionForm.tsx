@@ -3,8 +3,9 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { ExternalLink, FileText, PenLine, X } from "lucide-react";
-import type { Production, SubTheme, Theme } from "@/types/cms";
+import type { Author, Media, Production, SubTheme, Theme } from "@/types/cms";
 import { mediaClientService } from "@/services/mediaClientService";
+import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -25,13 +26,29 @@ interface Props {
   themes?: Theme[];
   subThemes?: SubTheme[];
   initialSubThemeIds?: string[];
+  authors?: Author[];
+  initialAuthorIds?: string[];
+  mediaItems?: Media[];
+  initialResourceIds?: string[];
 }
 
-export function ProductionForm({ initialData, action, themes = [], subThemes = [], initialSubThemeIds = [] }: Props) {
+export function ProductionForm({
+  initialData,
+  action,
+  themes = [],
+  subThemes = [],
+  initialSubThemeIds = [],
+  authors = [],
+  initialAuthorIds = [],
+  mediaItems = [],
+  initialResourceIds = [],
+}: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
+  const [selectedAuthors, setSelectedAuthors] = useState<string[]>(initialAuthorIds);
+  const [selectedResources, setSelectedResources] = useState<string[]>(initialResourceIds);
   const [fileId, setFileId] = useState(initialData?.fileId ?? "");
   const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
   const [uploading, setUploading] = useState(false);
@@ -62,6 +79,8 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
+      <input type="hidden" name="authorIds" value={selectedAuthors.join(",")} />
+      <input type="hidden" name="resourceIds" value={selectedResources.join(",")} />
       <input type="hidden" name="fileId" value={fileId} />
 
       {error && <p className="form-error">{error}</p>}
@@ -193,25 +212,46 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
                 <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 600, color: "var(--ink)" }}>
                   {themeTitleById.get(themeId) ?? "Thème"}
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  {items.map((st) => (
-                    <div className="form-checkbox" key={st.id}>
-                      <input
-                        type="checkbox"
-                        id={`subtheme-${st.id}`}
-                        checked={selectedSubThemes.includes(st.id)}
-                        onChange={(e) =>
-                          setSelectedSubThemes((prev) =>
-                            e.target.checked ? [...prev, st.id] : prev.filter((id) => id !== st.id),
-                          )
-                        }
-                      />
-                      <label htmlFor={`subtheme-${st.id}`}>{st.title}</label>
-                    </div>
-                  ))}
-                </div>
+                <CheckboxMultiSelect
+                  idPrefix="subtheme"
+                  items={items.map((st) => ({ id: st.id, label: st.title }))}
+                  selected={selectedSubThemes}
+                  onChange={setSelectedSubThemes}
+                />
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Relations auteurs */}
+        {authors.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Fiches auteur</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              En complément (ou au lieu) du champ « Auteur » en texte libre ci-dessus.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="author"
+              items={authors.map((a) => ({ id: a.id, label: a.name }))}
+              selected={selectedAuthors}
+              onChange={setSelectedAuthors}
+            />
+          </div>
+        )}
+
+        {/* Ressources / références */}
+        {mediaItems.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Ressources / références liées</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Documents ou médias de la médiathèque cités par cette production.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="resource"
+              items={mediaItems.map((m) => ({ id: m.id, label: m.title }))}
+              selected={selectedResources}
+              onChange={setSelectedResources}
+            />
           </div>
         )}
 

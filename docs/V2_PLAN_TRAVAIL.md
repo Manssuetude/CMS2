@@ -46,12 +46,12 @@
 
 ### 4. Architecture éditoriale relationnelle
 
-- [ ] Concevoir le modèle relationnel définitif (remplace ou adapte les tables mortes) : thème↔activité, thème↔projet, projet↔production, projet↔activité, projet↔média.
-- [ ] Structurer "auteur" en fiche réutilisable (au lieu du champ texte libre actuel), reliable à plusieurs productions.
-- [ ] Ajouter la relation production ↔ ressources/références.
-- [ ] Ajouter un champ "intervenants" structuré sur les activités.
-- [ ] Faire de la page Thème un hub complet (productions/activités/projets liés, pas seulement les sous-thèmes).
-- [ ] Faire de la page Projet un hub complet (productions, activités, Journal, équipe, médias liés — actuellement une simple fiche isolée).
+- [x] Concevoir le modèle relationnel définitif : thème↔activité, thème↔projet, projet↔production, projet↔activité réactivés (tables mortes, maintenant utilisées) — sauf projet↔média, non fait (`documents` couvre déjà l'essentiel du besoin).
+- [x] Structurer "auteur" en fiche réutilisable (au lieu du champ texte libre actuel), reliable à plusieurs productions — admin `/admin/auteurs` (CRUD complet) + sélecteur dans les productions + affichage public.
+- [x] Ajouter la relation production ↔ ressources/références.
+- [x] Ajouter un champ "intervenants" structuré sur les activités (nom + rôle, admin + affichage public).
+- [x] Faire de la page Thème un hub complet (sous-thèmes + activités + projets liés).
+- [ ] Faire de la page Projet un hub complet — productions et activités liées affichées ; **Journal** (n'existe pas encore, chapitre 5) et équipe/médias liés (projet↔média non fait) restent à construire.
 
 ---
 

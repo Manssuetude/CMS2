@@ -31,6 +31,13 @@ function toInput(data: z.infer<typeof schema>) {
   };
 }
 
+function parseIdList(formData: FormData, field: string): string[] {
+  return ((formData.get(field) as string | null) ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 export async function createProjectAction(_: string | null, formData: FormData): Promise<string | null> {
   const parsed = schema.safeParse({
     title: formData.get("title"),
@@ -49,11 +56,19 @@ export async function createProjectAction(_: string | null, formData: FormData):
 
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
 
+  let project;
   try {
-    await projectRepository.createProject({ slug, ...toInput(parsed.data) });
+    project = await projectRepository.createProject({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
+
+  const themeIds = parseIdList(formData, "themeIds");
+  if (themeIds.length > 0) await projectRepository.setProjectThemes(project.id, themeIds);
+  const productionIds = parseIdList(formData, "productionIds");
+  if (productionIds.length > 0) await projectRepository.setProjectProductions(project.id, productionIds);
+  const activityIds = parseIdList(formData, "activityIds");
+  if (activityIds.length > 0) await projectRepository.setProjectActivities(project.id, activityIds);
 
   await logAction("create", { entityType: "project", summary: `Projet créé : ${parsed.data.title}` });
   revalidatePath("/admin/projets");
@@ -84,6 +99,10 @@ export async function updateProjectAction(_: string | null, formData: FormData):
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
+
+  await projectRepository.setProjectThemes(id, parseIdList(formData, "themeIds"));
+  await projectRepository.setProjectProductions(id, parseIdList(formData, "productionIds"));
+  await projectRepository.setProjectActivities(id, parseIdList(formData, "activityIds"));
 
   await logAction("update", { entityType: "project", entityId: id, summary: `Projet modifié : ${parsed.data.title}` });
   revalidatePath("/admin/projets");

@@ -4,7 +4,8 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
-import type { Project } from "@/types/cms";
+import type { Activity, Production, Project, Theme } from "@/types/cms";
+import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
@@ -50,13 +51,31 @@ function toSlug(s: string): string {
 interface Props {
   initialData?: Project;
   action: ActionFn;
+  themes?: Theme[];
+  initialThemeIds?: string[];
+  productions?: Production[];
+  initialProductionIds?: string[];
+  activities?: Activity[];
+  initialActivityIds?: string[];
 }
 
-export function ProjetForm({ initialData, action }: Props) {
+export function ProjetForm({
+  initialData,
+  action,
+  themes = [],
+  initialThemeIds = [],
+  productions = [],
+  initialProductionIds = [],
+  activities = [],
+  initialActivityIds = [],
+}: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [body, setBody] = useState(initialData?.body ?? "");
+  const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
+  const [selectedProductions, setSelectedProductions] = useState<string[]>(initialProductionIds);
+  const [selectedActivities, setSelectedActivities] = useState<string[]>(initialActivityIds);
   const publicHref = isEdit ? `/projets/${initialData.slug}` : null;
 
   return (
@@ -64,6 +83,9 @@ export function ProjetForm({ initialData, action }: Props) {
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="body" value={body} />
+      <input type="hidden" name="themeIds" value={selectedThemes.join(",")} />
+      <input type="hidden" name="productionIds" value={selectedProductions.join(",")} />
+      <input type="hidden" name="activityIds" value={selectedActivities.join(",")} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -133,6 +155,45 @@ export function ProjetForm({ initialData, action }: Props) {
           <p className="form-section-title">Contenu principal</p>
           <RichTextEditor value={body} onChange={setBody} />
         </div>
+
+        {themes.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Thèmes</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Thèmes éditoriaux auxquels se rattache ce projet.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="theme"
+              items={themes.map((t) => ({ id: t.id, label: t.title }))}
+              selected={selectedThemes}
+              onChange={setSelectedThemes}
+            />
+          </div>
+        )}
+
+        {productions.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Productions liées</p>
+            <CheckboxMultiSelect
+              idPrefix="production"
+              items={productions.map((p) => ({ id: p.id, label: p.title }))}
+              selected={selectedProductions}
+              onChange={setSelectedProductions}
+            />
+          </div>
+        )}
+
+        {activities.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Activités liées</p>
+            <CheckboxMultiSelect
+              idPrefix="activity"
+              items={activities.map((a) => ({ id: a.id, label: a.title }))}
+              selected={selectedActivities}
+              onChange={setSelectedActivities}
+            />
+          </div>
+        )}
 
         <div className="form-section">
           <p className="form-section-title">Publication</p>

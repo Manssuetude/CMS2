@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { activityRepository } from "@/repositories/activityRepository";
+import { themeRepository } from "@/repositories/themeRepository";
+import { projectRepository } from "@/repositories/projectRepository";
 import { ActiviteForm } from "@/components/admin/ActiviteForm";
 import { updateActivityAction } from "../../actions";
 
@@ -11,8 +13,16 @@ interface Props {
 
 export default async function EditActivitePage({ params }: Props) {
   const { id } = await params;
-  const item = await activityRepository.getActivityById(id);
+  const [item, themes, projects] = await Promise.all([
+    activityRepository.getActivityById(id),
+    themeRepository.listThemes(true),
+    projectRepository.listProjects(true),
+  ]);
   if (!item) notFound();
+  const [initialThemeIds, initialProjectIds] = await Promise.all([
+    activityRepository.getActivityThemeIds(id),
+    activityRepository.getActivityProjectIds(id),
+  ]);
 
   return (
     <section className="admin-panel">
@@ -40,7 +50,14 @@ export default async function EditActivitePage({ params }: Props) {
           )}
         </a>
       </div>
-      <ActiviteForm initialData={item} action={updateActivityAction} />
+      <ActiviteForm
+        initialData={item}
+        action={updateActivityAction}
+        themes={themes}
+        initialThemeIds={initialThemeIds}
+        projects={projects}
+        initialProjectIds={initialProjectIds}
+      />
     </section>
   );
 }

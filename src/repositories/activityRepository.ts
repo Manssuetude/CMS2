@@ -1,6 +1,10 @@
 import { getSupabaseAdmin } from "@/lib/db";
-import type { Activity, ContentStatus, ProgressStatus } from "@/types/cms";
-import { asBoolean, asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
+import type { Activity, ContentStatus, ProgressStatus, Speaker } from "@/types/cms";
+import { asBoolean, asNullableString, asRecordArray, asString, asStringArray, type DataRow } from "@/utils/row";
+
+function mapSpeaker(row: Record<string, unknown>): Speaker {
+  return { name: asString(row.name), role: asNullableString(row.role) ?? undefined };
+}
 
 function mapActivity(row: DataRow): Activity {
   return {
@@ -15,6 +19,7 @@ function mapActivity(row: DataRow): Activity {
     progressStatus: asNullableString(row.progress_status) as ProgressStatus | null,
     gallery: asStringArray(row.gallery),
     documents: asStringArray(row.documents),
+    speakers: asRecordArray(row.speakers).map(mapSpeaker),
     featured: asBoolean(row.featured),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
@@ -71,5 +76,69 @@ export const activityRepository = {
       .update({ status: next, updated_at: new Date().toISOString() })
       .eq("id", id);
     if (error) throw error;
+  },
+
+  // ── Activité ↔ Thèmes (many-to-many) ─────────────────────────────────
+  async getActivityThemeIds(activityId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("theme_activities").select("theme_id").eq("activity_id", activityId);
+    return (data ?? []).map((r) => String(r.theme_id));
+  },
+
+  async setActivityThemes(activityId: string, themeIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("theme_activities").delete().eq("activity_id", activityId);
+    if (themeIds.length > 0) {
+      const rows = themeIds.map((themeId) => ({ activity_id: activityId, theme_id: themeId }));
+      const { error } = await db.from("theme_activities").insert(rows);
+      if (error) throw error;
+    }
+  },
+
+  async getActivitiesByTheme(themeId: string): Promise<Activity[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("theme_activities").select("activity_id").eq("theme_id", themeId);
+    const ids = (data ?? []).map((r) => String(r.activity_id));
+    if (ids.length === 0) return [];
+    const { data: rows, error } = await db
+      .from("activities")
+      .select("*")
+      .in("id", ids)
+      .eq("status", "published")
+      .order("date", { ascending: false });
+    if (error) throw error;
+    return (rows ?? []).map(mapActivity);
+  },
+
+  // ── Activité ↔ Projets (many-to-many) ────────────────────────────────
+  async getActivityProjectIds(activityId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("project_activities").select("project_id").eq("activity_id", activityId);
+    return (data ?? []).map((r) => String(r.project_id));
+  },
+
+  async setActivityProjects(activityId: string, projectIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("project_activities").delete().eq("activity_id", activityId);
+    if (projectIds.length > 0) {
+      const rows = projectIds.map((projectId) => ({ activity_id: activityId, project_id: projectId }));
+      const { error } = await db.from("project_activities").insert(rows);
+      if (error) throw error;
+    }
+  },
+
+  async getActivitiesByProject(projectId: string): Promise<Activity[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("project_activities").select("activity_id").eq("project_id", projectId);
+    const ids = (data ?? []).map((r) => String(r.activity_id));
+    if (ids.length === 0) return [];
+    const { data: rows, error } = await db
+      .from("activities")
+      .select("*")
+      .in("id", ids)
+      .eq("status", "published")
+      .order("date", { ascending: false });
+    if (error) throw error;
+    return (rows ?? []).map(mapActivity);
   },
 };

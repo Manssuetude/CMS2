@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 const GATED_SECTIONS = [
   "themes",
   "sousthemes",
+  "auteurs",
   "activites",
   "productions",
   "projets",

@@ -74,6 +74,23 @@ export function ActiviteDetail({ item }: { item: Activity }) {
         </section>
       )}
 
+      {/* ── Intervenants ─────────────────────────────────────── */}
+      {item.speakers.length > 0 && (
+        <section className="section">
+          <div className="section-head">
+            <h2>Intervenants</h2>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
+            {item.speakers.map((speaker, i) => (
+              <div key={i}>
+                <p style={{ margin: 0, fontWeight: 600, color: "var(--ed-ink)" }}>{speaker.name}</p>
+                {speaker.role && <p style={{ margin: 0, fontSize: 13, color: "var(--ed-muted)" }}>{speaker.role}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* ── Documents ─────────────────────────────────────────── */}
       {item.documents.length > 0 && (
         <section className="section">

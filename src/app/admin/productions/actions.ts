@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { productionRepository } from "@/repositories/productionRepository";
+import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
@@ -52,8 +53,8 @@ function toInput(data: z.infer<typeof schema>) {
   };
 }
 
-function parseSubThemeIds(formData: FormData): string[] {
-  return ((formData.get("subThemeIds") as string | null) ?? "")
+function parseIdList(formData: FormData, field: string): string[] {
+  return ((formData.get(field) as string | null) ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
@@ -87,9 +88,17 @@ export async function createProductionAction(_: string | null, formData: FormDat
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
-  const subThemeIds = parseSubThemeIds(formData);
+  const subThemeIds = parseIdList(formData, "subThemeIds");
   if (subThemeIds.length > 0) {
     await productionRepository.setProductionSubThemes(production.id, subThemeIds);
+  }
+  const authorIds = parseIdList(formData, "authorIds");
+  if (authorIds.length > 0) {
+    await authorRepository.setProductionAuthors(production.id, authorIds);
+  }
+  const resourceIds = parseIdList(formData, "resourceIds");
+  if (resourceIds.length > 0) {
+    await productionRepository.setProductionResources(production.id, resourceIds);
   }
 
   await logAction("create", {
@@ -129,7 +138,9 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
-  await productionRepository.setProductionSubThemes(id, parseSubThemeIds(formData));
+  await productionRepository.setProductionSubThemes(id, parseIdList(formData, "subThemeIds"));
+  await authorRepository.setProductionAuthors(id, parseIdList(formData, "authorIds"));
+  await productionRepository.setProductionResources(id, parseIdList(formData, "resourceIds"));
 
   await logAction("update", {
     entityType: "production",

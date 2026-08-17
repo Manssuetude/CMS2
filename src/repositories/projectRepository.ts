@@ -73,4 +73,65 @@ export const projectRepository = {
       .eq("id", id);
     if (error) throw error;
   },
+
+  // ── Projet ↔ Thèmes (many-to-many) ───────────────────────────────────
+  async getProjectThemeIds(projectId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("theme_projects").select("theme_id").eq("project_id", projectId);
+    return (data ?? []).map((r) => String(r.theme_id));
+  },
+
+  async setProjectThemes(projectId: string, themeIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("theme_projects").delete().eq("project_id", projectId);
+    if (themeIds.length > 0) {
+      const rows = themeIds.map((themeId) => ({ project_id: projectId, theme_id: themeId }));
+      const { error } = await db.from("theme_projects").insert(rows);
+      if (error) throw error;
+    }
+  },
+
+  async getProjectsByTheme(themeId: string): Promise<Project[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("theme_projects").select("project_id").eq("theme_id", themeId);
+    const ids = (data ?? []).map((r) => String(r.project_id));
+    if (ids.length === 0) return [];
+    const { data: rows, error } = await db.from("projects").select("*").in("id", ids).eq("status", "published");
+    if (error) throw error;
+    return (rows ?? []).map(mapProject);
+  },
+
+  // ── Projet ↔ Productions (many-to-many) ──────────────────────────────
+  async getProjectProductionIds(projectId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("production_projects").select("production_id").eq("project_id", projectId);
+    return (data ?? []).map((r) => String(r.production_id));
+  },
+
+  async setProjectProductions(projectId: string, productionIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("production_projects").delete().eq("project_id", projectId);
+    if (productionIds.length > 0) {
+      const rows = productionIds.map((productionId) => ({ project_id: projectId, production_id: productionId }));
+      const { error } = await db.from("production_projects").insert(rows);
+      if (error) throw error;
+    }
+  },
+
+  // ── Projet ↔ Activités (many-to-many) ────────────────────────────────
+  async getProjectActivityIds(projectId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("project_activities").select("activity_id").eq("project_id", projectId);
+    return (data ?? []).map((r) => String(r.activity_id));
+  },
+
+  async setProjectActivities(projectId: string, activityIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("project_activities").delete().eq("project_id", projectId);
+    if (activityIds.length > 0) {
+      const rows = activityIds.map((activityId) => ({ project_id: projectId, activity_id: activityId }));
+      const { error } = await db.from("project_activities").insert(rows);
+      if (error) throw error;
+    }
+  },
 };

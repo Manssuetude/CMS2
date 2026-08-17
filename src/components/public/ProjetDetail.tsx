@@ -1,6 +1,16 @@
-import type { Project } from "@/types/cms";
+import type { Activity, Production, Project } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { CardGrid } from "@/components/cards/CardGrid";
+
+const TYPE_LABEL: Record<string, string> = {
+  Article: "Article",
+  "Note & Synthese": "Note & Synthèse",
+  "Etude & Rapport": "Étude & Rapport",
+  Video: "Vidéo",
+  Podcast: "Podcast",
+  Infographie: "Infographie",
+};
 
 const PROGRESS_LABEL: Record<string, string> = {
   idea: "Idée",
@@ -24,7 +34,13 @@ const PRIORITY_COLOR: Record<string, string> = {
   Basse: "var(--ed-muted)",
 };
 
-export function ProjetDetail({ item }: { item: Project }) {
+interface Props {
+  item: Project;
+  productions?: Production[];
+  activities?: Activity[];
+}
+
+export function ProjetDetail({ item, productions = [], activities = [] }: Props) {
   const progress = item.progressStatus ? (PROGRESS_PCT[item.progressStatus] ?? 0) : 0;
   const progressLabel = item.progressStatus ? (PROGRESS_LABEL[item.progressStatus] ?? item.progressStatus) : null;
 
@@ -97,6 +113,33 @@ export function ProjetDetail({ item }: { item: Project }) {
             )}
           </div>
         </section>
+      )}
+
+      {/* ── Productions liées ─────────────────────────────────── */}
+      {productions.length > 0 && (
+        <CardGrid
+          title="Productions du projet"
+          items={productions.map((p) => ({
+            title: p.title,
+            description: p.description,
+            href: `/productions/${p.slug}`,
+            meta: TYPE_LABEL[p.type] ?? p.type,
+            tags: p.tags,
+          }))}
+        />
+      )}
+
+      {/* ── Activités liées ──────────────────────────────────── */}
+      {activities.length > 0 && (
+        <CardGrid
+          title="Activités du projet"
+          items={activities.map((a) => ({
+            title: a.title,
+            description: a.description,
+            href: `/activites/${a.slug}`,
+            meta: a.format,
+          }))}
+        />
       )}
 
       {/* ── Documents ─────────────────────────────────────────── */}

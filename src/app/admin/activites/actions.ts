@@ -7,6 +7,8 @@ import { activityRepository } from "@/repositories/activityRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
+const speakerSchema = z.object({ name: z.string().min(1), role: z.string().optional() });
+
 const schema = z.object({
   title: z.string().min(1, "Le titre est requis."),
   format: z.string().min(1, "Le format est requis."),
@@ -15,6 +17,7 @@ const schema = z.object({
   date: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
+  speakers: z.array(speakerSchema).default([]),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -26,7 +29,25 @@ function toInput(data: z.infer<typeof schema>) {
     date: data.date || null,
     description: data.description || null,
     body: data.body || null,
+    speakers: data.speakers,
   };
+}
+
+function parseSpeakers(formData: FormData): { name: string; role?: string }[] {
+  const raw = (formData.get("speakers") as string | null) ?? "[]";
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.filter((s) => s && typeof s.name === "string" && s.name.trim()) : [];
+  } catch {
+    return [];
+  }
+}
+
+function parseIdList(formData: FormData, field: string): string[] {
+  return ((formData.get(field) as string | null) ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 export async function createActivityAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -38,6 +59,7 @@ export async function createActivityAction(_: string | null, formData: FormData)
     date: formData.get("date") || null,
     description: formData.get("description") || null,
     body: formData.get("body") || null,
+    speakers: parseSpeakers(formData),
   });
 
   if (!parsed.success) {
@@ -46,11 +68,17 @@ export async function createActivityAction(_: string | null, formData: FormData)
 
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
 
+  let activity;
   try {
-    await activityRepository.createActivity({ slug, ...toInput(parsed.data) });
+    activity = await activityRepository.createActivity({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
+
+  const themeIds = parseIdList(formData, "themeIds");
+  if (themeIds.length > 0) await activityRepository.setActivityThemes(activity.id, themeIds);
+  const projectIds = parseIdList(formData, "projectIds");
+  if (projectIds.length > 0) await activityRepository.setActivityProjects(activity.id, projectIds);
 
   await logAction("create", { entityType: "activity", summary: `Activité créée : ${parsed.data.title}` });
   revalidatePath("/admin/activites");
@@ -69,6 +97,7 @@ export async function updateActivityAction(_: string | null, formData: FormData)
     date: formData.get("date") || null,
     description: formData.get("description") || null,
     body: formData.get("body") || null,
+    speakers: parseSpeakers(formData),
   });
 
   if (!parsed.success) {
@@ -80,6 +109,9 @@ export async function updateActivityAction(_: string | null, formData: FormData)
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
+
+  await activityRepository.setActivityThemes(id, parseIdList(formData, "themeIds"));
+  await activityRepository.setActivityProjects(id, parseIdList(formData, "projectIds"));
 
   await logAction("update", {
     entityType: "activity",

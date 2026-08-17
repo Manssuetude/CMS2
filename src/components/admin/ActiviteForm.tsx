@@ -3,8 +3,9 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ExternalLink } from "lucide-react";
-import type { Activity } from "@/types/cms";
+import { ExternalLink, Plus, X } from "lucide-react";
+import type { Activity, Project, Speaker, Theme } from "@/types/cms";
+import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
@@ -48,20 +49,41 @@ function toSlug(s: string): string {
 interface Props {
   initialData?: Activity;
   action: ActionFn;
+  themes?: Theme[];
+  initialThemeIds?: string[];
+  projects?: Project[];
+  initialProjectIds?: string[];
 }
 
-export function ActiviteForm({ initialData, action }: Props) {
+export function ActiviteForm({
+  initialData,
+  action,
+  themes = [],
+  initialThemeIds = [],
+  projects = [],
+  initialProjectIds = [],
+}: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [body, setBody] = useState(initialData?.body ?? "");
+  const [speakers, setSpeakers] = useState<Speaker[]>(initialData?.speakers ?? []);
+  const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>(initialProjectIds);
   const publicHref = isEdit ? `/activites/${initialData.slug}` : null;
+
+  function updateSpeaker(index: number, field: keyof Speaker, value: string) {
+    setSpeakers((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
+  }
 
   return (
     <form action={formAction}>
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="body" value={body} />
+      <input type="hidden" name="speakers" value={JSON.stringify(speakers.filter((s) => s.name.trim()))} />
+      <input type="hidden" name="themeIds" value={selectedThemes.join(",")} />
+      <input type="hidden" name="projectIds" value={selectedProjects.join(",")} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -121,6 +143,85 @@ export function ActiviteForm({ initialData, action }: Props) {
           <p className="form-section-title">Contenu principal</p>
           <RichTextEditor value={body} onChange={setBody} />
         </div>
+
+        {/* Intervenants structurés */}
+        <div className="form-section">
+          <p className="form-section-title">Intervenants</p>
+          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+            Nom et rôle de chaque intervenant (au lieu d&apos;un texte libre).
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {speakers.map((speaker, index) => (
+              <div key={index} className="form-row" style={{ alignItems: "flex-end" }}>
+                <div className="form-field">
+                  <label className="field-label">Nom</label>
+                  <input
+                    value={speaker.name}
+                    onChange={(e) => updateSpeaker(index, "name", e.target.value)}
+                    placeholder="Prénom Nom"
+                  />
+                </div>
+                <div className="form-field">
+                  <label className="field-label">Rôle</label>
+                  <input
+                    value={speaker.role ?? ""}
+                    onChange={(e) => updateSpeaker(index, "role", e.target.value)}
+                    placeholder="Ex. : Modérateur, Invité..."
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn-sm"
+                  onClick={() => setSpeakers((prev) => prev.filter((_, i) => i !== index))}
+                  aria-label="Retirer cet intervenant"
+                >
+                  <X size={13} strokeWidth={2} />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="button"
+              style={{ width: "fit-content" }}
+              onClick={() => setSpeakers((prev) => [...prev, { name: "", role: "" }])}
+            >
+              <Plus size={15} strokeWidth={2} />
+              Ajouter un intervenant
+            </button>
+          </div>
+        </div>
+
+        {/* Relations thèmes */}
+        {themes.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Thèmes</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Thèmes éditoriaux auxquels se rattache cette activité.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="theme"
+              items={themes.map((t) => ({ id: t.id, label: t.title }))}
+              selected={selectedThemes}
+              onChange={setSelectedThemes}
+            />
+          </div>
+        )}
+
+        {/* Relations projets */}
+        {projects.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Projets</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Projets dans le cadre desquels cette activité est organisée.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="project"
+              items={projects.map((p) => ({ id: p.id, label: p.title }))}
+              selected={selectedProjects}
+              onChange={setSelectedProjects}
+            />
+          </div>
+        )}
 
         <div className="form-section">
           <p className="form-section-title">Publication</p>

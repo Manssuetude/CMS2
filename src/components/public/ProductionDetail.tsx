@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FileDown } from "lucide-react";
-import type { Production, SubTheme, Theme } from "@/types/cms";
+import type { Author, Production, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
@@ -27,14 +27,23 @@ interface Props {
   item: Production;
   allThemes: Theme[];
   allSubThemes: SubTheme[];
+  authors?: Author[];
   relatedProductions?: Production[];
   fileUrl?: string | null;
 }
 
-export function ProductionDetail({ item, allThemes, allSubThemes, relatedProductions = [], fileUrl }: Props) {
+export function ProductionDetail({
+  item,
+  allThemes,
+  allSubThemes,
+  authors = [],
+  relatedProductions = [],
+  fileUrl,
+}: Props) {
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const subThemes = allSubThemes.filter((st) => item.subThemeIds?.includes(st.id));
   const typeLabel = TYPE_LABEL[item.type] ?? item.type;
+  const authorNames = authors.map((a) => a.name).join(", ");
   const hasAside = subThemes.length > 0 || item.tags.length > 0;
   const readingTime = item.readingTime || estimateReadingTime(item.body);
   const sanitizedBody = item.body ? sanitizeHtml(item.body) : "";
@@ -50,7 +59,7 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
           {item.description && <p>{item.description}</p>}
           <div className="detail-meta">
             {item.date && <span className="meta-pill">{formatDate(item.date)}</span>}
-            {item.author && <span className="meta-pill">{item.author}</span>}
+            {(authorNames || item.author) && <span className="meta-pill">{authorNames || item.author}</span>}
             <span className="meta-pill">{readingTime} de lecture</span>
             {item.pages && <span className="meta-pill">{item.pages} pages</span>}
           </div>

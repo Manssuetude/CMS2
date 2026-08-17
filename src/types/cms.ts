@@ -166,6 +166,8 @@ export type Production = {
   status: ContentStatus;
   featured: boolean;
   subThemeIds?: string[];
+  authorIds?: string[];
+  resourceIds?: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -186,6 +188,11 @@ export type SubTheme = {
   updatedAt: string;
 };
 
+export type Speaker = {
+  name: string;
+  role?: string;
+};
+
 export type Activity = {
   id: string;
   slug: string;
@@ -198,7 +205,10 @@ export type Activity = {
   progressStatus?: ProgressStatus | null;
   gallery: string[];
   documents: string[];
+  speakers: Speaker[];
   featured: boolean;
+  themeIds?: string[];
+  projectIds?: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -217,6 +227,21 @@ export type Project = {
   deliverables: string[];
   documents: string[];
   featured: boolean;
+  themeIds?: string[];
+  productionIds?: string[];
+  activityIds?: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Fiche auteur réutilisable, reliable à plusieurs productions
+// (remplace le champ texte libre Production.author pour les productions
+// qui veulent une fiche complète — le champ texte reste un repli simple).
+export type Author = {
+  id: string;
+  name: string;
+  bio?: string | null;
+  photoId?: string | null;
   createdAt: string;
   updatedAt: string;
 };

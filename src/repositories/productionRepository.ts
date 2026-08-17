@@ -131,4 +131,37 @@ export const productionRepository = {
     if (error) throw error;
     return (rows ?? []).map(mapProduction);
   },
+
+  // ── Production ↔ Projets (many-to-many) ──────────────────────────────
+  async getProductionsByProject(projectId: string): Promise<Production[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("production_projects").select("production_id").eq("project_id", projectId);
+    const ids = (data ?? []).map((r) => String(r.production_id));
+    if (ids.length === 0) return [];
+    const { data: rows, error } = await db
+      .from("productions")
+      .select("*")
+      .in("id", ids)
+      .eq("status", "published")
+      .order("date", { ascending: false });
+    if (error) throw error;
+    return (rows ?? []).map(mapProduction);
+  },
+
+  // ── Production ↔ Ressources/références (many-to-many) ────────────────
+  async getProductionResourceIds(productionId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("production_resources").select("resource_id").eq("production_id", productionId);
+    return (data ?? []).map((r) => String(r.resource_id));
+  },
+
+  async setProductionResources(productionId: string, resourceIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("production_resources").delete().eq("production_id", productionId);
+    if (resourceIds.length > 0) {
+      const rows = resourceIds.map((resourceId) => ({ production_id: productionId, resource_id: resourceId }));
+      const { error } = await db.from("production_resources").insert(rows);
+      if (error) throw error;
+    }
+  },
 };

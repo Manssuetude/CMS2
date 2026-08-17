@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjetDetail } from "@/components/public/ProjetDetail";
 import { projectRepository } from "@/repositories/projectRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { activityRepository } from "@/repositories/activityRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -38,5 +40,9 @@ export default async function ProjetPage({ params }: { params: Promise<{ slug: s
   const items = await projectRepository.listProjects(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  return <ProjetDetail item={item} />;
+  const [productions, activities] = await Promise.all([
+    productionRepository.getProductionsByProject(item.id),
+    activityRepository.getActivitiesByProject(item.id),
+  ]);
+  return <ProjetDetail item={item} productions={productions} activities={activities} />;
 }
