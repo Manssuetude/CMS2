@@ -255,6 +255,28 @@ export type Author = {
   updatedAt: string;
 };
 
+// Journal éditorial de Manssuétude (entrées courtes publiques — actualités,
+// coulisses, réflexions). Distinct du journal d'audit RBAC (/admin/historique).
+export type JournalEntry = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  body?: string | null;
+  thumbnailId?: string | null;
+  category?: string | null;
+  authorId?: string | null;
+  date?: string | null;
+  themeId?: string | null;
+  projectId?: string | null;
+  activityId?: string | null;
+  productionId?: string | null;
+  status: ContentStatus;
+  featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type FormSubmission = {
   id: string;
   formType: FormType;

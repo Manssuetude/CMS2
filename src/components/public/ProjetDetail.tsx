@@ -1,4 +1,4 @@
-import type { Activity, Production, Project } from "@/types/cms";
+import type { Activity, JournalEntry, Production, Project } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
@@ -38,9 +38,10 @@ interface Props {
   item: Project;
   productions?: Production[];
   activities?: Activity[];
+  journalEntries?: JournalEntry[];
 }
 
-export function ProjetDetail({ item, productions = [], activities = [] }: Props) {
+export function ProjetDetail({ item, productions = [], activities = [], journalEntries = [] }: Props) {
   const progress = item.progressStatus ? (PROGRESS_PCT[item.progressStatus] ?? 0) : 0;
   const progressLabel = item.progressStatus ? (PROGRESS_LABEL[item.progressStatus] ?? item.progressStatus) : null;
 
@@ -138,6 +139,19 @@ export function ProjetDetail({ item, productions = [], activities = [] }: Props)
             description: a.description,
             href: `/activites/${a.slug}`,
             meta: a.format,
+          }))}
+        />
+      )}
+
+      {/* ── Chronologie du Journal ───────────────────────────── */}
+      {journalEntries.length > 0 && (
+        <CardGrid
+          title="Le Journal de ce projet"
+          items={journalEntries.map((e) => ({
+            title: e.title,
+            description: e.excerpt,
+            href: `/journal/${e.slug}`,
+            meta: e.category,
           }))}
         />
       )}

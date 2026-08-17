@@ -8,10 +8,10 @@
 
 ## 0. Alertes à trancher avant de coder
 
-- [ ] Nom du "Journal éditorial" : renommer le journal d'audit RBAC existant (`/admin/journal`) en `/admin/historique` (« Historique ») pour libérer "Journal" pour le chapitre 5. Décidé, mais **à refaire** — ce renommage avait été fait une première fois puis perdu avec la suppression de l'ancienne branche `v2`.
-- [ ] Modèle relationnel : on repart sur un schéma propre par relation, au moment de construire chacune (même approche que thème↔sous-thème). Décidé, rien à coder ici — s'applique au chapitre 4.
-- [ ] Médiathèque réutilisable : `MediaField.tsx`/`/admin/identity` seront reconstruits proprement (pas réparés) au chapitre 2. Décidé.
-- [ ] `/admin/backup` à retirer (page vide sans logique). Avait été fait puis perdu avec la suppression de l'ancienne branche `v2` — la page existe encore.
+- [x] Nom du "Journal éditorial" : le journal d'audit RBAC est renommé `/admin/historique` (« Historique »). "Journal" est libéré pour le chapitre 5, où il désigne maintenant le vrai Journal éditorial public.
+- [x] Modèle relationnel : reparti sur un schéma propre par relation au moment de construire chacune (chapitre 4) — tables de liaison mortes réactivées où pertinent, nouvelles tables sinon.
+- [x] Médiathèque réutilisable : `MediaField.tsx` retiré (code mort, plus aucun usage) plutôt que reconstruit — la réutilisation passe par `ImageCropField`, les sélecteurs auteur/ressources et `CheckboxMultiSelect` (chapitre 2).
+- [x] `/admin/backup` retirée (page vide sans logique).
 
 ---
 
@@ -59,10 +59,10 @@
 
 ### 5. Journal de Manssuétude
 
-- [ ] Créer l'entité "entrée de Journal" (titre, date, texte court/long, image/vidéo/audio, auteur facultatif, catégorie).
-- [ ] Admin : création/édition d'entrées, association à thème/projet/activité/production, programmation de publication.
-- [ ] Public : flux général du Journal, filtres par catégorie/année, mise en avant sélective sur la homepage, partage social.
-- [ ] Afficher automatiquement les entrées de Journal liées dans la chronologie d'un projet (dépend du hub Projet ci-dessus).
+- [x] Créer l'entité "entrée de Journal" (titre, date, texte court/long, image, auteur facultatif — fiche réutilisable du chapitre 4 —, catégorie). Vidéo/audio non intégrés directement sur une entrée (le corps riche permet un embed collé, comme pour les productions avant le chapitre 2 — pas de champ dédié).
+- [x] Admin `/admin/journal` : création/édition d'entrées, association à thème/projet/activité/production (FK simple, une par entrée). **Programmation de publication non faite** — statut brouillon/publié/archivé classique uniquement, pas de date de mise en ligne automatique.
+- [x] Public `/journal` : flux général, filtres par catégorie/année, mise en avant sélective sur la homepage (entrées `featured`, repli sur les 3 plus récentes), partage social (réutilise `ShareButtons` du chapitre 1).
+- [x] Affichage automatique des entrées de Journal liées dans la chronologie d'un projet — section "Le Journal de ce projet" sur `/projets/[slug]`.
 
 ### 6. Contributions extérieures
 

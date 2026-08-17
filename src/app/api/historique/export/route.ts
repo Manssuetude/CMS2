@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   return new Response(csv, {
     headers: {
       "content-type": "text/csv;charset=utf-8",
-      "content-disposition": "attachment; filename=journal-manssuetude.csv",
+      "content-disposition": "attachment; filename=historique-manssuetude.csv",
     },
   });
 }

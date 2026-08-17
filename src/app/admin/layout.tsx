@@ -13,6 +13,7 @@ const GATED_SECTIONS = [
   "activites",
   "productions",
   "projets",
+  "journal",
   "media",
   "forms",
   "homepage",

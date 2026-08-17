@@ -48,7 +48,7 @@ export async function requireRole(allowed: string[] = ["admin"]) {
   redirect("/admin/login");
 }
 
-// Réservé aux administrateurs (gestion users / rôles / journal).
+// Réservé aux administrateurs (gestion users / rôles / historique).
 export async function requireAdmin() {
   const session = await getSession();
   if (!session || !session.isAdmin) redirect("/admin/login");

@@ -5,6 +5,7 @@ import { productionRepository } from "@/repositories/productionRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { journalRepository } from "@/repositories/journalRepository";
 
 // Régénéré au plus toutes les 60s (cohérent avec l'ISR des pages publiques).
 export const revalidate = 60;
@@ -19,6 +20,7 @@ const STATIC_PATHS: Array<{
   { path: "/themes", priority: 0.9, changeFrequency: "weekly" },
   { path: "/activites", priority: 0.9, changeFrequency: "weekly" },
   { path: "/productions", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/journal", priority: 0.8, changeFrequency: "weekly" },
   { path: "/projets", priority: 0.8, changeFrequency: "weekly" },
   { path: "/perca", priority: 0.7, changeFrequency: "monthly" },
   { path: "/a-propos", priority: 0.7, changeFrequency: "monthly" },
@@ -40,12 +42,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Entités dynamiques (uniquement le contenu publié — includeDrafts par défaut = false).
   try {
-    const [themes, subThemes, productions, activities, projects] = await Promise.all([
+    const [themes, subThemes, productions, activities, projects, journalEntries] = await Promise.all([
       themeRepository.listThemes(),
       subThemeRepository.listSubThemes(),
       productionRepository.listProductions(),
       activityRepository.listActivities(),
       projectRepository.listProjects(),
+      journalRepository.listEntries(),
     ]);
     const themeSlugById = new Map(themes.map((t) => [t.id, t.slug]));
 
@@ -86,6 +89,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(p.updatedAt),
         changeFrequency: "monthly" as const,
         priority: 0.6,
+      })),
+      ...journalEntries.map((e) => ({
+        url: `${SITE_URL}/journal/${e.slug}`,
+        lastModified: new Date(e.updatedAt),
+        changeFrequency: "monthly" as const,
+        priority: 0.5,
       })),
     ];
 

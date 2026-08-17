@@ -5,6 +5,7 @@ import { productionRepository } from "@/repositories/productionRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { journalRepository } from "@/repositories/journalRepository";
 
 export const revalidate = 60;
 
@@ -33,6 +34,7 @@ const KIND_LABEL: Record<string, string> = {
   production: "Production",
   activity: "Activité",
   project: "Projet",
+  journal: "Journal",
 };
 
 // Pages du site incluses dans la recherche.
@@ -66,12 +68,13 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     }));
 
     try {
-      const [themes, subThemes, productions, activities, projects] = await Promise.all([
+      const [themes, subThemes, productions, activities, projects, journalEntries] = await Promise.all([
         themeRepository.listThemes(),
         subThemeRepository.listSubThemes(),
         productionRepository.listProductions(),
         activityRepository.listActivities(),
         projectRepository.listProjects(),
+        journalRepository.listEntries(),
       ]);
       const themeSlugById = new Map(themes.map((t) => [t.id, t.slug]));
 
@@ -120,7 +123,19 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         .filter((p) => matches(query, p.title, p.description, p.category))
         .map((p) => ({ kind: "project", title: p.title, description: p.description, href: `/projets/${p.slug}` }));
 
-      results = [...pageResults, ...themeResults, ...subThemeResults, ...prodResults, ...actResults, ...projResults];
+      const journalResults: Result[] = journalEntries
+        .filter((e) => matches(query, e.title, e.excerpt, e.category))
+        .map((e) => ({ kind: "journal", title: e.title, description: e.excerpt, href: `/journal/${e.slug}` }));
+
+      results = [
+        ...pageResults,
+        ...themeResults,
+        ...subThemeResults,
+        ...prodResults,
+        ...actResults,
+        ...projResults,
+        ...journalResults,
+      ];
     } catch {
       // DB indisponible : on affiche au moins les pages du site qui correspondent.
       results = pageResults;

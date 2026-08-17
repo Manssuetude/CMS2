@@ -4,6 +4,7 @@ import { ProjetDetail } from "@/components/public/ProjetDetail";
 import { projectRepository } from "@/repositories/projectRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { activityRepository } from "@/repositories/activityRepository";
+import { journalRepository } from "@/repositories/journalRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -40,9 +41,10 @@ export default async function ProjetPage({ params }: { params: Promise<{ slug: s
   const items = await projectRepository.listProjects(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  const [productions, activities] = await Promise.all([
+  const [productions, activities, journalEntries] = await Promise.all([
     productionRepository.getProductionsByProject(item.id),
     activityRepository.getActivitiesByProject(item.id),
+    journalRepository.listEntriesByProject(item.id),
   ]);
-  return <ProjetDetail item={item} productions={productions} activities={activities} />;
+  return <ProjetDetail item={item} productions={productions} activities={activities} journalEntries={journalEntries} />;
 }

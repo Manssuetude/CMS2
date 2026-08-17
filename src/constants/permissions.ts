@@ -17,7 +17,7 @@ export const ACTION_LABELS: Record<PermissionAction, string> = {
   publish: "Publier",
 };
 
-// Sections gérables par la matrice de rôles. (users / roles / journal = admin uniquement, hors matrice.)
+// Sections gérables par la matrice de rôles. (users / roles / historique = admin uniquement, hors matrice.)
 export const permissionCatalog: PermissionSection[] = [
   { key: "themes", label: "Thèmes", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "sousthemes", label: "Sous-thèmes", actions: ["view", "create", "edit", "delete", "publish"] },
@@ -25,6 +25,7 @@ export const permissionCatalog: PermissionSection[] = [
   { key: "activites", label: "Activités", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "productions", label: "Productions", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "projets", label: "Projets", actions: ["view", "create", "edit", "delete", "publish"] },
+  { key: "journal", label: "Journal", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "media", label: "Médiathèque", actions: ["view", "create", "delete"] },
   { key: "forms", label: "Formulaires", actions: ["view", "edit", "delete"] },
   { key: "homepage", label: "Page d'accueil", actions: ["view", "edit"] },

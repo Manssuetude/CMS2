@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
-import type { Page, Production, Activity, Theme } from "@/types/cms";
+import type { Page, Production, Activity, Theme, JournalEntry } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
 
 const percaLetters = ["P", "E", "R", "C", "A"] as const;
@@ -21,6 +21,7 @@ export function HomeEditorial({
   focusTheme = null,
   activities = [],
   productions = [],
+  journalEntries = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
@@ -28,6 +29,7 @@ export function HomeEditorial({
   focusTheme?: Theme | null;
   activities?: Activity[];
   productions?: Production[];
+  journalEntries?: JournalEntry[];
 }) {
   // L'identité de l'association vit dans `body` (demande de René : l'asso d'abord).
   const sentences = (page.body || "").split(/\.\s+/).filter(Boolean);
@@ -117,6 +119,35 @@ export function HomeEditorial({
                     </div>
                     <h3>{a.title}</h3>
                     {a.description ? <p>{a.description}</p> : null}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
+
+      {/* 4bis — Journal (dernières entrées) */}
+      {journalEntries.length ? (
+        <section className="home-section home-journal">
+          <div className="home-section-head">
+            <h2>Le Journal</h2>
+            <Link className="home-section-more" href="/journal">
+              Tout le Journal <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <ul className="home-activity-list" style={{ "--acount": journalEntries.slice(0, 3).length } as CSSProperties}>
+            {journalEntries.slice(0, 3).map((e) => {
+              const date = formatDate(e.date);
+              return (
+                <li key={e.id}>
+                  <Link href={`/journal/${e.slug}`}>
+                    <div className="home-activity-meta">
+                      {e.category ? <span className="home-activity-format">{e.category}</span> : null}
+                      {date ? <span className="home-activity-date">{date}</span> : null}
+                    </div>
+                    <h3>{e.title}</h3>
+                    {e.excerpt ? <p>{e.excerpt}</p> : null}
                   </Link>
                 </li>
               );

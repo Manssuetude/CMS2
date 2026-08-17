@@ -16,6 +16,7 @@ import {
   Clock,
   Users,
   UserPen,
+  Newspaper,
   ShieldCheck,
   ScrollText,
   LogOut,
@@ -36,6 +37,7 @@ const NAV = [
   { id: "activites", label: "Activités", icon: CalendarDays },
   { id: "productions", label: "Productions", icon: FileText },
   { id: "projets", label: "Projets", icon: FolderKanban },
+  { id: "journal", label: "Journal", icon: Newspaper },
   { id: "media", label: "Médiathèque", icon: Images },
   { id: "forms", label: "Formulaires", icon: Inbox },
 ] as const;
@@ -44,7 +46,7 @@ const NAV = [
 const ADMIN_NAV = [
   { id: "users", label: "Utilisateurs", icon: Users },
   { id: "roles", label: "Rôles", icon: ShieldCheck },
-  { id: "journal", label: "Journal", icon: ScrollText },
+  { id: "historique", label: "Historique", icon: ScrollText },
 ] as const;
 
 interface Props {

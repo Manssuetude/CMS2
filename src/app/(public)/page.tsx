@@ -5,6 +5,7 @@ import { activityRepository } from "@/repositories/activityRepository";
 import { pageRepository } from "@/repositories/pageRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { journalRepository } from "@/repositories/journalRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 
 export const revalidate = 60;
@@ -25,12 +26,17 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   try {
     const page = await pageRepository.getPage("accueil");
-    const [productions, activities, themes] = await Promise.all([
+    const [productions, activities, themes, journalEntries] = await Promise.all([
       productionRepository.listProductions(),
       activityRepository.listActivities(),
       themeRepository.listThemes(),
+      journalRepository.listEntries(),
     ]);
     if (!page) notFound();
+
+    // Journal en avant : les entrées marquées "featured", sinon les 3 plus récentes.
+    const featuredJournal = journalEntries.filter((e) => e.featured);
+    const homeJournalEntries = (featuredJournal.length ? featuredJournal : journalEntries).slice(0, 3);
 
     // Accueil : productions et thèmes "en vedette" (repli sur les plus récents si aucun n'est marqué).
     // Plafonds : 4 productions, 3 activités, 4 thèmes.
@@ -50,6 +56,7 @@ export default async function HomePage() {
         focusTheme={focusTheme}
         activities={homeActivities}
         productions={homeProductions}
+        journalEntries={homeJournalEntries}
       />
     );
   } catch (error) {
