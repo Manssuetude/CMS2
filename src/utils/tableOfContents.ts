@@ -23,6 +23,26 @@ function stripTags(html: string): string {
   return html.replace(/<[^>]+>/g, "");
 }
 
+export type TocHeading = { id: string; label: string; level: 2 | 3 };
+
+/**
+ * Extrait les titres h2/h3 (avec leur `id`) d'un contenu déjà traité par
+ * `fixTableOfContentsLinks`, pour construire un sommaire visible. Les h4
+ * sont volontairement exclus : trop fins pour un sommaire de haut niveau.
+ */
+export function extractHeadings(html: string): TocHeading[] {
+  const headings: TocHeading[] = [];
+  const regex = /<(h[23])\s+[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/\1>/gi;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(html))) {
+    const [, tag, id, inner] = match;
+    const label = stripTags(inner).replace(/\s+/g, " ").trim();
+    if (!label) continue;
+    headings.push({ id, label, level: tag === "h2" ? 2 : 3 });
+  }
+  return headings;
+}
+
 /**
  * Ajoute un `id` à chaque titre (h2-h4) du contenu, puis réécrit les liens de
  * table des matières collés depuis un éditeur externe pour qu'ils pointent

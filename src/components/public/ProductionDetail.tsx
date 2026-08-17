@@ -4,6 +4,11 @@ import type { Production, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
+import { estimateReadingTime } from "@/utils/readingTime";
+import { extractHeadings } from "@/utils/tableOfContents";
+import { TableOfContents } from "@/components/public/TableOfContents";
+import { ShareButtons } from "@/components/public/ShareButtons";
+import { SITE_URL } from "@/constants/site";
 
 const TYPE_LABEL: Record<string, string> = {
   Article: "Article",
@@ -31,6 +36,9 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
   const subThemes = allSubThemes.filter((st) => item.subThemeIds?.includes(st.id));
   const typeLabel = TYPE_LABEL[item.type] ?? item.type;
   const hasAside = subThemes.length > 0 || item.tags.length > 0;
+  const readingTime = item.readingTime || estimateReadingTime(item.body);
+  const sanitizedBody = item.body ? sanitizeHtml(item.body) : "";
+  const headings = sanitizedBody ? extractHeadings(sanitizedBody) : [];
 
   return (
     <>
@@ -43,7 +51,7 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
           <div className="detail-meta">
             {item.date && <span className="meta-pill">{formatDate(item.date)}</span>}
             {item.author && <span className="meta-pill">{item.author}</span>}
-            {item.readingTime && <span className="meta-pill">{item.readingTime} de lecture</span>}
+            <span className="meta-pill">{readingTime} de lecture</span>
             {item.pages && <span className="meta-pill">{item.pages} pages</span>}
           </div>
           {fileUrl && (
@@ -86,17 +94,16 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
                 <p className="detail-sidebar-label">Tags</p>
                 <div className="tags" style={{ marginTop: 0 }}>
                   {item.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
+                    <Link key={tag} href={`/tags/${encodeURIComponent(tag)}`}>
+                      {tag}
+                    </Link>
                   ))}
                 </div>
               </div>
             )}
             <div className="detail-sidebar-card">
               <p className="detail-sidebar-label">Partager</p>
-              <p style={{ fontSize: 13, color: "var(--ed-muted)", margin: 0 }}>
-                Vous trouvez cette production utile ?{" "}
-                <CtaButton label="Contribuer" target="contribution" variant="secondary" />
-              </p>
+              <ShareButtons url={`${SITE_URL}/productions/${item.slug}`} title={item.title} />
             </div>
           </aside>
         )}
@@ -106,7 +113,10 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
       <section className="section">
         <div className="detail-body">
           {item.body ? (
-            <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.body) }} />
+            <>
+              <TableOfContents headings={headings} />
+              <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
+            </>
           ) : item.description ? (
             <p className="rich-text">{item.description}</p>
           ) : (
@@ -118,17 +128,14 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
       {/* ── Productions liées ─────────────────────────────────── */}
       {relatedProductions.length > 0 && (
         <CardGrid
-          title="Dans le même sous-thème"
-          items={relatedProductions
-            .filter((p) => p.id !== item.id)
-            .slice(0, 3)
-            .map((p) => ({
-              title: p.title,
-              description: p.description,
-              href: `/productions/${p.slug}`,
-              meta: TYPE_LABEL[p.type] ?? p.type,
-              tags: p.tags,
-            }))}
+          title="À lire aussi"
+          items={relatedProductions.slice(0, 3).map((p) => ({
+            title: p.title,
+            description: p.description,
+            href: `/productions/${p.slug}`,
+            meta: TYPE_LABEL[p.type] ?? p.type,
+            tags: p.tags,
+          }))}
         />
       )}
     </>

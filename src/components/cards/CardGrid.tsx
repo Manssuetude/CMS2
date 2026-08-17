@@ -12,11 +12,20 @@ type CardItem = {
   tags?: string[];
 };
 
-export function CardGrid({ title, items }: { title: string; items: CardItem[] }) {
+export function CardGrid({
+  title,
+  items,
+  headerActions,
+}: {
+  title: string;
+  items: CardItem[];
+  headerActions?: React.ReactNode;
+}) {
   return (
     <section className="section">
       <div className="section-head">
         <h2>{title}</h2>
+        {headerActions}
       </div>
       <div className="grid">
         {items.map((item) => (

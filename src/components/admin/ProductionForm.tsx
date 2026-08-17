@@ -116,12 +116,12 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
               <input type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
             <div className="form-field">
-              <label className="field-label">Temps de lecture</label>
+              <label className="field-label">Temps de lecture (optionnel)</label>
               <input
                 type="text"
                 name="readingTime"
                 defaultValue={initialData?.readingTime ?? ""}
-                placeholder="Ex. : 7 min"
+                placeholder="Calculé automatiquement si laissé vide"
               />
             </div>
           </div>

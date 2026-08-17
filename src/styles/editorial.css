@@ -1032,6 +1032,11 @@
   padding: clamp(2rem, 4vw, 3.5rem) var(--ed-gutter);
 }
 .site-shell .section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--ed-line);
@@ -1039,6 +1044,14 @@
 .site-shell .section-head h2 {
   font-size: var(--ed-step-4);
   margin: 0;
+}
+.site-shell .sort-toggle {
+  display: flex;
+  gap: 0.4rem;
+}
+.site-shell .sort-toggle .filter-chip {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.72rem;
 }
 
 .site-shell .grid {
@@ -1110,12 +1123,25 @@
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
-.site-shell .tags span {
+.site-shell .tags span,
+.site-shell .tags a {
   font-size: 0.75rem;
   padding: 0.25rem 0.7rem;
   border: 1px solid var(--ed-line-strong);
   border-radius: 999px;
   color: var(--ed-ink-soft);
+}
+.site-shell .tags a {
+  text-decoration: none;
+  transition:
+    border-color 0.12s,
+    background 0.12s,
+    color 0.12s;
+}
+.site-shell .tags a:hover {
+  background: color-mix(in srgb, var(--ed-clay) 7%, var(--ed-paper));
+  border-color: var(--ed-clay);
+  color: var(--ed-clay);
 }
 
 /* Détail (DetailPage) — colonne de lecture */
@@ -1639,6 +1665,54 @@
   font-size: 1.15rem;
   line-height: 1.85;
   color: var(--ed-ink);
+}
+
+/* Sommaire auto-généré (titres h2/h3 du corps) — encart en tête d'article */
+.site-shell .toc {
+  border: 1px solid var(--ed-line-strong);
+  border-radius: var(--ed-radius-lg);
+  background: var(--ed-raise);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+}
+.site-shell .toc-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ed-ink-soft);
+  margin: 0 0 0.75rem;
+}
+.site-shell .toc ol {
+  list-style: none;
+  counter-reset: toc;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.site-shell .toc li {
+  counter-increment: toc;
+}
+.site-shell .toc li::before {
+  content: counter(toc) ". ";
+  color: var(--ed-clay);
+  font-weight: 600;
+}
+.site-shell .toc li.toc-sub {
+  margin-left: 1.4rem;
+}
+.site-shell .toc li.toc-sub::before {
+  content: "– ";
+}
+.site-shell .toc a {
+  color: var(--ed-ink);
+  text-decoration: none;
+}
+.site-shell .toc a:hover {
+  color: var(--ed-clay);
+  text-decoration: underline;
 }
 
 @media (max-width: 960px) {

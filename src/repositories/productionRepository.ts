@@ -105,6 +105,18 @@ export const productionRepository = {
     }
   },
 
+  async getAllProductionSubThemeLinks(): Promise<Record<string, string[]>> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("sub_theme_productions").select("production_id, sub_theme_id");
+    if (error) throw error;
+    const map: Record<string, string[]> = {};
+    for (const row of data ?? []) {
+      const productionId = String(row.production_id);
+      (map[productionId] ??= []).push(String(row.sub_theme_id));
+    }
+    return map;
+  },
+
   async getProductionsBySubTheme(subThemeId: string): Promise<Production[]> {
     const db = getSupabaseAdmin();
     const { data } = await db.from("sub_theme_productions").select("production_id").eq("sub_theme_id", subThemeId);
