@@ -32,7 +32,6 @@ const schema = z.object({
   pages: z.string().optional().nullable(),
   featured: z.boolean().default(false),
   description: z.string().optional().nullable(),
-  body: z.string().optional().nullable(),
   fileId: z.string().optional().nullable(),
   downloadLabel: z.string().optional().nullable(),
 });
@@ -48,7 +47,6 @@ function toInput(data: z.infer<typeof schema>) {
     pages: data.pages || null,
     featured: data.featured,
     description: data.description || null,
-    body: data.body || null,
     file_id: data.fileId || null,
     download_label: data.downloadLabel || null,
   };
@@ -72,7 +70,6 @@ export async function createProductionAction(_: string | null, formData: FormDat
     pages: formData.get("pages") || null,
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
-    body: formData.get("body") || null,
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
   });
@@ -118,7 +115,6 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     pages: formData.get("pages") || null,
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
-    body: formData.get("body") || null,
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
   });
@@ -142,6 +138,23 @@ export async function updateProductionAction(_: string | null, formData: FormDat
   });
   revalidatePath("/admin/productions");
   redirect("/admin/productions");
+}
+
+export async function updateProductionBodyAction(_: string | null, formData: FormData): Promise<string | null> {
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return "Identifiant manquant.";
+  const body = (formData.get("body") as string | null) ?? "";
+
+  try {
+    await productionRepository.updateProduction(id, { body: body || null });
+  } catch {
+    return "Erreur lors de la sauvegarde. Veuillez réessayer.";
+  }
+
+  await logAction("update", { entityType: "production", entityId: id, summary: "Contenu de la production modifié" });
+  revalidatePath("/admin/productions");
+  revalidatePath(`/admin/productions/${id}/edit`);
+  return null;
 }
 
 export async function deleteProductionAction(formData: FormData): Promise<void> {
