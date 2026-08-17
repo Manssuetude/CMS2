@@ -30,11 +30,12 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const subThemes = allSubThemes.filter((st) => item.subThemeIds?.includes(st.id));
   const typeLabel = TYPE_LABEL[item.type] ?? item.type;
+  const hasAside = subThemes.length > 0 || item.tags.length > 0;
 
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="hero hero--detail">
+      <section className={`hero hero--detail${hasAside ? " hero--detail-split" : ""}`}>
         <div className="hero-copy">
           <p className="eyebrow">{typeLabel}</p>
           <h1>{item.title}</h1>
@@ -62,61 +63,54 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
             <CtaButton label="Contribuer" target="contribution" variant="primary" />
           </div>
         </div>
-        <div className="hero-image" aria-hidden="true">
-          <div className="hero-type-badge">{typeLabel}</div>
-        </div>
+
+        {hasAside && (
+          <aside className="hero-aside">
+            {subThemes.length > 0 && (
+              <div className="detail-sidebar-card">
+                <p className="detail-sidebar-label">Sous-thèmes</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {subThemes.map((st) => {
+                    const parentTheme = themeById.get(st.themeId);
+                    return parentTheme ? (
+                      <Link key={st.id} href={`/themes/${parentTheme.slug}/${st.slug}`} className="theme-chip">
+                        {st.title}
+                      </Link>
+                    ) : null;
+                  })}
+                </div>
+              </div>
+            )}
+            {item.tags.length > 0 && (
+              <div className="detail-sidebar-card">
+                <p className="detail-sidebar-label">Tags</p>
+                <div className="tags" style={{ marginTop: 0 }}>
+                  {item.tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="detail-sidebar-card">
+              <p className="detail-sidebar-label">Partager</p>
+              <p style={{ fontSize: 13, color: "var(--ed-muted)", margin: 0 }}>
+                Vous trouvez cette production utile ?{" "}
+                <CtaButton label="Contribuer" target="contribution" variant="secondary" />
+              </p>
+            </div>
+          </aside>
+        )}
       </section>
 
       {/* ── Contenu principal ──────────────────────────────────── */}
       <section className="section">
-        <div className={`detail-layout${subThemes.length === 0 && item.tags.length === 0 ? " no-sidebar" : ""}`}>
-          {/* Corps */}
-          <div>
-            {item.body ? (
-              <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.body) }} />
-            ) : item.description ? (
-              <p className="rich-text">{item.description}</p>
-            ) : (
-              <p style={{ color: "var(--ed-muted)" }}>Aucun contenu détaillé disponible pour cette production.</p>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          {(subThemes.length > 0 || item.tags.length > 0) && (
-            <aside>
-              {subThemes.length > 0 && (
-                <div className="detail-sidebar-card">
-                  <p className="detail-sidebar-label">Sous-thèmes</p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {subThemes.map((st) => {
-                      const parentTheme = themeById.get(st.themeId);
-                      return parentTheme ? (
-                        <Link key={st.id} href={`/themes/${parentTheme.slug}/${st.slug}`} className="theme-chip">
-                          {st.title}
-                        </Link>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-              )}
-              {item.tags.length > 0 && (
-                <div className="detail-sidebar-card">
-                  <p className="detail-sidebar-label">Tags</p>
-                  <div className="tags" style={{ marginTop: 0 }}>
-                    {item.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div className="detail-sidebar-card">
-                <p className="detail-sidebar-label">Partager</p>
-                <p style={{ fontSize: 13, color: "var(--ed-muted)", margin: 0 }}>
-                  Vous trouvez cette production utile ?{" "}
-                  <CtaButton label="Contribuer" target="contribution" variant="secondary" />
-                </p>
-              </div>
-            </aside>
+        <div className="detail-body">
+          {item.body ? (
+            <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.body) }} />
+          ) : item.description ? (
+            <p className="rich-text">{item.description}</p>
+          ) : (
+            <p style={{ color: "var(--ed-muted)" }}>Aucun contenu détaillé disponible pour cette production.</p>
           )}
         </div>
       </section>

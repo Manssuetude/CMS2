@@ -37,6 +37,8 @@
 }
 .rich-text p {
   margin: 0;
+  text-align: justify;
+  text-wrap: pretty;
 }
 .rich-text ul,
 .rich-text ol {
