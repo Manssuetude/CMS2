@@ -1,48 +1,17 @@
+import Link from "next/link";
+import { ExternalLink, Pencil } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
-import { mediaRepository } from "@/repositories/mediaRepository";
 import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
-import { ImageCropField } from "@/components/media/ImageCropField";
-import { HERO_ASPECT } from "@/constants/imageAspects";
-import { MAIN_NAV_ITEMS } from "@/constants/site";
-import { savePageImageAction, saveNavVisibilityAction } from "./actions";
-
-const PAGE_LABELS: Record<string, string> = {
-  accueil: "Page d'accueil",
-  "a-propos": "À propos",
-  "nous-rejoindre": "Nous rejoindre",
-  "nous-soutenir": "Nous soutenir",
-  activites: "Activités",
-  productions: "Productions",
-  projets: "Projets",
-  themes: "Thèmes",
-  perca: "Page PERCA",
-  history: "Page Histoire",
-};
-
-// Certaines pages ont leur propre éditeur dédié (plus riche qu'un simple champ
-// photo/SEO) — on y renvoie plutôt que de dupliquer leur formulaire ici.
-const DEDICATED_EDITOR: Record<string, string> = {
-  accueil: "/admin/homepage",
-  perca: "/admin/perca",
-  history: "/admin/history",
-};
-
-function toAbsoluteUrl(url: string | null | undefined): string {
-  if (!url) return "";
-  if (url.startsWith("http") || url.startsWith("/")) return url;
-  return `/${url}`;
-}
+import { MAIN_NAV_ITEMS, PAGE_DIRECTORY } from "@/constants/site";
+import { saveNavVisibilityAction } from "./actions";
 
 export default async function AdminPages() {
-  const [pages, media, navVisibility] = await Promise.all([
+  const [pages, navVisibility] = await Promise.all([
     pageRepository.listPages(true),
-    mediaRepository.list(),
     siteSettingsRepository.getNavVisibility(),
   ]);
 
-  const images = media.filter((m) => m.type === "image");
-
-  const staticPages = pages.filter((p) => Object.keys(PAGE_LABELS).includes(p.slug));
+  const staticPages = pages.filter((p) => Object.keys(PAGE_DIRECTORY).includes(p.slug));
 
   return (
     <section className="admin-panel">
@@ -50,13 +19,10 @@ export default async function AdminPages() {
         <div>
           <h1>Gestion des pages</h1>
           <p>
-            Point central pour les grandes pages du site : visibilité dans le menu, photo hero rapide ci-dessous, et
-            lien vers l&apos;éditeur de contenu complet de chaque page.
+            Point central pour les grandes pages du site : visibilité dans le menu, et accès à l&apos;éditeur de chacune
+            (texte, photo si la page en a une, SEO).
           </p>
         </div>
-        <a href="/admin/media" className="btn secondary">
-          Médiathèque →
-        </a>
       </div>
 
       {/* ── Visibilité dans le menu ──────────────────────────────── */}
@@ -84,98 +50,49 @@ export default async function AdminPages() {
         </form>
       </div>
 
-      {images.length === 0 && (
-        <div
-          className="admin-empty"
-          style={{ marginBottom: 24, background: "var(--orange-soft)", borderColor: "var(--orange)" }}
-        >
-          <strong>Aucune image dans la médiathèque</strong>
-          <p>
-            Importez des photos via la{" "}
-            <a href="/admin/media" style={{ color: "var(--orange)" }}>
-              Médiathèque
-            </a>{" "}
-            pour pouvoir les sélectionner ici.
-          </p>
-        </div>
-      )}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {staticPages.map((page) => {
-          const currentUrl = toAbsoluteUrl(page.imageUrl ?? "");
-
-          return (
-            <div
-              key={page.slug}
-              style={{
-                display: "flex",
-                gap: 20,
-                alignItems: "center",
-                padding: "16px 0",
-                borderBottom: "1px solid var(--line)",
-              }}
-            >
-              {/* Aperçu image */}
-              <div
-                style={{
-                  width: 96,
-                  height: 64,
-                  borderRadius: 6,
-                  overflow: "hidden",
-                  border: "1px solid var(--line)",
-                  flexShrink: 0,
-                  background: "var(--soft)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {currentUrl ? (
-                  <img src={currentUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : (
-                  <span style={{ fontSize: 11, color: "var(--muted)" }}>Pas de photo</span>
-                )}
-              </div>
-
-              {/* Infos page */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, marginBottom: 2 }}>{PAGE_LABELS[page.slug] ?? page.slug}</div>
-                <a
-                  href={DEDICATED_EDITOR[page.slug] ?? `/admin/pages/${page.slug}`}
-                  style={{ fontSize: 12, color: "var(--orange)", fontWeight: 600 }}
-                >
-                  Éditer le contenu →
-                </a>
-              </div>
-
-              {/* Formulaire image picker */}
-              <form
-                action={savePageImageAction}
-                style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "stretch", minWidth: 260 }}
-              >
-                <input type="hidden" name="slug" value={page.slug} />
-                <ImageCropField
-                  name="image_id"
-                  cropName="image_crop"
-                  images={images}
-                  defaultImageId={page.imageId ?? ""}
-                  defaultCrop={page.imageCrop ?? null}
-                  aspect={HERO_ASPECT}
-                />
-                <button type="submit" className="cta" style={{ whiteSpace: "nowrap", alignSelf: "flex-end" }}>
-                  Appliquer les changements
-                </button>
-              </form>
-            </div>
-          );
-        })}
-      </div>
-
-      {staticPages.length === 0 && (
+      {/* ── Annuaire des pages ───────────────────────────────────── */}
+      {staticPages.length === 0 ? (
         <div className="admin-empty">
           <strong>Aucune page statique trouvée</strong>
           <p>Les pages de contenu apparaîtront ici une fois créées en base.</p>
         </div>
+      ) : (
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th className="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {staticPages.map((page) => {
+              const entry = PAGE_DIRECTORY[page.slug];
+              return (
+                <tr key={page.slug}>
+                  <td className="col-title">{entry?.label ?? page.slug}</td>
+                  <td className="col-actions">
+                    <div className="row-actions">
+                      <a
+                        href={entry?.publicPath ?? "/"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-sm"
+                        title="Voir la page publique dans un nouvel onglet"
+                      >
+                        <ExternalLink size={13} strokeWidth={2} />
+                        Voir le rendu final
+                      </a>
+                      <Link href={entry?.editorPath ?? `/admin/pages/${page.slug}`} className="btn-sm">
+                        <Pencil size={13} strokeWidth={2} />
+                        Modifier
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       )}
     </section>
   );

@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
 import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
 import { saveHistoryFieldsAction } from "./actions";
@@ -12,6 +13,16 @@ export default async function AdminHistory() {
           <h1>Page Histoire</h1>
           <p>Modifiez le contenu de la page « Notre histoire » (accessible sur /history).</p>
         </div>
+        <a
+          href="/history"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-sm"
+          title="Voir la page publique dans un nouvel onglet"
+        >
+          <ExternalLink size={13} strokeWidth={2} />
+          Voir le rendu final
+        </a>
       </div>
 
       <form action={saveHistoryFieldsAction} style={{ display: "flex", flexDirection: "column", gap: 32 }}>

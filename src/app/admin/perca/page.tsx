@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
 import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
 import { PercaStepsEditor } from "@/components/admin/PercaStepsEditor";
@@ -16,6 +17,16 @@ export default async function AdminPerca() {
             et s&apos;affichent automatiquement au-dessus du texte.
           </p>
         </div>
+        <a
+          href="/perca"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-sm"
+          title="Voir la page publique dans un nouvel onglet"
+        >
+          <ExternalLink size={13} strokeWidth={2} />
+          Voir le rendu final
+        </a>
       </div>
 
       <form action={savePercaFieldsAction} style={{ display: "flex", flexDirection: "column", gap: 32 }}>

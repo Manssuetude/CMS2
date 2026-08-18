@@ -11,9 +11,7 @@ import {
   FolderKanban,
   Images,
   Inbox,
-  Home,
   ImagePlus,
-  Clock,
   Users,
   UserPen,
   Newspaper,
@@ -29,9 +27,6 @@ import {
 
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "homepage", label: "Page d'accueil", icon: Home },
-  { id: "perca", label: "Page PERCA", icon: Home },
-  { id: "history", label: "Page Histoire", icon: Clock },
   { id: "pages", label: "Gestion des pages", icon: ImagePlus },
   { id: "redirects", label: "Redirections", icon: Route },
   { id: "themes", label: "Thèmes", icon: BookOpen },
@@ -87,13 +82,7 @@ export function AdminSidebar({ collapsed, onToggle, isAdmin = false, permissions
             title={collapsed ? label : undefined}
             data-tour={id === "media" ? "tour-media" : undefined}
           >
-            {id === "perca" ? (
-              <span className="admin-nav-glyph" aria-hidden>
-                P
-              </span>
-            ) : (
-              <Icon size={16} strokeWidth={1.75} />
-            )}
+            <Icon size={16} strokeWidth={1.75} />
             <span className="admin-nav-label">{label}</span>
           </Link>
         ))}

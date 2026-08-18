@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
@@ -25,6 +26,16 @@ export default async function AdminHomepage() {
           <h1>Page d&apos;accueil</h1>
           <p>Modifiez le contenu et les photos affichés sur la page d&apos;accueil du site.</p>
         </div>
+        <a
+          href="/"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-sm"
+          title="Voir la page publique dans un nouvel onglet"
+        >
+          <ExternalLink size={13} strokeWidth={2} />
+          Voir le rendu final
+        </a>
       </div>
 
       <form action={saveHomepageFieldsAction} style={{ display: "flex", flexDirection: "column", gap: 32 }}>

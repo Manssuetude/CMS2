@@ -6,32 +6,7 @@ import { pageRepository } from "@/repositories/pageRepository";
 import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { requirePermission } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
-import { MAIN_NAV_ITEMS } from "@/constants/site";
-
-const SLUG_TO_PATH: Record<string, string> = {
-  accueil: "/",
-  "a-propos": "/a-propos",
-  "nous-rejoindre": "/nous-rejoindre",
-  "nous-soutenir": "/nous-soutenir",
-  activites: "/activites",
-  productions: "/productions",
-  projets: "/projets",
-  themes: "/themes",
-  perca: "/perca",
-  history: "/history",
-};
-
-export async function savePageImageAction(formData: FormData): Promise<void> {
-  await requirePermission("pages:edit");
-  const slug = String(formData.get("slug") ?? "");
-  const imageId = formData.get("image_id") || null;
-  const imageCrop = formData.get("image_crop") || null;
-  if (!slug) return;
-  await pageRepository.updatePage(slug, { image_id: imageId, image_crop: imageCrop });
-  await logAction("update", { entityType: "page", entityId: slug, summary: `Photo de la page « ${slug} » modifiée` });
-  revalidatePath(SLUG_TO_PATH[slug] ?? `/${slug}`);
-  redirect("/admin/pages?saved=1");
-}
+import { MAIN_NAV_ITEMS, PAGE_DIRECTORY } from "@/constants/site";
 
 export async function savePageContentAction(formData: FormData): Promise<void> {
   await requirePermission("pages:edit");
@@ -48,7 +23,7 @@ export async function savePageContentAction(formData: FormData): Promise<void> {
   };
   await pageRepository.updatePage(slug, fields);
   await logAction("update", { entityType: "page", entityId: slug, summary: `Contenu de la page « ${slug} » modifié` });
-  revalidatePath(SLUG_TO_PATH[slug] ?? `/${slug}`);
+  revalidatePath(PAGE_DIRECTORY[slug]?.publicPath ?? `/${slug}`);
   redirect(`/admin/pages/${slug}?saved=1`);
 }
 

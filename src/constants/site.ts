@@ -51,3 +51,19 @@ export const MAIN_NAV_ITEMS = [
   { key: "/a-propos", label: "À propos", togglable: true, placement: "nav" },
   { key: "/nous-soutenir", label: "Nous soutenir (lien d'en-tête)", togglable: true, placement: "cta" },
 ] as const;
+
+// Annuaire des grandes pages statiques (table `pages`), centralisé dans
+// /admin/pages : slug → libellé admin, chemin public (pour "Voir le rendu
+// final"), et éditeur dédié le cas échéant (sinon /admin/pages/[slug]).
+export const PAGE_DIRECTORY: Record<string, { label: string; publicPath: string; editorPath?: string }> = {
+  accueil: { label: "Page d'accueil", publicPath: "/", editorPath: "/admin/homepage" },
+  "a-propos": { label: "À propos", publicPath: "/a-propos" },
+  "nous-rejoindre": { label: "Nous rejoindre", publicPath: "/nous-rejoindre" },
+  "nous-soutenir": { label: "Nous soutenir", publicPath: "/nous-soutenir" },
+  activites: { label: "Activités", publicPath: "/activites" },
+  productions: { label: "Productions", publicPath: "/productions" },
+  projets: { label: "Projets", publicPath: "/projets" },
+  themes: { label: "Thèmes", publicPath: "/themes" },
+  perca: { label: "Page PERCA", publicPath: "/perca", editorPath: "/admin/perca" },
+  history: { label: "Page Histoire", publicPath: "/history", editorPath: "/admin/history" },
+};
