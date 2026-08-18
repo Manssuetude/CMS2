@@ -144,6 +144,7 @@ export type Page = {
   sections: ContentBlock[];
   percaSteps?: PercaStep[];
   impactStats?: ImpactStat[];
+  featuredDossierIds?: string[];
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImageId?: string | null;

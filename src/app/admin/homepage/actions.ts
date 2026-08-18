@@ -42,6 +42,10 @@ export async function saveHomepageFieldsAction(formData: FormData): Promise<void
     seo_image_id: formData.get("seo_image_id") || null,
     focus_image_crop: formData.get("focus_image_crop") || null,
     impact_stats: parseImpactStats(formData.get("impactStats")),
+    featured_dossier_ids: String(formData.get("featuredDossierIds") || "")
+      .split(",")
+      .map((id) => id.trim())
+      .filter(Boolean),
     seo_title: formData.get("seo_title") || null,
     seo_description: formData.get("seo_description") || null,
   };

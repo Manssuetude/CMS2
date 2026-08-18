@@ -9,6 +9,14 @@ export type ResolvedDossierItem = {
   imageUrl?: string | null;
 };
 
+export const DOSSIER_ITEM_KIND_LABEL: Record<DossierItem["entityType"], string> = {
+  production: "Production",
+  activity: "Activité",
+  project: "Projet",
+  resource: "Ressource",
+  journal_entry: "Journal",
+};
+
 export type DossierItemSource = {
   productions: Production[];
   activities: Activity[];

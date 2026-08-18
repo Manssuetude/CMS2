@@ -3,15 +3,7 @@ import type { Dossier } from "@/types/cms";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { Hero } from "@/components/public/Hero";
-import type { ResolvedDossierItem } from "@/utils/dossierItems";
-
-const KIND_LABEL: Record<ResolvedDossierItem["entityType"], string> = {
-  production: "Production",
-  activity: "Activité",
-  project: "Projet",
-  resource: "Ressource",
-  journal_entry: "Journal",
-};
+import { DOSSIER_ITEM_KIND_LABEL, type ResolvedDossierItem } from "@/utils/dossierItems";
 
 interface Props {
   item: Dossier;
@@ -53,7 +45,7 @@ export function DossierDetail({ item, items }: Props) {
               <li key={`${entry.entityType}-${entry.entityId}`} className="dossier-guide-item">
                 <span className="dossier-guide-step">{index + 1}</span>
                 <Link href={entry.href} className="dossier-guide-link">
-                  <span className="dossier-guide-kind">{KIND_LABEL[entry.entityType]}</span>
+                  <span className="dossier-guide-kind">{DOSSIER_ITEM_KIND_LABEL[entry.entityType]}</span>
                   <span className="dossier-guide-title">{entry.title}</span>
                   {entry.description && <span className="dossier-guide-desc">{entry.description}</span>}
                 </Link>
@@ -68,7 +60,7 @@ export function DossierDetail({ item, items }: Props) {
             title: entry.title,
             description: entry.description,
             href: entry.href,
-            meta: KIND_LABEL[entry.entityType],
+            meta: DOSSIER_ITEM_KIND_LABEL[entry.entityType],
             imageUrl: entry.imageUrl,
           }))}
         />

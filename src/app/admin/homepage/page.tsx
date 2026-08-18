@@ -1,16 +1,19 @@
 import { pageRepository } from "@/repositories/pageRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
+import { dossierRepository } from "@/repositories/dossierRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { ImpactStatsEditor } from "@/components/admin/ImpactStatsEditor";
+import { FeaturedDossiersField } from "@/components/admin/FeaturedDossiersField";
 import { FOCUS_ASPECT, HERO_ASPECT } from "@/constants/imageAspects";
 import { saveHomepageFieldsAction } from "./actions";
 
 export default async function AdminHomepage() {
-  const [page, media, themes] = await Promise.all([
+  const [page, media, themes, dossiers] = await Promise.all([
     pageRepository.getPage("accueil"),
     mediaRepository.list(),
     themeRepository.listThemes(true),
+    dossierRepository.listDossiers(true),
   ]);
 
   const images = media.filter((m) => m.type === "image");
@@ -160,6 +163,23 @@ export default async function AdminHomepage() {
               emptyOptionLabel="— aucune image (pleine largeur) —"
             />
           </div>
+        </div>
+
+        {/* ── Sélections éditoriales mises en avant ───────────────── */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title">Sélections mises en avant</h2>
+          <p className="admin-form-section-hint">
+            Choisissez des dossiers à afficher en page d&apos;accueil, chacun sous son propre titre (ex. « À découvrir
+            », « En débat »). Créez et ordonnez leur contenu depuis{" "}
+            <a href="/admin/dossiers" style={{ color: "var(--orange)" }}>
+              /admin/dossiers
+            </a>
+            .
+          </p>
+          <FeaturedDossiersField
+            items={dossiers.map((d) => ({ id: d.id, label: d.title }))}
+            initial={page?.featuredDossierIds ?? []}
+          />
         </div>
 
         {/* ── Chiffres clés ────────────────────────────────────────── */}

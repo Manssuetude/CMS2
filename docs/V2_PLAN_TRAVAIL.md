@@ -147,7 +147,7 @@
 
 ### 16. Homepage et mise en avant éditoriale
 
-- [ ] Ajouter des sélections éditoriales nommées ("À découvrir", "En débat", "Pour aller plus loin") en complément du bloc "sujet du moment" déjà administrable.
+- [x] Ajouter des sélections éditoriales nommées ("À découvrir", "En débat", "Pour aller plus loin") en complément du bloc "sujet du moment" déjà administrable. **Réutilise l'entité Dossier** (chapitre 10+11) plutôt qu'un second mécanisme de sélection : dans `/admin/homepage`, on choisit des dossiers existants à mettre en avant, chacun rendu en page d'accueil sous son propre titre.
 
 ### 17. SEO, partage et navigation
 
