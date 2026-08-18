@@ -46,6 +46,17 @@ export function FormModal({ formType, onClose }: { formType: string; onClose: ()
             }}
           >
             <input type="hidden" name="formType" value={toSubmissionFormType(safeFormType)} />
+            {/* Honeypot anti-spam : champ invisible pour un visiteur humain, souvent
+                rempli automatiquement par les bots. Une valeur ici = soumission rejetée
+                silencieusement côté serveur (voir /api/forms). */}
+            <input
+              type="text"
+              name="website"
+              className="honeypot-field"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
             {formDefinitions[safeFormType].map((field) => {
               if (field.type === "checkbox") {
                 return (

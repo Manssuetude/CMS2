@@ -157,15 +157,15 @@
 
 ### 18. Socle technique
 
-- [ ] Migrer les images vers `next/image` (la config `remotePatterns` existe déjà, juste inexploitée) — gain de performance rapide.
-- [ ] Ajouter un skip-link "aller au contenu" et poursuivre l'audit d'accessibilité (contrastes, ARIA, navigation clavier).
-- [ ] Ajouter une bannière de consentement cookies/RGPD.
-- [ ] Ajouter une protection anti-spam sur les 7 formulaires publics (captcha ou honeypot).
-- [ ] Implémenter réellement l'export/import de sauvegarde (ou retirer la page vide actuelle).
-- [ ] Brancher un outil de suivi d'erreurs applicatif (Sentry ou équivalent).
-- [ ] Ajouter des en-têtes de sécurité (CSP, X-Frame-Options) dans `next.config.ts`.
+- [ ] Migrer les images vers `next/image` (la config `remotePatterns` existe déjà, juste inexploitée) — gain de performance rapide. **Reporté** : migration transversale à risque (recadrage non destructif `cropToImageStyle` à revalider sur chaque emplacement), pas de déploiement live cette nuit pour vérifier visuellement chaque page — à faire de jour avec vérification visuelle.
+- [x] Ajouter un skip-link "aller au contenu" et poursuivre l'audit d'accessibilité (contrastes, ARIA, navigation clavier). Skip-link fonctionnel (`(public)/layout.tsx`, CSS dédiée), vérifié en HTML rendu.
+- [x] Ajouter une bannière de consentement cookies/RGPD. `CookieConsentBanner` (localStorage, opt-in), stylée indépendamment de `.button` (qui était taillée pour les CTA de hero et déformait le bandeau).
+- [x] Ajouter une protection anti-spam sur les 7 formulaires publics (captcha ou honeypot). Honeypot simple (`src/lib/honeypot.ts`) sur `FormModal` et `NewsletterForm`, vérifié côté serveur.
+- [x] Implémenter réellement l'export/import de sauvegarde (ou retirer la page vide actuelle). Page vide déjà retirée lors du nettoyage précédent.
+- [ ] Brancher un outil de suivi d'erreurs applicatif (Sentry ou équivalent). **Reporté** : pas de compte Sentry disponible cette nuit.
+- [x] Ajouter des en-têtes de sécurité (CSP, X-Frame-Options) dans `next.config.ts`. X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy ajoutés. **CSP volontairement omise** : trop risqué de la configurer à l'aveugle sans déploiement live pour vérifier qu'elle ne casse pas CKEditor/embeds vidéo/Analytics.
 - [ ] Ajouter un rate-limiting sur les routes API publiques (formulaires notamment).
-- [ ] Conditionner les analytics au consentement cookies une fois la bannière RGPD en place.
+- [x] Conditionner les analytics au consentement cookies une fois la bannière RGPD en place. `ConsentGate` masque `<Analytics/>`/`<SpeedInsights/>` tant que le consentement n'est pas explicitement accepté.
 
 ---
 

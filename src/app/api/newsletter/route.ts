@@ -3,10 +3,17 @@ import { errorResponse } from "@/lib/errors";
 import { newsletterSubscribeSchema } from "@/lib/validation";
 import { subscribeToNewsletter } from "@/lib/newsletter";
 import { logger } from "@/lib/logger";
+import { isHoneypotFilled } from "@/lib/honeypot";
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
+
+    if (isHoneypotFilled(formData)) {
+      logger.warn("newsletter.honeypot_triggered");
+      return NextResponse.json({ success: true });
+    }
+
     const parsed = newsletterSubscribeSchema.parse({
       email: String(formData.get("email") || ""),
       consent: String(formData.get("consent") || ""),

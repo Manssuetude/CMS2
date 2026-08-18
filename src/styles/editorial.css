@@ -120,6 +120,26 @@
   border-radius: 2px;
 }
 
+/* Lien d'évitement clavier — invisible tant qu'il n'a pas le focus,
+   apparaît en haut à gauche au tab pour sauter la navigation. */
+.site-shell .skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.6rem 1.1rem;
+  background: var(--ed-ink);
+  color: var(--ed-paper);
+  border-radius: var(--ed-radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.site-shell .skip-link:focus {
+  top: 1rem;
+}
+
 /* Chapô / eyebrow — petites capitales terracotta */
 .site-shell .eyebrow {
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -537,6 +557,19 @@
   border-color: var(--ed-brand);
   transform: translateY(-2px);
 }
+/* Honeypot anti-spam — hors écran plutôt que display:none (certains bots
+   ignorent spécifiquement les champs display:none) mais totalement invisible
+   et inatteignable au clavier pour un visiteur humain. */
+.site-shell .honeypot-field {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Formulaire d'inscription newsletter — footer (compact) et homepage */
 .site-shell .newsletter-form-row {
   display: flex;

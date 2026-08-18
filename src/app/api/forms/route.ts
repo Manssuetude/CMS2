@@ -5,10 +5,20 @@ import { errorResponse } from "@/lib/errors";
 import { formTypeSchema } from "@/lib/validation";
 import { logger } from "@/lib/logger";
 import { sendEmail, submissionConfirmationSubject, submissionConfirmationHtml } from "@/lib/email";
+import { isHoneypotFilled } from "@/lib/honeypot";
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
+
+    // Anti-spam : un bot qui remplit le champ honeypot reçoit une fausse
+    // réponse de succès (pas d'indice que sa soumission a été détectée),
+    // sans rien persister ni envoyer d'email.
+    if (isHoneypotFilled(formData)) {
+      logger.warn("form.honeypot_triggered");
+      return NextResponse.json({ id: "ok" });
+    }
+
     const rawFormType = String(formData.get("formType") || "");
     const formType = formTypeSchema.parse(rawFormType);
 

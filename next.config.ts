@@ -22,6 +22,20 @@ const nextConfig: NextConfig = {
         source: "/_next/static/(.*)",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
+      {
+        // En-têtes de sécurité sans allowlist de domaines (pas de CSP) : une CSP mal
+        // calibrée casserait silencieusement CKEditor, les embeds YouTube/Vimeo
+        // (chapitre 2) ou Vercel Analytics sans qu'on puisse le vérifier ce soir sur
+        // un vrai déploiement — à construire et tester avec un déploiement de preview
+        // avant de l'activer, pas à deviner en aveugle.
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
     ];
   },
   images: {

@@ -30,6 +30,14 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
 
   return (
     <form className={`newsletter-form${compact ? " is-compact" : ""}`} onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="website"
+        className="honeypot-field"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+      />
       <div className="newsletter-form-row">
         <input type="email" name="email" required placeholder="Votre adresse email" aria-label="Adresse email" />
         <button type="submit" className="button primary" disabled={status === "loading"}>

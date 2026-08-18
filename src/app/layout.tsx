@@ -3,6 +3,8 @@ import { Newsreader, Inter, Satisfy } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOGO, SITE_SOCIALS } from "@/constants/site";
+import { ConsentGate } from "@/components/public/ConsentGate";
+import { CookieConsentBanner } from "@/components/public/CookieConsentBanner";
 import "@/styles/globals.css";
 import "@/styles/editorial.css";
 
@@ -140,8 +142,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
-        <Analytics />
-        <SpeedInsights />
+        <ConsentGate>
+          <Analytics />
+          <SpeedInsights />
+        </ConsentGate>
+        <CookieConsentBanner />
       </body>
     </html>
   );
