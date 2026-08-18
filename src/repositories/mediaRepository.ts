@@ -74,6 +74,13 @@ export const mediaRepository = {
     if (error) throw error;
   },
 
+  async rename(id: string, title: string) {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("resources").update({ title }).eq("id", id).select().single();
+    if (error) throw error;
+    return mapMedia(data);
+  },
+
   // Résout l'URL (absolue/normalisée) d'une ressource média par son id. Utilisé pour
   // les images Open Graph des fiches (thème, production, activité). Renvoie null si absente.
   async getResourceUrl(id: string | null | undefined): Promise<string | null> {

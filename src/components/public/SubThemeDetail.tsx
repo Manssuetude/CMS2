@@ -53,7 +53,7 @@ export function SubThemeDetail({ theme, item, productions }: Props) {
       {/* ── Productions associées ─────────────────────────────── */}
       {productions.length > 0 ? (
         <CardGrid
-          title={`Productions sur « ${item.title} »`}
+          title="Production sur ce thème"
           items={productions.map((p) => ({
             title: p.title,
             description: p.description,

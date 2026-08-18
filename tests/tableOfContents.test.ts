@@ -2,13 +2,23 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { fixTableOfContentsLinks, extractHeadings } from "../src/utils/tableOfContents.ts";
 
-test("fixTableOfContentsLinks — réécrit un lien Google Docs vers l'ancre du titre correspondant", () => {
+test("fixTableOfContentsLinks — retire un lien Google Docs qui duplique un titre (le sommaire auto s'en charge)", () => {
   const html =
     '<a href="https://docs.google.com/document/d/abc/edit#heading=h.xyz">Introduction        5</a>' +
     "<h2>Introduction</h2>";
   const out = fixTableOfContentsLinks(html);
   assert.match(out, /<h2 id="introduction">Introduction<\/h2>/);
-  assert.match(out, /<a href="#introduction">Introduction {8}5<\/a>/);
+  assert.doesNotMatch(out, /<a\b/);
+});
+
+test("fixTableOfContentsLinks — retire le paragraphe devenu vide après le retrait d'une entrée de sommaire", () => {
+  const html =
+    '<p><a href="https://docs.google.com/document/d/abc/edit#heading=h.xyz">Introduction        5</a></p>' +
+    "<h2>Introduction</h2>";
+  const out = fixTableOfContentsLinks(html);
+  assert.doesNotMatch(out, /<a\b/);
+  assert.doesNotMatch(out, /<p>\s*<\/p>/);
+  assert.match(out, /<h2 id="introduction">Introduction<\/h2>/);
 });
 
 test("fixTableOfContentsLinks — neutralise un lien externe sans titre correspondant", () => {
@@ -30,7 +40,7 @@ test("fixTableOfContentsLinks — ignore la numérotation de section absente du 
     "<h1><strong><u>INTRODUCTION</u></strong></h1>";
   const out = fixTableOfContentsLinks(html);
   assert.match(out, /<h2 id="introduction"><strong><u>INTRODUCTION<\/u><\/strong><\/h2>/);
-  assert.match(out, /<a href="#introduction">I\. INTRODUCTION {8}5<\/a>/);
+  assert.doesNotMatch(out, /<a\b/);
 });
 
 test("fixTableOfContentsLinks — désambiguïse les titres en doublon", () => {

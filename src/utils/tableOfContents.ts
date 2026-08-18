@@ -80,17 +80,25 @@ export function fixTableOfContentsLinks(html: string): string {
     },
   );
 
-  return withHeadingIds.replace(
+  const withTocEntriesResolved = withHeadingIds.replace(
     /<a\s+([^>]*\bhref="([^"]*)"[^>]*)>([\s\S]*?)<\/a>/gi,
-    (match, attrs: string, href: string, inner: string) => {
+    (match, _attrs: string, href: string, inner: string) => {
       if (!EXTERNAL_TOC_HREF_PATTERN.test(href)) return match;
 
       const label = cleanTocLabel(stripTags(inner));
       const slug = slugByLabel.get(label.toLowerCase());
-      if (!slug) return inner; // aucun titre correspondant : on retire le lien plutôt que de fuiter le document source.
-
-      const newAttrs = attrs.replace(/href="[^"]*"/, `href="#${slug}"`);
-      return `<a ${newAttrs}>${inner}</a>`;
+      // Une entrée de sommaire collée qui correspond à un vrai titre est retirée du
+      // corps : le sommaire automatique (TableOfContents) affiche déjà cette même
+      // navigation séparément, la garder ici la dupliquerait dans le texte.
+      if (slug) return "";
+      return inner; // aucun titre correspondant : on retire le lien plutôt que de fuiter le document source.
     },
   );
+
+  // Nettoie les conteneurs devenus vides après le retrait des entrées de sommaire
+  // (paragraphe ou item de liste qui ne contenait que le lien collé).
+  return withTocEntriesResolved
+    .replace(/<li[^>]*>\s*<\/li>/gi, "")
+    .replace(/<p[^>]*>\s*<\/p>/gi, "")
+    .replace(/<(ul|ol)[^>]*>\s*<\/\1>/gi, "");
 }
