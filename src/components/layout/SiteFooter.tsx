@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { FooterConfig } from "@/types/cms";
-import { MEMBER_SPACE_URL } from "@/constants/site";
+import { MEMBER_SPACE_URL, RNA_NUMBER } from "@/constants/site";
 
 const defaultColumns = [
   {
@@ -92,7 +92,9 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} Manssuétude</span>
+        <span>
+          © {new Date().getFullYear()} Manssuétude — RNA {RNA_NUMBER}
+        </span>
         <span>{description}</span>
       </div>
     </footer>

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/public/ContactForm";
+import { CONTACT_EMAIL, SITE_SOCIALS } from "@/constants/site";
 
 export const metadata: Metadata = {
   title: "Nous joindre — Manssuétude",
   description: "Contactez l'équipe de Manssuétude.",
 };
+
+const SOCIAL_LABELS = ["Instagram", "TikTok", "LinkedIn"];
 
 export default function ContactPage() {
   return (
@@ -17,15 +20,25 @@ export default function ContactPage() {
             Écrivez-nous : nous lisons chaque message et revenons vers vous. Pour rejoindre l&apos;association ou
             proposer un projet, un mot suffit pour lancer la conversation.
           </p>
-          {/* Coordonnées réelles à renseigner en Phase E (documents-asso) */}
           <dl className="contact-coords">
             <div>
               <dt>Email</dt>
-              <dd>à renseigner</dd>
+              <dd>
+                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+              </dd>
             </div>
             <div>
               <dt>Réseaux</dt>
-              <dd>à renseigner</dd>
+              <dd>
+                {SITE_SOCIALS.map((href, i) => (
+                  <span key={href}>
+                    <a href={href} target="_blank" rel="noopener noreferrer">
+                      {SOCIAL_LABELS[i]}
+                    </a>
+                    {i < SITE_SOCIALS.length - 1 ? " · " : ""}
+                  </span>
+                ))}
+              </dd>
             </div>
           </dl>
         </aside>

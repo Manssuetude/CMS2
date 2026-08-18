@@ -34,6 +34,12 @@ export const SITE_SOCIALS = [
 // header et le footer publics (SiteHeader, SiteFooter).
 export const MEMBER_SPACE_URL = "https://membre.manssuetude.com";
 
+// Coordonnées légales/officielles de l'association — affichées sur /contact
+// (email) et dans le footer sitewide, donc visibles dès la page d'accueil
+// (numéro RNA), pour la vérification Google for Nonprofits.
+export const CONTACT_EMAIL = "contact@manssuetude.com";
+export const RNA_NUMBER = "W951008077";
+
 // Grandes pages du header public. Source unique partagée entre SiteHeader (rendu)
 // et /admin/pages (activer/désactiver la visibilité dans le menu). "Accueil" n'est
 // pas togglable : retirer l'entrée d'accueil du menu n'a pas de sens.
