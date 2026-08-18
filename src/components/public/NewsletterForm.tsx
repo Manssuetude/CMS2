@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { Mail, Check } from "lucide-react";
 
-export function NewsletterForm({ compact = false }: { compact?: boolean }) {
+export function NewsletterForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -25,11 +26,16 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
   }
 
   if (status === "success") {
-    return <p className={`newsletter-form-success${compact ? " is-compact" : ""}`}>Merci, vous êtes inscrit·e !</p>;
+    return (
+      <p className="newsletter-form-success">
+        <Check size={18} strokeWidth={2.25} aria-hidden />
+        Merci, vous êtes inscrit·e !
+      </p>
+    );
   }
 
   return (
-    <form className={`newsletter-form${compact ? " is-compact" : ""}`} onSubmit={handleSubmit}>
+    <form className="newsletter-form" onSubmit={handleSubmit}>
       <input
         type="text"
         name="website"
@@ -39,8 +45,9 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
         aria-hidden="true"
       />
       <div className="newsletter-form-row">
+        <Mail size={18} strokeWidth={1.75} className="newsletter-form-icon" aria-hidden />
         <input type="email" name="email" required placeholder="Votre adresse email" aria-label="Adresse email" />
-        <button type="submit" className="button primary" disabled={status === "loading"}>
+        <button type="submit" disabled={status === "loading"}>
           {status === "loading" ? "..." : "S'inscrire"}
         </button>
       </div>

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { FooterConfig } from "@/types/cms";
 import { MEMBER_SPACE_URL } from "@/constants/site";
-import { NewsletterForm } from "@/components/public/NewsletterForm";
 
 const defaultColumns = [
   {
@@ -91,10 +90,6 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
             </a>
           ))}
         </div>
-      </div>
-      <div className="footer-newsletter">
-        <p className="footer-newsletter-label">Recevoir la newsletter</p>
-        <NewsletterForm compact />
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} Manssuétude</span>

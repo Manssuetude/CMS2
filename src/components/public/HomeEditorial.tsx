@@ -172,12 +172,14 @@ export function HomeEditorial({
         </div>
       </section>
 
-      {/* 6 — Appel à rejoindre */}
       {/* 6 — Newsletter */}
       <section className="home-section home-newsletter">
-        <div className="home-newsletter-inner">
-          <h2>Recevez nos actualités</h2>
-          <p>Productions, activités et entrées du Journal — un email de temps en temps, pas plus.</p>
+        <div className="home-newsletter-panel">
+          <div className="home-newsletter-text">
+            <p className="eyebrow">Newsletter</p>
+            <h2>Recevez nos actualités</h2>
+            <p>Productions, activités et entrées du Journal — un email de temps en temps, pas plus.</p>
+          </div>
           <NewsletterForm />
         </div>
       </section>
