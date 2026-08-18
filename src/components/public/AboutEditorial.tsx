@@ -1,16 +1,7 @@
 import Link from "next/link";
 import { Hero } from "@/components/public/Hero";
 import type { Page } from "@/types/cms";
-import { sanitizeHtml } from "@/utils/sanitizeHtml";
-
-// PERCA = le cadre méthodologique de Manssuétude (source : page perca en base).
-const perca: Array<[string, string]> = [
-  ["P", "Penser"],
-  ["E", "Exprimer"],
-  ["R", "Relier"],
-  ["C", "Concrétiser"],
-  ["A", "Ancrer"],
-];
+import { PercaStepsInteractive } from "@/components/public/PercaStepsInteractive";
 
 export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Page | null }) {
   return (
@@ -32,26 +23,16 @@ export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Pa
         </section>
       ) : null}
 
-      {/* Notre méthode PERCA (section fusionnée depuis l'ancienne page /perca) */}
+      {/* Notre méthode PERCA — aperçu seulement, le détail complet vit sur /perca. */}
       <section className="about-perca">
         <div className="section-head">
           <p className="eyebrow">Notre méthode</p>
           <h2>PERCA</h2>
         </div>
-        {percaPage?.body ? (
-          <div
-            className="about-perca-intro rich-text"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(percaPage.body) }}
-          />
-        ) : null}
-        <ol className="perca-steps">
-          {perca.map(([letter, word]) => (
-            <li key={letter}>
-              <span className="perca-letter">{letter}</span>
-              <span className="perca-word">{word}</span>
-            </li>
-          ))}
-        </ol>
+        <p className="about-perca-intro">
+          Cinq dimensions qui donnent du rythme et du sens à nos activités. Cliquez une lettre pour un aperçu.
+        </p>
+        <PercaStepsInteractive steps={percaPage?.percaSteps ?? []} />
         <Link className="about-perca-link" href="/perca">
           PERCA plus en détail <span aria-hidden>→</span>
         </Link>

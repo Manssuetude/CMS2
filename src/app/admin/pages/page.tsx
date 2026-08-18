@@ -1,8 +1,10 @@
 import { pageRepository } from "@/repositories/pageRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { HERO_ASPECT } from "@/constants/imageAspects";
-import { savePageImageAction } from "./actions";
+import { MAIN_NAV_ITEMS } from "@/constants/site";
+import { savePageImageAction, saveNavVisibilityAction } from "./actions";
 
 const PAGE_LABELS: Record<string, string> = {
   accueil: "Page d'accueil",
@@ -22,7 +24,11 @@ function toAbsoluteUrl(url: string | null | undefined): string {
 }
 
 export default async function AdminPages() {
-  const [pages, media] = await Promise.all([pageRepository.listPages(true), mediaRepository.list()]);
+  const [pages, media, navVisibility] = await Promise.all([
+    pageRepository.listPages(true),
+    mediaRepository.list(),
+    siteSettingsRepository.getNavVisibility(),
+  ]);
 
   const images = media.filter((m) => m.type === "image");
 
@@ -41,6 +47,31 @@ export default async function AdminPages() {
         <a href="/admin/media" className="btn secondary">
           Médiathèque →
         </a>
+      </div>
+
+      {/* ── Visibilité dans le menu ──────────────────────────────── */}
+      <div className="admin-form-section" style={{ marginBottom: 24 }}>
+        <h2 className="admin-form-section-title">Visibilité dans le menu</h2>
+        <p className="admin-form-section-hint">
+          Décochez une page pour la retirer du header et du menu public. La page reste accessible par son URL directe —
+          elle n&apos;est pas dépubliée, seule son entrée de navigation disparaît.
+        </p>
+        <form action={saveNavVisibilityAction} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {MAIN_NAV_ITEMS.filter((item) => item.togglable).map((item) => (
+            <div className="form-checkbox" key={item.key}>
+              <input
+                type="checkbox"
+                id={`nav-${item.key}`}
+                name={`nav_${item.key}`}
+                defaultChecked={navVisibility[item.key] !== false}
+              />
+              <label htmlFor={`nav-${item.key}`}>{item.label}</label>
+            </div>
+          ))}
+          <button type="submit" className="button primary" style={{ alignSelf: "flex-start", marginTop: 10 }}>
+            Enregistrer
+          </button>
+        </form>
       </div>
 
       {images.length === 0 && (

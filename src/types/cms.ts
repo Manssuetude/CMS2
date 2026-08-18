@@ -328,6 +328,11 @@ export type Dossier = {
   updatedAt: string;
 };
 
+// Visibilité des entrées de navigation du header public, pilotée depuis
+// /admin/pages. Clé absente ou true = visible ; false = masquée (la page
+// reste accessible par son URL directe, seule l'entrée de menu disparaît).
+export type NavVisibility = Record<string, boolean>;
+
 export type FormSubmission = {
   id: string;
   formType: FormType;

@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { pageRepository } from "@/repositories/pageRepository";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { requirePermission } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
+import { MAIN_NAV_ITEMS } from "@/constants/site";
 
 const SLUG_TO_PATH: Record<string, string> = {
   accueil: "/",
@@ -46,4 +48,17 @@ export async function savePageContentAction(formData: FormData): Promise<void> {
   await logAction("update", { entityType: "page", entityId: slug, summary: `Contenu de la page « ${slug} » modifié` });
   revalidatePath(SLUG_TO_PATH[slug] ?? `/${slug}`);
   redirect(`/admin/pages/${slug}?saved=1`);
+}
+
+export async function saveNavVisibilityAction(formData: FormData): Promise<void> {
+  await requirePermission("pages:edit");
+  const visibility: Record<string, boolean> = {};
+  for (const item of MAIN_NAV_ITEMS) {
+    if (!item.togglable) continue;
+    visibility[item.key] = formData.get(`nav_${item.key}`) === "on";
+  }
+  await siteSettingsRepository.updateNavVisibility(visibility);
+  await logAction("update", { entityType: "site_settings", summary: "Visibilité du menu modifiée" });
+  revalidatePath("/", "layout");
+  redirect("/admin/pages?saved=1");
 }

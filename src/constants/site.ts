@@ -33,3 +33,17 @@ export const SITE_SOCIALS = [
 // Portail membre, sous-domaine séparé (hors de ce dépôt). Lien affiché dans le
 // header et le footer publics (SiteHeader, SiteFooter).
 export const MEMBER_SPACE_URL = "https://membre.manssuetude.com";
+
+// Grandes pages du header public. Source unique partagée entre SiteHeader (rendu)
+// et /admin/pages (activer/désactiver la visibilité dans le menu). "Accueil" n'est
+// pas togglable : retirer l'entrée d'accueil du menu n'a pas de sens.
+export const MAIN_NAV_ITEMS = [
+  { key: "/", label: "Accueil", togglable: false },
+  { key: "/themes", label: "Thèmes", togglable: true },
+  { key: "/activites", label: "Activités", togglable: true },
+  { key: "/productions", label: "Productions", togglable: true },
+  { key: "/projets", label: "Projets", togglable: true },
+  { key: "/journal", label: "Journal", togglable: true },
+  { key: "/dossiers", label: "Dossiers", togglable: true },
+  { key: "/a-propos", label: "À propos", togglable: true },
+] as const;
