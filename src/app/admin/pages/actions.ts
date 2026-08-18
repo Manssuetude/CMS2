@@ -17,6 +17,8 @@ const SLUG_TO_PATH: Record<string, string> = {
   productions: "/productions",
   projets: "/projets",
   themes: "/themes",
+  perca: "/perca",
+  history: "/history",
 };
 
 export async function savePageImageAction(formData: FormData): Promise<void> {

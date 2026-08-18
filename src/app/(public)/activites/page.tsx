@@ -43,15 +43,22 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ActivitesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ format?: string; view?: string }>;
+  searchParams: Promise<{ format?: string; view?: string; when?: string }>;
 }) {
   try {
-    const { format, view } = await searchParams;
+    const { format, view, when } = await searchParams;
     const page = await pageRepository.getPage("activites");
     const all = await activityRepository.listActivities();
     if (!page) notFound();
 
-    const filtered = format ? all.filter((a) => a.format === format) : all;
+    // Bascule automatique passé/à venir — calculée à partir de la date, pas d'un
+    // statut à faire évoluer manuellement.
+    const now = new Date();
+    const isPastActivity = (a: (typeof all)[number]) => Boolean(a.date && new Date(a.date) < now);
+    const showPast = when === "passees";
+    const byTime = all.filter((a) => isPastActivity(a) === showPast);
+
+    const filtered = format ? byTime.filter((a) => a.format === format) : byTime;
     const isCalendar = view === "calendar";
 
     const uniqueFormats = [...new Set(all.map((a) => a.format))];
@@ -68,6 +75,7 @@ export default async function ActivitesPage({
           quote={page.quote}
         />
         <Suspense>
+          <FilterBar param="when" options={[{ value: "passees", label: "Passées" }]} allLabel="À venir" />
           <FilterBar param="format" options={formatOptions} allLabel="Tous les formats" />
         </Suspense>
         {isCalendar ? (
@@ -82,7 +90,7 @@ export default async function ActivitesPage({
           </section>
         ) : (
           <CardGrid
-            title={format ? (FORMAT_LABEL[format] ?? format) : "Toutes les activités"}
+            title={format ? (FORMAT_LABEL[format] ?? format) : showPast ? "Activités passées" : "Activités à venir"}
             headerActions={
               <Suspense>
                 <ViewToggle />

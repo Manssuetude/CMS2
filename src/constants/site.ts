@@ -37,13 +37,17 @@ export const MEMBER_SPACE_URL = "https://membre.manssuetude.com";
 // Grandes pages du header public. Source unique partagée entre SiteHeader (rendu)
 // et /admin/pages (activer/désactiver la visibilité dans le menu). "Accueil" n'est
 // pas togglable : retirer l'entrée d'accueil du menu n'a pas de sens.
+// `placement` distingue les liens de la barre principale ("nav") du lien
+// "Nous soutenir" ("cta"), affiché à part dans le header mais togglable de la
+// même façon depuis l'admin.
 export const MAIN_NAV_ITEMS = [
-  { key: "/", label: "Accueil", togglable: false },
-  { key: "/themes", label: "Thèmes", togglable: true },
-  { key: "/activites", label: "Activités", togglable: true },
-  { key: "/productions", label: "Productions", togglable: true },
-  { key: "/projets", label: "Projets", togglable: true },
-  { key: "/journal", label: "Journal", togglable: true },
-  { key: "/dossiers", label: "Dossiers", togglable: true },
-  { key: "/a-propos", label: "À propos", togglable: true },
+  { key: "/", label: "Accueil", togglable: false, placement: "nav" },
+  { key: "/themes", label: "Thèmes", togglable: true, placement: "nav" },
+  { key: "/activites", label: "Activités", togglable: true, placement: "nav" },
+  { key: "/productions", label: "Productions", togglable: true, placement: "nav" },
+  { key: "/projets", label: "Projets", togglable: true, placement: "nav" },
+  { key: "/journal", label: "Journal", togglable: true, placement: "nav" },
+  { key: "/dossiers", label: "Dossiers", togglable: true, placement: "nav" },
+  { key: "/a-propos", label: "À propos", togglable: true, placement: "nav" },
+  { key: "/nous-soutenir", label: "Nous soutenir (lien d'en-tête)", togglable: true, placement: "cta" },
 ] as const;

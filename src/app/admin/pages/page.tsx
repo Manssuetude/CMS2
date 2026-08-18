@@ -15,6 +15,16 @@ const PAGE_LABELS: Record<string, string> = {
   productions: "Productions",
   projets: "Projets",
   themes: "Thèmes",
+  perca: "Page PERCA",
+  history: "Page Histoire",
+};
+
+// Certaines pages ont leur propre éditeur dédié (plus riche qu'un simple champ
+// photo/SEO) — on y renvoie plutôt que de dupliquer leur formulaire ici.
+const DEDICATED_EDITOR: Record<string, string> = {
+  accueil: "/admin/homepage",
+  perca: "/admin/perca",
+  history: "/admin/history",
 };
 
 function toAbsoluteUrl(url: string | null | undefined): string {
@@ -38,10 +48,10 @@ export default async function AdminPages() {
     <section className="admin-panel">
       <div className="admin-page-header">
         <div>
-          <h1>Pages du site</h1>
+          <h1>Gestion des pages</h1>
           <p>
-            Modifiez le texte, la photo hero et le SEO de chaque page. Photo rapide ci-dessous, ou « Éditer le contenu »
-            pour tout.
+            Point central pour les grandes pages du site : visibilité dans le menu, photo hero rapide ci-dessous, et
+            lien vers l&apos;éditeur de contenu complet de chaque page.
           </p>
         </div>
         <a href="/admin/media" className="btn secondary">
@@ -131,7 +141,7 @@ export default async function AdminPages() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontWeight: 600, marginBottom: 2 }}>{PAGE_LABELS[page.slug] ?? page.slug}</div>
                 <a
-                  href={page.slug === "accueil" ? "/admin/homepage" : `/admin/pages/${page.slug}`}
+                  href={DEDICATED_EDITOR[page.slug] ?? `/admin/pages/${page.slug}`}
                   style={{ fontSize: 12, color: "var(--orange)", fontWeight: 600 }}
                 >
                   Éditer le contenu →

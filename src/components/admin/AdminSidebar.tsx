@@ -32,7 +32,7 @@ const NAV = [
   { id: "homepage", label: "Page d'accueil", icon: Home },
   { id: "perca", label: "Page PERCA", icon: Home },
   { id: "history", label: "Page Histoire", icon: Clock },
-  { id: "pages", label: "Photos des pages", icon: ImagePlus },
+  { id: "pages", label: "Gestion des pages", icon: ImagePlus },
   { id: "redirects", label: "Redirections", icon: Route },
   { id: "themes", label: "Thèmes", icon: BookOpen },
   { id: "sousthemes", label: "Sous-thèmes", icon: ListTree },
