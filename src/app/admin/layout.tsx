@@ -14,6 +14,7 @@ const GATED_SECTIONS = [
   "productions",
   "projets",
   "journal",
+  "dossiers",
   "media",
   "forms",
   "homepage",

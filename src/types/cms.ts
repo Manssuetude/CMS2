@@ -277,6 +277,35 @@ export type JournalEntry = {
   updatedAt: string;
 };
 
+// Dossier éditorial : collection ordonnée de contenus hétérogènes avec sa
+// propre page. Fusionne les chapitres "Dossiers" et "Parcours de lecture" du
+// plan V2 — un dossier "guide" affiche un parcours séquentiel numéroté, un
+// dossier "libre" affiche une simple grille.
+export type DossierMode = "libre" | "guide";
+
+export type DossierItemEntityType = "production" | "activity" | "project" | "resource" | "journal_entry";
+
+export type DossierItem = {
+  id: string;
+  dossierId: string;
+  position: number;
+  entityType: DossierItemEntityType;
+  entityId: string;
+};
+
+export type Dossier = {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  mode: DossierMode;
+  imageId?: string | null;
+  imageUrl?: string | null;
+  status: ContentStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type FormSubmission = {
   id: string;
   formType: FormType;

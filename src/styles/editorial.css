@@ -1208,6 +1208,70 @@
   font-size: 0.72rem;
 }
 
+/* Dossier en mode "guidé" — parcours séquentiel numéroté, relié par un filet
+   vertical, distinct de la grille de cartes utilisée en mode "libre". */
+.site-shell .dossier-guide-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 46rem;
+}
+.site-shell .dossier-guide-item {
+  position: relative;
+  display: flex;
+  gap: 1.25rem;
+  padding-bottom: 2rem;
+}
+.site-shell .dossier-guide-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 1.1rem;
+  top: 2.6rem;
+  bottom: 0;
+  width: 1px;
+  background: var(--ed-line-strong);
+}
+.site-shell .dossier-guide-step {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  background: var(--ed-brand);
+  color: #fff;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.05rem;
+  z-index: 1;
+}
+.site-shell .dossier-guide-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-top: 0.15rem;
+}
+.site-shell .dossier-guide-kind {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ed-clay);
+}
+.site-shell .dossier-guide-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--ed-step-2);
+  color: var(--ed-ink);
+  transition: color 0.16s ease;
+}
+.site-shell .dossier-guide-item:hover .dossier-guide-title {
+  color: var(--ed-brand);
+}
+.site-shell .dossier-guide-desc {
+  font-size: 0.9rem;
+  color: var(--ed-ink-soft);
+}
+
 .site-shell .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

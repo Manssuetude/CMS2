@@ -17,6 +17,7 @@ import {
   Users,
   UserPen,
   Newspaper,
+  Layers,
   ShieldCheck,
   ScrollText,
   LogOut,
@@ -38,6 +39,7 @@ const NAV = [
   { id: "productions", label: "Productions", icon: FileText },
   { id: "projets", label: "Projets", icon: FolderKanban },
   { id: "journal", label: "Journal", icon: Newspaper },
+  { id: "dossiers", label: "Dossiers", icon: Layers },
   { id: "media", label: "Médiathèque", icon: Images },
   { id: "forms", label: "Formulaires", icon: Inbox },
 ] as const;

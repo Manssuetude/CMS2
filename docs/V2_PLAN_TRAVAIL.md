@@ -93,22 +93,22 @@
 
 ## P2 — Profondeur éditoriale et différenciation
 
-### 10. Dossiers / collections
+### 10. Dossiers / collections — fusionné avec le chapitre 11
 
-- [ ] Concevoir l'entité "Dossier" (regroupement hétérogène : productions, vidéos, événements, ressources, Journal) — probablement à repartir de zéro plutôt que réactiver `cms_collections`/`entity_relations`.
-- [ ] Page Dossier avec introduction éditoriale + sélection ordonnée de contenus, URL unique partageable.
-- [ ] Permettre à un même contenu d'appartenir à plusieurs dossiers.
+- [x] Concevoir l'entité "Dossier" (regroupement hétérogène : productions, activités, projets, ressources, Journal). **Décision validée** : entité neuve (`dossiers` + `dossier_items` polymorphe), pas de réactivation de `cms_collections`/`entity_relations` (schéma legacy, enum `entity_type` déjà obsolète face aux entités actuelles).
+- [x] Page Dossier avec introduction éditoriale (riche) + sélection ordonnée de contenus, URL unique partageable (`/dossiers/[slug]`).
+- [x] Permettre à un même contenu d'appartenir à plusieurs dossiers (table de liaison `dossier_items`, pas de contrainte d'unicité côté contenu).
 
-### 11. Parcours de lecture
+### 11. Parcours de lecture — fusionné avec le chapitre 10
 
-- [ ] Concevoir l'entité "Parcours" : séquence ordonnée de contenus hétérogènes (articles, vidéos, activités, ressources externes) avec progression affichée.
-- [ ] Admin de création/édition de parcours ; page publique de lecture guidée.
+- [x] **Décision validée** : pas de seconde entité "Parcours" — un Dossier a un mode `guide` (parcours séquentiel numéroté, avec filet de connexion visuel) ou `libre` (grille), pour éviter deux systèmes quasi identiques.
+- [x] Admin de création/édition (`/admin/dossiers`, sélecteur de contenus par type + réordonnancement manuel) ; page publique de lecture guidée (rendu numéroté en mode guidé).
 
 ### 12. Bibliothèque de ressources
 
 - [ ] Étendre le modèle `Media`/`Ressource` : auteur/institution, date, source, description, thème associé (au-delà des champs actuels title/description/tags/type).
 - [ ] Ajouter recherche et filtres dédiés sur `/ressources` (actuellement une simple grille sans filtre).
-- [ ] Décider si l'administration reste dans `/admin/media` ou devient une section "Commission Ressources" séparée.
+- [x] **Décision validée** : l'administration reste dans `/admin/media`, pas de section "Commission Ressources" séparée (pas de nouvelle permission RBAC à créer).
 
 ### 13. Expérience de lecture avancée
 
@@ -116,8 +116,9 @@
 - [ ] Mode impression dédié (feuille de style `@media print`).
 - [ ] Aperçu PDF intégré (viewer, pas seulement un lien de téléchargement).
 - [ ] Fonction "Citer cette publication" (référence bibliographique générée).
-- [ ] Gestion de versions/éditions d'une publication.
 - [ ] Fonction de partage d'un extrait ou d'une citation forte.
+
+~~Gestion de versions/éditions d'une publication.~~ **Retiré du plan** (décision validée) : trop lourd pour la valeur apportée à ce stade.
 
 ### 14. PERCA dynamique
 
