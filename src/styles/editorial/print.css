@@ -1,0 +1,35 @@
+/* Impression (@media print) — extrait de editorial.css (chapitre socle technique, nettoyage CSS). */
+
+/* =============================================================
+   Impression — ne garder que le contenu utile d'une fiche
+   ============================================================= */
+@media print {
+  .site-shell .site-header,
+  .site-shell .site-footer,
+  .site-shell .reading-progress,
+  .site-shell .quote-share-bar,
+  .site-shell .skip-link,
+  .site-shell .actions,
+  .site-shell .hero-aside,
+  .site-shell .cta,
+  .site-shell .toc,
+  .cookie-banner {
+    display: none !important;
+  }
+  .site-shell .detail-body,
+  .site-shell .hero-copy {
+    max-width: 100% !important;
+  }
+  .site-shell .rich-text {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+  }
+  .site-shell .rich-text a {
+    color: #000;
+    text-decoration: underline;
+  }
+  a[href]::after {
+    content: none !important;
+  }
+}

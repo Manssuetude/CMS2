@@ -1,0 +1,234 @@
+/* Base scopée au site public, boutons — extrait de editorial.css (chapitre socle technique, nettoyage CSS). */
+
+/* =============================================================
+   Manssuétude — Couche éditoriale (refonte design-first)
+   Portée : uniquement le site public (scopé .site-shell).
+   N'affecte pas l'admin. Importée APRÈS globals.css → prioritaire.
+   ============================================================= */
+
+:root {
+  /* -- Couleurs de l'association (conservées) -- */
+  --ed-brand: #ff4d12; /* orange vif — accent RARE, CTA primaire */
+  --ed-brand-strong: #e23c08;
+
+  /* -- Accent mûr éditorial : MÊME famille que la marque (orange → terracotta) --
+     Une seule famille d'accent verrouillée. Pas de laiton/ocre (slop premium). */
+  --ed-clay: #a23c1e; /* terracotta profond : filets, chapôs (version mûre de l'orange) */
+
+  /* -- Neutres chauds -- */
+  --ed-paper: #faf6f0; /* fond crème chaud */
+  --ed-raise: #fffdfa; /* surface légèrement plus claire */
+  --ed-sink: #f1e8dc; /* surface alternative */
+  --ed-ink: #1c1714; /* brun-noir chaud (texte principal) */
+  --ed-ink-soft: #574f48; /* texte secondaire */
+  --ed-muted: #8a7f76; /* texte tertiaire */
+  --ed-line: #e7dccf; /* filets */
+  --ed-line-strong: #d5c6b4;
+  --ed-focus: rgba(162, 60, 30, 0.5);
+
+  /* -- Rythme & rayons -- */
+  --ed-container: min(2000px, 94vw);
+  --ed-gutter: clamp(16px, 3vw, 52px);
+  --ed-radius: 4px;
+  --ed-radius-lg: 10px;
+
+  /* -- Échelle typographique (contraste éditorial) -- */
+  --ed-step-6: clamp(2.9rem, 1.4rem + 6.2vw, 5.4rem);
+  --ed-step-5: clamp(2.3rem, 1.4rem + 3.6vw, 3.6rem);
+  --ed-step-4: clamp(1.9rem, 1.4rem + 2vw, 2.6rem);
+  --ed-step-3: clamp(1.5rem, 1.25rem + 1vw, 1.9rem);
+  --ed-step-2: 1.25rem;
+  --ed-step-1: 1.0625rem;
+  --ed-step-0: 1rem;
+  --ed-step-small: 0.8125rem;
+}
+
+/* -- Thème sombre du site public : même famille brun-chaud (crème → terracotta),
+   accent orange avivé et terracotta éclaircie pour le contraste sur fond sombre.
+   Appliqué par choix explicite OU par préférence système. -- */
+:root[data-theme="dark"] {
+  --ed-brand: #ff5a24;
+  --ed-brand-strong: #ff7649;
+  --ed-clay: #d98a63;
+  --ed-paper: #14110d;
+  --ed-raise: #1f1a14;
+  --ed-sink: #0f0c09;
+  --ed-ink: #f2ebe0;
+  --ed-ink-soft: #b8ab9c;
+  --ed-muted: #8f8474;
+  --ed-line: #322b22;
+  --ed-line-strong: #473d30;
+  --ed-focus: rgba(255, 120, 70, 0.5);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ed-brand: #ff5a24;
+    --ed-brand-strong: #ff7649;
+    --ed-clay: #d98a63;
+    --ed-paper: #14110d;
+    --ed-raise: #1f1a14;
+    --ed-sink: #0f0c09;
+    --ed-ink: #f2ebe0;
+    --ed-ink-soft: #b8ab9c;
+    --ed-muted: #8f8474;
+    --ed-line: #322b22;
+    --ed-line-strong: #473d30;
+    --ed-focus: rgba(255, 120, 70, 0.5);
+  }
+}
+
+/* =============================================================
+   Base — scopée au site public
+   ============================================================= */
+
+.site-shell {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  color: var(--ed-ink);
+  background: var(--ed-paper);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  /* Sticky footer : colonne flex pleine hauteur. Le footer garde son style,
+     il est juste poussé en bas quand la page est courte. */
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+/* Garde-fou : les enfants directs restent pleine largeur (aucun rétrécissement) */
+.site-shell > * {
+  width: 100%;
+}
+
+.site-shell h1,
+.site-shell h2,
+.site-shell h3,
+.site-shell h4,
+.site-shell blockquote {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--ed-ink);
+  text-wrap: balance;
+}
+
+.site-shell p {
+  max-width: 68ch;
+}
+
+.site-shell :focus-visible {
+  outline: 3px solid var(--ed-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Lien d'évitement clavier — invisible tant qu'il n'a pas le focus,
+   apparaît en haut à gauche au tab pour sauter la navigation. */
+.site-shell .skip-link {
+  position: absolute;
+  top: -100px;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.6rem 1.1rem;
+  background: var(--ed-ink);
+  color: var(--ed-paper);
+  border-radius: var(--ed-radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.site-shell .skip-link:focus {
+  top: 1rem;
+}
+
+/* Chapô / eyebrow — petites capitales terracotta */
+.site-shell .eyebrow {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ed-clay);
+  margin: 0 0 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.site-shell .eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: var(--ed-clay);
+  opacity: 0.6;
+}
+
+/* =============================================================
+   Boutons
+   ============================================================= */
+
+.site-shell .btn,
+.site-shell .button,
+.site-shell .actions a,
+.site-shell .cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: 0.72em 1.35em;
+  border-radius: var(--ed-radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.site-shell .btn.primary,
+.site-shell .button.primary,
+.site-shell .actions a.primary,
+.site-shell .cta {
+  background: var(--ed-brand);
+  color: #fff;
+}
+.site-shell .btn.primary:hover,
+.site-shell .button.primary:hover,
+.site-shell .actions a.primary:hover,
+.site-shell .cta:hover {
+  background: var(--ed-brand-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(255, 77, 18, 0.24);
+}
+.site-shell .btn.primary:active,
+.site-shell .button.primary:active,
+.site-shell .actions a.primary:active,
+.site-shell .cta:active {
+  transform: translateY(0);
+}
+
+.site-shell .btn.secondary,
+.site-shell .button.secondary,
+.site-shell .actions a.secondary {
+  background: transparent;
+  color: var(--ed-ink);
+  border-color: var(--ed-line-strong);
+}
+.site-shell .btn.secondary:hover,
+.site-shell .button.secondary:hover,
+.site-shell .actions a.secondary:hover {
+  border-color: var(--ed-ink);
+  background: var(--ed-raise);
+  transform: translateY(-2px);
+}
+.site-shell .btn.secondary:active,
+.site-shell .button.secondary:active,
+.site-shell .actions a.secondary:active {
+  transform: translateY(0);
+}

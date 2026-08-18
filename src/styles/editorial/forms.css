@@ -1,0 +1,260 @@
+/* Page contact + formulaires en modale (FormModal) — extrait de editorial.css (chapitre socle technique, nettoyage CSS). */
+
+/* =============================================================
+   Page « Nous joindre » (contact) + formulaire
+   ============================================================= */
+
+.site-shell .contact-page {
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4.5rem) var(--ed-gutter) clamp(3rem, 6vw, 5rem);
+}
+.site-shell .contact-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+.site-shell .contact-intro h1 {
+  font-size: var(--ed-step-5);
+  margin: 0 0 1.25rem;
+}
+.site-shell .contact-intro > p {
+  color: var(--ed-ink-soft);
+  font-size: var(--ed-step-1);
+  line-height: 1.65;
+}
+.site-shell .contact-coords {
+  margin: 2rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+.site-shell .contact-coords dt {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ed-clay);
+  margin-bottom: 0.35rem;
+}
+.site-shell .contact-coords dd {
+  margin: 0;
+  color: var(--ed-ink-soft);
+}
+
+.site-shell .contact-form-wrap {
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+.site-shell .contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.site-shell .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.site-shell .field label,
+.site-shell .field-checkbox label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ed-ink);
+}
+.site-shell .field input,
+.site-shell .field textarea {
+  font: inherit;
+  color: var(--ed-ink);
+  background: var(--ed-paper);
+  border: 1px solid var(--ed-line-strong);
+  border-radius: var(--ed-radius);
+  padding: 0.7rem 0.85rem;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+.site-shell .field input:focus,
+.site-shell .field textarea:focus {
+  outline: none;
+  border-color: var(--ed-clay);
+  box-shadow: 0 0 0 3px var(--ed-focus);
+}
+.site-shell .field input[aria-invalid="true"],
+.site-shell .field textarea[aria-invalid="true"] {
+  border-color: var(--ed-brand);
+}
+.site-shell .field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+.site-shell .field-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.site-shell .field-checkbox input {
+  margin-top: 0.2rem;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ed-brand);
+}
+.site-shell .field-checkbox label {
+  font-weight: 400;
+  color: var(--ed-ink-soft);
+  font-size: 0.9rem;
+}
+.site-shell .field-error {
+  color: var(--ed-brand-strong);
+  font-size: 0.85rem;
+}
+.site-shell .contact-form .button.primary {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+.site-shell .contact-success {
+  text-align: center;
+  padding: clamp(2rem, 5vw, 3.5rem);
+}
+.site-shell .contact-success h3 {
+  font-size: var(--ed-step-4);
+  margin: 0.5rem 0 0.75rem;
+}
+.site-shell .contact-success p {
+  color: var(--ed-ink-soft);
+  margin: 0 auto;
+}
+
+@media (max-width: 820px) {
+  .site-shell .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =============================================================
+   Formulaires en modale (FormModal) — habillage éditorial
+   ============================================================= */
+
+.site-shell .modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(28, 23, 20, 0.55);
+  backdrop-filter: blur(3px);
+}
+.site-shell .modal {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--ed-paper);
+  border-radius: var(--ed-radius-lg);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  box-shadow: 0 30px 80px rgba(28, 23, 20, 0.3);
+}
+.site-shell .modal > .button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+  background: transparent;
+  border: 1px solid var(--ed-line-strong);
+  color: var(--ed-ink-soft);
+  border-radius: var(--ed-radius);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+.site-shell .modal > .button:hover {
+  border-color: var(--ed-ink);
+  color: var(--ed-ink);
+}
+.site-shell .modal .eyebrow {
+  margin-top: 0;
+}
+.site-shell .modal h2 {
+  font-size: var(--ed-step-4);
+  margin: 0.25rem 0 1.5rem;
+}
+.site-shell .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.site-shell .form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ed-ink);
+}
+.site-shell .form-grid input {
+  font: inherit;
+  font-weight: 400;
+  color: var(--ed-ink);
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line-strong);
+  border-radius: var(--ed-radius);
+  padding: 0.6rem 0.75rem;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+.site-shell .form-grid input:focus {
+  outline: none;
+  border-color: var(--ed-clay);
+  box-shadow: 0 0 0 3px var(--ed-focus);
+}
+.site-shell .form-grid label:has(input[type="checkbox"]) {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  grid-column: 1 / -1;
+  font-weight: 400;
+  color: var(--ed-ink-soft);
+}
+.site-shell .form-grid input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ed-brand);
+}
+.site-shell .form-grid label:has(input[type="file"]) {
+  grid-column: 1 / -1;
+}
+.site-shell .form-grid input[type="file"] {
+  padding: 0.5rem;
+  font-size: 0.85rem;
+}
+.site-shell .form-grid > .button.primary {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 560px) {
+  .site-shell .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Activités récentes : pile sur mobile/tablette */
+@media (max-width: 820px) {
+  .site-shell .home-activity-list {
+    grid-template-columns: 1fr;
+  }
+  .site-shell .home-activity-list li + li {
+    border-left: 0;
+    border-top: 1px solid var(--ed-line);
+  }
+}

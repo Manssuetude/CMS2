@@ -1,0 +1,530 @@
+/* Page d'accueil éditoriale — extrait de editorial.css (chapitre socle technique, nettoyage CSS). */
+
+/* =============================================================
+   Page d'accueil (éditoriale)
+   ============================================================= */
+
+.site-shell .home > section {
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding-inline: var(--ed-gutter);
+}
+
+/* 1 — Hero : identité de l'association d'abord */
+.site-shell .home-hero {
+  display: grid;
+  grid-template-columns: 0.72fr 1.28fr;
+  gap: clamp(1.75rem, 4vw, 4rem);
+  align-items: center;
+  padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(2.5rem, 5vw, 4rem);
+}
+.site-shell .home-hero--no-image {
+  grid-template-columns: 1fr;
+}
+.site-shell .home-hero-copy h1 {
+  font-size: var(--ed-step-5);
+  font-weight: 400;
+  margin: 0 0 1.25rem;
+  max-width: 22ch;
+}
+/* Initiale calligraphiée : le « M » de Manssuétude dans le titre */
+.site-shell .home-hero-initial {
+  font-family: var(--font-script), "Segoe Script", cursive;
+  color: var(--ed-brand);
+  font-size: 1.7em;
+  line-height: 0;
+  padding-right: 0.02em;
+}
+.site-shell .home-hero-intro {
+  font-size: var(--ed-step-1);
+  color: var(--ed-ink-soft);
+  line-height: 1.6;
+  margin: 0 0 1.75rem;
+}
+.site-shell .home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+.site-shell .home-hero-media {
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  border-radius: 0;
+}
+.site-shell .home-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.site-shell .home-hero-media:hover img {
+  transform: scale(1.03);
+}
+
+/* 1bis — Chiffres clés (compteurs administrables) */
+.site-shell .home-impact {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(1.75rem, 5vw, 4rem);
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) var(--ed-gutter);
+  border-top: 1px solid var(--ed-line);
+  border-bottom: 1px solid var(--ed-line);
+}
+.site-shell .home-impact-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.2rem;
+}
+.site-shell .home-impact-stat strong {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--ed-brand);
+  line-height: 1;
+}
+.site-shell .home-impact-stat span {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ed-ink-soft);
+}
+
+/* 2 — Sujet du moment */
+.site-shell .home-focus {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  margin-block: clamp(2rem, 5vw, 4rem);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  color: inherit;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.site-shell .home-focus:hover {
+  border-color: var(--ed-line-strong);
+  transform: translateY(-3px);
+  box-shadow: var(--ed-shadow, 0 18px 40px rgba(28, 23, 20, 0.1));
+}
+/* Variante sans image : sujet en pleine largeur */
+.site-shell .home-focus--no-image {
+  grid-template-columns: 1fr;
+}
+.site-shell .home-focus-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 5 / 4;
+  border-radius: 0;
+}
+.site-shell .home-focus-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.site-shell .home-focus:hover .home-focus-media img {
+  transform: scale(1.03);
+}
+.site-shell .home-focus-copy h2 {
+  font-size: var(--ed-step-4);
+  margin: 0 0 1rem;
+}
+.site-shell .home-focus-desc {
+  color: var(--ed-ink-soft);
+  margin: 0 0 1.25rem;
+  max-width: 60ch;
+}
+.site-shell .home-focus-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-weight: 600;
+  color: var(--ed-clay);
+}
+.site-shell .home-focus-link span {
+  transition: transform 0.18s ease;
+}
+.site-shell .home-focus:hover .home-focus-link span {
+  transform: translateX(4px);
+}
+
+/* Sections génériques */
+.site-shell .home-section {
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+.site-shell .home-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--ed-line);
+}
+.site-shell .home-section-head h2 {
+  font-size: var(--ed-step-4);
+  margin: 0;
+}
+.site-shell .home-section-more {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ed-clay);
+  display: inline-flex;
+  gap: 0.4em;
+}
+.site-shell .home-section-more span {
+  transition: transform 0.18s ease;
+}
+.site-shell .home-section-more:hover span {
+  transform: translateX(4px);
+}
+
+/* 3 — Activités (liste éditoriale) */
+.site-shell .home-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  /* Colonnes = nombre d'activités affichées (1 à 3), piloté par --acount. */
+  grid-template-columns: repeat(var(--acount, 3), minmax(0, 1fr));
+  border-top: 1px solid var(--ed-line);
+  border-bottom: 1px solid var(--ed-line);
+}
+.site-shell .home-activity-list li + li {
+  border-left: 1px solid var(--ed-line);
+}
+.site-shell .home-activity-list a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
+  padding: clamp(2rem, 3vw, 3rem) clamp(1.5rem, 2.5vw, 2.5rem);
+  text-align: center;
+  transition: background 0.2s ease;
+}
+.site-shell .home-activity-list a:hover {
+  background: color-mix(in srgb, var(--ed-sink) 35%, transparent);
+}
+.site-shell .home-activity-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+.site-shell .home-activity-format {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ed-clay);
+  padding: 0.32rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--ed-clay) 35%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ed-clay) 7%, var(--ed-paper));
+}
+.site-shell .home-activity-date {
+  font-size: var(--ed-step-small);
+  color: var(--ed-muted);
+}
+.site-shell .home-activity-list h3 {
+  font-size: var(--ed-step-4);
+  margin: 0 0 0.75rem;
+  max-width: 22ch;
+  transition: color 0.16s ease;
+}
+.site-shell .home-activity-list a:hover h3 {
+  color: var(--ed-clay);
+}
+.site-shell .home-activity-list p {
+  color: var(--ed-ink-soft);
+  margin: 0 auto;
+  max-width: 54ch;
+  line-height: 1.6;
+}
+
+/* 4 — Productions (grille de cartes) */
+.site-shell .home-production-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.site-shell .home-production-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 2rem;
+  min-height: 260px;
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.site-shell .home-production-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--ed-line-strong);
+}
+.site-shell .home-production-type {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ed-clay);
+}
+.site-shell .home-production-card h3 {
+  font-size: var(--ed-step-3);
+  margin: 0;
+}
+.site-shell .home-production-card p {
+  color: var(--ed-ink-soft);
+  font-size: 1rem;
+  margin: 0;
+}
+.site-shell .home-production-author {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--ed-muted);
+}
+
+/* Thèmes en vedette : grille adaptative au nombre (cartes de largeur fixe,
+   centrées quand il y en a peu, réparties quand il y en a plus). */
+.site-shell .home-themes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+.site-shell .home-theme-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.75rem;
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease;
+}
+.site-shell .home-theme-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--ed-line-strong);
+}
+.site-shell .home-theme-kicker {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ed-clay);
+}
+.site-shell .home-theme-card h3 {
+  font-size: var(--ed-step-3);
+  margin: 0;
+}
+.site-shell .home-theme-card p {
+  color: var(--ed-ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 5 — Méthode PERCA */
+.site-shell .home-method {
+  --method-bg: var(--ed-ink);
+  --method-fg: var(--ed-paper);
+  max-width: none;
+  background: var(--method-bg);
+  color: var(--method-fg);
+  margin-block: clamp(2.5rem, 5vw, 4rem);
+  padding-block: clamp(3rem, 6vw, 5rem);
+}
+/* En sombre, l'inversion ink/paper rendrait le bloc blanc : on fixe une teinte
+   chaude « espresso » distincte (ni blanc ni noir) avec texte crème. */
+:root[data-theme="dark"] .site-shell .home-method {
+  --method-bg: #2b211a;
+  --method-fg: #f4ede3;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .site-shell .home-method {
+    --method-bg: #2b211a;
+    --method-fg: #f4ede3;
+  }
+}
+.site-shell .home-method-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+.site-shell .home-method-label {
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--method-fg) 62%, transparent);
+  margin: 0 0 1.5rem;
+}
+.site-shell .home-method-letters {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.5rem, 3vw, 1.75rem);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  color: var(--ed-brand);
+  line-height: 1;
+  margin-bottom: 1.75rem;
+}
+.site-shell .home-method-letters span {
+  opacity: 0.92;
+}
+.site-shell .home-method-text {
+  font-size: var(--ed-step-2);
+  color: color-mix(in srgb, var(--method-fg) 82%, transparent);
+  margin: 0 auto 2rem;
+  max-width: 52ch;
+}
+.site-shell .home-method-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-weight: 600;
+  color: var(--method-fg);
+  border-bottom: 1px solid color-mix(in srgb, var(--method-fg) 40%, transparent);
+  padding-bottom: 2px;
+}
+.site-shell .home-method-link span {
+  transition: transform 0.18s ease;
+}
+.site-shell .home-method-link:hover span {
+  transform: translateX(4px);
+}
+
+/* 6 — Newsletter */
+.site-shell .home-newsletter {
+  background: var(--ed-sink);
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+.site-shell .home-newsletter-panel {
+  display: grid;
+  grid-template-columns: 1.1fr auto;
+  align-items: center;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding: clamp(2rem, 4vw, 3rem) clamp(2rem, 5vw, 3.5rem);
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: calc(var(--ed-radius) * 2);
+  box-shadow: 0 20px 45px -30px rgba(0, 0, 0, 0.35);
+}
+.site-shell .home-newsletter-text .eyebrow {
+  margin-bottom: 0.6rem;
+}
+.site-shell .home-newsletter-text h2 {
+  font-size: var(--ed-step-4);
+  margin: 0 0 0.5rem;
+}
+.site-shell .home-newsletter-text > p {
+  color: var(--ed-ink-soft);
+  margin: 0;
+  max-width: 42ch;
+}
+@media (max-width: 720px) {
+  .site-shell .home-newsletter-panel {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+  .site-shell .home-newsletter-panel .newsletter-form-row {
+    max-width: none;
+  }
+}
+
+.site-shell .home-join {
+  text-align: center;
+  padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(3rem, 6vw, 5rem);
+}
+.site-shell .home-join h2 {
+  font-size: var(--ed-step-5);
+  max-width: 20ch;
+  margin: 0 auto 2rem;
+}
+.site-shell .home-join-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+/* Responsive accueil */
+@media (max-width: 820px) {
+  .site-shell .home-hero,
+  .site-shell .home-focus {
+    grid-template-columns: 1fr;
+  }
+  .site-shell .home-focus-media {
+    order: 2;
+  }
+  .site-shell .home-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  /* Productions récentes → carrousel swipe (défilement auto en JS) */
+  .site-shell .home-production-grid {
+    display: flex;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    margin-inline: calc(-1 * var(--ed-gutter));
+    padding-inline: var(--ed-gutter);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .site-shell .home-production-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .site-shell .home-production-card {
+    flex: 0 0 82%;
+    scroll-snap-align: start;
+  }
+}
+
+/* =============================================================
+   Respect de prefers-reduced-motion
+   ============================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell *,
+  .site-shell *::before,
+  .site-shell *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .site-shell .home-hero-media:hover img,
+  .site-shell .home-focus-media:hover img {
+    transform: none;
+  }
+  .site-shell .btn:hover,
+  .site-shell .button:hover,
+  .site-shell .cta:hover,
+  .site-shell .actions a:hover {
+    transform: none;
+  }
+}
