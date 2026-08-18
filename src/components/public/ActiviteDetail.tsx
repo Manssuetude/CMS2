@@ -3,6 +3,8 @@ import type { Activity } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { resolveRegistrationStatus, registrationStatusLabel } from "@/utils/registrationStatus";
+import { JsonLd } from "@/components/public/JsonLd";
+import { buildEventJsonLd } from "@/lib/jsonLd";
 
 const FORMAT_LABEL: Record<string, string> = {
   "Debat & Conference": "Débat & Conférence",
@@ -29,6 +31,16 @@ export function ActiviteDetail({ item }: { item: Activity }) {
 
   return (
     <>
+      <JsonLd
+        data={buildEventJsonLd({
+          title: item.title,
+          description: item.description,
+          path: `/activites/${item.slug}`,
+          startDate: item.date ? (item.startTime ? `${item.date}T${item.startTime}` : item.date) : null,
+          endDate: item.date && item.endTime ? `${item.date}T${item.endTime}` : null,
+          location: item.location,
+        })}
+      />
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="hero hero--detail">
         <div className="hero-copy">

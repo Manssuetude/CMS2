@@ -151,10 +151,10 @@
 
 ### 17. SEO, partage et navigation
 
-- [ ] Ajouter des champs meta title/description administrables sur productions, activités, projets et thèmes (actuellement réservés aux pages statiques).
-- [ ] Ajouter des données structurées JSON-LD spécifiques par type de contenu (Article, Event, Person) en complément du JSON-LD global existant.
-- [ ] Ajouter un mécanisme de redirections 301.
-- [ ] Enrichir la page 404 (recherche + recommandations de contenus).
+- [x] Ajouter des champs meta title/description administrables sur productions, activités, projets et thèmes (mêmes colonnes `seo_title`/`seo_description` que les pages statiques ; les fiches d'édition affichent une section SEO dédiée, avec repli automatique sur le titre/la description existants si non renseignés).
+- [x] Ajouter des données structurées JSON-LD spécifiques par type de contenu (Article sur productions et Journal, Event sur activités) en complément du JSON-LD global existant. Person intégré comme `author` structuré de l'Article plutôt qu'en page dédiée (pas de page publique par auteur).
+- [x] Ajouter un mécanisme de redirections 301. Table `redirects` administrable (`/admin/redirects`), appliquée par le middleware sur les routes publiques (lookup léger via l'API REST Supabase, politique RLS de lecture anonyme dédiée à cette table).
+- [x] Enrichir la page 404 (recherche + recommandations de contenus). `MaintenanceNotice` inchangé (réutilisé ailleurs pour d'autres états vides) ; formulaire de recherche + sélection de productions/thèmes ajoutés autour, uniquement sur la 404 racine.
 
 ### 18. Socle technique
 

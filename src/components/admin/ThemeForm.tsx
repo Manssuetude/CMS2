@@ -56,6 +56,23 @@ export function ThemeForm({ initialData, action }: Props) {
         </div>
 
         <div className="form-section">
+          <p className="form-section-title">SEO</p>
+          <div className="form-field">
+            <label className="field-label">Titre SEO (onglet navigateur)</label>
+            <input name="seoTitle" defaultValue={initialData.seoTitle ?? ""} placeholder={initialData.title} />
+          </div>
+          <div className="form-field">
+            <label className="field-label">Description SEO</label>
+            <textarea
+              name="seoDescription"
+              defaultValue={initialData.seoDescription ?? ""}
+              rows={3}
+              placeholder={initialData.description ?? ""}
+            />
+          </div>
+        </div>
+
+        <div className="form-section">
           <p className="form-section-title">Publication</p>
           <div className="form-row">
             <div className="form-field">

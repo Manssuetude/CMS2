@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!item) return {};
     const imageUrl = await mediaRepository.getResourceUrl(item.gallery[0]);
     return buildDetailMetadata({
-      title: item.title,
-      description: item.description,
+      title: item.seoTitle || item.title,
+      description: item.seoDescription || item.description,
       path: `/activites/${item.slug}`,
       imageUrl,
       ogType: "article",

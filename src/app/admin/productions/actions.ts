@@ -36,6 +36,8 @@ const schema = z.object({
   fileId: z.string().optional().nullable(),
   downloadLabel: z.string().optional().nullable(),
   videoUrl: z.string().optional().nullable(),
+  seoTitle: z.string().optional().nullable(),
+  seoDescription: z.string().optional().nullable(),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -52,6 +54,8 @@ function toInput(data: z.infer<typeof schema>) {
     file_id: data.fileId || null,
     download_label: data.downloadLabel || null,
     video_url: data.videoUrl || null,
+    seo_title: data.seoTitle || null,
+    seo_description: data.seoDescription || null,
   };
 }
 
@@ -76,6 +80,8 @@ export async function createProductionAction(_: string | null, formData: FormDat
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
     videoUrl: formData.get("videoUrl") || null,
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {
@@ -130,6 +136,8 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
     videoUrl: formData.get("videoUrl") || null,
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {

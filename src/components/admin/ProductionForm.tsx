@@ -323,6 +323,24 @@ export function ProductionForm({
           </div>
         </div>
 
+        {/* SEO */}
+        <div className="form-section">
+          <p className="form-section-title">SEO</p>
+          <div className="form-field">
+            <label className="field-label">Titre SEO (onglet navigateur)</label>
+            <input name="seoTitle" defaultValue={initialData?.seoTitle ?? ""} placeholder={initialData?.title} />
+          </div>
+          <div className="form-field">
+            <label className="field-label">Description SEO</label>
+            <textarea
+              name="seoDescription"
+              defaultValue={initialData?.seoDescription ?? ""}
+              rows={3}
+              placeholder={initialData?.description ?? ""}
+            />
+          </div>
+        </div>
+
         {/* Publication */}
         <div className="form-section">
           <p className="form-section-title">Publication</p>

@@ -27,6 +27,8 @@ function mapActivity(row: DataRow): Activity {
     documents: asStringArray(row.documents),
     speakers: asRecordArray(row.speakers).map(mapSpeaker),
     featured: asBoolean(row.featured),
+    seoTitle: asNullableString(row.seo_title),
+    seoDescription: asNullableString(row.seo_description),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };

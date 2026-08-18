@@ -6,7 +6,9 @@ import { ShareButtons } from "@/components/public/ShareButtons";
 import { ReadingProgressBar } from "@/components/public/ReadingProgressBar";
 import { CiteButton } from "@/components/public/CiteButton";
 import { QuoteShareBar } from "@/components/public/QuoteShareBar";
+import { JsonLd } from "@/components/public/JsonLd";
 import { SITE_URL } from "@/constants/site";
+import { buildArticleJsonLd } from "@/lib/jsonLd";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
@@ -26,6 +28,17 @@ export function JournalEntryDetail({ item, author, imageUrl, project, activity }
 
   return (
     <>
+      <JsonLd
+        data={buildArticleJsonLd({
+          title: item.title,
+          description: item.excerpt,
+          path: `/journal/${item.slug}`,
+          imageUrl,
+          authorName: author?.name,
+          datePublished: item.date,
+          dateModified: item.updatedAt,
+        })}
+      />
       {item.body && <ReadingProgressBar />}
       <section className="hero hero--detail hero--detail-split">
         <div className="hero-copy">

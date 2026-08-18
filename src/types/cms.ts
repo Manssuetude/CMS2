@@ -165,6 +165,8 @@ export type Theme = {
   progressStatus?: ProgressStatus | null;
   featured: boolean;
   tags: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -191,6 +193,8 @@ export type Production = {
   subThemeIds?: string[];
   authorIds?: string[];
   resourceIds?: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -240,6 +244,8 @@ export type Activity = {
   featured: boolean;
   themeIds?: string[];
   projectIds?: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -261,6 +267,8 @@ export type Project = {
   themeIds?: string[];
   productionIds?: string[];
   activityIds?: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -332,6 +340,14 @@ export type Dossier = {
 // /admin/pages. Clé absente ou true = visible ; false = masquée (la page
 // reste accessible par son URL directe, seule l'entrée de menu disparaît).
 export type NavVisibility = Record<string, boolean>;
+
+// Redirection 301 administrable (ex. ancienne URL migrée vers une nouvelle).
+export type Redirect = {
+  id: string;
+  fromPath: string;
+  toPath: string;
+  createdAt: string;
+};
 
 export type FormSubmission = {
   id: string;

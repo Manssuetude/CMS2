@@ -11,8 +11,10 @@ import { ShareButtons } from "@/components/public/ShareButtons";
 import { ReadingProgressBar } from "@/components/public/ReadingProgressBar";
 import { CiteButton } from "@/components/public/CiteButton";
 import { QuoteShareBar } from "@/components/public/QuoteShareBar";
+import { JsonLd } from "@/components/public/JsonLd";
 import { SITE_URL } from "@/constants/site";
 import { getEmbedUrl } from "@/utils/videoEmbed";
+import { buildArticleJsonLd } from "@/lib/jsonLd";
 
 const TYPE_LABEL: Record<string, string> = {
   Article: "Article",
@@ -59,6 +61,16 @@ export function ProductionDetail({
 
   return (
     <>
+      <JsonLd
+        data={buildArticleJsonLd({
+          title: item.title,
+          description: item.description,
+          path: `/productions/${item.slug}`,
+          authorName: authorNames || item.author,
+          datePublished: item.date,
+          dateModified: item.updatedAt,
+        })}
+      />
       {item.body && <ReadingProgressBar />}
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className={`hero hero--detail${hasAside ? " hero--detail-split" : ""}`}>

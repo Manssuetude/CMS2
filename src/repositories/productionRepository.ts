@@ -27,6 +27,8 @@ function mapProduction(row: DataRow): Production {
     status: asString(row.status, "draft") as ContentStatus,
     featured: asBoolean(row.featured),
     downloadLabel: asNullableString(row.download_label),
+    seoTitle: asNullableString(row.seo_title),
+    seoDescription: asNullableString(row.seo_description),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };

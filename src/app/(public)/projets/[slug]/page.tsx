@@ -16,8 +16,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const item = items.find((p) => p.slug === slug);
     if (!item) return {};
     return buildDetailMetadata({
-      title: item.title,
-      description: item.description,
+      title: item.seoTitle || item.title,
+      description: item.seoDescription || item.description,
       path: `/projets/${item.slug}`,
       ogType: "website",
     });

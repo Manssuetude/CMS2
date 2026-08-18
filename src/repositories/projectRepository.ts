@@ -17,6 +17,8 @@ function mapProject(row: DataRow): Project {
     deliverables: asStringArray(row.deliverables),
     documents: asStringArray(row.documents),
     featured: asBoolean(row.featured),
+    seoTitle: asNullableString(row.seo_title),
+    seoDescription: asNullableString(row.seo_description),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };

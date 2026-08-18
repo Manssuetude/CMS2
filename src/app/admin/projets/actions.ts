@@ -16,6 +16,8 @@ const schema = z.object({
   featured: z.boolean().default(false),
   description: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
+  seoTitle: z.string().optional().nullable(),
+  seoDescription: z.string().optional().nullable(),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -28,6 +30,8 @@ function toInput(data: z.infer<typeof schema>) {
     featured: data.featured,
     description: data.description || null,
     body: data.body || null,
+    seo_title: data.seoTitle || null,
+    seo_description: data.seoDescription || null,
   };
 }
 
@@ -48,6 +52,8 @@ export async function createProjectAction(_: string | null, formData: FormData):
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
     body: formData.get("body") || null,
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {
@@ -88,6 +94,8 @@ export async function updateProjectAction(_: string | null, formData: FormData):
     featured: formData.get("featured") === "on",
     description: formData.get("description") || null,
     body: formData.get("body") || null,
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {

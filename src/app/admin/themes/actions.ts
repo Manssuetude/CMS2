@@ -9,6 +9,8 @@ import { logAction } from "@/lib/audit";
 const schema = z.object({
   description: z.string().optional().nullable(),
   longDescription: z.string().optional().nullable(),
+  seoTitle: z.string().optional().nullable(),
+  seoDescription: z.string().optional().nullable(),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
   featured: z.boolean().default(false),
 });
@@ -73,6 +75,8 @@ export async function updateThemeAction(_: string | null, formData: FormData): P
   const parsed = schema.safeParse({
     description: formData.get("description") || null,
     longDescription: formData.get("longDescription") || null,
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
     status: formData.get("status") || "draft",
     featured: formData.get("featured") === "on",
   });
@@ -85,6 +89,8 @@ export async function updateThemeAction(_: string | null, formData: FormData): P
     await themeRepository.updateTheme(id, {
       description: parsed.data.description || null,
       long_description: parsed.data.longDescription || null,
+      seo_title: parsed.data.seoTitle || null,
+      seo_description: parsed.data.seoDescription || null,
       status: parsed.data.status,
       featured: parsed.data.featured,
     });

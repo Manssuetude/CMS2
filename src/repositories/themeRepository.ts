@@ -16,6 +16,8 @@ function mapTheme(row: DataRow): Theme {
     progressStatus: asNullableString(row.progress_status) as ProgressStatus | null,
     featured: asBoolean(row.featured),
     tags: asStringArray(row.tags),
+    seoTitle: asNullableString(row.seo_title),
+    seoDescription: asNullableString(row.seo_description),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };

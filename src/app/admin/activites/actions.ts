@@ -24,6 +24,8 @@ const schema = z.object({
   description: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   speakers: z.array(speakerSchema).default([]),
+  seoTitle: z.string().optional().nullable(),
+  seoDescription: z.string().optional().nullable(),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -42,6 +44,8 @@ function toInput(data: z.infer<typeof schema>) {
     description: data.description || null,
     body: data.body || null,
     speakers: data.speakers,
+    seo_title: data.seoTitle || null,
+    seo_description: data.seoDescription || null,
   };
 }
 
@@ -78,6 +82,8 @@ export async function createActivityAction(_: string | null, formData: FormData)
     description: formData.get("description") || null,
     body: formData.get("body") || null,
     speakers: parseSpeakers(formData),
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {
@@ -122,6 +128,8 @@ export async function updateActivityAction(_: string | null, formData: FormData)
     description: formData.get("description") || null,
     body: formData.get("body") || null,
     speakers: parseSpeakers(formData),
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {
