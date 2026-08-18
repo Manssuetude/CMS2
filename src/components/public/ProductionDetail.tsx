@@ -8,6 +8,9 @@ import { estimateReadingTime } from "@/utils/readingTime";
 import { extractHeadings } from "@/utils/tableOfContents";
 import { TableOfContents } from "@/components/public/TableOfContents";
 import { ShareButtons } from "@/components/public/ShareButtons";
+import { ReadingProgressBar } from "@/components/public/ReadingProgressBar";
+import { CiteButton } from "@/components/public/CiteButton";
+import { QuoteShareBar } from "@/components/public/QuoteShareBar";
 import { SITE_URL } from "@/constants/site";
 import { getEmbedUrl } from "@/utils/videoEmbed";
 
@@ -51,9 +54,12 @@ export function ProductionDetail({
   const headings = sanitizedBody ? extractHeadings(sanitizedBody) : [];
   const isAudioFile = item.videoUrl ? /\.(mp3|wav|m4a|ogg)$/i.test(item.videoUrl) : false;
   const videoEmbedUrl = item.videoUrl && !isAudioFile ? getEmbedUrl(item.videoUrl) : null;
+  const isPdfFile = fileUrl ? /\.pdf($|\?)/i.test(fileUrl) : false;
+  const pageUrl = `${SITE_URL}/productions/${item.slug}`;
 
   return (
     <>
+      {item.body && <ReadingProgressBar />}
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className={`hero hero--detail${hasAside ? " hero--detail-split" : ""}`}>
         <div className="hero-copy">
@@ -148,13 +154,25 @@ export function ProductionDetail({
         </section>
       )}
 
+      {/* ── Aperçu PDF ───────────────────────────────────────────── */}
+      {isPdfFile && fileUrl && (
+        <section className="section">
+          <div className="detail-body">
+            <iframe src={fileUrl} title={`Aperçu — ${item.title}`} className="pdf-preview" />
+          </div>
+        </section>
+      )}
+
       {/* ── Contenu principal ──────────────────────────────────── */}
       <section className="section">
         <div className="detail-body">
           {item.body ? (
             <>
               <TableOfContents headings={headings} />
-              <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
+              <QuoteShareBar url={pageUrl}>
+                <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
+              </QuoteShareBar>
+              <CiteButton title={item.title} author={authorNames || item.author} date={item.date} url={pageUrl} />
             </>
           ) : item.description ? (
             <p className="rich-text">{item.description}</p>

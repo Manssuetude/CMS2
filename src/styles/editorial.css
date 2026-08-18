@@ -1907,6 +1907,90 @@
   margin-bottom: 2rem;
 }
 
+/* Aperçu PDF intégré — évite d'ouvrir un nouvel onglet juste pour un coup d'œil. */
+.site-shell .pdf-preview {
+  width: 100%;
+  height: 80vh;
+  min-height: 480px;
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+}
+
+/* Barre de progression de lecture — fixée en haut de la fenêtre, sous le
+   header sticky (z-index inférieur au header pour ne pas le chevaucher). */
+.site-shell .reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 19;
+  background: transparent;
+}
+.site-shell .reading-progress-bar {
+  height: 100%;
+  background: var(--ed-brand);
+  transition: width 0.1s linear;
+}
+
+/* Citation bibliographique générée */
+.site-shell .cite-block {
+  margin-top: 2rem;
+  padding: 1.1rem 1.35rem;
+  background: var(--ed-sink);
+  border-radius: var(--ed-radius);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  max-width: 820px;
+}
+.site-shell .cite-text {
+  flex: 1 1 320px;
+  margin: 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--ed-ink-soft);
+}
+
+/* Barre flottante de partage d'extrait — apparaît au-dessus d'un texte sélectionné */
+.site-shell .quote-share-bar {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.55rem;
+  background: var(--ed-ink);
+  border-radius: var(--ed-radius);
+  box-shadow: var(--shadow-modal, 0 12px 30px rgba(0, 0, 0, 0.3));
+  z-index: 30;
+}
+.site-shell .quote-share-bar a,
+.site-shell .quote-share-bar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ed-paper);
+  cursor: pointer;
+  transition: background 0.14s ease;
+}
+.site-shell .quote-share-bar a:hover,
+.site-shell .quote-share-bar button:hover {
+  background: color-mix(in srgb, var(--ed-paper) 18%, transparent);
+}
+.site-shell .quote-share-copied {
+  font-size: 0.7rem;
+  color: var(--ed-paper);
+  padding-inline: 0.3rem;
+  white-space: nowrap;
+}
+
 /* Sommaire auto-généré (titres h2/h3 du corps) — encart en tête d'article */
 .site-shell .toc {
   border: 1px solid var(--ed-line-strong);
@@ -2439,4 +2523,38 @@
   font-size: var(--ed-step-1);
   line-height: 1.8;
   color: var(--ed-ink);
+}
+
+/* =============================================================
+   Impression — ne garder que le contenu utile d'une fiche
+   ============================================================= */
+@media print {
+  .site-shell .site-header,
+  .site-shell .site-footer,
+  .site-shell .reading-progress,
+  .site-shell .quote-share-bar,
+  .site-shell .skip-link,
+  .site-shell .actions,
+  .site-shell .hero-aside,
+  .site-shell .cta,
+  .site-shell .toc,
+  .cookie-banner {
+    display: none !important;
+  }
+  .site-shell .detail-body,
+  .site-shell .hero-copy {
+    max-width: 100% !important;
+  }
+  .site-shell .rich-text {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+  }
+  .site-shell .rich-text a {
+    color: #000;
+    text-decoration: underline;
+  }
+  a[href]::after {
+    content: none !important;
+  }
 }

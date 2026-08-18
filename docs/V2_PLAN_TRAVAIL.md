@@ -112,11 +112,11 @@
 
 ### 13. Expérience de lecture avancée
 
-- [ ] Barre de progression de lecture sur les contenus longs.
-- [ ] Mode impression dédié (feuille de style `@media print`).
-- [ ] Aperçu PDF intégré (viewer, pas seulement un lien de téléchargement).
-- [ ] Fonction "Citer cette publication" (référence bibliographique générée).
-- [ ] Fonction de partage d'un extrait ou d'une citation forte.
+- [x] Barre de progression de lecture sur les contenus longs (`ReadingProgressBar`, productions et Journal).
+- [x] Mode impression dédié (`@media print` — masque header/footer/CTA/sommaire, garde le texte).
+- [x] Aperçu PDF intégré (`<iframe>` natif du navigateur, pas de nouvelle dépendance — sur les productions avec fichier PDF).
+- [x] Fonction "Citer cette publication" (`CiteButton`, référence courte générée + copie).
+- [x] Fonction de partage d'un extrait ou d'une citation forte (`QuoteShareBar`, barre flottante à la sélection de texte).
 
 ~~Gestion de versions/éditions d'une publication.~~ **Retiré du plan** (décision validée) : trop lourd pour la valeur apportée à ce stade.
 

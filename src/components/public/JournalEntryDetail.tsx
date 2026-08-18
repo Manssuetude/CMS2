@@ -3,6 +3,9 @@ import type { Activity, Author, JournalEntry, Project } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { ShareButtons } from "@/components/public/ShareButtons";
+import { ReadingProgressBar } from "@/components/public/ReadingProgressBar";
+import { CiteButton } from "@/components/public/CiteButton";
+import { QuoteShareBar } from "@/components/public/QuoteShareBar";
 import { SITE_URL } from "@/constants/site";
 
 function formatDate(d: string) {
@@ -19,9 +22,11 @@ interface Props {
 
 export function JournalEntryDetail({ item, author, imageUrl, project, activity }: Props) {
   const sanitizedBody = item.body ? sanitizeHtml(item.body) : "";
+  const pageUrl = `${SITE_URL}/journal/${item.slug}`;
 
   return (
     <>
+      {item.body && <ReadingProgressBar />}
       <section className="hero hero--detail hero--detail-split">
         <div className="hero-copy">
           <p className="eyebrow">{item.category ?? "Journal"}</p>
@@ -58,7 +63,12 @@ export function JournalEntryDetail({ item, author, imageUrl, project, activity }
       <section className="section">
         <div className="detail-body">
           {item.body ? (
-            <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
+            <>
+              <QuoteShareBar url={pageUrl}>
+                <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
+              </QuoteShareBar>
+              <CiteButton title={item.title} author={author?.name} date={item.date} url={pageUrl} />
+            </>
           ) : (
             <p style={{ color: "var(--ed-muted)" }}>Aucun contenu détaillé pour cette entrée.</p>
           )}
