@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from "@/lib/db";
-import type { ContentBlock, ContentStatus, Page, PercaStep } from "@/types/cms";
+import type { ContentBlock, ContentStatus, ImpactStat, Page, PercaStep } from "@/types/cms";
 import { asNullableString, asRecordArray, asString, type DataRow } from "@/utils/row";
 import { parseImageCrop } from "@/utils/imageCrop";
 import { normalizeUrl } from "@/repositories/mediaRepository";
@@ -15,6 +15,10 @@ function mapPercaSteps(value: unknown): PercaStep[] {
     title: asNullableString(row.title),
     body: asNullableString(row.body),
   }));
+}
+
+function mapImpactStats(value: unknown): ImpactStat[] {
+  return asRecordArray(value).map((row) => ({ label: asString(row.label), value: asString(row.value) }));
 }
 
 function mapPage(row: DataRow): Page {
@@ -38,6 +42,7 @@ function mapPage(row: DataRow): Page {
     secondaryCtaTarget: asNullableString(row.secondary_cta_target),
     sections: mapSections(row.sections),
     percaSteps: mapPercaSteps(row.perca_steps),
+    impactStats: mapImpactStats(row.impact_stats),
     seoTitle: asNullableString(row.seo_title),
     seoDescription: asNullableString(row.seo_description),
     seoImageId: asNullableString(row.seo_image_id),

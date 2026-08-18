@@ -12,6 +12,22 @@ export async function savePageBlocksAction(slug: string, blocks: ContentBlock[])
   revalidatePath(`/${slug === "accueil" ? "" : slug}`);
 }
 
+function parseImpactStats(raw: FormDataEntryValue | null) {
+  if (typeof raw !== "string" || !raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((entry) => {
+      if (!entry || typeof entry !== "object") return [];
+      const { label, value } = entry as Record<string, unknown>;
+      if (typeof label !== "string" || typeof value !== "string" || (!label.trim() && !value.trim())) return [];
+      return [{ label: label.trim(), value: value.trim() }];
+    });
+  } catch {
+    return [];
+  }
+}
+
 export async function saveHomepageFieldsAction(formData: FormData): Promise<void> {
   const fields: Record<string, unknown> = {
     body: formData.get("body") || null,
@@ -25,6 +41,7 @@ export async function saveHomepageFieldsAction(formData: FormData): Promise<void
     image_crop: formData.get("image_crop") || null,
     seo_image_id: formData.get("seo_image_id") || null,
     focus_image_crop: formData.get("focus_image_crop") || null,
+    impact_stats: parseImpactStats(formData.get("impactStats")),
     seo_title: formData.get("seo_title") || null,
     seo_description: formData.get("seo_description") || null,
   };

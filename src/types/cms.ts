@@ -117,6 +117,13 @@ export type PercaStep = {
   body?: string | null;
 };
 
+// Compteur d'impact affiché sur la page d'accueil (ex. "150 · Membres") —
+// saisi à la main par l'équipe, pas calculé automatiquement.
+export type ImpactStat = {
+  label: string;
+  value: string;
+};
+
 export type Page = {
   id: string;
   slug: string;
@@ -136,6 +143,7 @@ export type Page = {
   secondaryCtaTarget?: CtaTarget | null;
   sections: ContentBlock[];
   percaSteps?: PercaStep[];
+  impactStats?: ImpactStat[];
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImageId?: string | null;

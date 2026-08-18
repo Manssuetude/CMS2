@@ -127,10 +127,10 @@
 
 ### 15. Mesure d'impact et analytics
 
-- [ ] Compteurs administrables (membres, productions, activités, participants, projets, contributeurs).
-- [ ] Suivi des vues et téléchargements par production.
-- [ ] Suivi des inscriptions aux événements et des conversions (visiteur → newsletter/événement/candidature/contribution/don).
-- [ ] Dashboard analytics interne dans l'admin.
+- [x] Compteurs administrables (membres, productions, activités, participants, projets, contributeurs...). **Décision validée** : chiffres saisis à la main par l'équipe (`impact_stats` sur la page d'accueil, éditeur libre label/valeur dans `/admin/homepage`, affichés en page d'accueil) plutôt que calculés — un chiffre comme "membres de l'association" n'a pas de source DB naturelle, et l'équipe garde la main sur ce qui est mis en avant.
+- [ ] Suivi des vues et téléchargements par production. **Décision validée : non fait** — on s'appuie sur Vercel Analytics déjà intégré plutôt que construire des compteurs maison.
+- [ ] Suivi des inscriptions aux événements et des conversions (visiteur → newsletter/événement/candidature/contribution/don). **Non fait** : suppose un système d'inscription aux événements qui n'existe pas encore (les activités renvoient vers Eventbrite) — chantier à part entière, pas décidé cette nuit.
+- [x] Dashboard analytics interne dans l'admin. `/admin/dashboard` avait déjà activités/productions/projets/formulaires ; ajout d'un compteur Contributeurs (auteurs référencés).
 
 ---
 

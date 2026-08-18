@@ -2,6 +2,7 @@ import { pageRepository } from "@/repositories/pageRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
+import { ImpactStatsEditor } from "@/components/admin/ImpactStatsEditor";
 import { FOCUS_ASPECT, HERO_ASPECT } from "@/constants/imageAspects";
 import { saveHomepageFieldsAction } from "./actions";
 
@@ -159,6 +160,16 @@ export default async function AdminHomepage() {
               emptyOptionLabel="— aucune image (pleine largeur) —"
             />
           </div>
+        </div>
+
+        {/* ── Chiffres clés ────────────────────────────────────────── */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title">Chiffres clés</h2>
+          <p className="admin-form-section-hint">
+            Compteurs affichés sur la page d&apos;accueil (ex. « 150 · Membres »). Saisis à la main, mis à jour quand
+            vous le souhaitez.
+          </p>
+          <ImpactStatsEditor initial={page?.impactStats ?? []} />
         </div>
 
         {/* ── SEO ──────────────────────────────────────────────────── */}

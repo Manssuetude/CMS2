@@ -3,7 +3,7 @@ import { getSupabaseAdmin } from "@/lib/db";
 export const dashboardRepository = {
   async getMetrics() {
     const db = getSupabaseAdmin();
-    const [acts, prods, projs, forms] = await Promise.all([
+    const [acts, prods, projs, forms, authorsCount] = await Promise.all([
       db.from("activities").select("id, title, status, date, updated_at").order("updated_at", { ascending: false }),
       db.from("productions").select("id, title, status, updated_at").order("updated_at", { ascending: false }),
       db.from("projects").select("id, title, status, updated_at").order("updated_at", { ascending: false }),
@@ -11,8 +11,10 @@ export const dashboardRepository = {
         .from("form_submissions")
         .select("id, form_type, status, received_at, data")
         .order("received_at", { ascending: false }),
+      db.from("authors").select("id", { count: "exact", head: true }),
     ]);
     return {
+      authorsCount: authorsCount.count ?? 0,
       activities: (acts.data ?? []) as Array<{
         id: string;
         title: string;

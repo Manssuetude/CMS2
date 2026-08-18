@@ -63,6 +63,18 @@ export function HomeEditorial({
         ) : null}
       </section>
 
+      {/* 1bis — Chiffres clés (facultatif, saisis en admin) */}
+      {page.impactStats && page.impactStats.length > 0 && (
+        <section className="home-impact" aria-label="Chiffres clés">
+          {page.impactStats.map((stat, index) => (
+            <div className="home-impact-stat" key={index}>
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
+        </section>
+      )}
+
       {/* 2 — Sujet du moment : le thème sélectionné en admin (carte cliquable, image optionnelle) */}
       {focusTheme ? (
         <Link

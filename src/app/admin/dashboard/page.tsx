@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, FileText, FolderKanban, Inbox, Clock, ArrowRight } from "lucide-react";
+import { CalendarDays, FileText, FolderKanban, Inbox, Clock, ArrowRight, UserPen } from "lucide-react";
 import { dashboardRepository } from "@/repositories/dashboardRepository";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -17,7 +17,7 @@ const FORM_TYPE_LABEL: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const { activities, productions, projects, forms } = await dashboardRepository.getMetrics();
+  const { activities, productions, projects, forms, authorsCount } = await dashboardRepository.getMetrics();
 
   const now = new Date();
 
@@ -98,6 +98,19 @@ export default async function DashboardPage() {
           <div className="metric-card-sub">
             {projDraft} brouillon{projDraft !== 1 ? "s" : ""}
           </div>
+        </Link>
+
+        <Link href="/admin/auteurs" className="metric-card">
+          <div className="metric-card-header">
+            <div>
+              <div className="metric-card-label">Contributeurs</div>
+              <div className="metric-card-count">{authorsCount}</div>
+            </div>
+            <div className="metric-icon green">
+              <UserPen size={18} strokeWidth={1.75} />
+            </div>
+          </div>
+          <div className="metric-card-sub">Auteurs et autrices référencés</div>
         </Link>
 
         <Link href="/admin/forms" className="metric-card">
