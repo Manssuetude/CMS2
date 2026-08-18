@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Media } from "@/types/cms";
 
 interface Props {
@@ -106,6 +107,9 @@ export function MediaCard({ item, deleteAction, renameAction }: Props) {
           <a className="btn-sm" href={item.url} target="_blank" rel="noreferrer">
             Ouvrir
           </a>
+          <Link className="btn-sm" href={`/admin/media/${item.id}/edit`} title="Auteur, institution, date, thème...">
+            Modifier
+          </Link>
           <button className="btn-sm" type="button" onClick={copyUrl}>
             Copier URL
           </button>

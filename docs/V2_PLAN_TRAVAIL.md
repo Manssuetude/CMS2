@@ -106,8 +106,8 @@
 
 ### 12. Bibliothèque de ressources
 
-- [ ] Étendre le modèle `Media`/`Ressource` : auteur/institution, date, source, description, thème associé (au-delà des champs actuels title/description/tags/type).
-- [ ] Ajouter recherche et filtres dédiés sur `/ressources` (actuellement une simple grille sans filtre).
+- [x] Étendre le modèle `Media`/`Ressource` : auteur, institution, date de publication, thème associé (colonnes `author`/`institution`/`published_date`/`theme_id` sur `resources`). Édition via `/admin/media/[id]/edit` (nouveau, la médiathèque n'avait qu'un renommage rapide auparavant).
+- [x] Ajouter recherche et filtres dédiés sur `/ressources` (texte + type + thème). **Bonus corrigé au passage** : `/ressources` et `/ressources/[slug]` affichaient tous les médias sans filtrer sur `visibility="public"` (brouillons/privés visibles publiquement) — `mediaRepository.list()` accepte maintenant un paramètre `onlyPublic`.
 - [x] **Décision validée** : l'administration reste dans `/admin/media`, pas de section "Commission Ressources" séparée (pas de nouvelle permission RBAC à créer).
 
 ### 13. Expérience de lecture avancée

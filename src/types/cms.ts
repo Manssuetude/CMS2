@@ -85,6 +85,10 @@ export type Media = {
   alt?: string | null;
   caption?: string | null;
   description?: string | null;
+  author?: string | null;
+  institution?: string | null;
+  publishedDate?: string | null;
+  themeId?: string | null;
   tags: string[];
   visibility: Visibility;
   uploadedBy?: string | null;

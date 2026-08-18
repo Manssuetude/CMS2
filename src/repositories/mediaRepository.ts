@@ -25,6 +25,10 @@ function mapMedia(row: DataRow): Media {
     alt: asNullableString(row.alt),
     caption: asNullableString(row.caption),
     description: asNullableString(row.description),
+    author: asNullableString(row.author),
+    institution: asNullableString(row.institution),
+    publishedDate: asNullableString(row.published_date),
+    themeId: asNullableString(row.theme_id),
     tags: asStringArray(row.tags),
     visibility: asString(row.visibility, "draft") as Visibility,
     uploadedBy: asNullableString(row.uploaded_by),
@@ -34,9 +38,13 @@ function mapMedia(row: DataRow): Media {
 }
 
 export const mediaRepository = {
-  async list() {
+  // `onlyPublic` filtre sur visibility="public" — à utiliser côté public (les pages
+  // admin ont besoin de voir aussi les brouillons/ressources privées pour les liaisons).
+  async list(onlyPublic = false) {
     const db = getSupabaseAdmin();
-    const { data, error } = await db.from("resources").select("*").order("created_at", { ascending: false });
+    let query = db.from("resources").select("*").order("created_at", { ascending: false });
+    if (onlyPublic) query = query.eq("visibility", "public");
+    const { data, error } = await query;
     if (error) throw error;
     return data.map(mapMedia);
   },
@@ -74,9 +82,21 @@ export const mediaRepository = {
     if (error) throw error;
   },
 
-  async rename(id: string, title: string) {
+  async getById(id: string): Promise<Media | null> {
     const db = getSupabaseAdmin();
-    const { data, error } = await db.from("resources").update({ title }).eq("id", id).select().single();
+    const { data, error } = await db.from("resources").select("*").eq("id", id).single();
+    if (error || !data) return null;
+    return mapMedia(data as DataRow);
+  },
+
+  async updateMetadata(id: string, fields: Record<string, unknown>) {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db
+      .from("resources")
+      .update({ ...fields, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
     if (error) throw error;
     return mapMedia(data);
   },

@@ -49,7 +49,7 @@ export default async function DossierPage({ params }: { params: Promise<{ slug: 
     activityRepository.listActivities(),
     projectRepository.listProjects(),
     journalRepository.listEntries(),
-    mediaRepository.list(),
+    mediaRepository.list(true),
   ]);
 
   const resolvedItems = resolveDossierItems(dossierItems, {
