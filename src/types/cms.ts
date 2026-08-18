@@ -109,6 +109,14 @@ export type ImageCrop = {
   zoom: number;
 };
 
+// Contenu détaillé d'une étape PERCA (lettre/mot fixes, titre/corps éditables).
+export type PercaStep = {
+  letter: string;
+  word: string;
+  title?: string | null;
+  body?: string | null;
+};
+
 export type Page = {
   id: string;
   slug: string;
@@ -127,6 +135,7 @@ export type Page = {
   secondaryCtaLabel?: string | null;
   secondaryCtaTarget?: CtaTarget | null;
   sections: ContentBlock[];
+  percaSteps?: PercaStep[];
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImageId?: string | null;

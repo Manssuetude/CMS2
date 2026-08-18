@@ -122,8 +122,8 @@
 
 ### 14. PERCA dynamique
 
-- [ ] Rendre chaque étape de la méthode PERCA cliquable, avec un contenu détaillé propre par étape (au lieu du texte statique actuel).
-- [ ] Ajouter les champs admin correspondants (actuellement `/admin/perca` ne gère qu'un texte global).
+- [x] Rendre chaque étape de la méthode PERCA cliquable, avec un contenu détaillé propre par étape (déplié sur place, lettre/mot restent fixes). Une étape sans contenu reste non cliquable.
+- [x] Ajouter les champs admin correspondants (`/admin/perca` gère maintenant un titre + un corps riche par étape, en plus du texte global).
 
 ### 15. Mesure d'impact et analytics
 

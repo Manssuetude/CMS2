@@ -1,5 +1,6 @@
 import { pageRepository } from "@/repositories/pageRepository";
 import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
+import { PercaStepsEditor } from "@/components/admin/PercaStepsEditor";
 import { savePercaFieldsAction } from "./actions";
 
 export default async function AdminPerca() {
@@ -47,6 +48,16 @@ export default async function AdminPerca() {
             <label className="form-label">Description</label>
             <PercaBodyEditor initial={page?.body ?? ""} />
           </div>
+        </div>
+
+        {/* ── Étapes ───────────────────────────────────────────────── */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title">Détail de chaque étape</h2>
+          <p className="admin-form-section-hint">
+            Chaque étape devient cliquable sur la page publique et déplie son propre contenu. Laissez vide pour
+            qu&apos;elle reste non cliquable.
+          </p>
+          <PercaStepsEditor initial={page?.percaSteps ?? []} />
         </div>
 
         {/* ── SEO ──────────────────────────────────────────────────── */}

@@ -1491,34 +1491,78 @@
 }
 
 /* Étapes PERCA : cellules pleines, filet qui s'illumine et léger relief au survol.
-   Grille fluide (auto-fit) → s'adapte de 5 colonnes à 1 selon la largeur. */
+   Grille fluide (auto-fit) → s'adapte de 5 colonnes à 1 selon la largeur. Chaque
+   étape est un bouton (cliquable seulement si un contenu détaillé existe). */
 .site-shell .perca-page .perca-steps {
   margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 0;
 }
 .site-shell .perca-page .perca-steps li {
-  position: relative;
+  grid-column: span 1;
+}
+.site-shell .perca-page .perca-steps li.is-active {
+  grid-column: 1 / -1;
+}
+.site-shell .perca-step-trigger {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 0.35rem;
+  width: 100%;
   padding: 1.6rem 1.25rem 1.4rem;
-  margin-right: 0;
+  border: none;
   border-top: 2px solid var(--ed-line);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
   transition:
     border-color 0.2s ease,
     background 0.2s ease,
     transform 0.2s ease;
 }
-.site-shell .perca-page .perca-steps li:hover {
+.site-shell .perca-step-trigger:disabled {
+  cursor: default;
+}
+.site-shell .perca-step-trigger:not(:disabled):hover,
+.site-shell .perca-steps li.is-active .perca-step-trigger {
   border-top-color: var(--ed-brand);
   background: var(--ed-raise);
+}
+.site-shell .perca-step-trigger:not(:disabled):hover {
   transform: translateY(-3px);
 }
-.site-shell .perca-page .perca-letter {
+.site-shell .perca-letter {
   font-size: clamp(2.9rem, 5vw, 4.1rem);
 }
-.site-shell .perca-page .perca-word {
+.site-shell .perca-word {
   font-size: var(--ed-step-2);
   color: var(--ed-ink);
+}
+.site-shell .perca-step-detail {
+  padding: 0 1.25rem 2rem;
+  border-top: none;
+  background: var(--ed-raise);
+  animation: perca-step-in 0.2s ease both;
+}
+@keyframes perca-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.site-shell .perca-step-title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--ed-step-3);
+  margin: 0 0 0.75rem;
+}
+.site-shell .perca-step-detail .rich-text {
+  max-width: 66ch;
 }
 
 /* Corps : colonne de lecture confortable, lettrine éditoriale sur le 1er paragraphe */
