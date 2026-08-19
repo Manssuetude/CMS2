@@ -17,7 +17,8 @@ export const SITE_URL = resolveSiteUrl();
 
 export const SITE_NAME = "Manssuétude";
 
-export const SITE_DESCRIPTION = "Un espace de réflexion, de production et d'expérimentation collective.";
+export const SITE_DESCRIPTION =
+  "Association à but non lucratif — un espace de réflexion, de production et d'expérimentation collective.";
 
 // Chemin (relatif) du logo utilisé pour les partages et les données structurées.
 export const SITE_LOGO = "/assets/photos/logo-manssuetude.png";

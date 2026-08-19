@@ -17,6 +17,10 @@ export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Pa
         secondaryTarget={page.secondaryCtaTarget}
       />
 
+      {/* Statut légal — ligne fixe (pas un champ éditable) pour ne pas risquer
+          qu'elle disparaisse en modifiant le texte de la page. */}
+      <p className="about-status">Manssuétude est une association à but non lucratif.</p>
+
       {page.quote ? (
         <section className="about-quote">
           <blockquote>{page.quote}</blockquote>

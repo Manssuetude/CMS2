@@ -4,6 +4,17 @@
    Page À propos (citation + méthode PERCA)
    ============================================================= */
 
+.site-shell .about-status {
+  max-width: var(--ed-container);
+  margin: -1.5rem auto 0;
+  padding: 0 var(--ed-gutter);
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ed-clay);
+}
+
 .site-shell .about-quote {
   max-width: 1000px;
   margin: 0 auto;

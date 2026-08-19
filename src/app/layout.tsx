@@ -97,7 +97,9 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
+      // NGO (sous-type schema.org d'Organization) plutôt qu'Organization générique —
+      // signale explicitement le caractère associatif/à but non lucratif aux moteurs.
+      "@type": "NGO",
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
       // Variantes du nom (sans accent, avec « association ») pour que Google rattache
