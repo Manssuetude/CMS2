@@ -30,7 +30,7 @@ export function ThemeDetail({ item, subThemes, activities = [], projects = [] }:
       {/* ── Sous-thèmes ──────────────────────────────────────────── */}
       {subThemes.length > 0 ? (
         <CardGrid
-          title={`Sujets traités sur « ${item.title} »`}
+          title="Sujets traités sur ce thème"
           items={subThemes.map((st) => ({
             title: st.title,
             description: st.description,
