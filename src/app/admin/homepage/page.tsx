@@ -1,23 +1,24 @@
 import { ExternalLink } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
-import { themeRepository } from "@/repositories/themeRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
-import { dossierRepository } from "@/repositories/dossierRepository";
+import { activityRepository } from "@/repositories/activityRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
-import { ImpactStatsEditor } from "@/components/admin/ImpactStatsEditor";
-import { FeaturedDossiersField } from "@/components/admin/FeaturedDossiersField";
-import { FOCUS_ASPECT, HERO_ASPECT } from "@/constants/imageAspects";
+import { HERO_ASPECT } from "@/constants/imageAspects";
+import { pickActivityOfTheMoment } from "@/utils/activityOfTheMoment";
 import { saveHomepageFieldsAction } from "./actions";
 
 export default async function AdminHomepage() {
-  const [page, media, themes, dossiers] = await Promise.all([
+  const [page, media, activities] = await Promise.all([
     pageRepository.getPage("accueil"),
     mediaRepository.list(),
-    themeRepository.listThemes(true),
-    dossierRepository.listDossiers(true),
+    activityRepository.listActivities(),
   ]);
 
   const images = media.filter((m) => m.type === "image");
+  const fallbackActivity = page?.featuredActivityId
+    ? (activities.find((a) => a.id === page.featuredActivityId) ?? null)
+    : null;
+  const activityOfTheMoment = pickActivityOfTheMoment(activities, fallbackActivity);
 
   return (
     <section className="admin-panel">
@@ -39,6 +40,46 @@ export default async function AdminHomepage() {
       </div>
 
       <form action={saveHomepageFieldsAction} style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+        {/* ── Activité du moment ───────────────────────────────────── */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title">Activité du moment</h2>
+          <p className="admin-form-section-hint">
+            Affichée automatiquement sur la page d&apos;accueil, juste sous le hero : s&apos;il y a une activité cette
+            semaine, la plus proche s&apos;affiche. Sinon, l&apos;activité choisie ci-dessous s&apos;affiche à la place
+            — et si rien n&apos;est choisi, la plus proche d&apos;aujourd&apos;hui (passée ou future) s&apos;affiche par
+            défaut.
+          </p>
+          {activityOfTheMoment ? (
+            <p style={{ fontSize: 13, margin: "0 0 14px" }}>
+              Actuellement affichée : <strong>{activityOfTheMoment.title}</strong>
+              {activityOfTheMoment.date ? ` — ${activityOfTheMoment.date}` : ""}
+              {" · "}
+              <a href={`/admin/activites/${activityOfTheMoment.id}/edit`} style={{ color: "var(--orange)" }}>
+                Modifier cette activité →
+              </a>
+            </p>
+          ) : (
+            <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 14px" }}>
+              Aucune activité avec une date pour l&apos;instant, donc rien ne s&apos;affiche ici.{" "}
+              <a href="/admin/activites" style={{ color: "var(--orange)" }}>
+                Voir les activités →
+              </a>
+            </p>
+          )}
+          <div className="form-field">
+            <label className="form-label">Activité de secours (si rien cette semaine)</label>
+            <select name="featured_activity_id" className="form-input" defaultValue={page?.featuredActivityId ?? ""}>
+              <option value="">— aucune, choisir automatiquement —</option>
+              {activities.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.title}
+                  {a.date ? ` — ${a.date}` : ""}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* ── Hero ─────────────────────────────────────────────────── */}
         <div className="admin-form-section">
           <h2 className="admin-form-section-title">Texte principal (hero)</h2>
@@ -54,50 +95,6 @@ export default async function AdminHomepage() {
               defaultValue={page?.body ?? ""}
               placeholder="Manssuétude est un espace de réflexion..."
             />
-          </div>
-          <div className="form-row">
-            <div className="form-field">
-              <label className="form-label">Bouton principal — libellé</label>
-              <input
-                name="primary_cta_label"
-                className="form-input"
-                defaultValue={page?.primaryCtaLabel ?? ""}
-                placeholder="Rejoindre"
-              />
-            </div>
-            <div className="form-field">
-              <label className="form-label">Bouton principal — lien</label>
-              <input
-                name="primary_cta_target"
-                className="form-input"
-                defaultValue={page?.primaryCtaTarget ?? ""}
-                placeholder="/nous-rejoindre, FORM:join ou https://linktr.ee/..."
-              />
-              <p className="admin-form-section-hint">
-                Où mène ce bouton : une page du site (<code>/nous-rejoindre</code>), un formulaire (
-                <code>FORM:join</code>) ou un lien externe (<code>https://…</code>, ouvert dans un nouvel onglet).
-              </p>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-field">
-              <label className="form-label">Bouton secondaire — libellé</label>
-              <input
-                name="secondary_cta_label"
-                className="form-input"
-                defaultValue={page?.secondaryCtaLabel ?? ""}
-                placeholder="Nous soutenir"
-              />
-            </div>
-            <div className="form-field">
-              <label className="form-label">Bouton secondaire — cible</label>
-              <input
-                name="secondary_cta_target"
-                className="form-input"
-                defaultValue={page?.secondaryCtaTarget ?? ""}
-                placeholder="/nous-soutenir"
-              />
-            </div>
           </div>
         </div>
 
@@ -127,80 +124,6 @@ export default async function AdminHomepage() {
               </a>
             </p>
           )}
-        </div>
-
-        {/* ── Sujet du moment ──────────────────────────────────────── */}
-        <div className="admin-form-section">
-          <h2 className="admin-form-section-title">Sujet du moment</h2>
-          <p className="admin-form-section-hint">
-            Section mise en avant sur la page d&apos;accueil, juste sous le hero.
-          </p>
-          <div className="form-field">
-            <label className="form-label">Étiquette (eyebrow)</label>
-            <input
-              name="eyebrow"
-              className="form-input"
-              defaultValue={page?.eyebrow ?? ""}
-              placeholder="Thème du moment"
-            />
-          </div>
-          <div className="form-field">
-            <label className="form-label">Thème mis en avant</label>
-            <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
-              Choisissez le thème à afficher comme sujet du moment. Son titre et sa description sont repris
-              automatiquement, et le clic sur le sujet mène à la page de ce thème.
-            </p>
-            <select name="quote" className="form-input" defaultValue={page?.quote ?? ""}>
-              <option value="">— aucun sujet du moment —</option>
-              {themes.map((t) => (
-                <option key={t.id} value={t.slug}>
-                  {t.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-field">
-            <label className="form-label">Photo du sujet (optionnelle)</label>
-            <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
-              Image affichée à côté du sujet du moment. Sans image, le sujet s&apos;affiche en pleine largeur.
-            </p>
-            <ImageCropField
-              name="seo_image_id"
-              cropName="focus_image_crop"
-              images={images}
-              defaultImageId={page?.seoImageId ?? ""}
-              defaultCrop={page?.focusImageCrop ?? null}
-              aspect={FOCUS_ASPECT}
-              emptyOptionLabel="— aucune image (pleine largeur) —"
-            />
-          </div>
-        </div>
-
-        {/* ── Sélections éditoriales mises en avant ───────────────── */}
-        <div className="admin-form-section">
-          <h2 className="admin-form-section-title">Sélections mises en avant</h2>
-          <p className="admin-form-section-hint">
-            Choisissez des dossiers à afficher en page d&apos;accueil, chacun sous son propre titre (ex. « À découvrir
-            », « En débat »). Créez et ordonnez leur contenu depuis{" "}
-            <a href="/admin/dossiers" style={{ color: "var(--orange)" }}>
-              /admin/dossiers
-            </a>
-            .
-          </p>
-          <FeaturedDossiersField
-            items={dossiers.map((d) => ({ id: d.id, label: d.title }))}
-            initial={page?.featuredDossierIds ?? []}
-          />
-        </div>
-
-        {/* ── Chiffres clés ────────────────────────────────────────── */}
-        <div className="admin-form-section">
-          <h2 className="admin-form-section-title">Chiffres clés</h2>
-          <p className="admin-form-section-hint">
-            Compteurs affichés sur la page d&apos;accueil (ex. « 150 · Membres »). Saisis à la main, mis à jour quand
-            vous le souhaitez.
-          </p>
-          <ImpactStatsEditor initial={page?.impactStats ?? []} />
         </div>
 
         {/* ── SEO ──────────────────────────────────────────────────── */}

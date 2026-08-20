@@ -3,10 +3,8 @@ import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
 import { NewsletterForm } from "@/components/public/NewsletterForm";
-import { CardGrid } from "@/components/cards/CardGrid";
-import type { Dossier, Page, Production, Activity, Theme, JournalEntry } from "@/types/cms";
+import type { Page, Production, Activity, JournalEntry } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
-import { DOSSIER_ITEM_KIND_LABEL, type ResolvedDossierItem } from "@/utils/dossierItems";
 
 const percaLetters = ["P", "E", "R", "C", "A"] as const;
 
@@ -20,21 +18,17 @@ function formatDate(value?: string | null) {
 export function HomeEditorial({
   page,
   heroImageUrl,
-  focusImageUrl,
-  focusTheme = null,
+  activityOfTheMoment = null,
   activities = [],
   productions = [],
   journalEntries = [],
-  featuredDossiers = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
-  focusImageUrl?: string | null;
-  focusTheme?: Theme | null;
+  activityOfTheMoment?: Activity | null;
   activities?: Activity[];
   productions?: Production[];
   journalEntries?: JournalEntry[];
-  featuredDossiers?: Array<{ dossier: Dossier; items: ResolvedDossierItem[] }>;
 }) {
   // L'identité de l'association vit dans `body` (demande de René : l'asso d'abord).
   const sentences = (page.body || "").split(/\.\s+/).filter(Boolean);
@@ -67,61 +61,24 @@ export function HomeEditorial({
         ) : null}
       </section>
 
-      {/* 1bis — Chiffres clés (facultatif, saisis en admin) */}
-      {page.impactStats && page.impactStats.length > 0 && (
-        <section className="home-impact" aria-label="Chiffres clés">
-          {page.impactStats.map((stat, index) => (
-            <div className="home-impact-stat" key={index}>
-              <strong>{stat.value}</strong>
-              <span>{stat.label}</span>
-            </div>
-          ))}
-        </section>
-      )}
-
-      {/* 2 — Sujet du moment : le thème sélectionné en admin (carte cliquable, image optionnelle) */}
-      {focusTheme ? (
-        <Link
-          className={`home-focus${focusImageUrl ? "" : " home-focus--no-image"}`}
-          href={`/themes/${focusTheme.slug}`}
-        >
-          {focusImageUrl ? (
-            <div className="home-focus-media">
-              <img src={focusImageUrl} alt="" loading="lazy" style={cropToImageStyle(page.focusImageCrop)} />
-            </div>
-          ) : null}
+      {/* 2 — Activité du moment : l'activité la plus proche d'aujourd'hui
+             (à venir ou passée), calculée automatiquement — pas de sélection
+             admin, se met à jour seule. */}
+      {activityOfTheMoment ? (
+        <Link className="home-focus home-focus--no-image" href={`/activites/${activityOfTheMoment.slug}`}>
           <div className="home-focus-copy">
-            {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
-            <h2>{focusTheme.title}</h2>
-            {focusTheme.description ? <p className="home-focus-desc">{focusTheme.description}</p> : null}
+            <p className="eyebrow">Activité du moment</p>
+            <h2>{activityOfTheMoment.title}</h2>
+            <p className="home-focus-desc">
+              {[formatDate(activityOfTheMoment.date), activityOfTheMoment.description].filter(Boolean).join(" — ")}
+            </p>
             <span className="home-focus-link">
-              Explorer ce thème
+              Découvrir cette activité
               <span aria-hidden>→</span>
             </span>
           </div>
         </Link>
       ) : null}
-
-      {/* 2bis — Sélections éditoriales nommées (dossiers mis en avant en admin) */}
-      {featuredDossiers.map(({ dossier, items }) => (
-        <CardGrid
-          key={dossier.id}
-          title={dossier.title}
-          items={items.map((entry) => ({
-            title: entry.title,
-            description: entry.description,
-            href: entry.href,
-            meta: DOSSIER_ITEM_KIND_LABEL[entry.entityType],
-            imageUrl: entry.imageUrl,
-          }))}
-          headerActions={
-            <Link href={`/dossiers/${dossier.slug}`} className="home-section-more">
-              Voir le dossier
-              <span aria-hidden>→</span>
-            </Link>
-          }
-        />
-      ))}
 
       {/* 3 — Productions récentes */}
       {productions.length ? (

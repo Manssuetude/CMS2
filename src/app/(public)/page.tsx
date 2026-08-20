@@ -4,13 +4,9 @@ import { HomeEditorial } from "@/components/public/HomeEditorial";
 import { activityRepository } from "@/repositories/activityRepository";
 import { pageRepository } from "@/repositories/pageRepository";
 import { productionRepository } from "@/repositories/productionRepository";
-import { projectRepository } from "@/repositories/projectRepository";
-import { mediaRepository } from "@/repositories/mediaRepository";
-import { dossierRepository } from "@/repositories/dossierRepository";
-import { themeRepository } from "@/repositories/themeRepository";
 import { journalRepository } from "@/repositories/journalRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { resolveDossierItems } from "@/utils/dossierItems";
+import { pickActivityOfTheMoment } from "@/utils/activityOfTheMoment";
 
 export const revalidate = 60;
 
@@ -30,40 +26,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   try {
     const page = await pageRepository.getPage("accueil");
-    const [productions, activities, themes, journalEntries, projects, resources] = await Promise.all([
+    const [productions, activities, journalEntries] = await Promise.all([
       productionRepository.listProductions(),
       activityRepository.listActivities(),
-      themeRepository.listThemes(),
       journalRepository.listEntries(),
-      projectRepository.listProjects(),
-      mediaRepository.list(true),
     ]);
     if (!page) notFound();
-
-    // Sélections éditoriales mises en avant (chapitre 16) : des dossiers choisis
-    // en admin, chacun rendu sous son propre titre (ex. "À découvrir").
-    const featuredDossierIds = page.featuredDossierIds ?? [];
-    const featuredDossiers =
-      featuredDossierIds.length > 0
-        ? await Promise.all(
-            featuredDossierIds.map(async (id) => {
-              const dossier = await dossierRepository.getDossierById(id);
-              if (!dossier || dossier.status !== "published") return null;
-              const items = await dossierRepository.getDossierItems(dossier.id);
-              const resolved = resolveDossierItems(items, {
-                productions,
-                activities,
-                projects,
-                resources,
-                journalEntries,
-              });
-              return resolved.length > 0 ? { dossier, items: resolved } : null;
-            }),
-          )
-        : [];
-    const visibleFeaturedDossiers = featuredDossiers.filter(
-      (entry): entry is NonNullable<typeof entry> => entry !== null,
-    );
 
     // Journal en avant : les entrées marquées "featured", sinon les 3 plus récentes.
     const featuredJournal = journalEntries.filter((e) => e.featured);
@@ -76,19 +44,19 @@ export default async function HomePage() {
     // Activités affichées = uniquement celles marquées en vedette (max 3). Aucune vedette → section masquée.
     const homeActivities = activities.filter((a) => a.featured).slice(0, 3);
 
-    // "Sujet du moment" = le thème sélectionné en admin (page.quote = slug du thème).
-    const focusTheme = page.quote ? (themes.find((t) => t.slug === page.quote) ?? null) : null;
+    const fallbackActivity = page.featuredActivityId
+      ? (activities.find((a) => a.id === page.featuredActivityId) ?? null)
+      : null;
+    const activityOfTheMoment = pickActivityOfTheMoment(activities, fallbackActivity);
 
     return (
       <HomeEditorial
         page={page}
         heroImageUrl={page.imageUrl ?? undefined}
-        focusImageUrl={page.focusImageUrl}
-        focusTheme={focusTheme}
+        activityOfTheMoment={activityOfTheMoment}
         activities={homeActivities}
         productions={homeProductions}
         journalEntries={homeJournalEntries}
-        featuredDossiers={visibleFeaturedDossiers}
       />
     );
   } catch (error) {

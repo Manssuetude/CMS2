@@ -12,40 +12,12 @@ export async function savePageBlocksAction(slug: string, blocks: ContentBlock[])
   revalidatePath(`/${slug === "accueil" ? "" : slug}`);
 }
 
-function parseImpactStats(raw: FormDataEntryValue | null) {
-  if (typeof raw !== "string" || !raw) return [];
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.flatMap((entry) => {
-      if (!entry || typeof entry !== "object") return [];
-      const { label, value } = entry as Record<string, unknown>;
-      if (typeof label !== "string" || typeof value !== "string" || (!label.trim() && !value.trim())) return [];
-      return [{ label: label.trim(), value: value.trim() }];
-    });
-  } catch {
-    return [];
-  }
-}
-
 export async function saveHomepageFieldsAction(formData: FormData): Promise<void> {
   const fields: Record<string, unknown> = {
     body: formData.get("body") || null,
-    eyebrow: formData.get("eyebrow") || null,
-    quote: formData.get("quote") || null,
-    primary_cta_label: formData.get("primary_cta_label") || null,
-    primary_cta_target: formData.get("primary_cta_target") || null,
-    secondary_cta_label: formData.get("secondary_cta_label") || null,
-    secondary_cta_target: formData.get("secondary_cta_target") || null,
+    featured_activity_id: formData.get("featured_activity_id") || null,
     image_id: formData.get("image_id") || null,
     image_crop: formData.get("image_crop") || null,
-    seo_image_id: formData.get("seo_image_id") || null,
-    focus_image_crop: formData.get("focus_image_crop") || null,
-    impact_stats: parseImpactStats(formData.get("impactStats")),
-    featured_dossier_ids: String(formData.get("featuredDossierIds") || "")
-      .split(",")
-      .map((id) => id.trim())
-      .filter(Boolean),
     seo_title: formData.get("seo_title") || null,
     seo_description: formData.get("seo_description") || null,
   };
