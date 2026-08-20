@@ -53,13 +53,17 @@ export function ProductionForm({
   const [fileId, setFileId] = useState(initialData?.fileId ?? "");
   const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   async function handlePdfUpload(file: File) {
     setUploading(true);
+    setUploadError(null);
     try {
       const media = await mediaClientService.uploadFile(file);
       setFileId(media.id);
       setFileName(media.title);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Échec de l'envoi du fichier.");
     } finally {
       setUploading(false);
     }
@@ -332,6 +336,7 @@ export function ProductionForm({
                 />
               </label>
             )}
+            {uploadError && <p className="form-error">{uploadError}</p>}
           </div>
           <div className="form-field">
             <label className="field-label" htmlFor="downloadLabel">

@@ -7,7 +7,10 @@ export const mediaClientService = {
     formData.set("title", file.name);
 
     const response = await fetch("/api/media", { method: "POST", body: formData });
-    if (!response.ok) throw new Error("Media upload failed.");
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      throw new Error(body?.error || "Échec de l'envoi du fichier.");
+    }
     return response.json();
   },
 };
