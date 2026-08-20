@@ -75,6 +75,29 @@
   border: 1px solid var(--ed-line);
   border-radius: var(--ed-radius-lg);
 }
+.site-shell .pdf-preview-mobile-fallback {
+  display: none;
+}
+@media (max-width: 640px) {
+  /* La plupart des navigateurs mobiles n'affichent pas de PDF interactif dans
+     une iframe (page figée, aucun défilement possible) — on masque l'aperçu
+     cassé et on affiche un bouton qui ouvre le fichier correctement. */
+  .site-shell .pdf-preview {
+    display: none;
+  }
+  .site-shell .pdf-preview-mobile-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: clamp(2rem, 8vw, 3rem) 1.5rem;
+    border: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-lg);
+    background: var(--ed-raise);
+    text-align: center;
+    color: var(--ed-ink-soft);
+  }
+}
 
 /* Barre de progression de lecture — fixée en haut de la fenêtre, sous le
    header sticky (z-index inférieur au header pour ne pas le chevaucher). */
