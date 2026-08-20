@@ -16,6 +16,7 @@ const defaultColumns = [
     links: [
       { label: "Mentions légales", url: "/mentions-legales" },
       { label: "Politique de confidentialité", url: "/politique-de-confidentialite" },
+      { label: "Politique cookies", url: "/politique-cookies" },
     ],
   },
 ];

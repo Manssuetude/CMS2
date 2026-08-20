@@ -107,10 +107,10 @@ Ces éléments ne peuvent pas être décidés depuis le code — il faut les obt
 - [ ] Tester spécifiquement : CKEditor (édition riche admin), embeds YouTube/Vimeo (`youtube-nocookie.com`, `player.vimeo.com`), Vercel Analytics/Speed Insights, Google Fonts (self-hosted, ne devrait rien nécessiter).
 - [ ] Activer en production une fois validée sans régression.
 
-### 14. Page Politique cookies dédiée
+### 14. Page Politique cookies dédiée ✅
 
-- [ ] Créer une page détaillant l'inventaire des cookies/traceurs (reprendre le tableau de la section F de l'audit), liée depuis le bandeau de consentement (`CookieConsentBanner.tsx`) et le footer.
-- [ ] Mentionner explicitement Vercel Speed Insights (actuellement gaté par le consentement mais non nommé dans le texte du bandeau).
+- [x] Page `/politique-cookies` créée : reprend le tableau de la section F de l'audit (Vercel Analytics, Vercel Speed Insights, Google Fonts, Resend, Brevo, Supabase), complété par deux lignes omises dans une première version — les images distantes (`next/image` remotePatterns : Google `lh3.googleusercontent.com`/`drive.google.com`, Cloudinary, requête passive non gatée au consentement) et Google Drive (import de médias, usage admin uniquement). Liée depuis le footer (`SiteFooter.tsx`) et le bandeau de consentement (`CookieConsentBanner.tsx`).
+- [x] Vercel Speed Insights nommé explicitement dans le texte du bandeau (`CookieConsentBanner.tsx`), qui pointait auparavant uniquement vers « Vercel Analytics ».
 
 ---
 

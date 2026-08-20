@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { readStoredConsent, writeStoredConsent, type ConsentValue } from "@/lib/consent";
 
 export function CookieConsentBanner() {
@@ -22,8 +23,9 @@ export function CookieConsentBanner() {
       <div className="cookie-banner-text">
         <p className="cookie-banner-title">Cookies</p>
         <p>
-          Ce site utilise des cookies de mesure d&apos;audience (Vercel Analytics) pour comprendre comment il est
-          utilisé. Aucune donnée n&apos;est revendue.
+          Ce site utilise des cookies de mesure d&apos;audience (Vercel Analytics et Vercel Speed Insights) pour
+          comprendre comment il est utilisé et sa performance. Aucune donnée n&apos;est revendue. Détails sur notre{" "}
+          <Link href="/politique-cookies">politique cookies</Link>.
         </p>
       </div>
       <div className="cookie-banner-actions">
