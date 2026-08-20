@@ -220,14 +220,3 @@
   line-height: 1.8;
   color: var(--ed-ink);
 }
-
-/* Alertes de complétude sur les pages légales — visibles pour l'équipe tant
-   qu'une information obligatoire (siège social, directeur de publication...)
-   n'a pas été fournie, sans casser la lecture du reste de la page. */
-.site-shell .legal-todo-notice {
-  padding: 0.9rem 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--ed-brand) 40%, var(--ed-line));
-  border-radius: var(--ed-radius);
-  background: color-mix(in srgb, var(--ed-brand) 8%, transparent);
-  font-size: 0.9rem;
-}

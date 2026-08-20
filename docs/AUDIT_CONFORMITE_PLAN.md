@@ -8,7 +8,8 @@
 
 Ces éléments ne peuvent pas être décidés depuis le code — il faut les obtenir avant de rédiger les pages légales.
 
-- [ ] Identité complète pour les mentions légales : forme juridique exacte, siège social (adresse postale), nom du représentant légal / directeur de publication.
+- [x] Siège social : 26 rue Henri Barbusse, 95100 Argenteuil (fourni le 2026-08-20).
+- [ ] Nom du représentant légal / directeur de publication — toujours manquant.
 - [ ] Confirmer s'il existe un prestataire de paiement réel pour les dons (Stripe, HelloAsso…) — sur ce dépôt ou sur le sous-domaine membre (`membre.manssuetude.com`, hors dépôt). Détermine si des CGV sont nécessaires.
 - [ ] Droit à l'image : les photos/vidéos utilisées disposent-elles d'autorisations documentées (notamment pour d'éventuels mineurs) ?
 - [ ] Durée de conservation souhaitée pour les soumissions de formulaire (candidatures, dons, propositions) — nécessaire pour rédiger la politique de confidentialité et calibrer la purge automatique (tâche 8).
@@ -18,12 +19,12 @@ Ces éléments ne peuvent pas être décidés depuis le code — il faut les obt
 
 ## Phase 1 — Immédiat (critique)
 
-### 1. Page Mentions légales — 🚧 bloqué
+### 1. Page Mentions légales — 🚧 partiellement bloqué
 
-- [ ] Créer `/mentions-legales` (nouvelle page publique, structure statique ou via le système de pages existant).
-- [ ] Contenu : dénomination, forme juridique, numéro RNA (W951008077, déjà connu), siège social, directeur de publication, coordonnées de l'hébergeur (Vercel Inc. + Supabase Inc.), contact (`contact@manssuetude.com`, déjà connu).
-- [ ] Ajouter un lien vers cette page dans `SiteFooter.tsx`.
-- **Bloqué (2026-08-20)** : demandé le siège social et le nom du directeur de publication — pas encore fournis. Reprendre dès que disponibles.
+- [x] Créer `/mentions-legales`.
+- [x] Contenu : dénomination, forme juridique, numéro RNA, siège social (`HEADQUARTERS_ADDRESS`, `src/constants/site.ts`), contact. Hébergeur (Vercel Inc. + Supabase Inc.) présent sans adresse précise (non confirmée).
+- [x] Ajouter un lien vers cette page dans `SiteFooter.tsx`.
+- [ ] Directeur de publication — toujours manquant. Notice « à compléter » retirée de la page à la demande de l'utilisateur (2026-08-20) ; l'absence n'est plus signalée publiquement, mais reste à corriger.
 
 ### 2. Page Politique de confidentialité ✅
 
@@ -96,9 +97,9 @@ Ces éléments ne peuvent pas être décidés depuis le code — il faut les obt
 - [ ] Statuer avec l'équipe sur le niveau de sensibilité réel des médias marqués « brouillon » (`supabase/storage.sql`, bucket `manssuetude-media` actuellement `public: true`).
 - [ ] Si nécessaire : évaluer le passage à un bucket privé avec URLs signées pour les fichiers non publiés — impact à mesurer sur `src/lib/media.ts` et tous les usages de `getResourceUrl`/`getPublicUrl`.
 
-### 12. Validation des fichiers uploadés
+### 12. Validation des fichiers uploadés ✅
 
-- [ ] `src/lib/media.ts` (`uploadToStorage`) : ajouter une validation de type MIME (whitelist) et une taille maximale, côté serveur (ne pas se fier à `file.type` transmis par le client).
+- [x] `src/utils/uploadValidation.ts` (nouveau, appelé depuis `uploadToStorage`) : whitelist d'extensions, cohérence extension/MIME déclaré, taille max 50 Mo — testé (6 tests unitaires).
 
 ### 13. Content-Security-Policy
 

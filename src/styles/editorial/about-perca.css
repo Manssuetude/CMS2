@@ -162,7 +162,8 @@
 }
 
 /* Bulle de détail en plein écran (pas une popover ancrée : évite le débordement
-   coupé sur les colonnes de bord et les petits écrans). */
+   coupé sur les colonnes de bord et les petits écrans). Fond transparent façon
+   verre dépoli : la page reste visible (floutée) derrière, pas un panneau opaque. */
 .site-shell .perca-step-bubble {
   position: fixed;
   inset: 0;
@@ -171,7 +172,9 @@
   height: 100dvh;
   overflow-y: auto;
   padding: clamp(3.5rem, 8vw, 5rem) clamp(1.5rem, 6vw, 3rem) clamp(2.5rem, 6vw, 4rem);
-  background: var(--ed-paper);
+  background: color-mix(in srgb, var(--ed-paper) 78%, transparent);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
   animation: perca-bubble-in 0.18s ease both;
   text-align: left;
 }

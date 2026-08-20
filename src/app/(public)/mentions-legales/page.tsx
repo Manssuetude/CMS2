@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CONTACT_EMAIL, RNA_NUMBER } from "@/constants/site";
+import { CONTACT_EMAIL, HEADQUARTERS_ADDRESS, RNA_NUMBER } from "@/constants/site";
 
 export const metadata: Metadata = {
   title: "Mentions légales — Manssuétude",
@@ -15,12 +15,6 @@ export default function LegalNoticePage() {
       </header>
 
       <div className="history-body rich-text">
-        <p className="legal-todo-notice">
-          <strong>À compléter :</strong> le siège social et le nom du directeur de publication de l&apos;association
-          manquent encore ci-dessous (non communiqués pour l&apos;instant). Cette page ne peut pas être considérée comme
-          conforme tant qu&apos;ils n&apos;y figurent pas.
-        </p>
-
         <h2>Éditeur du site</h2>
         <ul>
           <li>
@@ -31,6 +25,9 @@ export default function LegalNoticePage() {
           </li>
           <li>
             <strong>Numéro RNA :</strong> {RNA_NUMBER}
+          </li>
+          <li>
+            <strong>Siège social :</strong> {HEADQUARTERS_ADDRESS}
           </li>
           <li>
             <strong>Contact :</strong> <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
