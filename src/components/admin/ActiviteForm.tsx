@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink, Plus, X } from "lucide-react";
-import type { Activity, Project, Speaker, Theme } from "@/types/cms";
+import type { Activity, ActivityAnimator, ActivityFormat, Author, Media, Project, Speaker, Theme } from "@/types/cms";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -53,6 +53,11 @@ interface Props {
   initialThemeIds?: string[];
   projects?: Project[];
   initialProjectIds?: string[];
+  activityFormats?: ActivityFormat[];
+  initialFormatIds?: string[];
+  authors?: Author[];
+  initialAnimators?: ActivityAnimator[];
+  images?: Media[];
 }
 
 export function ActiviteForm({
@@ -62,6 +67,11 @@ export function ActiviteForm({
   initialThemeIds = [],
   projects = [],
   initialProjectIds = [],
+  activityFormats = [],
+  initialFormatIds = [],
+  authors = [],
+  initialAnimators = [],
+  images = [],
 }: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
@@ -70,10 +80,18 @@ export function ActiviteForm({
   const [speakers, setSpeakers] = useState<Speaker[]>(initialData?.speakers ?? []);
   const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
   const [selectedProjects, setSelectedProjects] = useState<string[]>(initialProjectIds);
+  const [selectedFormats, setSelectedFormats] = useState<string[]>(initialFormatIds);
+  const [animators, setAnimators] = useState<ActivityAnimator[]>(initialAnimators);
+  const [selectedGallery, setSelectedGallery] = useState<string[]>(initialData?.gallery ?? []);
   const publicHref = isEdit ? `/activites/${initialData.slug}` : null;
+  const mentionItems = useMemo(() => activityFormats.map((f) => ({ id: f.id, title: f.title })), [activityFormats]);
 
   function updateSpeaker(index: number, field: keyof Speaker, value: string) {
     setSpeakers((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
+  }
+
+  function updateAnimator(index: number, field: keyof ActivityAnimator, value: string) {
+    setAnimators((prev) => prev.map((a, i) => (i === index ? { ...a, [field]: value } : a)));
   }
 
   return (
@@ -84,6 +102,9 @@ export function ActiviteForm({
       <input type="hidden" name="speakers" value={JSON.stringify(speakers.filter((s) => s.name.trim()))} />
       <input type="hidden" name="themeIds" value={selectedThemes.join(",")} />
       <input type="hidden" name="projectIds" value={selectedProjects.join(",")} />
+      <input type="hidden" name="formatIds" value={selectedFormats.join(",")} />
+      <input type="hidden" name="animators" value={JSON.stringify(animators.filter((a) => a.authorId))} />
+      <input type="hidden" name="gallery" value={selectedGallery.join(",")} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -92,8 +113,11 @@ export function ActiviteForm({
           <p className="form-section-title">Informations générales</p>
 
           <div className="form-field">
-            <label className="field-label">Titre *</label>
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               defaultValue={initialData?.title}
@@ -107,8 +131,10 @@ export function ActiviteForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Format *</label>
-              <select name="format" defaultValue={initialData?.format ?? ""} required>
+              <label className="field-label" htmlFor="format">
+                Format *
+              </label>
+              <select id="format" name="format" defaultValue={initialData?.format ?? ""} required>
                 <option value="" disabled>
                   Choisir un format...
                 </option>
@@ -120,26 +146,35 @@ export function ActiviteForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Date</label>
-              <input type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
+              <label className="field-label" htmlFor="date">
+                Date
+              </label>
+              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Heure de début</label>
-              <input type="time" name="startTime" defaultValue={initialData?.startTime ?? ""} />
+              <label className="field-label" htmlFor="startTime">
+                Heure de début
+              </label>
+              <input id="startTime" type="time" name="startTime" defaultValue={initialData?.startTime ?? ""} />
             </div>
             <div className="form-field">
-              <label className="field-label">Heure de fin</label>
-              <input type="time" name="endTime" defaultValue={initialData?.endTime ?? ""} />
+              <label className="field-label" htmlFor="endTime">
+                Heure de fin
+              </label>
+              <input id="endTime" type="time" name="endTime" defaultValue={initialData?.endTime ?? ""} />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Lieu / adresse</label>
+              <label className="field-label" htmlFor="location">
+                Lieu / adresse
+              </label>
               <input
+                id="location"
                 type="text"
                 name="location"
                 defaultValue={initialData?.location ?? ""}
@@ -147,8 +182,11 @@ export function ActiviteForm({
               />
             </div>
             <div className="form-field">
-              <label className="field-label">Capacité</label>
+              <label className="field-label" htmlFor="capacity">
+                Capacité
+              </label>
               <input
+                id="capacity"
                 type="text"
                 name="capacity"
                 defaultValue={initialData?.capacity ?? ""}
@@ -159,8 +197,11 @@ export function ActiviteForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Lien EventBrite</label>
+              <label className="field-label" htmlFor="eventbriteUrl">
+                Lien EventBrite
+              </label>
               <input
+                id="eventbriteUrl"
                 type="url"
                 name="eventbriteUrl"
                 defaultValue={initialData?.eventbriteUrl ?? ""}
@@ -168,8 +209,14 @@ export function ActiviteForm({
               />
             </div>
             <div className="form-field">
-              <label className="field-label">Statut d&apos;inscription</label>
-              <select name="registrationStatus" defaultValue={initialData?.registrationStatus ?? ""}>
+              <label className="field-label" htmlFor="registrationStatus">
+                Statut d&apos;inscription
+              </label>
+              <select
+                id="registrationStatus"
+                name="registrationStatus"
+                defaultValue={initialData?.registrationStatus ?? ""}
+              >
                 <option value="">Automatique (selon la date)</option>
                 <option value="a-venir">À venir</option>
                 <option value="ouvertes">Inscriptions ouvertes</option>
@@ -183,8 +230,11 @@ export function ActiviteForm({
         <div className="form-section">
           <p className="form-section-title">Résumé court</p>
           <div className="form-field">
-            <label className="field-label">Description</label>
+            <label className="field-label" htmlFor="description">
+              Description
+            </label>
             <textarea
+              id="description"
               name="description"
               defaultValue={initialData?.description ?? ""}
               rows={3}
@@ -195,7 +245,13 @@ export function ActiviteForm({
 
         <div className="form-section">
           <p className="form-section-title">Contenu principal</p>
-          <RichTextEditor value={body} onChange={setBody} />
+          {mentionItems.length > 0 && (
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Tapez <code>#</code> dans le texte pour insérer un repère cliquable vers un format d&apos;activité (sa
+              description s&apos;affiche en bulle sur le site, sans avoir à la recopier ici).
+            </p>
+          )}
+          <RichTextEditor value={body} onChange={setBody} mentionItems={mentionItems} />
         </div>
 
         {/* Intervenants structurés */}
@@ -208,16 +264,22 @@ export function ActiviteForm({
             {speakers.map((speaker, index) => (
               <div key={index} className="form-row" style={{ alignItems: "flex-end" }}>
                 <div className="form-field">
-                  <label className="field-label">Nom</label>
+                  <label className="field-label" htmlFor={`speaker-name-${index}`}>
+                    Nom
+                  </label>
                   <input
+                    id={`speaker-name-${index}`}
                     value={speaker.name}
                     onChange={(e) => updateSpeaker(index, "name", e.target.value)}
                     placeholder="Prénom Nom"
                   />
                 </div>
                 <div className="form-field">
-                  <label className="field-label">Rôle</label>
+                  <label className="field-label" htmlFor={`speaker-role-${index}`}>
+                    Rôle
+                  </label>
                   <input
+                    id={`speaker-role-${index}`}
                     value={speaker.role ?? ""}
                     onChange={(e) => updateSpeaker(index, "role", e.target.value)}
                     placeholder="Ex. : Modérateur, Invité..."
@@ -244,6 +306,85 @@ export function ActiviteForm({
             </button>
           </div>
         </div>
+
+        {/* Animateurs (lien vers le répertoire des auteurs + contribution libre) */}
+        {authors.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Animateurs</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Personnes ayant animé cette activité, et ce qu&apos;elles y ont fait (facultatif).
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {animators.map((animator, index) => (
+                <div key={index} className="form-row" style={{ alignItems: "flex-end" }}>
+                  <div className="form-field">
+                    <label className="field-label" htmlFor={`animator-author-${index}`}>
+                      Animateur
+                    </label>
+                    <select
+                      id={`animator-author-${index}`}
+                      value={animator.authorId}
+                      onChange={(e) => updateAnimator(index, "authorId", e.target.value)}
+                    >
+                      <option value="">Choisir...</option>
+                      {authors.map((author) => (
+                        <option key={author.id} value={author.id}>
+                          {author.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-field">
+                    <label className="field-label" htmlFor={`animator-contribution-${index}`}>
+                      Ce qu&apos;il/elle a fait
+                    </label>
+                    <input
+                      id={`animator-contribution-${index}`}
+                      value={animator.contribution ?? ""}
+                      onChange={(e) => updateAnimator(index, "contribution", e.target.value)}
+                      placeholder="Ex. : Animation du débat, prise de notes..."
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-sm"
+                    onClick={() => setAnimators((prev) => prev.filter((_, i) => i !== index))}
+                    aria-label="Retirer cet animateur"
+                  >
+                    <X size={13} strokeWidth={2} />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="button"
+                style={{ width: "fit-content" }}
+                onClick={() => setAnimators((prev) => [...prev, { authorId: "", contribution: "" }])}
+              >
+                <Plus size={15} strokeWidth={2} />
+                Ajouter un animateur
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Compte-rendu en images (n'apparaît côté public que si l'activité est
+            passée ou terminée, et seulement si des images sont ajoutées ici) */}
+        {images.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Compte-rendu en images</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Photos affichées sur la page publique une fois l&apos;activité passée ou marquée « Terminé ». Gérer les
+              images dans <Link href="/admin/media">la médiathèque</Link>.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="gallery"
+              items={images.map((img) => ({ id: img.id, label: img.title }))}
+              selected={selectedGallery}
+              onChange={setSelectedGallery}
+            />
+          </div>
+        )}
 
         {/* Relations thèmes */}
         {themes.length > 0 && (
@@ -277,15 +418,45 @@ export function ActiviteForm({
           </div>
         )}
 
+        {/* Formats/techniques d'animation du répertoire */}
+        {activityFormats.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Formats d&apos;activité</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Techniques d&apos;animation utilisées (Fishbowl, Hot Takes...) — voir{" "}
+              <a href="/admin/formatsactivites" target="_blank" rel="noreferrer" style={{ color: "var(--orange)" }}>
+                le répertoire
+              </a>
+              . Facultatif, indépendant du format ci-dessus.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="activity-format"
+              items={activityFormats.map((f) => ({ id: f.id, label: f.title }))}
+              selected={selectedFormats}
+              onChange={setSelectedFormats}
+            />
+          </div>
+        )}
+
         <div className="form-section">
           <p className="form-section-title">SEO</p>
           <div className="form-field">
-            <label className="field-label">Titre SEO (onglet navigateur)</label>
-            <input name="seoTitle" defaultValue={initialData?.seoTitle ?? ""} placeholder={initialData?.title} />
+            <label className="field-label" htmlFor="seoTitle">
+              Titre SEO (onglet navigateur)
+            </label>
+            <input
+              id="seoTitle"
+              name="seoTitle"
+              defaultValue={initialData?.seoTitle ?? ""}
+              placeholder={initialData?.title}
+            />
           </div>
           <div className="form-field">
-            <label className="field-label">Description SEO</label>
+            <label className="field-label" htmlFor="seoDescription">
+              Description SEO
+            </label>
             <textarea
+              id="seoDescription"
               name="seoDescription"
               defaultValue={initialData?.seoDescription ?? ""}
               rows={3}
@@ -298,16 +469,20 @@ export function ActiviteForm({
           <p className="form-section-title">Publication</p>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Statut</label>
-              <select name="status" defaultValue={initialData?.status ?? "draft"}>
+              <label className="field-label" htmlFor="status">
+                Statut
+              </label>
+              <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
                 <option value="draft">Brouillon</option>
                 <option value="published">Publié</option>
                 <option value="archived">Archivé</option>
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Avancement</label>
-              <select name="progressStatus" defaultValue={initialData?.progressStatus ?? ""}>
+              <label className="field-label" htmlFor="progressStatus">
+                Avancement
+              </label>
+              <select id="progressStatus" name="progressStatus" defaultValue={initialData?.progressStatus ?? ""}>
                 <option value="">Non défini</option>
                 <option value="idea">Idée</option>
                 <option value="preparation">En préparation</option>

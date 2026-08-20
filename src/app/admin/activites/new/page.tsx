@@ -2,12 +2,18 @@ import Link from "next/link";
 import { ActiviteForm } from "@/components/admin/ActiviteForm";
 import { themeRepository } from "@/repositories/themeRepository";
 import { projectRepository } from "@/repositories/projectRepository";
+import { activityFormatRepository } from "@/repositories/activityFormatRepository";
+import { authorRepository } from "@/repositories/authorRepository";
+import { mediaRepository } from "@/repositories/mediaRepository";
 import { createActivityAction } from "../actions";
 
 export default async function NewActivitePage() {
-  const [themes, projects] = await Promise.all([
+  const [themes, projects, activityFormats, authors, images] = await Promise.all([
     themeRepository.listThemes(true),
     projectRepository.listProjects(true),
+    activityFormatRepository.listFormats(true),
+    authorRepository.listAuthors(),
+    mediaRepository.list(),
   ]);
 
   return (
@@ -21,7 +27,14 @@ export default async function NewActivitePage() {
           <p>Créez une nouvelle activité. Elle sera en brouillon jusqu&apos;à publication.</p>
         </div>
       </div>
-      <ActiviteForm action={createActivityAction} themes={themes} projects={projects} />
+      <ActiviteForm
+        action={createActivityAction}
+        themes={themes}
+        projects={projects}
+        activityFormats={activityFormats}
+        authors={authors}
+        images={images.filter((m) => m.type === "image")}
+      />
     </section>
   );
 }

@@ -7,6 +7,7 @@ import { ViewToggle } from "@/components/public/ViewToggle";
 import { PublicEventCalendar } from "@/components/public/PublicEventCalendar";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { ProposeSection } from "@/components/public/ProposeSection";
+import { CtaButton } from "@/components/forms/CtaButton";
 import { activityRepository } from "@/repositories/activityRepository";
 import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
@@ -56,7 +57,8 @@ export default async function ActivitesPage({
     const now = new Date();
     const isPastActivity = (a: (typeof all)[number]) => Boolean(a.date && new Date(a.date) < now);
     const showPast = when === "passees";
-    const byTime = all.filter((a) => isPastActivity(a) === showPast);
+    const showAll = when === "all";
+    const byTime = showAll ? all : all.filter((a) => isPastActivity(a) === showPast);
 
     const filtered = format ? byTime.filter((a) => a.format === format) : byTime;
     const isCalendar = view === "calendar";
@@ -75,7 +77,14 @@ export default async function ActivitesPage({
           quote={page.quote}
         />
         <Suspense>
-          <FilterBar param="when" options={[{ value: "passees", label: "Passées" }]} allLabel="À venir" />
+          <FilterBar
+            param="when"
+            options={[
+              { value: "passees", label: "Passées" },
+              { value: "all", label: "Toutes" },
+            ]}
+            allLabel="À venir"
+          />
           <FilterBar param="format" options={formatOptions} allLabel="Tous les formats" />
         </Suspense>
         {isCalendar ? (
@@ -90,7 +99,15 @@ export default async function ActivitesPage({
           </section>
         ) : (
           <CardGrid
-            title={format ? (FORMAT_LABEL[format] ?? format) : showPast ? "Activités passées" : "Activités à venir"}
+            title={
+              format
+                ? (FORMAT_LABEL[format] ?? format)
+                : showAll
+                  ? "Toutes les activités"
+                  : showPast
+                    ? "Activités passées"
+                    : "Activités à venir"
+            }
             headerActions={
               <Suspense>
                 <ViewToggle />
@@ -104,6 +121,14 @@ export default async function ActivitesPage({
             }))}
           />
         )}
+        <section className="propose-section">
+          <p className="propose-lead">Vous voulez découvrir tous nos formats d&apos;activité ?</p>
+          <CtaButton
+            label="Voir le répertoire des formats"
+            target="/activites/formats-d-activites"
+            variant="secondary"
+          />
+        </section>
         <ProposeSection
           lead="Vous avez une idée d'activité à proposer ?"
           label="Proposer une activité"

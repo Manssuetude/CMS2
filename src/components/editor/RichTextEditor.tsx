@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import type { EditorConfig } from "ckeditor5";
+import type { EditorConfig, MentionFeedObjectItem } from "ckeditor5";
 import {
   Autoformat,
   AutoLink,
@@ -173,7 +173,7 @@ const TOOLBAR = {
   shouldNotGroupWhenFull: true,
 };
 
-const CONFIG: EditorConfig = {
+const BASE_CONFIG: Omit<EditorConfig, "mention"> = {
   licenseKey: "GPL",
   plugins: PLUGINS,
   toolbar: TOOLBAR,
@@ -210,34 +210,96 @@ const CONFIG: EditorConfig = {
   list: {
     properties: { styles: true, startIndex: true, reversed: true },
   },
-  mention: {
-    feeds: [],
-  },
   htmlSupport: {
     allow: [{ name: /./, attributes: true, classes: true, styles: true }],
   },
 };
 
+// Item d'un répertoire (ex. formats d'activité) insérable dans le texte via "#" —
+// tape le marqueur, choisit dans la liste, un repère cliquable est inséré. La
+// description associée n'est jamais dupliquée dans le corps : elle est résolue
+// à l'affichage public à partir de l'id (voir src/utils/formatBubbles.ts).
+export interface MentionItem {
+  id: string;
+  title: string;
+}
+
+interface FormatMentionFeedItem extends MentionFeedObjectItem {
+  formatId: string;
+  title: string;
+}
+
+const EMPTY_MENTION_ITEMS: MentionItem[] = [];
+
 interface Props {
   value: string;
   onChange: (value: string) => void;
   name?: string;
+  mentionItems?: MentionItem[];
 }
 
-export function RichTextEditor({ value, onChange, name }: Props) {
+export function RichTextEditor({ value, onChange, name, mentionItems = EMPTY_MENTION_ITEMS }: Props) {
   const wordCountRef = useRef<HTMLDivElement>(null);
+
+  // Mémoïsé sur `mentionItems` (le composant appelant doit lui-même fournir une
+  // référence stable) : CKEditor recrée l'éditeur à chaque changement de `config`,
+  // donc un nouvel objet à chaque rendu casserait la frappe (perte du curseur).
+  const config: EditorConfig = useMemo(
+    () => ({
+      ...BASE_CONFIG,
+      mention: {
+        feeds:
+          mentionItems.length > 0
+            ? [
+                {
+                  marker: "#",
+                  feed: mentionItems.map(
+                    (item): FormatMentionFeedItem => ({ id: `#${item.id}`, formatId: item.id, title: item.title }),
+                  ),
+                  itemRenderer: (item) => {
+                    const el = document.createElement("span");
+                    el.className = "ck-format-mention-item";
+                    el.textContent = (item as FormatMentionFeedItem).title;
+                    return el;
+                  },
+                },
+              ]
+            : [],
+      },
+    }),
+    [mentionItems],
+  );
 
   return (
     <div>
       {name && <input type="hidden" name={name} value={value} readOnly />}
       <CKEditor
         editor={ClassicEditor}
-        config={CONFIG}
+        config={config}
         data={value}
         onReady={(editor) => {
           const wc = editor.plugins.get("WordCount");
           if (wordCountRef.current && wc.wordCountContainer) {
             wordCountRef.current.replaceChildren(wc.wordCountContainer);
+          }
+          if (mentionItems.length > 0) {
+            // Ne personnalise que la sortie sauvegardée (dataDowncast) : la vue
+            // d'édition garde le rendu "mention" natif de CKEditor (pastille bleue),
+            // seul le HTML enregistré porte le repère `data-format-id`.
+            editor.conversion.for("dataDowncast").attributeToElement({
+              model: { key: "mention", name: "$text" },
+              view: (modelAttributeValue, { writer }) => {
+                if (!modelAttributeValue || typeof modelAttributeValue !== "object") return undefined;
+                const data = modelAttributeValue as unknown as FormatMentionFeedItem & { uid: string };
+                if (!data.formatId) return undefined;
+                return writer.createAttributeElement(
+                  "span",
+                  { class: "format-chip-tip", "data-format-id": data.formatId },
+                  { priority: 20, id: data.uid },
+                );
+              },
+              converterPriority: "high",
+            });
           }
         }}
         onChange={(_, editor) => {

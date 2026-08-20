@@ -23,6 +23,7 @@ export const permissionCatalog: PermissionSection[] = [
   { key: "sousthemes", label: "Sous-thèmes", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "auteurs", label: "Auteurs", actions: ["view", "create", "edit", "delete"] },
   { key: "activites", label: "Activités", actions: ["view", "create", "edit", "delete", "publish"] },
+  { key: "formatsactivites", label: "Formats d'activités", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "productions", label: "Productions", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "projets", label: "Projets", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "journal", label: "Journal", actions: ["view", "create", "edit", "delete", "publish"] },

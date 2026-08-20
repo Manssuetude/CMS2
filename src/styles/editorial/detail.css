@@ -234,3 +234,173 @@
   line-height: 1.85;
   color: var(--ed-ink);
 }
+
+/* Répertoire des formats d'activités (/activites/formats-d-activites) —
+   grille responsive, une seule couleur d'accent (celle de la marque),
+   différenciée par l'icône plutôt que par la couleur. */
+.site-shell .format-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.site-shell .format-card {
+  padding: 1.75rem 1.5rem;
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.site-shell .format-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--ed-line-strong);
+  box-shadow: 0 14px 30px -18px rgba(28, 23, 20, 0.28);
+}
+.site-shell .format-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 1rem;
+  border-radius: var(--ed-radius);
+  background: color-mix(in srgb, var(--ed-brand) 12%, transparent);
+  color: var(--ed-brand);
+}
+.site-shell .format-card h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: var(--ed-step-2);
+  margin: 0 0 0.5rem;
+}
+.site-shell .format-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--ed-ink-soft);
+}
+
+@media (max-width: 480px) {
+  .site-shell .format-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Formats liés affichés en chips sur la page détail d'une activité — lien
+   vers le répertoire, même accent unique que .format-card-icon. */
+.site-shell .format-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.site-shell .format-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: var(--ed-step-small);
+  color: var(--ed-brand);
+  padding: 0.4rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--ed-brand) 30%, var(--ed-line));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ed-brand) 8%, transparent);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.site-shell .format-chip:hover,
+.site-shell .format-chip:focus-visible,
+.site-shell .format-chip.is-open {
+  background: color-mix(in srgb, var(--ed-brand) 16%, transparent);
+  border-color: var(--ed-brand);
+  outline: none;
+}
+.site-shell .format-chip__bubble {
+  display: none;
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  z-index: 5;
+  width: max-content;
+  max-width: 360px;
+  padding: 1.1rem 1.3rem;
+  border-radius: var(--ed-radius-lg);
+  border: 1px solid var(--ed-line);
+  border-left: 3px solid var(--ed-brand);
+  background: var(--ed-raise);
+  color: var(--ed-ink);
+  font-size: 0.92rem;
+  font-weight: 400;
+  line-height: 1.65;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 20px 45px -16px rgba(28, 23, 20, 0.38);
+}
+.site-shell .format-chip:hover .format-chip__bubble,
+.site-shell .format-chip:focus-visible .format-chip__bubble,
+.site-shell .format-chip.is-open .format-chip__bubble {
+  display: block;
+}
+.site-shell .format-chip-list-hint {
+  margin: 0.9rem 0 0;
+  font-size: var(--ed-step-small);
+  color: var(--ed-ink-soft);
+  line-height: 1.6;
+}
+.site-shell .format-chip-list-link {
+  color: var(--ed-brand);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--ed-brand) 45%, transparent);
+}
+.site-shell .format-chip-list-link:hover {
+  text-decoration-color: var(--ed-brand);
+}
+
+/* Repère de format inséré au fil du texte (tapé via "#" dans l'éditeur) — bulle
+   discrète type note de bas de page, pas un badge, pour rester lisible en
+   plein paragraphe. Survol (aperçu rapide, desktop) + clic (bascule, garde la
+   bulle ouverte — seul moyen sur tactile) : voir FormatBubbleInteractivity. */
+.site-shell .rich-text .format-chip-tip {
+  position: relative;
+  cursor: pointer;
+  color: var(--ed-brand);
+  font-weight: 600;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--ed-brand) 50%, transparent);
+}
+.site-shell .rich-text .format-chip-tip:hover,
+.site-shell .rich-text .format-chip-tip:focus-visible,
+.site-shell .rich-text .format-chip-tip.is-open {
+  text-decoration-color: var(--ed-brand);
+  outline: none;
+}
+.site-shell .rich-text .format-chip-tip__bubble {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 5;
+  width: max-content;
+  max-width: 280px;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--ed-radius);
+  border: 1px solid var(--ed-line);
+  background: var(--ed-raise);
+  color: var(--ed-ink-soft);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 8px 24px -8px rgba(28, 23, 20, 0.28);
+}
+.site-shell .rich-text .format-chip-tip:hover .format-chip-tip__bubble,
+.site-shell .rich-text .format-chip-tip:focus-visible .format-chip-tip__bubble,
+.site-shell .rich-text .format-chip-tip.is-open .format-chip-tip__bubble {
+  display: block;
+}

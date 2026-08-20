@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { activityRepository } from "@/repositories/activityRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { projectRepository } from "@/repositories/projectRepository";
+import { activityFormatRepository } from "@/repositories/activityFormatRepository";
+import { authorRepository } from "@/repositories/authorRepository";
+import { mediaRepository } from "@/repositories/mediaRepository";
 import { ActiviteForm } from "@/components/admin/ActiviteForm";
 import { updateActivityAction } from "../../actions";
 
@@ -13,15 +16,20 @@ interface Props {
 
 export default async function EditActivitePage({ params }: Props) {
   const { id } = await params;
-  const [item, themes, projects] = await Promise.all([
+  const [item, themes, projects, activityFormats, authors, images] = await Promise.all([
     activityRepository.getActivityById(id),
     themeRepository.listThemes(true),
     projectRepository.listProjects(true),
+    activityFormatRepository.listFormats(true),
+    authorRepository.listAuthors(),
+    mediaRepository.list(),
   ]);
   if (!item) notFound();
-  const [initialThemeIds, initialProjectIds] = await Promise.all([
+  const [initialThemeIds, initialProjectIds, initialFormatIds, initialAnimators] = await Promise.all([
     activityRepository.getActivityThemeIds(id),
     activityRepository.getActivityProjectIds(id),
+    activityFormatRepository.getActivityFormatIds(id),
+    authorRepository.getActivityAnimators(id),
   ]);
 
   return (
@@ -57,6 +65,11 @@ export default async function EditActivitePage({ params }: Props) {
         initialThemeIds={initialThemeIds}
         projects={projects}
         initialProjectIds={initialProjectIds}
+        activityFormats={activityFormats}
+        initialFormatIds={initialFormatIds}
+        authors={authors}
+        initialAnimators={initialAnimators}
+        images={images.filter((m) => m.type === "image")}
       />
     </section>
   );

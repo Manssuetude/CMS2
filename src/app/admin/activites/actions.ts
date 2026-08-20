@@ -4,8 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { activityRepository } from "@/repositories/activityRepository";
+import { activityFormatRepository } from "@/repositories/activityFormatRepository";
+import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
+import type { ActivityAnimator } from "@/types/cms";
 
 const speakerSchema = z.object({ name: z.string().min(1), role: z.string().optional() });
 
@@ -24,6 +27,7 @@ const schema = z.object({
   description: z.string().optional().nullable(),
   body: z.string().optional().nullable(),
   speakers: z.array(speakerSchema).default([]),
+  gallery: z.array(z.string()).default([]),
   seoTitle: z.string().optional().nullable(),
   seoDescription: z.string().optional().nullable(),
 });
@@ -44,6 +48,7 @@ function toInput(data: z.infer<typeof schema>) {
     description: data.description || null,
     body: data.body || null,
     speakers: data.speakers,
+    gallery: data.gallery,
     seo_title: data.seoTitle || null,
     seo_description: data.seoDescription || null,
   };
@@ -66,6 +71,22 @@ function parseIdList(formData: FormData, field: string): string[] {
     .filter(Boolean);
 }
 
+function parseAnimators(formData: FormData): ActivityAnimator[] {
+  const raw = (formData.get("animators") as string | null) ?? "[]";
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((a) => a && typeof a.authorId === "string" && a.authorId.trim())
+      .map((a) => ({
+        authorId: a.authorId,
+        contribution: typeof a.contribution === "string" && a.contribution.trim() ? a.contribution.trim() : null,
+      }));
+  } catch {
+    return [];
+  }
+}
+
 export async function createActivityAction(_: string | null, formData: FormData): Promise<string | null> {
   const parsed = schema.safeParse({
     title: formData.get("title"),
@@ -82,6 +103,7 @@ export async function createActivityAction(_: string | null, formData: FormData)
     description: formData.get("description") || null,
     body: formData.get("body") || null,
     speakers: parseSpeakers(formData),
+    gallery: parseIdList(formData, "gallery"),
     seoTitle: formData.get("seoTitle") || null,
     seoDescription: formData.get("seoDescription") || null,
   });
@@ -103,6 +125,10 @@ export async function createActivityAction(_: string | null, formData: FormData)
   if (themeIds.length > 0) await activityRepository.setActivityThemes(activity.id, themeIds);
   const projectIds = parseIdList(formData, "projectIds");
   if (projectIds.length > 0) await activityRepository.setActivityProjects(activity.id, projectIds);
+  const formatIds = parseIdList(formData, "formatIds");
+  if (formatIds.length > 0) await activityFormatRepository.setActivityFormats(activity.id, formatIds);
+  const animators = parseAnimators(formData);
+  if (animators.length > 0) await authorRepository.setActivityAnimators(activity.id, animators);
 
   await logAction("create", { entityType: "activity", summary: `Activité créée : ${parsed.data.title}` });
   revalidatePath("/admin/activites");
@@ -128,6 +154,7 @@ export async function updateActivityAction(_: string | null, formData: FormData)
     description: formData.get("description") || null,
     body: formData.get("body") || null,
     speakers: parseSpeakers(formData),
+    gallery: parseIdList(formData, "gallery"),
     seoTitle: formData.get("seoTitle") || null,
     seoDescription: formData.get("seoDescription") || null,
   });
@@ -144,6 +171,8 @@ export async function updateActivityAction(_: string | null, formData: FormData)
 
   await activityRepository.setActivityThemes(id, parseIdList(formData, "themeIds"));
   await activityRepository.setActivityProjects(id, parseIdList(formData, "projectIds"));
+  await activityFormatRepository.setActivityFormats(id, parseIdList(formData, "formatIds"));
+  await authorRepository.setActivityAnimators(id, parseAnimators(formData));
 
   await logAction("update", {
     entityType: "activity",

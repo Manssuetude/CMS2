@@ -11,6 +11,7 @@ const GATED_SECTIONS = [
   "sousthemes",
   "auteurs",
   "activites",
+  "formatsactivites",
   "productions",
   "projets",
   "journal",

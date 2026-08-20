@@ -20,7 +20,7 @@ export type Visibility =
   | "archived"
   | "private"
   | "draft";
-export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "activity";
+export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "activity" | "contact";
 export type FormStatus = "reçu" | "en cours" | "traité" | "archivé";
 export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "activity"}`;
 
@@ -117,13 +117,6 @@ export type PercaStep = {
   body?: string | null;
 };
 
-// Compteur d'impact affiché sur la page d'accueil (ex. "150 · Membres") —
-// saisi à la main par l'équipe, pas calculé automatiquement.
-export type ImpactStat = {
-  label: string;
-  value: string;
-};
-
 export type Page = {
   id: string;
   slug: string;
@@ -133,8 +126,6 @@ export type Page = {
   imageId?: string | null;
   imageUrl?: string | null;
   imageCrop?: ImageCrop | null;
-  focusImageUrl?: string | null;
-  focusImageCrop?: ImageCrop | null;
   image?: Media | null;
   quote?: string | null;
   primaryCtaLabel?: string | null;
@@ -143,8 +134,9 @@ export type Page = {
   secondaryCtaTarget?: CtaTarget | null;
   sections: ContentBlock[];
   percaSteps?: PercaStep[];
-  impactStats?: ImpactStat[];
-  featuredDossierIds?: string[];
+  // Activité de secours pour "Activité du moment" (accueil), utilisée
+  // uniquement quand aucune activité n'a lieu cette semaine.
+  featuredActivityId?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImageId?: string | null;
@@ -220,6 +212,14 @@ export type Speaker = {
   role?: string;
 };
 
+// Animateur d'une activité — lien vers une fiche Author réutilisable (comme
+// production_authors), avec une contribution libre et optionnelle propre à
+// cette activité ("ce que la personne y a fait").
+export type ActivityAnimator = {
+  authorId: string;
+  contribution?: string | null;
+};
+
 export type RegistrationStatus = "a-venir" | "ouvertes" | "complet" | "termine";
 
 export type Activity = {
@@ -244,6 +244,7 @@ export type Activity = {
   featured: boolean;
   themeIds?: string[];
   projectIds?: string[];
+  formatIds?: string[];
   seoTitle?: string | null;
   seoDescription?: string | null;
   createdAt: string;
@@ -281,6 +282,20 @@ export type Author = {
   name: string;
   bio?: string | null;
   photoId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Format/technique d'animation d'activité (Fishbowl, Hot Takes, Débat 2v2...) —
+// répertoire présenté en grille de cartes sur /activites/formats-d-activites.
+export type ActivityFormat = {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  icon?: string | null;
+  position: number;
+  status: ContentStatus;
   createdAt: string;
   updatedAt: string;
 };
