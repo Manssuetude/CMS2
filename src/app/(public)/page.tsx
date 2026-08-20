@@ -37,12 +37,11 @@ export default async function HomePage() {
     const featuredJournal = journalEntries.filter((e) => e.featured);
     const homeJournalEntries = (featuredJournal.length ? featuredJournal : journalEntries).slice(0, 3);
 
-    // Accueil : productions et thèmes "en vedette" (repli sur les plus récents si aucun n'est marqué).
-    // Plafonds : 4 productions, 3 activités, 4 thèmes.
-    const featuredProductions = productions.filter((p) => p.featured);
-    const homeProductions = (featuredProductions.length ? featuredProductions : productions).slice(0, 4);
-    // Activités affichées = uniquement celles marquées en vedette (max 3). Aucune vedette → section masquée.
-    const homeActivities = activities.filter((a) => a.featured).slice(0, 3);
+    // Accueil : uniquement les productions et activités marquées "en vedette"
+    // (pas de repli sur les plus récentes) — max 3 productions, max 2 activités.
+    // Aucune vedette → section masquée.
+    const homeProductions = productions.filter((p) => p.featured).slice(0, 3);
+    const homeActivities = activities.filter((a) => a.featured).slice(0, 2);
 
     const fallbackActivity = page.featuredActivityId
       ? (activities.find((a) => a.id === page.featuredActivityId) ?? null)

@@ -4,7 +4,17 @@ import { useActionState, useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink, Plus, X } from "lucide-react";
-import type { Activity, ActivityAnimator, ActivityFormat, Author, Media, Project, Speaker, Theme } from "@/types/cms";
+import type {
+  Activity,
+  ActivityAnimator,
+  ActivityFormat,
+  Author,
+  Media,
+  Project,
+  Speaker,
+  SubTheme,
+  Theme,
+} from "@/types/cms";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -51,6 +61,8 @@ interface Props {
   action: ActionFn;
   themes?: Theme[];
   initialThemeIds?: string[];
+  subThemes?: SubTheme[];
+  initialSubThemeIds?: string[];
   projects?: Project[];
   initialProjectIds?: string[];
   activityFormats?: ActivityFormat[];
@@ -65,6 +77,8 @@ export function ActiviteForm({
   action,
   themes = [],
   initialThemeIds = [],
+  subThemes = [],
+  initialSubThemeIds = [],
   projects = [],
   initialProjectIds = [],
   activityFormats = [],
@@ -79,12 +93,20 @@ export function ActiviteForm({
   const [body, setBody] = useState(initialData?.body ?? "");
   const [speakers, setSpeakers] = useState<Speaker[]>(initialData?.speakers ?? []);
   const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
+  const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
   const [selectedProjects, setSelectedProjects] = useState<string[]>(initialProjectIds);
   const [selectedFormats, setSelectedFormats] = useState<string[]>(initialFormatIds);
   const [animators, setAnimators] = useState<ActivityAnimator[]>(initialAnimators);
   const [selectedGallery, setSelectedGallery] = useState<string[]>(initialData?.gallery ?? []);
   const publicHref = isEdit ? `/activites/${initialData.slug}` : null;
   const mentionItems = useMemo(() => activityFormats.map((f) => ({ id: f.id, title: f.title })), [activityFormats]);
+  const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
+  const subThemesByTheme = new Map<string, SubTheme[]>();
+  for (const st of subThemes) {
+    const list = subThemesByTheme.get(st.themeId) ?? [];
+    list.push(st);
+    subThemesByTheme.set(st.themeId, list);
+  }
 
   function updateSpeaker(index: number, field: keyof Speaker, value: string) {
     setSpeakers((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
@@ -101,6 +123,7 @@ export function ActiviteForm({
       <input type="hidden" name="body" value={body} />
       <input type="hidden" name="speakers" value={JSON.stringify(speakers.filter((s) => s.name.trim()))} />
       <input type="hidden" name="themeIds" value={selectedThemes.join(",")} />
+      <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
       <input type="hidden" name="projectIds" value={selectedProjects.join(",")} />
       <input type="hidden" name="formatIds" value={selectedFormats.join(",")} />
       <input type="hidden" name="animators" value={JSON.stringify(animators.filter((a) => a.authorId))} />
@@ -399,6 +422,29 @@ export function ActiviteForm({
               selected={selectedThemes}
               onChange={setSelectedThemes}
             />
+          </div>
+        )}
+
+        {/* Relations sous-thèmes */}
+        {subThemes.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Sous-thèmes</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Sous-thèmes traités par cette activité.
+            </p>
+            {[...subThemesByTheme.entries()].map(([themeId, items]) => (
+              <div key={themeId} style={{ marginBottom: 14 }}>
+                <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 600, color: "var(--ink)" }}>
+                  {themeTitleById.get(themeId) ?? "Thème"}
+                </p>
+                <CheckboxMultiSelect
+                  idPrefix="subtheme"
+                  items={items.map((st) => ({ id: st.id, label: st.title }))}
+                  selected={selectedSubThemes}
+                  onChange={setSelectedSubThemes}
+                />
+              </div>
+            ))}
           </div>
         )}
 

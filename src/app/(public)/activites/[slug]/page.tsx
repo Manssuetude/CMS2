@@ -5,6 +5,8 @@ import { activityRepository } from "@/repositories/activityRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
+import { themeRepository } from "@/repositories/themeRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -43,13 +45,18 @@ export default async function ActivitePage({ params }: { params: Promise<{ slug:
   const items = await activityRepository.listActivities(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  const [formatIds, allFormats, animatorLinks, authors, galleryUrls] = await Promise.all([
-    activityFormatRepository.getActivityFormatIds(item.id),
-    activityFormatRepository.listFormats(),
-    authorRepository.getActivityAnimators(item.id),
-    authorRepository.listAuthors(),
-    Promise.all(item.gallery.map((id) => mediaRepository.getResourceUrl(id))),
-  ]);
+  const [formatIds, allFormats, animatorLinks, authors, galleryUrls, themeIds, subThemeIds, allThemes, allSubThemes] =
+    await Promise.all([
+      activityFormatRepository.getActivityFormatIds(item.id),
+      activityFormatRepository.listFormats(),
+      authorRepository.getActivityAnimators(item.id),
+      authorRepository.listAuthors(),
+      Promise.all(item.gallery.map((id) => mediaRepository.getResourceUrl(id))),
+      activityRepository.getActivityThemeIds(item.id),
+      activityRepository.getActivitySubThemeIds(item.id),
+      themeRepository.listThemes(),
+      subThemeRepository.listSubThemes(),
+    ]);
   const formats = allFormats.filter((f) => formatIds.includes(f.id));
   const authorsById = new Map(authors.map((a) => [a.id, a]));
   const animators = animatorLinks.flatMap((link) => {
@@ -57,7 +64,18 @@ export default async function ActivitePage({ params }: { params: Promise<{ slug:
     return author ? [{ author, contribution: link.contribution }] : [];
   });
   const gallery = galleryUrls.filter((url): url is string => Boolean(url));
+  const themes = allThemes.filter((t) => themeIds.includes(t.id));
+  const subThemes = allSubThemes.filter((st) => subThemeIds.includes(st.id));
   return (
-    <ActiviteDetail item={item} formats={formats} allFormats={allFormats} animators={animators} gallery={gallery} />
+    <ActiviteDetail
+      item={item}
+      formats={formats}
+      allFormats={allFormats}
+      animators={animators}
+      gallery={gallery}
+      themes={themes}
+      subThemes={subThemes}
+      allThemes={allThemes}
+    />
   );
 }

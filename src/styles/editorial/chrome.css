@@ -209,11 +209,34 @@
   font-weight: 500;
   margin: 0 0 1.25rem;
 }
-.site-shell .hero-copy > p {
+/* Texte d'introduction — rendu riche (édité comme un article, voir
+   PageContentForm) : le conteneur porte la marge avant les boutons, chaque
+   paragraphe garde un interligne confortable sans double-espacer le dernier. */
+.site-shell .hero-copy .hero-body {
+  margin: 0 0 2rem;
+}
+.site-shell .hero-copy .hero-body p {
   font-size: var(--ed-step-1);
   color: var(--ed-ink-soft);
   line-height: 1.6;
-  margin: 0 0 2rem;
+  margin: 0 0 0.85rem;
+}
+.site-shell .hero-copy .hero-body p:last-child {
+  margin-bottom: 0;
+}
+.site-shell .hero-copy .hero-body a {
+  color: var(--ed-brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.site-shell .hero-copy .hero-body strong {
+  color: var(--ed-ink);
+}
+.site-shell .hero-copy .hero-body ul,
+.site-shell .hero-copy .hero-body ol {
+  margin: 0 0 0.85rem;
+  padding-left: 1.25rem;
+  color: var(--ed-ink-soft);
 }
 .site-shell .hero .actions {
   display: flex;

@@ -12,11 +12,11 @@ export async function toggleProductionFeaturedAction(formData: FormData): Promis
   const id = (formData.get("id") as string | null)?.trim();
   const featured = formData.get("featured") === "true";
   if (!id) return;
-  // Garde-fou : maximum 4 productions en vedette sur l'accueil.
+  // Garde-fou : maximum 3 productions en vedette sur l'accueil.
   if (featured) {
     const all = await productionRepository.listProductions(true);
     const count = all.filter((p) => p.featured).length;
-    if (count >= 4) return;
+    if (count >= 3) return;
   }
   await productionRepository.updateProduction(id, { featured });
   revalidatePath("/admin/productions");

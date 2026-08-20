@@ -163,6 +163,10 @@ export function HomeEditorial({
           <p className="home-method-text">
             PERCA structure notre façon de partir d&apos;un dossier pour apprendre, débattre, produire et créer du lien.
           </p>
+          <Link href="/perca" className="home-method-link">
+            Découvrir la méthode PERCA
+            <span aria-hidden>→</span>
+          </Link>
         </div>
       </section>
 

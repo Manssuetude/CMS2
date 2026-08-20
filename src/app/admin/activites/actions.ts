@@ -123,6 +123,8 @@ export async function createActivityAction(_: string | null, formData: FormData)
 
   const themeIds = parseIdList(formData, "themeIds");
   if (themeIds.length > 0) await activityRepository.setActivityThemes(activity.id, themeIds);
+  const subThemeIds = parseIdList(formData, "subThemeIds");
+  if (subThemeIds.length > 0) await activityRepository.setActivitySubThemes(activity.id, subThemeIds);
   const projectIds = parseIdList(formData, "projectIds");
   if (projectIds.length > 0) await activityRepository.setActivityProjects(activity.id, projectIds);
   const formatIds = parseIdList(formData, "formatIds");
@@ -170,6 +172,7 @@ export async function updateActivityAction(_: string | null, formData: FormData)
   }
 
   await activityRepository.setActivityThemes(id, parseIdList(formData, "themeIds"));
+  await activityRepository.setActivitySubThemes(id, parseIdList(formData, "subThemeIds"));
   await activityRepository.setActivityProjects(id, parseIdList(formData, "projectIds"));
   await activityFormatRepository.setActivityFormats(id, parseIdList(formData, "formatIds"));
   await authorRepository.setActivityAnimators(id, parseAnimators(formData));
@@ -203,11 +206,11 @@ export async function toggleActivityFeaturedAction(formData: FormData): Promise<
   const id = (formData.get("id") as string | null)?.trim();
   const featured = formData.get("featured") === "true";
   if (!id) return;
-  // Garde-fou : maximum 3 activités en vedette sur l'accueil.
+  // Garde-fou : maximum 2 activités en vedette sur l'accueil.
   if (featured) {
     const all = await activityRepository.listActivities(true);
     const count = all.filter((a) => a.featured).length;
-    if (count >= 3) return;
+    if (count >= 2) return;
   }
   await activityRepository.updateActivity(id, { featured });
   revalidatePath("/admin/activites");

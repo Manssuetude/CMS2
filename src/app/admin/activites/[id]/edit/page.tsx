@@ -3,6 +3,7 @@ import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { activityRepository } from "@/repositories/activityRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
@@ -16,21 +17,24 @@ interface Props {
 
 export default async function EditActivitePage({ params }: Props) {
   const { id } = await params;
-  const [item, themes, projects, activityFormats, authors, images] = await Promise.all([
+  const [item, themes, subThemes, projects, activityFormats, authors, images] = await Promise.all([
     activityRepository.getActivityById(id),
     themeRepository.listThemes(true),
+    subThemeRepository.listSubThemes(true),
     projectRepository.listProjects(true),
     activityFormatRepository.listFormats(true),
     authorRepository.listAuthors(),
     mediaRepository.list(),
   ]);
   if (!item) notFound();
-  const [initialThemeIds, initialProjectIds, initialFormatIds, initialAnimators] = await Promise.all([
-    activityRepository.getActivityThemeIds(id),
-    activityRepository.getActivityProjectIds(id),
-    activityFormatRepository.getActivityFormatIds(id),
-    authorRepository.getActivityAnimators(id),
-  ]);
+  const [initialThemeIds, initialSubThemeIds, initialProjectIds, initialFormatIds, initialAnimators] =
+    await Promise.all([
+      activityRepository.getActivityThemeIds(id),
+      activityRepository.getActivitySubThemeIds(id),
+      activityRepository.getActivityProjectIds(id),
+      activityFormatRepository.getActivityFormatIds(id),
+      authorRepository.getActivityAnimators(id),
+    ]);
 
   return (
     <section className="admin-panel">
@@ -63,6 +67,8 @@ export default async function EditActivitePage({ params }: Props) {
         action={updateActivityAction}
         themes={themes}
         initialThemeIds={initialThemeIds}
+        subThemes={subThemes}
+        initialSubThemeIds={initialSubThemeIds}
         projects={projects}
         initialProjectIds={initialProjectIds}
         activityFormats={activityFormats}

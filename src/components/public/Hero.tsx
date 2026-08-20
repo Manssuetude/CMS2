@@ -1,6 +1,7 @@
 import { CtaButton } from "@/components/forms/CtaButton";
 import type { CtaTarget, ImageCrop } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 export function Hero({
   eyebrow,
@@ -31,7 +32,7 @@ export function Hero({
       <div className="hero-copy">
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
         <h1>{title}</h1>
-        {body ? <p>{body}</p> : null}
+        {body ? <div className="hero-body" dangerouslySetInnerHTML={{ __html: sanitizeHtml(body) }} /> : null}
         <div className="actions">
           {primaryLabel && primaryTarget ? (
             <CtaButton label={primaryLabel} target={primaryTarget} variant="primary" />

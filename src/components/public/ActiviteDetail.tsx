@@ -1,5 +1,5 @@
 import { ExternalLink, MapPin, Users } from "lucide-react";
-import type { Activity, ActivityFormat, Author } from "@/types/cms";
+import type { Activity, ActivityFormat, Author, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { resolveRegistrationStatus, registrationStatusLabel } from "@/utils/registrationStatus";
@@ -33,13 +33,20 @@ export function ActiviteDetail({
   allFormats = formats,
   animators = [],
   gallery = [],
+  themes = [],
+  subThemes = [],
+  allThemes = themes,
 }: {
   item: Activity;
   formats?: ActivityFormat[];
   allFormats?: ActivityFormat[];
   animators?: ResolvedAnimator[];
   gallery?: string[];
+  themes?: Theme[];
+  subThemes?: SubTheme[];
+  allThemes?: Theme[];
 }) {
+  const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const now = new Date();
   const eventDate = item.date ? new Date(item.date) : null;
   // Sans date, on ne peut pas déduire "passée" du simple fait qu'elle ne soit
@@ -121,6 +128,30 @@ export function ActiviteDetail({
               className="rich-text"
               dangerouslySetInnerHTML={{ __html: injectFormatBubbles(sanitizeHtml(item.body), allFormats) }}
             />
+          </div>
+        </section>
+      )}
+
+      {/* ── Thèmes & sous-thèmes ─────────────────────────────── */}
+      {(themes.length > 0 || subThemes.length > 0) && (
+        <section className="section">
+          <div className="section-head">
+            <h2>Thèmes</h2>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {themes.map((theme) => (
+              <Link key={theme.id} href={`/themes/${theme.slug}`} className="theme-chip">
+                {theme.title}
+              </Link>
+            ))}
+            {subThemes.map((st) => {
+              const parentTheme = themeById.get(st.themeId);
+              return parentTheme ? (
+                <Link key={st.id} href={`/themes/${parentTheme.slug}/${st.slug}`} className="theme-chip">
+                  {st.title}
+                </Link>
+              ) : null;
+            })}
           </div>
         </section>
       )}

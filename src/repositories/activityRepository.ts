@@ -118,6 +118,23 @@ export const activityRepository = {
     return (rows ?? []).map(mapActivity);
   },
 
+  // ── Activité ↔ Sous-thèmes (many-to-many) ────────────────────────────
+  async getActivitySubThemeIds(activityId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("sub_theme_activities").select("sub_theme_id").eq("activity_id", activityId);
+    return (data ?? []).map((r) => String(r.sub_theme_id));
+  },
+
+  async setActivitySubThemes(activityId: string, subThemeIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("sub_theme_activities").delete().eq("activity_id", activityId);
+    if (subThemeIds.length > 0) {
+      const rows = subThemeIds.map((subThemeId) => ({ activity_id: activityId, sub_theme_id: subThemeId }));
+      const { error } = await db.from("sub_theme_activities").insert(rows);
+      if (error) throw error;
+    }
+  },
+
   // ── Activité ↔ Projets (many-to-many) ────────────────────────────────
   async getActivityProjectIds(activityId: string): Promise<string[]> {
     const db = getSupabaseAdmin();
