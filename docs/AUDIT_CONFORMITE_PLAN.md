@@ -75,11 +75,11 @@ Ces éléments ne peuvent pas être décidés depuis le code — il faut les obt
 
 ## Phase 3 — Ensuite (moyenne priorité)
 
-### 8. Droit à l'effacement — suppression des soumissions de formulaire
+### 8. Droit à l'effacement — suppression des soumissions de formulaire — 🚧 partiellement bloqué
 
-- [ ] `src/repositories/formSubmissionRepository.ts` : ajouter une méthode de suppression.
-- [ ] `src/app/admin/forms/actions.ts` + UI (`/admin/forms`) : ajouter une action « Supprimer » sur une soumission.
-- [ ] Selon la durée de conservation obtenue (tâche 0), envisager une purge automatique (tâche planifiée ou vérification à l'ouverture de la liste).
+- [x] `src/repositories/formSubmissionRepository.ts` : méthode `deleteFormSubmission`.
+- [x] `src/app/admin/forms/actions.ts` (`deleteFormSubmissionAction`, journalisée via `logAction`) + UI (`/admin/forms`) : bouton « Supprimer » (`ConfirmDeleteButton`) dans le détail déplié de chaque soumission. Vérifié : suppression réelle en base testée (insertion/suppression d'une soumission de test, nettoyée).
+- [ ] Selon la durée de conservation obtenue (tâche 0, toujours en attente), envisager une purge automatique (tâche planifiée ou vérification à l'ouverture de la liste).
 
 ### 9. Durcir la session admin
 

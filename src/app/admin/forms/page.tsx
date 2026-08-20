@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { formSubmissionRepository } from "@/repositories/formSubmissionRepository";
-import { updateFormStatusAction } from "./actions";
+import { updateFormStatusAction, deleteFormSubmissionAction } from "./actions";
 import { FormSubmissionRow } from "@/components/admin/FormSubmissionRow";
 
 const TYPE_TABS: Array<{ value: string; label: string }> = [
@@ -88,7 +88,13 @@ export default async function AdminFormsPage({ searchParams }: { searchParams: P
           </thead>
           <tbody>
             {forms.map((f) => (
-              <FormSubmissionRow key={f.id} submission={f} action={updateFormStatusAction} columns={TABLE_COLUMNS} />
+              <FormSubmissionRow
+                key={f.id}
+                submission={f}
+                action={updateFormStatusAction}
+                deleteAction={deleteFormSubmissionAction}
+                columns={TABLE_COLUMNS}
+              />
             ))}
           </tbody>
         </table>
