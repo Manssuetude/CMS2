@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { FooterConfig } from "@/types/cms";
-import { MEMBER_SPACE_URL, RNA_NUMBER } from "@/constants/site";
+import { RNA_NUMBER } from "@/constants/site";
 
 const defaultColumns = [
   {
@@ -88,9 +88,6 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
             ),
           )}
         </nav>
-        <a className="cta" href={MEMBER_SPACE_URL} target="_blank" rel="noopener noreferrer">
-          Espace membre
-        </a>
         <div className="footer-social">
           {socials.map(({ label, href, Icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}>
