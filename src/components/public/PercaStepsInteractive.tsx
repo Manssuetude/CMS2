@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { PercaStep } from "@/types/cms";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
@@ -19,6 +19,21 @@ const FIXED_STEPS: Array<[string, string]> = [
 export function PercaStepsInteractive({ steps = [] }: { steps?: PercaStep[] }) {
   const [active, setActive] = useState<string | null>(null);
   const stepByLetter = new Map(steps.map((s) => [s.letter, s]));
+
+  // Bulle en plein écran : verrouille le défilement de la page derrière, et
+  // permet de fermer au clavier (Échap), comme n'importe quelle modale.
+  useEffect(() => {
+    if (!active) return;
+    document.body.style.overflow = "hidden";
+    function handleKeydown(event: KeyboardEvent) {
+      if (event.key === "Escape") setActive(null);
+    }
+    document.addEventListener("keydown", handleKeydown);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  }, [active]);
 
   return (
     <ol className="perca-steps">
