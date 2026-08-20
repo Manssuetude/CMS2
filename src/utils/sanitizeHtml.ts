@@ -2,7 +2,15 @@ import sanitizeHtmlLib from "sanitize-html";
 import { fixTableOfContentsLinks } from "@/utils/tableOfContents";
 
 const FORBIDDEN_TAGS = ["style", "script", "iframe", "object", "embed", "form"];
-const FORBIDDEN_ATTRS = new Set(["style", "onerror", "onload", "onclick"]);
+// "style" et "formaction" nommément, plus TOUT attribut on* (onerror, onclick,
+// onmouseover, onfocus, onanimationstart... — la liste des handlers HTML n'est
+// pas fermée, un motif est plus sûr qu'une liste figée d'exemples connus).
+const FORBIDDEN_STATIC_ATTRS = new Set(["style", "formaction"]);
+const ON_HANDLER_ATTR = /^on/i;
+
+function isForbiddenAttr(name: string): boolean {
+  return FORBIDDEN_STATIC_ATTRS.has(name) || ON_HANDLER_ATTR.test(name);
+}
 
 // Sanitise le HTML riche (issu de l'éditeur CKEditor) avant rendu via dangerouslySetInnerHTML.
 // Défense en profondeur contre le XSS stocké : on retire scripts, handlers inline et URLs
@@ -31,7 +39,7 @@ export function sanitizeHtml(html: string | null | undefined): string {
       "*": (tagName, attribs) => {
         const kept: sanitizeHtmlLib.Attributes = {};
         for (const [name, value] of Object.entries(attribs)) {
-          if (!FORBIDDEN_ATTRS.has(name)) kept[name] = value;
+          if (!isForbiddenAttr(name)) kept[name] = value;
         }
         return { tagName, attribs: kept };
       },

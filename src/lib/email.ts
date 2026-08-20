@@ -56,6 +56,10 @@ const SUBMISSION_LABELS: Record<string, { subject: string; intro: string }> = {
     subject: "Votre proposition d'activité a bien été reçue",
     intro: "Nous avons bien reçu votre proposition d'activité.",
   },
+  contact: {
+    subject: "Votre message a bien été reçu",
+    intro: "Nous avons bien reçu votre message.",
+  },
 };
 
 export function submissionConfirmationSubject(formType: string): string {

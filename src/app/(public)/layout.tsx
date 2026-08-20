@@ -1,5 +1,6 @@
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { FormatBubbleInteractivity } from "@/components/public/FormatBubbleInteractivity";
 import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 
 export const revalidate = 60;
@@ -22,6 +23,7 @@ export default async function PublicLayout({ children }: { children: React.React
         {children}
       </main>
       <SiteFooter />
+      <FormatBubbleInteractivity />
     </div>
   );
 }

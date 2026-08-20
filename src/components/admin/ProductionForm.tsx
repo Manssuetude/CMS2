@@ -92,8 +92,11 @@ export function ProductionForm({
           <p className="form-section-title">Informations générales</p>
 
           <div className="form-field">
-            <label className="field-label">Titre *</label>
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               defaultValue={initialData?.title}
@@ -107,8 +110,10 @@ export function ProductionForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Type *</label>
-              <select name="type" value={type} onChange={(e) => setType(e.target.value)} required>
+              <label className="field-label" htmlFor="type">
+                Type *
+              </label>
+              <select id="type" name="type" value={type} onChange={(e) => setType(e.target.value)} required>
                 <option value="" disabled>
                   Choisir un type...
                 </option>
@@ -120,8 +125,11 @@ export function ProductionForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Auteur</label>
+              <label className="field-label" htmlFor="author">
+                Auteur
+              </label>
               <input
+                id="author"
                 type="text"
                 name="author"
                 defaultValue={initialData?.author ?? ""}
@@ -132,10 +140,11 @@ export function ProductionForm({
 
           {(type === "Video" || type === "Podcast") && (
             <div className="form-field">
-              <label className="field-label">
+              <label className="field-label" htmlFor="videoUrl">
                 {type === "Video" ? "URL vidéo (YouTube ou Vimeo)" : "URL audio (fichier .mp3 ou lien YouTube/Vimeo)"}
               </label>
               <input
+                id="videoUrl"
                 type="url"
                 name="videoUrl"
                 defaultValue={initialData?.videoUrl ?? ""}
@@ -146,14 +155,17 @@ export function ProductionForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Date de publication</label>
-              <input type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
+              <label className="field-label" htmlFor="date">
+                Date de publication
+              </label>
+              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
             <div className="form-field">
-              <label className="field-label">
+              <label className="field-label" htmlFor="readingTime">
                 {type === "Video" || type === "Podcast" ? "Durée" : "Temps de lecture (optionnel)"}
               </label>
               <input
+                id="readingTime"
                 type="text"
                 name="readingTime"
                 defaultValue={initialData?.readingTime ?? ""}
@@ -166,8 +178,16 @@ export function ProductionForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Nombre de pages</label>
-              <input type="text" name="pages" defaultValue={initialData?.pages ?? ""} placeholder="Ex. : 42" />
+              <label className="field-label" htmlFor="pages">
+                Nombre de pages
+              </label>
+              <input
+                id="pages"
+                type="text"
+                name="pages"
+                defaultValue={initialData?.pages ?? ""}
+                placeholder="Ex. : 42"
+              />
             </div>
             <div className="form-field" style={{ justifyContent: "flex-end" }}>
               <div className="form-checkbox">
@@ -182,8 +202,11 @@ export function ProductionForm({
         <div className="form-section">
           <p className="form-section-title">Résumé court</p>
           <div className="form-field">
-            <label className="field-label">Description</label>
+            <label className="field-label" htmlFor="description">
+              Description
+            </label>
             <textarea
+              id="description"
               name="description"
               defaultValue={initialData?.description ?? ""}
               rows={3}
@@ -327,12 +350,22 @@ export function ProductionForm({
         <div className="form-section">
           <p className="form-section-title">SEO</p>
           <div className="form-field">
-            <label className="field-label">Titre SEO (onglet navigateur)</label>
-            <input name="seoTitle" defaultValue={initialData?.seoTitle ?? ""} placeholder={initialData?.title} />
+            <label className="field-label" htmlFor="seoTitle">
+              Titre SEO (onglet navigateur)
+            </label>
+            <input
+              id="seoTitle"
+              name="seoTitle"
+              defaultValue={initialData?.seoTitle ?? ""}
+              placeholder={initialData?.title}
+            />
           </div>
           <div className="form-field">
-            <label className="field-label">Description SEO</label>
+            <label className="field-label" htmlFor="seoDescription">
+              Description SEO
+            </label>
             <textarea
+              id="seoDescription"
               name="seoDescription"
               defaultValue={initialData?.seoDescription ?? ""}
               rows={3}
@@ -345,8 +378,10 @@ export function ProductionForm({
         <div className="form-section">
           <p className="form-section-title">Publication</p>
           <div className="form-field" style={{ maxWidth: 280 }}>
-            <label className="field-label">Statut</label>
-            <select name="status" defaultValue={initialData?.status ?? "draft"}>
+            <label className="field-label" htmlFor="status">
+              Statut
+            </label>
+            <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
               <option value="draft">Brouillon</option>
               <option value="published">Publié</option>
               <option value="archived">Archivé</option>

@@ -27,12 +27,23 @@ export function InviteUserForm({ roles }: { roles: Role[] }) {
 
       <form action={action} className="form-row" style={{ alignItems: "end" }}>
         <div className="form-field">
-          <label className="form-label">Adresse e-mail</label>
-          <input name="email" type="email" className="form-input" placeholder="prenom@exemple.com" required />
+          <label className="form-label" htmlFor="email">
+            Adresse e-mail
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            className="form-input"
+            placeholder="prenom@exemple.com"
+            required
+          />
         </div>
         <div className="form-field">
-          <label className="form-label">Rôle</label>
-          <select name="roleKey" className="form-input" defaultValue="" required>
+          <label className="form-label" htmlFor="roleKey">
+            Rôle
+          </label>
+          <select id="roleKey" name="roleKey" className="form-input" defaultValue="" required>
             <option value="" disabled>
               — choisir —
             </option>
@@ -65,7 +76,12 @@ export function InviteUserForm({ roles }: { roles: Role[] }) {
               <button type="button" className="btn-sm" onClick={() => copyLink(state.link!)}>
                 {copied ? "✓ Copié" : "Copier"}
               </button>
-              <input readOnly value={state.link} onFocus={(e) => e.currentTarget.select()} />
+              <input
+                readOnly
+                aria-label="Lien d'invitation"
+                value={state.link}
+                onFocus={(e) => e.currentTarget.select()}
+              />
             </div>
           )}
         </div>

@@ -13,6 +13,7 @@ const TYPE_TABS: Array<{ value: string; label: string }> = [
   { value: "content", label: "Contenu" },
   { value: "partner", label: "Partenariat" },
   { value: "donation", label: "Don" },
+  { value: "contact", label: "Contact" },
 ];
 
 const TABLE_COLUMNS = 4;

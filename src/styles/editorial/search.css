@@ -46,6 +46,15 @@
   box-shadow: 0 12px 30px rgba(28, 23, 20, 0.16);
   animation: searchPop 0.16s ease;
 }
+/* Le champ interne n'a pas de bordure propre (outline:none ci-dessous) — le
+   focus se voit donc sur le conteneur pilule, sinon aucun indicateur visible
+   au clavier (WCAG 2.4.7). */
+.site-shell .header-search:focus-within {
+  border-color: var(--ed-ink);
+  box-shadow:
+    0 12px 30px rgba(28, 23, 20, 0.16),
+    0 0 0 3px var(--ed-focus);
+}
 @keyframes searchPop {
   from {
     opacity: 0;
@@ -210,4 +219,15 @@
   font-size: var(--ed-step-1);
   line-height: 1.8;
   color: var(--ed-ink);
+}
+
+/* Alertes de complétude sur les pages légales — visibles pour l'équipe tant
+   qu'une information obligatoire (siège social, directeur de publication...)
+   n'a pas été fournie, sans casser la lecture du reste de la page. */
+.site-shell .legal-todo-notice {
+  padding: 0.9rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--ed-brand) 40%, var(--ed-line));
+  border-radius: var(--ed-radius);
+  background: color-mix(in srgb, var(--ed-brand) 8%, transparent);
+  font-size: 0.9rem;
 }

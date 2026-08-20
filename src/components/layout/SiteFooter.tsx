@@ -11,6 +11,13 @@ const defaultColumns = [
       { label: "Nous soutenir", url: "/nous-soutenir" },
     ],
   },
+  {
+    title: "Informations légales",
+    links: [
+      { label: "Mentions légales", url: "/mentions-legales" },
+      { label: "Politique de confidentialité", url: "/politique-de-confidentialite" },
+    ],
+  },
 ];
 
 // Icônes réseaux sociaux (SVG inline pour ne dépendre d'aucune librairie d'icônes).

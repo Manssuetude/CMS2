@@ -24,12 +24,16 @@ export function MediaEditForm({ item, themes, action }: Props) {
         <div className="form-section">
           <p className="form-section-title">Informations générales</p>
           <div className="form-field">
-            <label className="field-label">Titre *</label>
-            <input type="text" name="title" defaultValue={item.title} required />
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
+            <input id="title" type="text" name="title" defaultValue={item.title} required />
           </div>
           <div className="form-field">
-            <label className="field-label">Description</label>
-            <textarea name="description" defaultValue={item.description ?? ""} rows={3} />
+            <label className="field-label" htmlFor="description">
+              Description
+            </label>
+            <textarea id="description" name="description" defaultValue={item.description ?? ""} rows={3} />
           </div>
         </div>
 
@@ -37,12 +41,23 @@ export function MediaEditForm({ item, themes, action }: Props) {
           <p className="form-section-title">Référence bibliographique</p>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Auteur</label>
-              <input type="text" name="author" defaultValue={item.author ?? ""} placeholder="Nom de l'auteur·rice" />
+              <label className="field-label" htmlFor="author">
+                Auteur
+              </label>
+              <input
+                id="author"
+                type="text"
+                name="author"
+                defaultValue={item.author ?? ""}
+                placeholder="Nom de l'auteur·rice"
+              />
             </div>
             <div className="form-field">
-              <label className="field-label">Institution</label>
+              <label className="field-label" htmlFor="institution">
+                Institution
+              </label>
               <input
+                id="institution"
                 type="text"
                 name="institution"
                 defaultValue={item.institution ?? ""}
@@ -52,12 +67,21 @@ export function MediaEditForm({ item, themes, action }: Props) {
           </div>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Date de publication</label>
-              <input type="date" name="publishedDate" defaultValue={item.publishedDate?.slice(0, 10) ?? ""} />
+              <label className="field-label" htmlFor="publishedDate">
+                Date de publication
+              </label>
+              <input
+                id="publishedDate"
+                type="date"
+                name="publishedDate"
+                defaultValue={item.publishedDate?.slice(0, 10) ?? ""}
+              />
             </div>
             <div className="form-field">
-              <label className="field-label">Thème associé</label>
-              <select name="themeId" defaultValue={item.themeId ?? ""}>
+              <label className="field-label" htmlFor="themeId">
+                Thème associé
+              </label>
+              <select id="themeId" name="themeId" defaultValue={item.themeId ?? ""}>
                 <option value="">Aucun</option>
                 {themes.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -72,21 +96,29 @@ export function MediaEditForm({ item, themes, action }: Props) {
         <div className="form-section">
           <p className="form-section-title">Affichage</p>
           <div className="form-field">
-            <label className="field-label">Texte alternatif</label>
-            <input type="text" name="alt" defaultValue={item.alt ?? ""} />
+            <label className="field-label" htmlFor="alt">
+              Texte alternatif
+            </label>
+            <input id="alt" type="text" name="alt" defaultValue={item.alt ?? ""} />
           </div>
           <div className="form-field">
-            <label className="field-label">Légende</label>
-            <input type="text" name="caption" defaultValue={item.caption ?? ""} />
+            <label className="field-label" htmlFor="caption">
+              Légende
+            </label>
+            <input id="caption" type="text" name="caption" defaultValue={item.caption ?? ""} />
           </div>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Tags</label>
-              <input type="text" name="tags" defaultValue={item.tags.join(", ")} placeholder="tag1, tag2" />
+              <label className="field-label" htmlFor="tags">
+                Tags
+              </label>
+              <input id="tags" type="text" name="tags" defaultValue={item.tags.join(", ")} placeholder="tag1, tag2" />
             </div>
             <div className="form-field">
-              <label className="field-label">Visibilité</label>
-              <select name="visibility" defaultValue={item.visibility}>
+              <label className="field-label" htmlFor="visibility">
+                Visibilité
+              </label>
+              <select id="visibility" name="visibility" defaultValue={item.visibility}>
                 <option value="draft">Brouillon</option>
                 <option value="public">Public</option>
                 <option value="private">Privé</option>

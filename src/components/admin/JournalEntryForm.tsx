@@ -80,8 +80,11 @@ export function JournalEntryForm({
           <p className="form-section-title">Informations générales</p>
 
           <div className="form-field">
-            <label className="field-label">Titre *</label>
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               defaultValue={initialData?.title}
@@ -95,8 +98,10 @@ export function JournalEntryForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Catégorie</label>
-              <select name="category" defaultValue={initialData?.category ?? ""}>
+              <label className="field-label" htmlFor="category">
+                Catégorie
+              </label>
+              <select id="category" name="category" defaultValue={initialData?.category ?? ""}>
                 <option value="">Non catégorisé</option>
                 {JOURNAL_CATEGORIES.map((c) => (
                   <option key={c} value={c}>
@@ -106,15 +111,19 @@ export function JournalEntryForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Date</label>
-              <input type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
+              <label className="field-label" htmlFor="date">
+                Date
+              </label>
+              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Auteur</label>
-              <select name="authorId" defaultValue={initialData?.authorId ?? ""}>
+              <label className="field-label" htmlFor="authorId">
+                Auteur
+              </label>
+              <select id="authorId" name="authorId" defaultValue={initialData?.authorId ?? ""}>
                 <option value="">Non attribué</option>
                 {authors.map((a) => (
                   <option key={a.id} value={a.id}>
@@ -124,8 +133,10 @@ export function JournalEntryForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Image</label>
-              <select name="thumbnailId" defaultValue={initialData?.thumbnailId ?? ""}>
+              <label className="field-label" htmlFor="thumbnailId">
+                Image
+              </label>
+              <select id="thumbnailId" name="thumbnailId" defaultValue={initialData?.thumbnailId ?? ""}>
                 <option value="">Aucune image</option>
                 {images.map((img) => (
                   <option key={img.id} value={img.id}>
@@ -145,8 +156,11 @@ export function JournalEntryForm({
         <div className="form-section">
           <p className="form-section-title">Résumé court</p>
           <div className="form-field">
-            <label className="field-label">Extrait</label>
+            <label className="field-label" htmlFor="excerpt">
+              Extrait
+            </label>
             <textarea
+              id="excerpt"
               name="excerpt"
               defaultValue={initialData?.excerpt ?? ""}
               rows={3}
@@ -168,8 +182,10 @@ export function JournalEntryForm({
           </p>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Thème</label>
-              <select name="themeId" defaultValue={initialData?.themeId ?? ""}>
+              <label className="field-label" htmlFor="themeId">
+                Thème
+              </label>
+              <select id="themeId" name="themeId" defaultValue={initialData?.themeId ?? ""}>
                 <option value="">Aucun</option>
                 {themes.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -179,8 +195,10 @@ export function JournalEntryForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Projet</label>
-              <select name="projectId" defaultValue={initialData?.projectId ?? ""}>
+              <label className="field-label" htmlFor="projectId">
+                Projet
+              </label>
+              <select id="projectId" name="projectId" defaultValue={initialData?.projectId ?? ""}>
                 <option value="">Aucun</option>
                 {projects.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -192,8 +210,10 @@ export function JournalEntryForm({
           </div>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Activité</label>
-              <select name="activityId" defaultValue={initialData?.activityId ?? ""}>
+              <label className="field-label" htmlFor="activityId">
+                Activité
+              </label>
+              <select id="activityId" name="activityId" defaultValue={initialData?.activityId ?? ""}>
                 <option value="">Aucune</option>
                 {activities.map((a) => (
                   <option key={a.id} value={a.id}>
@@ -203,8 +223,10 @@ export function JournalEntryForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Production</label>
-              <select name="productionId" defaultValue={initialData?.productionId ?? ""}>
+              <label className="field-label" htmlFor="productionId">
+                Production
+              </label>
+              <select id="productionId" name="productionId" defaultValue={initialData?.productionId ?? ""}>
                 <option value="">Aucune</option>
                 {productions.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -219,8 +241,10 @@ export function JournalEntryForm({
         <div className="form-section">
           <p className="form-section-title">Publication</p>
           <div className="form-field" style={{ maxWidth: 280 }}>
-            <label className="field-label">Statut</label>
-            <select name="status" defaultValue={initialData?.status ?? "draft"}>
+            <label className="field-label" htmlFor="status">
+              Statut
+            </label>
+            <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
               <option value="draft">Brouillon</option>
               <option value="published">Publié</option>
               <option value="archived">Archivé</option>

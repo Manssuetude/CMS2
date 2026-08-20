@@ -94,8 +94,11 @@ export function ProjetForm({
           <p className="form-section-title">Informations générales</p>
 
           <div className="form-field">
-            <label className="field-label">Titre *</label>
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               defaultValue={initialData?.title}
@@ -109,8 +112,10 @@ export function ProjetForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Catégorie</label>
-              <select name="category" defaultValue={initialData?.category ?? ""}>
+              <label className="field-label" htmlFor="category">
+                Catégorie
+              </label>
+              <select id="category" name="category" defaultValue={initialData?.category ?? ""}>
                 <option value="">Non catégorisé</option>
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>
@@ -120,8 +125,10 @@ export function ProjetForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Priorité</label>
-              <select name="priority" defaultValue={initialData?.priority ?? ""}>
+              <label className="field-label" htmlFor="priority">
+                Priorité
+              </label>
+              <select id="priority" name="priority" defaultValue={initialData?.priority ?? ""}>
                 <option value="">Non définie</option>
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>
@@ -141,8 +148,11 @@ export function ProjetForm({
         <div className="form-section">
           <p className="form-section-title">Résumé court</p>
           <div className="form-field">
-            <label className="field-label">Description</label>
+            <label className="field-label" htmlFor="description">
+              Description
+            </label>
             <textarea
+              id="description"
               name="description"
               defaultValue={initialData?.description ?? ""}
               rows={3}
@@ -198,12 +208,22 @@ export function ProjetForm({
         <div className="form-section">
           <p className="form-section-title">SEO</p>
           <div className="form-field">
-            <label className="field-label">Titre SEO (onglet navigateur)</label>
-            <input name="seoTitle" defaultValue={initialData?.seoTitle ?? ""} placeholder={initialData?.title} />
+            <label className="field-label" htmlFor="seoTitle">
+              Titre SEO (onglet navigateur)
+            </label>
+            <input
+              id="seoTitle"
+              name="seoTitle"
+              defaultValue={initialData?.seoTitle ?? ""}
+              placeholder={initialData?.title}
+            />
           </div>
           <div className="form-field">
-            <label className="field-label">Description SEO</label>
+            <label className="field-label" htmlFor="seoDescription">
+              Description SEO
+            </label>
             <textarea
+              id="seoDescription"
               name="seoDescription"
               defaultValue={initialData?.seoDescription ?? ""}
               rows={3}
@@ -216,16 +236,20 @@ export function ProjetForm({
           <p className="form-section-title">Publication</p>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Statut</label>
-              <select name="status" defaultValue={initialData?.status ?? "draft"}>
+              <label className="field-label" htmlFor="status">
+                Statut
+              </label>
+              <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
                 <option value="draft">Brouillon</option>
                 <option value="published">Publié</option>
                 <option value="archived">Archivé</option>
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Avancement</label>
-              <select name="progressStatus" defaultValue={initialData?.progressStatus ?? ""}>
+              <label className="field-label" htmlFor="progressStatus">
+                Avancement
+              </label>
+              <select id="progressStatus" name="progressStatus" defaultValue={initialData?.progressStatus ?? ""}>
                 <option value="">Non défini</option>
                 <option value="idea">Idée</option>
                 <option value="preparation">En préparation</option>

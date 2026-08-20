@@ -55,6 +55,9 @@ export function NewsletterForm() {
         <input type="checkbox" name="consent" required />
         J&apos;accepte de recevoir la newsletter de Manssuétude par email.
       </label>
+      <a href="/politique-de-confidentialite" target="_blank" rel="noopener noreferrer" className="field-hint-link">
+        En savoir plus sur l&apos;utilisation de vos données
+      </a>
       {error && <p className="newsletter-form-error">{error}</p>}
     </form>
   );

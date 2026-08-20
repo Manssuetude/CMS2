@@ -10,12 +10,16 @@ export function RedirectForm({ action }: { action: ActionFn }) {
   return (
     <form action={formAction} className="form-row" style={{ alignItems: "flex-end" }}>
       <div className="form-field">
-        <label className="field-label">Chemin source</label>
-        <input name="fromPath" placeholder="/ancienne-page" required />
+        <label className="field-label" htmlFor="fromPath">
+          Chemin source
+        </label>
+        <input id="fromPath" name="fromPath" placeholder="/ancienne-page" required />
       </div>
       <div className="form-field">
-        <label className="field-label">Chemin cible</label>
-        <input name="toPath" placeholder="/nouvelle-page" required />
+        <label className="field-label" htmlFor="toPath">
+          Chemin cible
+        </label>
+        <input id="toPath" name="toPath" placeholder="/nouvelle-page" required />
       </div>
       <button type="submit" className="button primary" disabled={isPending}>
         {isPending ? "Ajout..." : "Ajouter"}

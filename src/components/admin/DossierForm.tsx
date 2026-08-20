@@ -91,8 +91,11 @@ export function DossierForm({
           <p className="form-section-title">Informations générales</p>
 
           <div className="form-field">
-            <label className="field-label">Titre *</label>
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               defaultValue={initialData?.title}
@@ -106,15 +109,19 @@ export function DossierForm({
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Mode</label>
-              <select name="mode" defaultValue={initialData?.mode ?? "libre"}>
+              <label className="field-label" htmlFor="mode">
+                Mode
+              </label>
+              <select id="mode" name="mode" defaultValue={initialData?.mode ?? "libre"}>
                 <option value="libre">Libre (grille)</option>
                 <option value="guide">Guidé (parcours séquentiel numéroté)</option>
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Image</label>
-              <select name="imageId" defaultValue={initialData?.imageId ?? ""}>
+              <label className="field-label" htmlFor="imageId">
+                Image
+              </label>
+              <select id="imageId" name="imageId" defaultValue={initialData?.imageId ?? ""}>
                 <option value="">Aucune image</option>
                 {images.map((img) => (
                   <option key={img.id} value={img.id}>
@@ -142,8 +149,10 @@ export function DossierForm({
         <div className="form-section">
           <p className="form-section-title">Publication</p>
           <div className="form-field" style={{ maxWidth: 280 }}>
-            <label className="field-label">Statut</label>
-            <select name="status" defaultValue={initialData?.status ?? "draft"}>
+            <label className="field-label" htmlFor="status">
+              Statut
+            </label>
+            <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
               <option value="draft">Brouillon</option>
               <option value="published">Publié</option>
               <option value="archived">Archivé</option>

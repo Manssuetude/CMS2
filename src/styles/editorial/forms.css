@@ -229,6 +229,17 @@
   height: 18px;
   accent-color: var(--ed-brand);
 }
+.site-shell .field-hint-link {
+  display: inline-block;
+  margin: 0.3rem 0 0 1.7rem;
+  font-size: 0.78rem;
+  color: var(--ed-ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site-shell .field-hint-link:hover {
+  color: var(--ed-brand);
+}
 .site-shell .form-grid label:has(input[type="file"]) {
   grid-column: 1 / -1;
 }

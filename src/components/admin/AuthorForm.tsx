@@ -27,13 +27,25 @@ export function AuthorForm({ initialData, action, images }: Props) {
           <p className="form-section-title">Informations</p>
 
           <div className="form-field">
-            <label className="field-label">Nom *</label>
-            <input type="text" name="name" defaultValue={initialData?.name} required placeholder="Prénom Nom" />
+            <label className="field-label" htmlFor="name">
+              Nom *
+            </label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              defaultValue={initialData?.name}
+              required
+              placeholder="Prénom Nom"
+            />
           </div>
 
           <div className="form-field">
-            <label className="field-label">Bio</label>
+            <label className="field-label" htmlFor="bio">
+              Bio
+            </label>
             <textarea
+              id="bio"
               name="bio"
               defaultValue={initialData?.bio ?? ""}
               rows={4}
@@ -42,8 +54,10 @@ export function AuthorForm({ initialData, action, images }: Props) {
           </div>
 
           <div className="form-field">
-            <label className="field-label">Photo</label>
-            <select name="photoId" defaultValue={initialData?.photoId ?? ""}>
+            <label className="field-label" htmlFor="photoId">
+              Photo
+            </label>
+            <select id="photoId" name="photoId" defaultValue={initialData?.photoId ?? ""}>
               <option value="">Aucune photo</option>
               {images.map((img) => (
                 <option key={img.id} value={img.id}>

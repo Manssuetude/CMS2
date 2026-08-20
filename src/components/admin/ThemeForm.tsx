@@ -35,8 +35,11 @@ export function ThemeForm({ initialData, action }: Props) {
           <p className="form-section-title">Contenu éditorial</p>
 
           <div className="form-field">
-            <label className="field-label">Description courte</label>
+            <label className="field-label" htmlFor="description">
+              Description courte
+            </label>
             <textarea
+              id="description"
               name="description"
               defaultValue={initialData.description ?? ""}
               rows={4}
@@ -45,8 +48,11 @@ export function ThemeForm({ initialData, action }: Props) {
           </div>
 
           <div className="form-field">
-            <label className="field-label">Description longue</label>
+            <label className="field-label" htmlFor="longDescription">
+              Description longue
+            </label>
             <textarea
+              id="longDescription"
               name="longDescription"
               defaultValue={initialData.longDescription ?? ""}
               rows={8}
@@ -58,12 +64,22 @@ export function ThemeForm({ initialData, action }: Props) {
         <div className="form-section">
           <p className="form-section-title">SEO</p>
           <div className="form-field">
-            <label className="field-label">Titre SEO (onglet navigateur)</label>
-            <input name="seoTitle" defaultValue={initialData.seoTitle ?? ""} placeholder={initialData.title} />
+            <label className="field-label" htmlFor="seoTitle">
+              Titre SEO (onglet navigateur)
+            </label>
+            <input
+              id="seoTitle"
+              name="seoTitle"
+              defaultValue={initialData.seoTitle ?? ""}
+              placeholder={initialData.title}
+            />
           </div>
           <div className="form-field">
-            <label className="field-label">Description SEO</label>
+            <label className="field-label" htmlFor="seoDescription">
+              Description SEO
+            </label>
             <textarea
+              id="seoDescription"
               name="seoDescription"
               defaultValue={initialData.seoDescription ?? ""}
               rows={3}
@@ -76,8 +92,10 @@ export function ThemeForm({ initialData, action }: Props) {
           <p className="form-section-title">Publication</p>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Statut</label>
-              <select name="status" defaultValue={initialData.status ?? "draft"}>
+              <label className="field-label" htmlFor="status">
+                Statut
+              </label>
+              <select id="status" name="status" defaultValue={initialData.status ?? "draft"}>
                 <option value="draft">Brouillon</option>
                 <option value="published">Publié</option>
                 <option value="archived">Archivé</option>

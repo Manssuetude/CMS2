@@ -14,6 +14,7 @@ const FORM_TYPE_LABEL: Record<string, string> = {
   content: "Contenu",
   partner: "Partenariat",
   donation: "Don",
+  contact: "Contact",
 };
 
 // Champs affichés en secondaire (déjà résumés ailleurs) — masqués du détail brut si voulu.

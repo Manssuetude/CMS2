@@ -60,23 +60,35 @@ export function FormModal({ formType, onClose }: { formType: string; onClose: ()
             {formDefinitions[safeFormType].map((field) => {
               if (field.type === "checkbox") {
                 return (
-                  <label key={field.name}>
-                    {field.hint ? (
-                      <span className="hint-tip" tabIndex={0} aria-label={field.hint}>
-                        {field.label}
-                        {field.required ? <span className="required-mark">*</span> : null}
-                        <span className="hint-tip__bubble" role="tooltip">
-                          {field.hint}
+                  <div key={field.name} style={{ gridColumn: "1 / -1" }}>
+                    <label>
+                      {field.hint ? (
+                        <span className="hint-tip" tabIndex={0} aria-label={field.hint}>
+                          {field.label}
+                          {field.required ? <span className="required-mark">*</span> : null}
+                          <span className="hint-tip__bubble" role="tooltip">
+                            {field.hint}
+                          </span>
                         </span>
-                      </span>
-                    ) : (
-                      <span>
-                        {field.label}
-                        {field.required ? <span className="required-mark">*</span> : null}
-                      </span>
-                    )}
-                    <input name={field.name} type="checkbox" required={field.required} />
-                  </label>
+                      ) : (
+                        <span>
+                          {field.label}
+                          {field.required ? <span className="required-mark">*</span> : null}
+                        </span>
+                      )}
+                      <input name={field.name} type="checkbox" required={field.required} />
+                    </label>
+                    {field.name === "consent" ? (
+                      <a
+                        href="/politique-de-confidentialite"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="field-hint-link"
+                      >
+                        En savoir plus sur l&apos;utilisation de vos données
+                      </a>
+                    ) : null}
+                  </div>
                 );
               }
               return (

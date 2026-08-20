@@ -354,6 +354,7 @@
 }
 .site-shell .newsletter-form-row:focus-within {
   border-color: var(--ed-brand);
+  box-shadow: 0 0 0 3px var(--ed-focus);
 }
 .site-shell .newsletter-form-icon {
   flex-shrink: 0;
