@@ -81,10 +81,10 @@ Ces éléments ne peuvent pas être décidés depuis le code — il faut les obt
 - [x] `src/app/admin/forms/actions.ts` (`deleteFormSubmissionAction`, journalisée via `logAction`) + UI (`/admin/forms`) : bouton « Supprimer » (`ConfirmDeleteButton`) dans le détail déplié de chaque soumission. Vérifié : suppression réelle en base testée (insertion/suppression d'une soumission de test, nettoyée).
 - [ ] Selon la durée de conservation obtenue (tâche 0, toujours en attente), envisager une purge automatique (tâche planifiée ou vérification à l'ouverture de la liste).
 
-### 9. Durcir la session admin
+### 9. Durcir la session admin ✅
 
-- [ ] `src/lib/supabase/server.ts` : surcharger les options de cookie (`httpOnly: true`, `secure: true` en production).
-- [ ] Vérifier que le comportement de connexion/déconnexion admin n'est pas cassé après ce changement (test manuel du flux login → navigation admin → logout).
+- [x] `src/lib/supabase/server.ts` et `src/middleware.ts` (même mécanisme de cookies, deux points d'écriture) : surcharge des options de cookie (`httpOnly: true`, `secure: true` en production). Vérifié qu'aucun client Supabase côté navigateur n'existe dans le code (`createBrowserClient` absent du projet) — l'authentification est entièrement server-side, `httpOnly` ne peut donc rien casser côté client.
+- [ ] Flux login → navigation admin → logout non testé en conditions réelles : `ADMIN_INITIAL_PASSWORD` est vide dans `.env.local` (mot de passe changé depuis l'initialisation), donc aucun identifiant valide disponible pour un test automatisé. À tester manuellement dans le navigateur avant mise en production, ou fournir un identifiant de test.
 
 ### 10. Rate limiting / anti-brute-force
 
