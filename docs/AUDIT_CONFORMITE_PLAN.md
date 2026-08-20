@@ -84,7 +84,7 @@ Ces éléments ne peuvent pas être décidés depuis le code — il faut les obt
 ### 9. Durcir la session admin ✅
 
 - [x] `src/lib/supabase/server.ts` et `src/middleware.ts` (même mécanisme de cookies, deux points d'écriture) : surcharge des options de cookie (`httpOnly: true`, `secure: true` en production). Vérifié qu'aucun client Supabase côté navigateur n'existe dans le code (`createBrowserClient` absent du projet) — l'authentification est entièrement server-side, `httpOnly` ne peut donc rien casser côté client.
-- [ ] Flux login → navigation admin → logout non testé en conditions réelles : `ADMIN_INITIAL_PASSWORD` est vide dans `.env.local` (mot de passe changé depuis l'initialisation), donc aucun identifiant valide disponible pour un test automatisé. À tester manuellement dans le navigateur avant mise en production, ou fournir un identifiant de test.
+- [x] Flux login → navigation admin (`/admin/dashboard`, `/admin/forms`) → logout testé en conditions réelles (identifiant de test fourni) : connexion OK, cookie de session confirmé `HttpOnly`, navigation admin OK, déconnexion OK, session bien invalidée après logout (redirection vers `/admin/login`).
 
 ### 10. Rate limiting / anti-brute-force
 
