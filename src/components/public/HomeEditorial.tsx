@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
 import { NewsletterForm } from "@/components/public/NewsletterForm";
-import type { Page, Production, Activity, JournalEntry } from "@/types/cms";
+import type { Page, Production, Event, JournalEntry } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
 
 const percaLetters = ["P", "E", "R", "C", "A"] as const;
@@ -18,15 +18,15 @@ function formatDate(value?: string | null) {
 export function HomeEditorial({
   page,
   heroImageUrl,
-  activityOfTheMoment = null,
-  activities = [],
+  eventOfTheMoment = null,
+  events = [],
   productions = [],
   journalEntries = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
-  activityOfTheMoment?: Activity | null;
-  activities?: Activity[];
+  eventOfTheMoment?: Event | null;
+  events?: Event[];
   productions?: Production[];
   journalEntries?: JournalEntry[];
 }) {
@@ -61,19 +61,19 @@ export function HomeEditorial({
         ) : null}
       </section>
 
-      {/* 2 — Activité du moment : l'activité la plus proche d'aujourd'hui
-             (à venir ou passée), calculée automatiquement — pas de sélection
-             admin, se met à jour seule. */}
-      {activityOfTheMoment ? (
-        <Link className="home-focus home-focus--no-image" href={`/activites/${activityOfTheMoment.slug}`}>
+      {/* 2 — Événement du moment : l'événement le plus proche d'aujourd'hui
+             (à venir ou passé), calculé automatiquement — pas de sélection
+             admin, se met à jour seul. */}
+      {eventOfTheMoment ? (
+        <Link className="home-focus home-focus--no-image" href={`/evenements/${eventOfTheMoment.slug}`}>
           <div className="home-focus-copy">
-            <p className="eyebrow">Activité du moment</p>
-            <h2>{activityOfTheMoment.title}</h2>
+            <p className="eyebrow">Événement du moment</p>
+            <h2>{eventOfTheMoment.title}</h2>
             <p className="home-focus-desc">
-              {[formatDate(activityOfTheMoment.date), activityOfTheMoment.description].filter(Boolean).join(" — ")}
+              {[formatDate(eventOfTheMoment.date), eventOfTheMoment.description].filter(Boolean).join(" — ")}
             </p>
             <span className="home-focus-link">
-              Découvrir cette activité
+              Découvrir cet événement
               <span aria-hidden>→</span>
             </span>
           </div>
@@ -93,27 +93,27 @@ export function HomeEditorial({
         </section>
       ) : null}
 
-      {/* 4 — Activités récentes */}
-      {activities.length ? (
-        <section className="home-section home-activities">
+      {/* 4 — Événements récents */}
+      {events.length ? (
+        <section className="home-section home-events">
           <div className="home-section-head">
-            <h2>Activités récentes</h2>
-            <Link className="home-section-more" href="/activites">
-              Toutes les activités <span aria-hidden>→</span>
+            <h2>Événements récents</h2>
+            <Link className="home-section-more" href="/evenements">
+              Tous les événements <span aria-hidden>→</span>
             </Link>
           </div>
-          <ul className="home-activity-list" style={{ "--acount": activities.slice(0, 3).length } as CSSProperties}>
-            {activities.slice(0, 3).map((a) => {
-              const date = formatDate(a.date);
+          <ul className="home-event-list" style={{ "--acount": events.slice(0, 3).length } as CSSProperties}>
+            {events.slice(0, 3).map((e) => {
+              const date = formatDate(e.date);
               return (
-                <li key={a.id}>
-                  <Link href={`/activites/${a.slug}`}>
-                    <div className="home-activity-meta">
-                      <span className="home-activity-format">{a.format}</span>
-                      {date ? <span className="home-activity-date">{date}</span> : null}
+                <li key={e.id}>
+                  <Link href={`/evenements/${e.slug}`}>
+                    <div className="home-event-meta">
+                      <span className="home-event-format">{e.format}</span>
+                      {date ? <span className="home-event-date">{date}</span> : null}
                     </div>
-                    <h3>{a.title}</h3>
-                    {a.description ? <p>{a.description}</p> : null}
+                    <h3>{e.title}</h3>
+                    {e.description ? <p>{e.description}</p> : null}
                   </Link>
                 </li>
               );
@@ -131,15 +131,15 @@ export function HomeEditorial({
               Tout le Journal <span aria-hidden>→</span>
             </Link>
           </div>
-          <ul className="home-activity-list" style={{ "--acount": journalEntries.slice(0, 3).length } as CSSProperties}>
+          <ul className="home-event-list" style={{ "--acount": journalEntries.slice(0, 3).length } as CSSProperties}>
             {journalEntries.slice(0, 3).map((e) => {
               const date = formatDate(e.date);
               return (
                 <li key={e.id}>
                   <Link href={`/journal/${e.slug}`}>
-                    <div className="home-activity-meta">
-                      {e.category ? <span className="home-activity-format">{e.category}</span> : null}
-                      {date ? <span className="home-activity-date">{date}</span> : null}
+                    <div className="home-event-meta">
+                      {e.category ? <span className="home-event-format">{e.category}</span> : null}
+                      {date ? <span className="home-event-date">{date}</span> : null}
                     </div>
                     <h3>{e.title}</h3>
                     {e.excerpt ? <p>{e.excerpt}</p> : null}
@@ -176,7 +176,7 @@ export function HomeEditorial({
           <div className="home-newsletter-text">
             <p className="eyebrow">Newsletter</p>
             <h2>Recevez nos actualités</h2>
-            <p>Productions, activités et entrées du Journal — un email de temps en temps, pas plus.</p>
+            <p>Productions, événements et entrées du Journal — un email de temps en temps, pas plus.</p>
           </div>
           <NewsletterForm />
         </div>

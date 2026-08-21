@@ -1,6 +1,6 @@
 // Grille de calendrier mensuel (semaines lundi→dimanche) — logique pure,
-// partagée entre le calendrier admin (ActivityCalendar) et le calendrier
-// public des activités, qui n'ont pas le même rendu/CSS mais le même besoin
+// partagée entre le calendrier admin (EventCalendar) et le calendrier
+// public des événements, qui n'ont pas le même rendu/CSS mais le même besoin
 // de calcul de grille.
 
 export type CalendarCell = { date: Date; current: boolean };

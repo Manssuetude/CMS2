@@ -1,24 +1,24 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
-import { ActiviteForm } from "@/components/admin/ActiviteForm";
-import { updateActivityAction } from "../../actions";
+import { EvenementForm } from "@/components/admin/EvenementForm";
+import { updateEventAction } from "../../actions";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function EditActivitePage({ params }: Props) {
+export default async function EditEvenementPage({ params }: Props) {
   const { id } = await params;
   const [item, themes, subThemes, projects, activityFormats, authors, images] = await Promise.all([
-    activityRepository.getActivityById(id),
+    eventRepository.getEventById(id),
     themeRepository.listThemes(true),
     subThemeRepository.listSubThemes(true),
     projectRepository.listProjects(true),
@@ -29,25 +29,25 @@ export default async function EditActivitePage({ params }: Props) {
   if (!item) notFound();
   const [initialThemeIds, initialSubThemeIds, initialProjectIds, initialFormatIds, initialAnimators] =
     await Promise.all([
-      activityRepository.getActivityThemeIds(id),
-      activityRepository.getActivitySubThemeIds(id),
-      activityRepository.getActivityProjectIds(id),
+      eventRepository.getEventThemeIds(id),
+      eventRepository.getEventSubThemeIds(id),
+      eventRepository.getEventProjectIds(id),
       activityFormatRepository.getActivityFormatIds(id),
-      authorRepository.getActivityAnimators(id),
+      authorRepository.getEventAnimators(id),
     ]);
 
   return (
     <section className="admin-panel">
-      <Link href="/admin/activites" className="admin-back">
-        ← Retour aux activités
+      <Link href="/admin/evenements" className="admin-back">
+        ← Retour aux événements
       </Link>
       <div className="admin-page-header">
         <div>
-          <h1>Modifier l&apos;activité</h1>
+          <h1>Modifier l&apos;événement</h1>
           <p>{item.title}</p>
         </div>
         <a
-          href={`/activites/${item.slug}`}
+          href={`/evenements/${item.slug}`}
           target="_blank"
           rel="noreferrer"
           className="btn-sm"
@@ -62,9 +62,9 @@ export default async function EditActivitePage({ params }: Props) {
           )}
         </a>
       </div>
-      <ActiviteForm
+      <EvenementForm
         initialData={item}
-        action={updateActivityAction}
+        action={updateEventAction}
         themes={themes}
         initialThemeIds={initialThemeIds}
         subThemes={subThemes}

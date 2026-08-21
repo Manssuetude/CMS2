@@ -3,12 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
-import type { ActivityAnimator } from "@/types/cms";
+import type { EventAnimator } from "@/types/cms";
 
 const speakerSchema = z.object({ name: z.string().min(1), role: z.string().optional() });
 
@@ -71,7 +71,7 @@ function parseIdList(formData: FormData, field: string): string[] {
     .filter(Boolean);
 }
 
-function parseAnimators(formData: FormData): ActivityAnimator[] {
+function parseAnimators(formData: FormData): EventAnimator[] {
   const raw = (formData.get("animators") as string | null) ?? "[]";
   try {
     const parsed = JSON.parse(raw);
@@ -87,7 +87,7 @@ function parseAnimators(formData: FormData): ActivityAnimator[] {
   }
 }
 
-export async function createActivityAction(_: string | null, formData: FormData): Promise<string | null> {
+export async function createEventAction(_: string | null, formData: FormData): Promise<string | null> {
   const parsed = schema.safeParse({
     title: formData.get("title"),
     format: formData.get("format"),
@@ -114,30 +114,30 @@ export async function createActivityAction(_: string | null, formData: FormData)
 
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
 
-  let activity;
+  let event;
   try {
-    activity = await activityRepository.createActivity({ slug, ...toInput(parsed.data) });
+    event = await eventRepository.createEvent({ slug, ...toInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
   const themeIds = parseIdList(formData, "themeIds");
-  if (themeIds.length > 0) await activityRepository.setActivityThemes(activity.id, themeIds);
+  if (themeIds.length > 0) await eventRepository.setEventThemes(event.id, themeIds);
   const subThemeIds = parseIdList(formData, "subThemeIds");
-  if (subThemeIds.length > 0) await activityRepository.setActivitySubThemes(activity.id, subThemeIds);
+  if (subThemeIds.length > 0) await eventRepository.setEventSubThemes(event.id, subThemeIds);
   const projectIds = parseIdList(formData, "projectIds");
-  if (projectIds.length > 0) await activityRepository.setActivityProjects(activity.id, projectIds);
+  if (projectIds.length > 0) await eventRepository.setEventProjects(event.id, projectIds);
   const formatIds = parseIdList(formData, "formatIds");
-  if (formatIds.length > 0) await activityFormatRepository.setActivityFormats(activity.id, formatIds);
+  if (formatIds.length > 0) await activityFormatRepository.setActivityFormats(event.id, formatIds);
   const animators = parseAnimators(formData);
-  if (animators.length > 0) await authorRepository.setActivityAnimators(activity.id, animators);
+  if (animators.length > 0) await authorRepository.setEventAnimators(event.id, animators);
 
-  await logAction("create", { entityType: "activity", summary: `Activité créée : ${parsed.data.title}` });
-  revalidatePath("/admin/activites");
-  redirect("/admin/activites");
+  await logAction("create", { entityType: "event", summary: `Événement créé : ${parsed.data.title}` });
+  revalidatePath("/admin/evenements");
+  redirect("/admin/evenements");
 }
 
-export async function updateActivityAction(_: string | null, formData: FormData): Promise<string | null> {
+export async function updateEventAction(_: string | null, formData: FormData): Promise<string | null> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return "Identifiant manquant.";
 
@@ -166,53 +166,53 @@ export async function updateActivityAction(_: string | null, formData: FormData)
   }
 
   try {
-    await activityRepository.updateActivity(id, toInput(parsed.data));
+    await eventRepository.updateEvent(id, toInput(parsed.data));
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
-  await activityRepository.setActivityThemes(id, parseIdList(formData, "themeIds"));
-  await activityRepository.setActivitySubThemes(id, parseIdList(formData, "subThemeIds"));
-  await activityRepository.setActivityProjects(id, parseIdList(formData, "projectIds"));
+  await eventRepository.setEventThemes(id, parseIdList(formData, "themeIds"));
+  await eventRepository.setEventSubThemes(id, parseIdList(formData, "subThemeIds"));
+  await eventRepository.setEventProjects(id, parseIdList(formData, "projectIds"));
   await activityFormatRepository.setActivityFormats(id, parseIdList(formData, "formatIds"));
-  await authorRepository.setActivityAnimators(id, parseAnimators(formData));
+  await authorRepository.setEventAnimators(id, parseAnimators(formData));
 
   await logAction("update", {
-    entityType: "activity",
+    entityType: "event",
     entityId: id,
-    summary: `Activité modifiée : ${parsed.data.title}`,
+    summary: `Événement modifié : ${parsed.data.title}`,
   });
-  revalidatePath("/admin/activites");
-  redirect("/admin/activites");
+  revalidatePath("/admin/evenements");
+  redirect("/admin/evenements");
 }
 
-export async function deleteActivityAction(formData: FormData): Promise<void> {
+export async function deleteEventAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return;
-  await activityRepository.deleteActivity(id);
-  await logAction("delete", { entityType: "activity", entityId: id, summary: "Activité supprimée" });
-  revalidatePath("/admin/activites");
+  await eventRepository.deleteEvent(id);
+  await logAction("delete", { entityType: "event", entityId: id, summary: "Événement supprimé" });
+  revalidatePath("/admin/evenements");
 }
 
-export async function toggleActivityStatusAction(formData: FormData): Promise<void> {
+export async function toggleEventStatusAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   const status = (formData.get("status") as string | null)?.trim();
   if (!id || !status) return;
-  await activityRepository.toggleStatus(id, status);
-  revalidatePath("/admin/activites");
+  await eventRepository.toggleStatus(id, status);
+  revalidatePath("/admin/evenements");
 }
 
-export async function toggleActivityFeaturedAction(formData: FormData): Promise<void> {
+export async function toggleEventFeaturedAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
   const featured = formData.get("featured") === "true";
   if (!id) return;
-  // Garde-fou : maximum 2 activités en vedette sur l'accueil.
+  // Garde-fou : maximum 2 événements en vedette sur l'accueil.
   if (featured) {
-    const all = await activityRepository.listActivities(true);
-    const count = all.filter((a) => a.featured).length;
+    const all = await eventRepository.listEvents(true);
+    const count = all.filter((e) => e.featured).length;
     if (count >= 2) return;
   }
-  await activityRepository.updateActivity(id, { featured });
-  revalidatePath("/admin/activites");
+  await eventRepository.updateEvent(id, { featured });
+  revalidatePath("/admin/evenements");
   revalidatePath("/");
 }

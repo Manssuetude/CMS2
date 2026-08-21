@@ -1,4 +1,4 @@
-import type { Activity, DossierItem, JournalEntry, Media, Production, Project } from "@/types/cms";
+import type { Event, DossierItem, JournalEntry, Media, Production, Project } from "@/types/cms";
 
 export type ResolvedDossierItem = {
   entityType: DossierItem["entityType"];
@@ -11,7 +11,7 @@ export type ResolvedDossierItem = {
 
 export const DOSSIER_ITEM_KIND_LABEL: Record<DossierItem["entityType"], string> = {
   production: "Production",
-  activity: "Activité",
+  event: "Événement",
   project: "Projet",
   resource: "Ressource",
   journal_entry: "Journal",
@@ -19,7 +19,7 @@ export const DOSSIER_ITEM_KIND_LABEL: Record<DossierItem["entityType"], string> 
 
 export type DossierItemSource = {
   productions: Production[];
-  activities: Activity[];
+  events: Event[];
   projects: Project[];
   resources: Media[];
   journalEntries: JournalEntry[];
@@ -30,7 +30,7 @@ export type DossierItemSource = {
 // supprimée depuis sont silencieusement ignorées plutôt que de casser la page.
 export function resolveDossierItems(items: DossierItem[], source: DossierItemSource): ResolvedDossierItem[] {
   const productionById = new Map(source.productions.map((p) => [p.id, p]));
-  const activityById = new Map(source.activities.map((a) => [a.id, a]));
+  const eventById = new Map(source.events.map((e) => [e.id, e]));
   const projectById = new Map(source.projects.map((p) => [p.id, p]));
   const resourceById = new Map(source.resources.map((r) => [r.id, r]));
   const journalById = new Map(source.journalEntries.map((e) => [e.id, e]));
@@ -47,15 +47,15 @@ export function resolveDossierItems(items: DossierItem[], source: DossierItemSou
           description: p.description,
           href: `/productions/${p.slug}`,
         });
-    } else if (item.entityType === "activity") {
-      const a = activityById.get(item.entityId);
-      if (a)
+    } else if (item.entityType === "event") {
+      const e = eventById.get(item.entityId);
+      if (e)
         resolved.push({
-          entityType: "activity",
-          entityId: a.id,
-          title: a.title,
-          description: a.description,
-          href: `/activites/${a.slug}`,
+          entityType: "event",
+          entityId: e.id,
+          title: e.title,
+          description: e.description,
+          href: `/evenements/${e.slug}`,
         });
     } else if (item.entityType === "project") {
       const p = projectById.get(item.entityId);

@@ -1,5 +1,5 @@
 import { ExternalLink, MapPin, Users } from "lucide-react";
-import type { Activity, ActivityFormat, Author, SubTheme, Theme } from "@/types/cms";
+import type { Event, ActivityFormat, Author, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { resolveRegistrationStatus, registrationStatusLabel } from "@/utils/registrationStatus";
@@ -27,7 +27,7 @@ const PROGRESS_LABEL: Record<string, string> = {
 
 export type ResolvedAnimator = { author: Author; contribution?: string | null };
 
-export function ActiviteDetail({
+export function EvenementDetail({
   item,
   formats = [],
   allFormats = formats,
@@ -37,7 +37,7 @@ export function ActiviteDetail({
   subThemes = [],
   allThemes = themes,
 }: {
-  item: Activity;
+  item: Event;
   formats?: ActivityFormat[];
   allFormats?: ActivityFormat[];
   animators?: ResolvedAnimator[];
@@ -49,7 +49,7 @@ export function ActiviteDetail({
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const now = new Date();
   const eventDate = item.date ? new Date(item.date) : null;
-  // Sans date, on ne peut pas déduire "passée" du simple fait qu'elle ne soit
+  // Sans date, on ne peut pas déduire "passé" du simple fait qu'il ne soit
   // pas "à venir" — le statut d'avancement (renseigné par l'équipe) est le
   // signal fiable pour savoir si un compte-rendu a du sens.
   const isPast = item.progressStatus === "completed" || (eventDate ? eventDate < now : false);
@@ -63,7 +63,7 @@ export function ActiviteDetail({
         data={buildEventJsonLd({
           title: item.title,
           description: item.description,
-          path: `/activites/${item.slug}`,
+          path: `/evenements/${item.slug}`,
           startDate: item.date ? (item.startTime ? `${item.date}T${item.startTime}` : item.date) : null,
           endDate: item.date && item.endTime ? `${item.date}T${item.endTime}` : null,
           location: item.location,
@@ -106,7 +106,7 @@ export function ActiviteDetail({
             )}
           </div>
           <div className="actions">
-            <CtaButton label="Retour aux activités" target="/activites" variant="secondary" />
+            <CtaButton label="Retour aux événements" target="/evenements" variant="secondary" />
             {item.eventbriteUrl ? (
               <a href={item.eventbriteUrl} target="_blank" rel="noopener noreferrer" className="button primary">
                 <ExternalLink size={15} strokeWidth={1.75} />
@@ -234,7 +234,7 @@ export function ActiviteDetail({
           <div className="section-head">
             <h2>Compte-rendu en images</h2>
           </div>
-          <div className="activity-gallery">
+          <div className="event-gallery">
             {gallery.map((url, i) => (
               <img key={i} src={url} alt={`${item.title} — photo ${i + 1}`} loading="lazy" />
             ))}

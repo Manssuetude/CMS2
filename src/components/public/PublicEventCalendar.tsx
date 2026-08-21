@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { Activity } from "@/types/cms";
+import type { Event } from "@/types/cms";
 import { buildCalendarCells, groupByDateKey, isSameDay } from "@/utils/calendarGrid";
 
 const DAYS_FR = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -22,7 +22,7 @@ const MONTHS_FR = [
   "Décembre",
 ];
 
-export function PublicEventCalendar({ activities }: { activities: Activity[] }) {
+export function PublicEventCalendar({ events }: { events: Event[] }) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
@@ -41,7 +41,7 @@ export function PublicEventCalendar({ activities }: { activities: Activity[] }) 
   };
 
   const cells = buildCalendarCells(year, month);
-  const byDate = groupByDateKey(activities, (a) => a.date);
+  const byDate = groupByDateKey(events, (e) => e.date);
 
   return (
     <div className="event-calendar">
@@ -65,15 +65,15 @@ export function PublicEventCalendar({ activities }: { activities: Activity[] }) 
         ))}
         {cells.map(({ date, current }, i) => {
           const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-          const events = byDate.get(key) ?? [];
+          const dayEvents = byDate.get(key) ?? [];
           return (
             <div
               key={i}
               className={`event-calendar-cell${!current ? " is-outside" : ""}${isSameDay(date, today) ? " is-today" : ""}`}
             >
               <span className="event-calendar-daynum">{date.getDate()}</span>
-              {events.map((ev) => (
-                <Link key={ev.id} href={`/activites/${ev.slug}`} className="event-calendar-event" title={ev.title}>
+              {dayEvents.map((ev) => (
+                <Link key={ev.id} href={`/evenements/${ev.slug}`} className="event-calendar-event" title={ev.title}>
                   {ev.title}
                 </Link>
               ))}

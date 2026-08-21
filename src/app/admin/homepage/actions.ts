@@ -15,7 +15,7 @@ export async function savePageBlocksAction(slug: string, blocks: ContentBlock[])
 export async function saveHomepageFieldsAction(formData: FormData): Promise<void> {
   const fields: Record<string, unknown> = {
     body: formData.get("body") || null,
-    featured_activity_id: formData.get("featured_activity_id") || null,
+    featured_event_id: formData.get("featured_event_id") || null,
     image_id: formData.get("image_id") || null,
     image_crop: formData.get("image_crop") || null,
     seo_title: formData.get("seo_title") || null,

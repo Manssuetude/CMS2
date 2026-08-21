@@ -33,7 +33,7 @@ const NAV = [
   { id: "themes", label: "Thèmes", icon: BookOpen },
   { id: "sousthemes", label: "Sous-thèmes", icon: ListTree },
   { id: "auteurs", label: "Auteurs", icon: UserPen },
-  { id: "activites", label: "Activités", icon: CalendarDays },
+  { id: "evenements", label: "Événements", icon: CalendarDays },
   { id: "formatsactivites", label: "Formats d'activités", icon: Shapes },
   { id: "productions", label: "Productions", icon: FileText },
   { id: "projets", label: "Projets", icon: FolderKanban },

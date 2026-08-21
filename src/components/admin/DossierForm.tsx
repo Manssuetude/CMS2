@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
-import type { Activity, Dossier, JournalEntry, Media, Production, Project } from "@/types/cms";
+import type { Event, Dossier, JournalEntry, Media, Production, Project } from "@/types/cms";
 import { DossierItemPicker, type DossierPickableItem, type DossierPickerGroup } from "./DossierItemPicker";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
@@ -44,7 +44,7 @@ interface Props {
   initialItems?: DossierPickableItem[];
   action: ActionFn;
   productions?: Production[];
-  activities?: Activity[];
+  events?: Event[];
   projects?: Project[];
   resources?: Media[];
   journalEntries?: JournalEntry[];
@@ -56,7 +56,7 @@ export function DossierForm({
   initialItems = [],
   action,
   productions = [],
-  activities = [],
+  events = [],
   projects = [],
   resources = [],
   journalEntries = [],
@@ -71,7 +71,7 @@ export function DossierForm({
 
   const groups: DossierPickerGroup[] = [
     { entityType: "production", label: "Productions", items: productions.map((p) => ({ id: p.id, label: p.title })) },
-    { entityType: "activity", label: "Activités", items: activities.map((a) => ({ id: a.id, label: a.title })) },
+    { entityType: "event", label: "Événements", items: events.map((e) => ({ id: e.id, label: e.title })) },
     { entityType: "project", label: "Projets", items: projects.map((p) => ({ id: p.id, label: p.title })) },
     { entityType: "resource", label: "Ressources", items: resources.map((r) => ({ id: r.id, label: r.title })) },
     { entityType: "journal_entry", label: "Journal", items: journalEntries.map((e) => ({ id: e.id, label: e.title })) },

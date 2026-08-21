@@ -35,7 +35,7 @@ function mapPage(row: DataRow): Page {
     secondaryCtaTarget: asNullableString(row.secondary_cta_target),
     sections: mapSections(row.sections),
     percaSteps: mapPercaSteps(row.perca_steps),
-    featuredActivityId: asNullableString(row.featured_activity_id),
+    featuredEventId: asNullableString(row.featured_event_id),
     seoTitle: asNullableString(row.seo_title),
     seoDescription: asNullableString(row.seo_description),
     seoImageId: asNullableString(row.seo_image_id),

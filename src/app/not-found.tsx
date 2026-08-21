@@ -39,7 +39,7 @@ export default async function NotFound() {
 
         <section className="section" style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
           <form className="search-form" action="/recherche" method="get" role="search">
-            <input type="search" name="q" placeholder="Thème, production, activité, projet…" aria-label="Rechercher" />
+            <input type="search" name="q" placeholder="Thème, production, événement, projet…" aria-label="Rechercher" />
             <button type="submit" className="button primary">
               Rechercher
             </button>

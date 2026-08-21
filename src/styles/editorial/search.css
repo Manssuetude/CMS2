@@ -180,7 +180,7 @@
   }
 }
 
-/* Bloc "Proposer …" en bas de page (activités, thèmes, projets) */
+/* Bloc "Proposer …" en bas de page (événements, thèmes, projets) */
 .site-shell .propose-section {
   max-width: var(--ed-container);
   margin: clamp(2.5rem, 5vw, 4rem) auto 0;

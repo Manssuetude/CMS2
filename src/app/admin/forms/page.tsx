@@ -8,7 +8,7 @@ const TYPE_TABS: Array<{ value: string; label: string }> = [
   { value: "", label: "Tous" },
   { value: "join", label: "Adhésion" },
   { value: "theme", label: "Thème" },
-  { value: "activity", label: "Activité" },
+  { value: "event", label: "Événement" },
   { value: "project", label: "Projet" },
   { value: "content", label: "Contenu" },
   { value: "partner", label: "Partenariat" },

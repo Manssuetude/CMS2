@@ -13,7 +13,7 @@ interface SearchResult {
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  activity: "Activités",
+  event: "Événements",
   production: "Productions",
   project: "Projets",
   theme: "Thèmes",

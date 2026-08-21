@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
@@ -11,7 +11,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Recherche",
-  description: "Rechercher dans les thèmes, productions, activités et projets de Manssuétude.",
+  description: "Rechercher dans les thèmes, productions, événements et projets de Manssuétude.",
 };
 
 type Result = {
@@ -32,7 +32,7 @@ const KIND_LABEL: Record<string, string> = {
   theme: "Thème",
   "sub-theme": "Sous-thème",
   production: "Production",
-  activity: "Activité",
+  event: "Événement",
   project: "Projet",
   journal: "Journal",
 };
@@ -41,7 +41,8 @@ const KIND_LABEL: Record<string, string> = {
 const SITE_PAGES: Array<{ title: string; href: string; keywords: string }> = [
   { title: "Accueil", href: "/", keywords: "accueil home manssuétude" },
   { title: "Thèmes", href: "/themes", keywords: "thèmes dossiers sujets" },
-  { title: "Activités", href: "/activites", keywords: "activités ateliers séances débats" },
+  { title: "Événements", href: "/evenements", keywords: "événements ateliers séances débats agenda" },
+  { title: "Activités", href: "/activites", keywords: "activités formats techniques animation fishbowl" },
   { title: "Productions", href: "/productions", keywords: "productions articles notes rapports vidéos podcasts" },
   { title: "Projets", href: "/projets", keywords: "projets initiatives" },
   { title: "Ressources", href: "/ressources", keywords: "ressources documents" },
@@ -68,11 +69,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
     }));
 
     try {
-      const [themes, subThemes, productions, activities, projects, journalEntries] = await Promise.all([
+      const [themes, subThemes, productions, events, projects, journalEntries] = await Promise.all([
         themeRepository.listThemes(),
         subThemeRepository.listSubThemes(),
         productionRepository.listProductions(),
-        activityRepository.listActivities(),
+        eventRepository.listEvents(),
         projectRepository.listProjects(),
         journalRepository.listEntries(),
       ]);
@@ -115,9 +116,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           tags: p.tags,
         }));
 
-      const actResults: Result[] = activities
-        .filter((a) => matches(query, a.title, a.description, a.format))
-        .map((a) => ({ kind: "activity", title: a.title, description: a.description, href: `/activites/${a.slug}` }));
+      const eventResults: Result[] = events
+        .filter((e) => matches(query, e.title, e.description, e.format))
+        .map((e) => ({ kind: "event", title: e.title, description: e.description, href: `/evenements/${e.slug}` }));
 
       const projResults: Result[] = projects
         .filter((p) => matches(query, p.title, p.description, p.category))
@@ -132,7 +133,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         ...themeResults,
         ...subThemeResults,
         ...prodResults,
-        ...actResults,
+        ...eventResults,
         ...projResults,
         ...journalResults,
       ];
@@ -152,7 +153,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             type="search"
             name="q"
             defaultValue={q ?? ""}
-            placeholder="Thème, production, activité, projet…"
+            placeholder="Thème, production, événement, projet…"
             aria-label="Rechercher"
             autoFocus
           />

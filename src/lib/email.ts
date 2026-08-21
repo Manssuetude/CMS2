@@ -52,9 +52,9 @@ const SUBMISSION_LABELS: Record<string, { subject: string; intro: string }> = {
     subject: "Votre proposition de thème a bien été reçue",
     intro: "Nous avons bien reçu votre proposition de thème.",
   },
-  activity: {
-    subject: "Votre proposition d'activité a bien été reçue",
-    intro: "Nous avons bien reçu votre proposition d'activité.",
+  event: {
+    subject: "Votre proposition d'événement a bien été reçue",
+    intro: "Nous avons bien reçu votre proposition d'événement.",
   },
   contact: {
     subject: "Votre message a bien été reçu",

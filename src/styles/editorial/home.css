@@ -63,7 +63,7 @@
   transform: scale(1.03);
 }
 
-/* 2 — Activité du moment */
+/* 2 — Événement du moment */
 .site-shell .home-focus {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
@@ -159,21 +159,21 @@
   transform: translateX(4px);
 }
 
-/* 3 — Activités (liste éditoriale) */
-.site-shell .home-activity-list {
+/* 3 — Événements et Journal (liste éditoriale, classe partagée entre les deux sections) */
+.site-shell .home-event-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  /* Colonnes = nombre d'activités affichées (1 à 3), piloté par --acount. */
+  /* Colonnes = nombre d'éléments affichés (1 à 3), piloté par --acount. */
   grid-template-columns: repeat(var(--acount, 3), minmax(0, 1fr));
   border-top: 1px solid var(--ed-line);
   border-bottom: 1px solid var(--ed-line);
 }
-.site-shell .home-activity-list li + li {
+.site-shell .home-event-list li + li {
   border-left: 1px solid var(--ed-line);
 }
-.site-shell .home-activity-list a {
+.site-shell .home-event-list a {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -183,16 +183,16 @@
   text-align: center;
   transition: background 0.2s ease;
 }
-.site-shell .home-activity-list a:hover {
+.site-shell .home-event-list a:hover {
   background: color-mix(in srgb, var(--ed-sink) 35%, transparent);
 }
-.site-shell .home-activity-meta {
+.site-shell .home-event-meta {
   display: inline-flex;
   align-items: center;
   gap: 0.85rem;
   margin-bottom: 1rem;
 }
-.site-shell .home-activity-format {
+.site-shell .home-event-format {
   font-size: 0.7rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -203,20 +203,20 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--ed-clay) 7%, var(--ed-paper));
 }
-.site-shell .home-activity-date {
+.site-shell .home-event-date {
   font-size: var(--ed-step-small);
   color: var(--ed-muted);
 }
-.site-shell .home-activity-list h3 {
+.site-shell .home-event-list h3 {
   font-size: var(--ed-step-4);
   margin: 0 0 0.75rem;
   max-width: 22ch;
   transition: color 0.16s ease;
 }
-.site-shell .home-activity-list a:hover h3 {
+.site-shell .home-event-list a:hover h3 {
   color: var(--ed-clay);
 }
-.site-shell .home-activity-list p {
+.site-shell .home-event-list p {
   color: var(--ed-ink-soft);
   margin: 0 auto;
   max-width: 54ch;

@@ -13,7 +13,7 @@ interface Props {
 }
 
 // Liste de cases à cocher réutilisable pour les relations many-to-many de
-// l'admin (sous-thèmes, auteurs, ressources, thèmes, projets, activités...).
+// l'admin (sous-thèmes, auteurs, ressources, thèmes, projets, événements...).
 // Le composant appelant reste responsable du champ hidden CSV soumis au formulaire.
 export function CheckboxMultiSelect({ items, selected, onChange, idPrefix }: Props) {
   return (

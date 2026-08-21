@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Pencil, Plus, CalendarDays } from "lucide-react";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { ProgressTag } from "@/components/admin/ProgressTag";
@@ -8,52 +8,52 @@ import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
 import { StatusToggleButton } from "@/components/admin/StatusToggleButton";
 import { FeaturedToggleButton } from "@/components/admin/FeaturedToggleButton";
 import { buildStatusTabs, countByStatus, resolveActiveStatus, STATUS_LABELS } from "@/utils/adminStatus";
-import { deleteActivityAction, toggleActivityStatusAction } from "./actions";
+import { deleteEventAction, toggleEventStatusAction } from "./actions";
 
-export default async function AdminActivitesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+export default async function AdminEvenementsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
-  const all = await activityRepository.listActivities(true);
+  const all = await eventRepository.listEvents(true);
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "f");
-  const featuredCount = all.filter((a) => a.featured).length;
+  const featuredCount = all.filter((e) => e.featured).length;
 
   return (
     <section className="admin-panel">
       <AdminListHeader
-        title="Activités"
+        title="Événements"
         count={items.length}
-        singular="activité"
-        plural="activités"
+        singular="événement"
+        plural="événements"
         activeStatusLabel={activeStatus ? STATUS_LABELS[activeStatus] : null}
       >
-        <Link href="/admin/activites/calendar" className="button">
+        <Link href="/admin/evenements/calendar" className="button">
           <CalendarDays size={15} strokeWidth={1.75} />
           Calendrier
         </Link>
-        <Link href="/admin/activites/new" className="button primary">
+        <Link href="/admin/evenements/new" className="button primary">
           <Plus size={15} strokeWidth={2} />
-          Nouvelle activité
+          Nouvel événement
         </Link>
       </AdminListHeader>
 
-      <StatusFilterTabs basePath="/admin/activites" activeStatus={activeStatus} tabs={tabs} />
+      <StatusFilterTabs basePath="/admin/evenements" activeStatus={activeStatus} tabs={tabs} />
 
       {items.length === 0 ? (
         <div className="admin-empty">
           <strong>
-            Aucune activité{activeStatus ? ` avec le statut « ${STATUS_LABELS[activeStatus]} »` : " pour l'instant"}
+            Aucun événement{activeStatus ? ` avec le statut « ${STATUS_LABELS[activeStatus]} »` : " pour l'instant"}
           </strong>
           <p>
             {activeStatus ? (
-              <Link href="/admin/activites">Voir toutes les activités</Link>
+              <Link href="/admin/evenements">Voir tous les événements</Link>
             ) : (
-              "Créez votre première activité pour alimenter le site."
+              "Créez votre premier événement pour alimenter le site."
             )}
           </p>
           {!activeStatus && (
-            <Link href="/admin/activites/new" className="button primary" style={{ marginTop: 8 }}>
-              Créer une activité
+            <Link href="/admin/evenements/new" className="button primary" style={{ marginTop: 8 }}>
+              Créer un événement
             </Link>
           )}
         </div>
@@ -76,7 +76,7 @@ export default async function AdminActivitesPage({ searchParams }: { searchParam
                 <td className="col-title">{item.title}</td>
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.format}</td>
                 <td>
-                  <StatusToggleButton action={toggleActivityStatusAction} id={item.id} status={item.status} />
+                  <StatusToggleButton action={toggleEventStatusAction} id={item.id} status={item.status} />
                 </td>
                 <td>
                   <ProgressTag status={item.progressStatus} />
@@ -94,18 +94,18 @@ export default async function AdminActivitesPage({ searchParams }: { searchParam
                   <FeaturedToggleButton
                     id={item.id}
                     featured={item.featured}
-                    kind="activity"
+                    kind="event"
                     count={featuredCount}
-                    max={3}
+                    max={2}
                   />
                 </td>
                 <td className="col-actions">
                   <div className="row-actions">
-                    <Link href={`/admin/activites/${item.id}/edit`} className="btn-sm">
+                    <Link href={`/admin/evenements/${item.id}/edit`} className="btn-sm">
                       <Pencil size={13} strokeWidth={2} />
                       Modifier
                     </Link>
-                    <form action={deleteActivityAction}>
+                    <form action={deleteEventAction}>
                       <input type="hidden" name="id" value={item.id} />
                       <ConfirmDeleteButton />
                     </form>

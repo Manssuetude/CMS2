@@ -10,7 +10,7 @@ const GATED_SECTIONS = [
   "themes",
   "sousthemes",
   "auteurs",
-  "activites",
+  "evenements",
   "formatsactivites",
   "productions",
   "projets",

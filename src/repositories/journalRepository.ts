@@ -15,7 +15,7 @@ function mapJournalEntry(row: DataRow): JournalEntry {
     date: asNullableString(row.date),
     themeId: asNullableString(row.theme_id),
     projectId: asNullableString(row.project_id),
-    activityId: asNullableString(row.activity_id),
+    eventId: asNullableString(row.event_id),
     productionId: asNullableString(row.production_id),
     status: asString(row.status, "draft") as ContentStatus,
     featured: asBoolean(row.featured),

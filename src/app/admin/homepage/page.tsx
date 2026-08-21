@@ -1,24 +1,22 @@
 import { ExternalLink } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { HERO_ASPECT } from "@/constants/imageAspects";
-import { pickActivityOfTheMoment } from "@/utils/activityOfTheMoment";
+import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
 import { saveHomepageFieldsAction } from "./actions";
 
 export default async function AdminHomepage() {
-  const [page, media, activities] = await Promise.all([
+  const [page, media, events] = await Promise.all([
     pageRepository.getPage("accueil"),
     mediaRepository.list(),
-    activityRepository.listActivities(),
+    eventRepository.listEvents(),
   ]);
 
   const images = media.filter((m) => m.type === "image");
-  const fallbackActivity = page?.featuredActivityId
-    ? (activities.find((a) => a.id === page.featuredActivityId) ?? null)
-    : null;
-  const activityOfTheMoment = pickActivityOfTheMoment(activities, fallbackActivity);
+  const fallbackEvent = page?.featuredEventId ? (events.find((e) => e.id === page.featuredEventId) ?? null) : null;
+  const eventOfTheMoment = pickEventOfTheMoment(events, fallbackEvent);
 
   return (
     <section className="admin-panel">
@@ -40,40 +38,40 @@ export default async function AdminHomepage() {
       </div>
 
       <form action={saveHomepageFieldsAction} style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-        {/* ── Activité du moment ───────────────────────────────────── */}
+        {/* ── Événement du moment ──────────────────────────────────── */}
         <div className="admin-form-section">
-          <h2 className="admin-form-section-title">Activité du moment</h2>
+          <h2 className="admin-form-section-title">Événement du moment</h2>
           <p className="admin-form-section-hint">
-            Affichée automatiquement sur la page d&apos;accueil, juste sous le hero : s&apos;il y a une activité cette
-            semaine, la plus proche s&apos;affiche. Sinon, l&apos;activité choisie ci-dessous s&apos;affiche à la place
-            — et si rien n&apos;est choisi, la plus proche d&apos;aujourd&apos;hui (passée ou future) s&apos;affiche par
+            Affiché automatiquement sur la page d&apos;accueil, juste sous le hero : s&apos;il y a un événement cette
+            semaine, le plus proche s&apos;affiche. Sinon, l&apos;événement choisi ci-dessous s&apos;affiche à la place
+            — et si rien n&apos;est choisi, le plus proche d&apos;aujourd&apos;hui (passé ou futur) s&apos;affiche par
             défaut.
           </p>
-          {activityOfTheMoment ? (
+          {eventOfTheMoment ? (
             <p style={{ fontSize: 13, margin: "0 0 14px" }}>
-              Actuellement affichée : <strong>{activityOfTheMoment.title}</strong>
-              {activityOfTheMoment.date ? ` — ${activityOfTheMoment.date}` : ""}
+              Actuellement affiché : <strong>{eventOfTheMoment.title}</strong>
+              {eventOfTheMoment.date ? ` — ${eventOfTheMoment.date}` : ""}
               {" · "}
-              <a href={`/admin/activites/${activityOfTheMoment.id}/edit`} style={{ color: "var(--orange)" }}>
-                Modifier cette activité →
+              <a href={`/admin/evenements/${eventOfTheMoment.id}/edit`} style={{ color: "var(--orange)" }}>
+                Modifier cet événement →
               </a>
             </p>
           ) : (
             <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 14px" }}>
-              Aucune activité avec une date pour l&apos;instant, donc rien ne s&apos;affiche ici.{" "}
-              <a href="/admin/activites" style={{ color: "var(--orange)" }}>
-                Voir les activités →
+              Aucun événement avec une date pour l&apos;instant, donc rien ne s&apos;affiche ici.{" "}
+              <a href="/admin/evenements" style={{ color: "var(--orange)" }}>
+                Voir les événements →
               </a>
             </p>
           )}
           <div className="form-field">
-            <label className="form-label">Activité de secours (si rien cette semaine)</label>
-            <select name="featured_activity_id" className="form-input" defaultValue={page?.featuredActivityId ?? ""}>
-              <option value="">— aucune, choisir automatiquement —</option>
-              {activities.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.title}
-                  {a.date ? ` — ${a.date}` : ""}
+            <label className="form-label">Événement de secours (si rien cette semaine)</label>
+            <select name="featured_event_id" className="form-input" defaultValue={page?.featuredEventId ?? ""}>
+              <option value="">— aucun, choisir automatiquement —</option>
+              {events.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.title}
+                  {e.date ? ` — ${e.date}` : ""}
                 </option>
               ))}
             </select>

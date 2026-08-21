@@ -311,7 +311,7 @@
   }
 }
 
-/* Formats liés affichés en chips sur la page détail d'une activité — lien
+/* Formats liés affichés en chips sur la page détail d'un événement — lien
    vers le répertoire, même accent unique que .format-card-icon. */
 .site-shell .format-chip-list {
   display: flex;

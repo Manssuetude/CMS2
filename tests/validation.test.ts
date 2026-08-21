@@ -9,7 +9,7 @@ import {
 } from "../src/lib/validation.ts";
 
 test("formTypeSchema — accepte les 8 types, refuse le reste", () => {
-  for (const t of ["join", "project", "content", "partner", "donation", "theme", "activity", "contact"]) {
+  for (const t of ["join", "project", "content", "partner", "donation", "theme", "event", "contact"]) {
     assert.equal(formTypeSchema.safeParse(t).success, true, t);
   }
   assert.equal(formTypeSchema.safeParse("don").success, false);

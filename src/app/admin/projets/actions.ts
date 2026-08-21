@@ -73,8 +73,8 @@ export async function createProjectAction(_: string | null, formData: FormData):
   if (themeIds.length > 0) await projectRepository.setProjectThemes(project.id, themeIds);
   const productionIds = parseIdList(formData, "productionIds");
   if (productionIds.length > 0) await projectRepository.setProjectProductions(project.id, productionIds);
-  const activityIds = parseIdList(formData, "activityIds");
-  if (activityIds.length > 0) await projectRepository.setProjectActivities(project.id, activityIds);
+  const eventIds = parseIdList(formData, "eventIds");
+  if (eventIds.length > 0) await projectRepository.setProjectEvents(project.id, eventIds);
 
   await logAction("create", { entityType: "project", summary: `Projet créé : ${parsed.data.title}` });
   revalidatePath("/admin/projets");
@@ -110,7 +110,7 @@ export async function updateProjectAction(_: string | null, formData: FormData):
 
   await projectRepository.setProjectThemes(id, parseIdList(formData, "themeIds"));
   await projectRepository.setProjectProductions(id, parseIdList(formData, "productionIds"));
-  await projectRepository.setProjectActivities(id, parseIdList(formData, "activityIds"));
+  await projectRepository.setProjectEvents(id, parseIdList(formData, "eventIds"));
 
   await logAction("update", { entityType: "project", entityId: id, summary: `Projet modifié : ${parsed.data.title}` });
   revalidatePath("/admin/projets");

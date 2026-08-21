@@ -5,7 +5,7 @@ import { submissionConfirmationSubject, submissionConfirmationHtml } from "../sr
 test("submissionConfirmationSubject — un libellé par type de formulaire connu", () => {
   assert.equal(submissionConfirmationSubject("join"), "Votre candidature a bien été reçue");
   assert.equal(submissionConfirmationSubject("content"), "Votre contribution a bien été reçue");
-  assert.equal(submissionConfirmationSubject("activity"), "Votre proposition d'activité a bien été reçue");
+  assert.equal(submissionConfirmationSubject("event"), "Votre proposition d'événement a bien été reçue");
 });
 
 test("submissionConfirmationSubject — repli générique pour un type inconnu", () => {

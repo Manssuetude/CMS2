@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { DossierForm } from "@/components/admin/DossierForm";
 import { productionRepository } from "@/repositories/productionRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { journalRepository } from "@/repositories/journalRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { createDossierAction } from "../actions";
 
 export default async function NewDossierPage() {
-  const [productions, activities, projects, journalEntries, media] = await Promise.all([
+  const [productions, events, projects, journalEntries, media] = await Promise.all([
     productionRepository.listProductions(true),
-    activityRepository.listActivities(true),
+    eventRepository.listEvents(true),
     projectRepository.listProjects(true),
     journalRepository.listEntries(true),
     mediaRepository.list(),
@@ -31,7 +31,7 @@ export default async function NewDossierPage() {
       <DossierForm
         action={createDossierAction}
         productions={productions}
-        activities={activities}
+        events={events}
         projects={projects}
         resources={media}
         journalEntries={journalEntries}

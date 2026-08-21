@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { DossierDetail } from "@/components/public/DossierDetail";
 import { dossierRepository } from "@/repositories/dossierRepository";
 import { productionRepository } from "@/repositories/productionRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { journalRepository } from "@/repositories/journalRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
@@ -43,10 +43,10 @@ export default async function DossierPage({ params }: { params: Promise<{ slug: 
   const item = await dossierRepository.getDossier(slug);
   if (!item) notFound();
 
-  const [dossierItems, productions, activities, projects, journalEntries, media] = await Promise.all([
+  const [dossierItems, productions, events, projects, journalEntries, media] = await Promise.all([
     dossierRepository.getDossierItems(item.id),
     productionRepository.listProductions(),
-    activityRepository.listActivities(),
+    eventRepository.listEvents(),
     projectRepository.listProjects(),
     journalRepository.listEntries(),
     mediaRepository.list(true),
@@ -54,7 +54,7 @@ export default async function DossierPage({ params }: { params: Promise<{ slug: 
 
   const resolvedItems = resolveDossierItems(dossierItems, {
     productions,
-    activities,
+    events,
     projects,
     resources: media,
     journalEntries,

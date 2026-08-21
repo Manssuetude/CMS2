@@ -9,7 +9,7 @@ const LABELS: Record<RegistrationStatus, string> = {
 
 // Le statut saisi manuellement en admin prend toujours le dessus (ex. "complet").
 // À défaut, on déduit "à venir"/"terminé" depuis la date — cohérent avec le badge
-// à venir/passée déjà utilisé sur les fiches activité.
+// à venir/passée déjà utilisé sur les fiches événement.
 export function resolveRegistrationStatus(
   manual: RegistrationStatus | null | undefined,
   date: string | null | undefined,

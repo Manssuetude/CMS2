@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from "@/lib/db";
-import type { ActivityAnimator, Author } from "@/types/cms";
+import type { EventAnimator, Author } from "@/types/cms";
 import { asNullableString, asString, type DataRow } from "@/utils/row";
 
 function mapAuthor(row: DataRow): Author {
@@ -82,13 +82,13 @@ export const authorRepository = {
     return map;
   },
 
-  // ── Activité ↔ Animateurs (many-to-many + contribution par lien) ─────
-  async getActivityAnimators(activityId: string): Promise<ActivityAnimator[]> {
+  // ── Événement ↔ Animateurs (many-to-many + contribution par lien) ────
+  async getEventAnimators(eventId: string): Promise<EventAnimator[]> {
     const db = getSupabaseAdmin();
     const { data, error } = await db
-      .from("activity_animators")
+      .from("event_animators")
       .select("author_id, contribution")
-      .eq("activity_id", activityId)
+      .eq("event_id", eventId)
       .order("position");
     if (error) throw error;
     return (data ?? []).map((r) => ({
@@ -97,17 +97,17 @@ export const authorRepository = {
     }));
   },
 
-  async setActivityAnimators(activityId: string, animators: ActivityAnimator[]): Promise<void> {
+  async setEventAnimators(eventId: string, animators: EventAnimator[]): Promise<void> {
     const db = getSupabaseAdmin();
-    await db.from("activity_animators").delete().eq("activity_id", activityId);
+    await db.from("event_animators").delete().eq("event_id", eventId);
     if (animators.length > 0) {
       const rows = animators.map((animator, index) => ({
-        activity_id: activityId,
+        event_id: eventId,
         author_id: animator.authorId,
         contribution: animator.contribution || null,
         position: index,
       }));
-      const { error } = await db.from("activity_animators").insert(rows);
+      const { error } = await db.from("event_animators").insert(rows);
       if (error) throw error;
     }
   },

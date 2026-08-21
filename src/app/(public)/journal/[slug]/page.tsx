@@ -4,7 +4,7 @@ import { journalRepository } from "@/repositories/journalRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { projectRepository } from "@/repositories/projectRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 import { JournalEntryDetail } from "@/components/public/JournalEntryDetail";
 
@@ -42,12 +42,12 @@ export default async function JournalEntryPage({ params }: { params: Promise<{ s
   const item = await journalRepository.getEntry(slug);
   if (!item) notFound();
 
-  const [author, imageUrl, project, activity] = await Promise.all([
+  const [author, imageUrl, project, event] = await Promise.all([
     item.authorId ? authorRepository.getAuthorById(item.authorId) : null,
     mediaRepository.getResourceUrl(item.thumbnailId),
     item.projectId ? projectRepository.getProjectById(item.projectId) : null,
-    item.activityId ? activityRepository.getActivityById(item.activityId) : null,
+    item.eventId ? eventRepository.getEventById(item.eventId) : null,
   ]);
 
-  return <JournalEntryDetail item={item} author={author} imageUrl={imageUrl} project={project} activity={activity} />;
+  return <JournalEntryDetail item={item} author={author} imageUrl={imageUrl} project={project} event={event} />;
 }

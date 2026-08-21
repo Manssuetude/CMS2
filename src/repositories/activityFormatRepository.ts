@@ -58,34 +58,31 @@ export const activityFormatRepository = {
     if (error) throw error;
   },
 
-  // ── Activité ↔ Formats (many-to-many) ──────────────────────────────
-  async getActivityFormatIds(activityId: string): Promise<string[]> {
+  // ── Événement ↔ Formats (many-to-many) ─────────────────────────────
+  async getActivityFormatIds(eventId: string): Promise<string[]> {
     const db = getSupabaseAdmin();
-    const { data } = await db
-      .from("activity_activity_formats")
-      .select("activity_format_id")
-      .eq("activity_id", activityId);
+    const { data } = await db.from("event_activity_formats").select("activity_format_id").eq("event_id", eventId);
     return (data ?? []).map((r) => String(r.activity_format_id));
   },
 
-  async setActivityFormats(activityId: string, formatIds: string[]): Promise<void> {
+  async setActivityFormats(eventId: string, formatIds: string[]): Promise<void> {
     const db = getSupabaseAdmin();
-    await db.from("activity_activity_formats").delete().eq("activity_id", activityId);
+    await db.from("event_activity_formats").delete().eq("event_id", eventId);
     if (formatIds.length > 0) {
-      const rows = formatIds.map((formatId) => ({ activity_id: activityId, activity_format_id: formatId }));
-      const { error } = await db.from("activity_activity_formats").insert(rows);
+      const rows = formatIds.map((formatId) => ({ event_id: eventId, activity_format_id: formatId }));
+      const { error } = await db.from("event_activity_formats").insert(rows);
       if (error) throw error;
     }
   },
 
   async getAllActivityFormatLinks(): Promise<Record<string, string[]>> {
     const db = getSupabaseAdmin();
-    const { data, error } = await db.from("activity_activity_formats").select("activity_id, activity_format_id");
+    const { data, error } = await db.from("event_activity_formats").select("event_id, activity_format_id");
     if (error) throw error;
     const map: Record<string, string[]> = {};
     for (const row of data ?? []) {
-      const activityId = String(row.activity_id);
-      (map[activityId] ??= []).push(String(row.activity_format_id));
+      const eventId = String(row.event_id);
+      (map[eventId] ??= []).push(String(row.activity_format_id));
     }
     return map;
   },

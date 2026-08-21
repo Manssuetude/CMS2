@@ -23,7 +23,7 @@ export default async function JoinPage() {
   try {
     const page = await pageRepository.getPage("nous-rejoindre");
     if (!page) notFound();
-    // Masque le CTA secondaire "Participer à une activité" sur cette page.
+    // Masque le CTA secondaire "Participer à un événement" sur cette page.
     const pageWithoutSecondaryCta = { ...page, secondaryCtaLabel: null, secondaryCtaTarget: null };
     return <PublicPage page={pageWithoutSecondaryCta} heroImageUrl={page.imageUrl ?? undefined} />;
   } catch (error) {

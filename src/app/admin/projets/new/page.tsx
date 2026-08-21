@@ -2,14 +2,14 @@ import Link from "next/link";
 import { ProjetForm } from "@/components/admin/ProjetForm";
 import { themeRepository } from "@/repositories/themeRepository";
 import { productionRepository } from "@/repositories/productionRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { createProjectAction } from "../actions";
 
 export default async function NewProjetPage() {
-  const [themes, productions, activities] = await Promise.all([
+  const [themes, productions, events] = await Promise.all([
     themeRepository.listThemes(true),
     productionRepository.listProductions(true),
-    activityRepository.listActivities(true),
+    eventRepository.listEvents(true),
   ]);
 
   return (
@@ -23,7 +23,7 @@ export default async function NewProjetPage() {
           <p>Créez un nouveau projet. Il sera en brouillon jusqu&apos;à publication.</p>
         </div>
       </div>
-      <ProjetForm action={createProjectAction} themes={themes} productions={productions} activities={activities} />
+      <ProjetForm action={createProjectAction} themes={themes} productions={productions} events={events} />
     </section>
   );
 }

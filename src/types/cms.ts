@@ -20,9 +20,9 @@ export type Visibility =
   | "archived"
   | "private"
   | "draft";
-export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "activity" | "contact";
+export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "event" | "contact";
 export type FormStatus = "reçu" | "en cours" | "traité" | "archivé";
-export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "activity"}`;
+export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "event"}`;
 
 export type ContentBlock =
   | {
@@ -51,7 +51,7 @@ export type ContentBlock =
   | {
       id?: string;
       type: "feed";
-      source: "productions" | "projects" | "resources" | "activities";
+      source: "productions" | "projects" | "resources" | "events";
       variant: "compact" | "featured" | "editorial" | "media" | "masonry";
       limit?: number;
       visible?: boolean;
@@ -134,9 +134,9 @@ export type Page = {
   secondaryCtaTarget?: CtaTarget | null;
   sections: ContentBlock[];
   percaSteps?: PercaStep[];
-  // Activité de secours pour "Activité du moment" (accueil), utilisée
-  // uniquement quand aucune activité n'a lieu cette semaine.
-  featuredActivityId?: string | null;
+  // Événement de secours pour "Événement du moment" (accueil), utilisé
+  // uniquement quand aucun événement n'a lieu cette semaine.
+  featuredEventId?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImageId?: string | null;
@@ -212,17 +212,17 @@ export type Speaker = {
   role?: string;
 };
 
-// Animateur d'une activité — lien vers une fiche Author réutilisable (comme
+// Animateur d'un événement — lien vers une fiche Author réutilisable (comme
 // production_authors), avec une contribution libre et optionnelle propre à
-// cette activité ("ce que la personne y a fait").
-export type ActivityAnimator = {
+// cet événement ("ce que la personne y a fait").
+export type EventAnimator = {
   authorId: string;
   contribution?: string | null;
 };
 
 export type RegistrationStatus = "a-venir" | "ouvertes" | "complet" | "termine";
 
-export type Activity = {
+export type Event = {
   id: string;
   slug: string;
   title: string;
@@ -267,7 +267,7 @@ export type Project = {
   featured: boolean;
   themeIds?: string[];
   productionIds?: string[];
-  activityIds?: string[];
+  eventIds?: string[];
   seoTitle?: string | null;
   seoDescription?: string | null;
   createdAt: string;
@@ -314,7 +314,7 @@ export type JournalEntry = {
   date?: string | null;
   themeId?: string | null;
   projectId?: string | null;
-  activityId?: string | null;
+  eventId?: string | null;
   productionId?: string | null;
   status: ContentStatus;
   featured: boolean;
@@ -328,7 +328,7 @@ export type JournalEntry = {
 // dossier "libre" affiche une simple grille.
 export type DossierMode = "libre" | "guide";
 
-export type DossierItemEntityType = "production" | "activity" | "project" | "resource" | "journal_entry";
+export type DossierItemEntityType = "production" | "event" | "project" | "resource" | "journal_entry";
 
 export type DossierItem = {
   id: string;

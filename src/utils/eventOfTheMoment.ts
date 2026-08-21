@@ -1,4 +1,4 @@
-import type { Activity } from "@/types/cms";
+import type { Event } from "@/types/cms";
 
 function startOfWeek(now: Date): Date {
   const date = new Date(now);
@@ -9,7 +9,8 @@ function startOfWeek(now: Date): Date {
   return date;
 }
 
-function isThisWeek(dateStr: string, now: Date): boolean {
+// Exportée pour être réutilisée par le filtre « En cours » de /evenements.
+export function isThisWeek(dateStr: string, now: Date): boolean {
   const start = startOfWeek(now);
   const end = new Date(start);
   end.setDate(end.getDate() + 7);
@@ -26,20 +27,20 @@ function closestByDate<T extends { date: string }>(items: T[], now: Date): T {
 }
 
 /**
- * "Activité du moment" (accueil), par ordre de priorité :
- * 1. Une activité a lieu cette semaine (lundi-dimanche) → la plus proche d'aujourd'hui.
- * 2. Sinon, l'activité choisie en admin comme repli (`fallback`), si définie.
- * 3. Sinon, l'activité la plus proche d'aujourd'hui toutes dates confondues
- *    (mieux vaut montrer une activité passée/lointaine que rien du tout).
+ * "Événement du moment" (accueil), par ordre de priorité :
+ * 1. Un événement a lieu cette semaine (lundi-dimanche) → le plus proche d'aujourd'hui.
+ * 2. Sinon, l'événement choisi en admin comme repli (`fallback`), si défini.
+ * 3. Sinon, l'événement le plus proche d'aujourd'hui toutes dates confondues
+ *    (mieux vaut montrer un événement passé/lointain que rien du tout).
  */
-export function pickActivityOfTheMoment(
-  activities: Activity[],
-  fallback: Activity | null = null,
+export function pickEventOfTheMoment(
+  events: Event[],
+  fallback: Event | null = null,
   now: Date = new Date(),
-): Activity | null {
-  const dated = activities.filter((a): a is Activity & { date: string } => Boolean(a.date));
+): Event | null {
+  const dated = events.filter((e): e is Event & { date: string } => Boolean(e.date));
 
-  const thisWeek = dated.filter((a) => isThisWeek(a.date, now));
+  const thisWeek = dated.filter((e) => isThisWeek(e.date, now));
   if (thisWeek.length > 0) return closestByDate(thisWeek, now);
 
   if (fallback) return fallback;

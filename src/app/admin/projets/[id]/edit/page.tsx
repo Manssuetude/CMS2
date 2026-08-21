@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { projectRepository } from "@/repositories/projectRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { productionRepository } from "@/repositories/productionRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { ProjetForm } from "@/components/admin/ProjetForm";
 import { updateProjectAction } from "../../actions";
 
@@ -14,17 +14,17 @@ interface Props {
 
 export default async function EditProjetPage({ params }: Props) {
   const { id } = await params;
-  const [item, themes, productions, activities] = await Promise.all([
+  const [item, themes, productions, events] = await Promise.all([
     projectRepository.getProjectById(id),
     themeRepository.listThemes(true),
     productionRepository.listProductions(true),
-    activityRepository.listActivities(true),
+    eventRepository.listEvents(true),
   ]);
   if (!item) notFound();
-  const [initialThemeIds, initialProductionIds, initialActivityIds] = await Promise.all([
+  const [initialThemeIds, initialProductionIds, initialEventIds] = await Promise.all([
     projectRepository.getProjectThemeIds(id),
     projectRepository.getProjectProductionIds(id),
-    projectRepository.getProjectActivityIds(id),
+    projectRepository.getProjectEventIds(id),
   ]);
 
   return (
@@ -60,8 +60,8 @@ export default async function EditProjetPage({ params }: Props) {
         initialThemeIds={initialThemeIds}
         productions={productions}
         initialProductionIds={initialProductionIds}
-        activities={activities}
-        initialActivityIds={initialActivityIds}
+        events={events}
+        initialEventIds={initialEventIds}
       />
     </section>
   );

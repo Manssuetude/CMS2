@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { ActiviteForm } from "@/components/admin/ActiviteForm";
+import { EvenementForm } from "@/components/admin/EvenementForm";
 import { themeRepository } from "@/repositories/themeRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
-import { createActivityAction } from "../actions";
+import { createEventAction } from "../actions";
 
-export default async function NewActivitePage() {
+export default async function NewEvenementPage() {
   const [themes, subThemes, projects, activityFormats, authors, images] = await Promise.all([
     themeRepository.listThemes(true),
     subThemeRepository.listSubThemes(true),
@@ -20,17 +20,17 @@ export default async function NewActivitePage() {
 
   return (
     <section className="admin-panel">
-      <Link href="/admin/activites" className="admin-back">
-        Retour aux activités
+      <Link href="/admin/evenements" className="admin-back">
+        Retour aux événements
       </Link>
       <div className="admin-page-header">
         <div>
-          <h1>Nouvelle activité</h1>
-          <p>Créez une nouvelle activité. Elle sera en brouillon jusqu&apos;à publication.</p>
+          <h1>Nouvel événement</h1>
+          <p>Créez un nouvel événement. Il sera en brouillon jusqu&apos;à publication.</p>
         </div>
       </div>
-      <ActiviteForm
-        action={createActivityAction}
+      <EvenementForm
+        action={createEventAction}
         themes={themes}
         subThemes={subThemes}
         projects={projects}

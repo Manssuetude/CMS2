@@ -26,7 +26,7 @@ export const blockRegistry: BlockDefinition[] = [
   {
     type: "feed",
     label: "Flux dynamique",
-    description: "Liste automatique de productions, projets, ressources ou activités.",
+    description: "Liste automatique de productions, projets, ressources ou événements.",
     variants: ["compact", "featured", "editorial", "media", "masonry"],
     allowedSettings: ["source", "limite", "variante", "relations", "visibilité"],
   },

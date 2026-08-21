@@ -1,4 +1,4 @@
-export const collectionNames = ["pages", "themes", "productions", "activities", "projects", "resources"] as const;
+export const collectionNames = ["pages", "themes", "productions", "events", "projects", "resources"] as const;
 
 export type CollectionName = (typeof collectionNames)[number];
 

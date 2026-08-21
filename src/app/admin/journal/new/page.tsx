@@ -3,17 +3,17 @@ import { JournalEntryForm } from "@/components/admin/JournalEntryForm";
 import { authorRepository } from "@/repositories/authorRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { projectRepository } from "@/repositories/projectRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { createJournalEntryAction } from "../actions";
 
 export default async function NewJournalEntryPage() {
-  const [authors, themes, projects, activities, productions, media] = await Promise.all([
+  const [authors, themes, projects, events, productions, media] = await Promise.all([
     authorRepository.listAuthors(),
     themeRepository.listThemes(true),
     projectRepository.listProjects(true),
-    activityRepository.listActivities(true),
+    eventRepository.listEvents(true),
     productionRepository.listProductions(true),
     mediaRepository.list(),
   ]);
@@ -35,7 +35,7 @@ export default async function NewJournalEntryPage() {
         authors={authors}
         themes={themes}
         projects={projects}
-        activities={activities}
+        events={events}
         productions={productions}
         images={images}
       />

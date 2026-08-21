@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import type { Activity } from "@/types/cms";
+import type { Event } from "@/types/cms";
 import { buildCalendarCells, dateKey, groupByDateKey, isSameDay } from "@/utils/calendarGrid";
 
 const DAYS_FR = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -23,10 +23,10 @@ const MONTHS_FR = [
 ];
 
 interface Props {
-  activities: Activity[];
+  events: Event[];
 }
 
-export function ActivityCalendar({ activities }: Props) {
+export function EventCalendar({ events }: Props) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
@@ -49,7 +49,7 @@ export function ActivityCalendar({ activities }: Props) {
   };
 
   const cells = buildCalendarCells(year, month);
-  const byDate = groupByDateKey(activities, (a) => a.date);
+  const byDate = groupByDateKey(events, (e) => e.date);
   const isToday = (d: Date) => isSameDay(d, today);
 
   return (
@@ -81,14 +81,14 @@ export function ActivityCalendar({ activities }: Props) {
 
           {cells.map(({ date, current }, i) => {
             const key = dateKey(date);
-            const events = byDate.get(key) ?? [];
+            const evts = byDate.get(key) ?? [];
             return (
               <div key={i} className={`calendar-day${!current ? " other-month" : ""}${isToday(date) ? " today" : ""}`}>
                 <div className="calendar-day-num">{date.getDate()}</div>
-                {events.map((ev) => (
+                {evts.map((ev) => (
                   <Link
                     key={ev.id}
-                    href={`/admin/activites/${ev.id}/edit`}
+                    href={`/admin/evenements/${ev.id}/edit`}
                     className={`calendar-event ${ev.status}`}
                     title={ev.title}
                   >

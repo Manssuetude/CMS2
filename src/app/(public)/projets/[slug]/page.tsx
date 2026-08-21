@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ProjetDetail } from "@/components/public/ProjetDetail";
 import { projectRepository } from "@/repositories/projectRepository";
 import { productionRepository } from "@/repositories/productionRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { journalRepository } from "@/repositories/journalRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
@@ -41,10 +41,10 @@ export default async function ProjetPage({ params }: { params: Promise<{ slug: s
   const items = await projectRepository.listProjects(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  const [productions, activities, journalEntries] = await Promise.all([
+  const [productions, events, journalEntries] = await Promise.all([
     productionRepository.getProductionsByProject(item.id),
-    activityRepository.getActivitiesByProject(item.id),
+    eventRepository.getEventsByProject(item.id),
     journalRepository.listEntriesByProject(item.id),
   ]);
-  return <ProjetDetail item={item} productions={productions} activities={activities} journalEntries={journalEntries} />;
+  return <ProjetDetail item={item} productions={productions} events={events} journalEntries={journalEntries} />;
 }

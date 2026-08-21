@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   const pattern = `%${q}%`;
 
   const [acts, prods, projs, themes, subThemes, authors, journalEntries] = await Promise.all([
-    db.from("activities").select("id, title, status").ilike("title", pattern).limit(5),
+    db.from("events").select("id, title, status").ilike("title", pattern).limit(5),
     db.from("productions").select("id, title, status").ilike("title", pattern).limit(5),
     db.from("projects").select("id, title, status").ilike("title", pattern).limit(5),
     db.from("themes").select("id, title, status").ilike("title", pattern).limit(5),
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
   ]);
 
   const results = [
-    ...(acts.data ?? []).map((r) => ({ ...r, type: "activity", href: `/admin/activites/${r.id}/edit` })),
+    ...(acts.data ?? []).map((r) => ({ ...r, type: "event", href: `/admin/evenements/${r.id}/edit` })),
     ...(prods.data ?? []).map((r) => ({ ...r, type: "production", href: `/admin/productions/${r.id}/edit` })),
     ...(projs.data ?? []).map((r) => ({ ...r, type: "project", href: `/admin/projets/${r.id}/edit` })),
     ...(themes.data ?? []).map((r) => ({ ...r, type: "theme", href: `/admin/themes/${r.id}/edit` })),

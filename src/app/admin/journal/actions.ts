@@ -18,7 +18,7 @@ const schema = z.object({
   thumbnailId: z.string().optional().nullable(),
   themeId: z.string().optional().nullable(),
   projectId: z.string().optional().nullable(),
-  activityId: z.string().optional().nullable(),
+  eventId: z.string().optional().nullable(),
   productionId: z.string().optional().nullable(),
   featured: z.boolean().default(false),
 });
@@ -35,7 +35,7 @@ function toInput(data: z.infer<typeof schema>) {
     thumbnail_id: data.thumbnailId || null,
     theme_id: data.themeId || null,
     project_id: data.projectId || null,
-    activity_id: data.activityId || null,
+    event_id: data.eventId || null,
     production_id: data.productionId || null,
     featured: data.featured,
   };
@@ -53,7 +53,7 @@ function fromForm(formData: FormData) {
     thumbnailId: formData.get("thumbnailId") || null,
     themeId: formData.get("themeId") || null,
     projectId: formData.get("projectId") || null,
-    activityId: formData.get("activityId") || null,
+    eventId: formData.get("eventId") || null,
     productionId: formData.get("productionId") || null,
     featured: formData.get("featured") === "on",
   };

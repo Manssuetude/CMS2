@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/constants/site";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
@@ -18,7 +18,8 @@ const STATIC_PATHS: Array<{
 }> = [
   { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/themes", priority: 0.9, changeFrequency: "weekly" },
-  { path: "/activites", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/evenements", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/activites", priority: 0.6, changeFrequency: "monthly" },
   { path: "/productions", priority: 0.9, changeFrequency: "weekly" },
   { path: "/journal", priority: 0.8, changeFrequency: "weekly" },
   { path: "/projets", priority: 0.8, changeFrequency: "weekly" },
@@ -42,11 +43,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Entités dynamiques (uniquement le contenu publié — includeDrafts par défaut = false).
   try {
-    const [themes, subThemes, productions, activities, projects, journalEntries] = await Promise.all([
+    const [themes, subThemes, productions, events, projects, journalEntries] = await Promise.all([
       themeRepository.listThemes(),
       subThemeRepository.listSubThemes(),
       productionRepository.listProductions(),
-      activityRepository.listActivities(),
+      eventRepository.listEvents(),
       projectRepository.listProjects(),
       journalRepository.listEntries(),
     ]);
@@ -78,9 +79,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly" as const,
         priority: 0.7,
       })),
-      ...activities.map((a) => ({
-        url: `${SITE_URL}/activites/${a.slug}`,
-        lastModified: new Date(a.updatedAt),
+      ...events.map((e) => ({
+        url: `${SITE_URL}/evenements/${e.slug}`,
+        lastModified: new Date(e.updatedAt),
         changeFrequency: "monthly" as const,
         priority: 0.6,
       })),

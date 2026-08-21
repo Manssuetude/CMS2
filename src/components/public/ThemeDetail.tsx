@@ -1,4 +1,4 @@
-import type { Activity, Project, Theme, SubTheme } from "@/types/cms";
+import type { Event, Project, Theme, SubTheme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { titleFontSize } from "@/utils/titleSize";
@@ -6,11 +6,11 @@ import { titleFontSize } from "@/utils/titleSize";
 interface Props {
   item: Theme;
   subThemes: SubTheme[];
-  activities?: Activity[];
+  events?: Event[];
   projects?: Project[];
 }
 
-export function ThemeDetail({ item, subThemes, activities = [], projects = [] }: Props) {
+export function ThemeDetail({ item, subThemes, events = [], projects = [] }: Props) {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -60,15 +60,15 @@ export function ThemeDetail({ item, subThemes, activities = [], projects = [] }:
         />
       )}
 
-      {/* ── Activités liées ──────────────────────────────────────── */}
-      {activities.length > 0 && (
+      {/* ── Événements liés ──────────────────────────────────────── */}
+      {events.length > 0 && (
         <CardGrid
-          title="Activités liées"
-          items={activities.map((a) => ({
-            title: a.title,
-            description: a.description,
-            href: `/activites/${a.slug}`,
-            meta: a.format,
+          title="Événements liés"
+          items={events.map((e) => ({
+            title: e.title,
+            description: e.description,
+            href: `/evenements/${e.slug}`,
+            meta: e.format,
           }))}
         />
       )}

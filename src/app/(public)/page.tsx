@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HomeEditorial } from "@/components/public/HomeEditorial";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { pageRepository } from "@/repositories/pageRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { journalRepository } from "@/repositories/journalRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { pickActivityOfTheMoment } from "@/utils/activityOfTheMoment";
+import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
 
 export const revalidate = 60;
 
@@ -26,9 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   try {
     const page = await pageRepository.getPage("accueil");
-    const [productions, activities, journalEntries] = await Promise.all([
+    const [productions, events, journalEntries] = await Promise.all([
       productionRepository.listProductions(),
-      activityRepository.listActivities(),
+      eventRepository.listEvents(),
       journalRepository.listEntries(),
     ]);
     if (!page) notFound();
@@ -37,23 +37,21 @@ export default async function HomePage() {
     const featuredJournal = journalEntries.filter((e) => e.featured);
     const homeJournalEntries = (featuredJournal.length ? featuredJournal : journalEntries).slice(0, 3);
 
-    // Accueil : uniquement les productions et activités marquées "en vedette"
-    // (pas de repli sur les plus récentes) — max 3 productions, max 2 activités.
+    // Accueil : uniquement les productions et événements marqués "en vedette"
+    // (pas de repli sur les plus récents) — max 3 productions, max 2 événements.
     // Aucune vedette → section masquée.
     const homeProductions = productions.filter((p) => p.featured).slice(0, 3);
-    const homeActivities = activities.filter((a) => a.featured).slice(0, 2);
+    const homeEvents = events.filter((e) => e.featured).slice(0, 2);
 
-    const fallbackActivity = page.featuredActivityId
-      ? (activities.find((a) => a.id === page.featuredActivityId) ?? null)
-      : null;
-    const activityOfTheMoment = pickActivityOfTheMoment(activities, fallbackActivity);
+    const fallbackEvent = page.featuredEventId ? (events.find((e) => e.id === page.featuredEventId) ?? null) : null;
+    const eventOfTheMoment = pickEventOfTheMoment(events, fallbackEvent);
 
     return (
       <HomeEditorial
         page={page}
         heroImageUrl={page.imageUrl ?? undefined}
-        activityOfTheMoment={activityOfTheMoment}
-        activities={homeActivities}
+        eventOfTheMoment={eventOfTheMoment}
+        events={homeEvents}
         productions={homeProductions}
         journalEntries={homeJournalEntries}
       />

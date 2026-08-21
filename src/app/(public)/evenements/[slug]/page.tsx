@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ActiviteDetail } from "@/components/public/ActiviteDetail";
-import { activityRepository } from "@/repositories/activityRepository";
+import { EvenementDetail } from "@/components/public/EvenementDetail";
+import { eventRepository } from "@/repositories/eventRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
@@ -14,14 +14,14 @@ export const revalidate = 60;
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const items = await activityRepository.listActivities(true);
-    const item = items.find((a) => a.slug === slug);
+    const items = await eventRepository.listEvents(true);
+    const item = items.find((e) => e.slug === slug);
     if (!item) return {};
     const imageUrl = await mediaRepository.getResourceUrl(item.gallery[0]);
     return buildDetailMetadata({
       title: item.seoTitle || item.title,
       description: item.seoDescription || item.description,
-      path: `/activites/${item.slug}`,
+      path: `/evenements/${item.slug}`,
       imageUrl,
       ogType: "article",
     });
@@ -32,28 +32,28 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export async function generateStaticParams() {
   try {
-    const items = await activityRepository.listActivities(true);
-    return items.map((a) => ({ slug: a.slug }));
+    const items = await eventRepository.listEvents(true);
+    return items.map((e) => ({ slug: e.slug }));
   } catch {
     // DB unreachable at build time (e.g. no credentials in CI): render on demand instead.
     return [];
   }
 }
 
-export default async function ActivitePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function EvenementPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const items = await activityRepository.listActivities(true);
+  const items = await eventRepository.listEvents(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
   const [formatIds, allFormats, animatorLinks, authors, galleryUrls, themeIds, subThemeIds, allThemes, allSubThemes] =
     await Promise.all([
       activityFormatRepository.getActivityFormatIds(item.id),
       activityFormatRepository.listFormats(),
-      authorRepository.getActivityAnimators(item.id),
+      authorRepository.getEventAnimators(item.id),
       authorRepository.listAuthors(),
       Promise.all(item.gallery.map((id) => mediaRepository.getResourceUrl(id))),
-      activityRepository.getActivityThemeIds(item.id),
-      activityRepository.getActivitySubThemeIds(item.id),
+      eventRepository.getEventThemeIds(item.id),
+      eventRepository.getEventSubThemeIds(item.id),
       themeRepository.listThemes(),
       subThemeRepository.listSubThemes(),
     ]);
@@ -67,7 +67,7 @@ export default async function ActivitePage({ params }: { params: Promise<{ slug:
   const themes = allThemes.filter((t) => themeIds.includes(t.id));
   const subThemes = allSubThemes.filter((st) => subThemeIds.includes(st.id));
   return (
-    <ActiviteDetail
+    <EvenementDetail
       item={item}
       formats={formats}
       allFormats={allFormats}

@@ -1,4 +1,4 @@
-export type PublicFormType = "join" | "project" | "content" | "partner" | "don" | "theme" | "activity" | "contact";
+export type PublicFormType = "join" | "project" | "content" | "partner" | "don" | "theme" | "event" | "contact";
 
 export type FormFieldDefinition = {
   name: string;
@@ -106,10 +106,10 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
       hint: "En cochant cette case, vous autorisez Manssuétude à conserver et traiter les informations de cette proposition de thème uniquement pour l'étudier et vous recontacter. Vos données ne sont jamais revendues et vous pouvez demander leur suppression à tout moment.",
     },
   ],
-  activity: [
+  event: [
     { name: "name", label: "Nom", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
-    { name: "activityTitle", label: "Titre de l'activité", type: "text", required: true },
+    { name: "eventTitle", label: "Titre de l'événement", type: "text", required: true },
     { name: "format", label: "Format (atelier, débat, séance…)", type: "text" },
     { name: "description", label: "Description / objectif", type: "text" },
     { name: "date", label: "Date envisagée", type: "text" },
@@ -118,7 +118,7 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
       label: "Consentement RGPD",
       type: "checkbox",
       required: true,
-      hint: "En cochant cette case, vous autorisez Manssuétude à conserver et traiter les informations de cette proposition d'activité uniquement pour l'étudier et vous recontacter. Vos données ne sont jamais revendues et vous pouvez demander leur suppression à tout moment.",
+      hint: "En cochant cette case, vous autorisez Manssuétude à conserver et traiter les informations de cette proposition d'événement uniquement pour l'étudier et vous recontacter. Vos données ne sont jamais revendues et vous pouvez demander leur suppression à tout moment.",
     },
   ],
   // Champs du formulaire de contact (src/components/public/ContactForm.tsx) —

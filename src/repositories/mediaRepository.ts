@@ -102,7 +102,7 @@ export const mediaRepository = {
   },
 
   // Résout l'URL (absolue/normalisée) d'une ressource média par son id. Utilisé pour
-  // les images Open Graph des fiches (thème, production, activité). Renvoie null si absente.
+  // les images Open Graph des fiches (thème, production, événement). Renvoie null si absente.
   async getResourceUrl(id: string | null | undefined): Promise<string | null> {
     if (!id) return null;
     const db = getSupabaseAdmin();

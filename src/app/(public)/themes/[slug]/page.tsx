@@ -4,7 +4,7 @@ import { ThemeDetail } from "@/components/public/ThemeDetail";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
-import { activityRepository } from "@/repositories/activityRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
@@ -42,10 +42,10 @@ export default async function ThemePage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const item = await themeRepository.getTheme(slug);
   if (!item) notFound();
-  const [subThemes, activities, projects] = await Promise.all([
+  const [subThemes, events, projects] = await Promise.all([
     subThemeRepository.listSubThemesByTheme(item.id),
-    activityRepository.getActivitiesByTheme(item.id),
+    eventRepository.getEventsByTheme(item.id),
     projectRepository.getProjectsByTheme(item.id),
   ]);
-  return <ThemeDetail item={item} subThemes={subThemes} activities={activities} projects={projects} />;
+  return <ThemeDetail item={item} subThemes={subThemes} events={events} projects={projects} />;
 }

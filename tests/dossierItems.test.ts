@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { resolveDossierItems } from "../src/utils/dossierItems.ts";
-import type { Activity, DossierItem, JournalEntry, Media, Production, Project } from "../src/types/cms.ts";
+import type { Event, DossierItem, JournalEntry, Media, Production, Project } from "../src/types/cms.ts";
 
 function makeProduction(overrides: Partial<Production> & { id: string }): Production {
   return {
@@ -28,7 +28,7 @@ function makeProduction(overrides: Partial<Production> & { id: string }): Produc
   };
 }
 
-function makeActivity(overrides: Partial<Activity> & { id: string }): Activity {
+function makeEvent(overrides: Partial<Event> & { id: string }): Event {
   return {
     slug: overrides.id,
     title: overrides.id,
@@ -95,7 +95,7 @@ function item(
 
 const source = {
   productions: [makeProduction({ id: "p1", slug: "prod-un" })],
-  activities: [makeActivity({ id: "a1", slug: "act-un" })],
+  events: [makeEvent({ id: "a1", slug: "act-un" })],
   projects: [makeProject({ id: "pr1", slug: "proj-un" })],
   resources: [makeMedia({ id: "r1" })],
   journalEntries: [makeJournalEntry({ id: "j1", slug: "journal-un" })],
@@ -103,13 +103,13 @@ const source = {
 
 test("resolveDossierItems — résout chaque type vers son URL publique, dans l'ordre des positions", () => {
   const items = [
-    item({ entityType: "activity", entityId: "a1", position: 1 }),
+    item({ entityType: "event", entityId: "a1", position: 1 }),
     item({ entityType: "production", entityId: "p1", position: 0 }),
   ];
   const result = resolveDossierItems(items, source);
   assert.deepEqual(
     result.map((r) => r.href),
-    ["/productions/prod-un", "/activites/act-un"],
+    ["/productions/prod-un", "/evenements/act-un"],
   );
 });
 

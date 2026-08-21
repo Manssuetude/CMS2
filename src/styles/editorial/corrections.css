@@ -79,21 +79,21 @@
   gap: 0.75rem;
 }
 
-/* Galerie photo (compte-rendu d'activité passée) — grille responsive */
-.site-shell .activity-gallery {
+/* Galerie photo (compte-rendu d'événement passé) — grille responsive */
+.site-shell .event-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 0.75rem;
 }
-.site-shell .activity-gallery img {
+.site-shell .event-gallery img {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: var(--ed-radius);
 }
 
-/* Calendrier public des activités (/activites) — vue mensuelle, lien direct
-   vers chaque activité publiée. Grille responsive : jours empilés en colonne
+/* Calendrier public des événements (/evenements) — vue mensuelle, lien direct
+   vers chaque événement publié. Grille responsive : jours empilés en colonne
    unique sous 640px plutôt que 7 colonnes illisibles. */
 .site-shell .event-calendar {
   max-width: 900px;
@@ -199,7 +199,7 @@
   }
 }
 
-/* Tri / filtres (Activités, Productions) — refonte éditoriale.
+/* Tri / filtres (Événements, Productions) — refonte éditoriale.
    globals.css les rendait en pastilles orange criardes (tokens froids).
    Ici : rangée sobre sous un filet, actif = encre (accent orange gardé rare). */
 .site-shell .filter-bar {

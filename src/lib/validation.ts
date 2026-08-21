@@ -23,7 +23,7 @@ export const formTypeSchema = z.enum([
   "partner",
   "donation",
   "theme",
-  "activity",
+  "event",
   "contact",
 ]);
 

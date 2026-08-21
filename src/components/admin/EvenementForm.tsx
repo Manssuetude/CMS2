@@ -5,8 +5,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink, Plus, X } from "lucide-react";
 import type {
-  Activity,
-  ActivityAnimator,
+  Event,
+  EventAnimator,
   ActivityFormat,
   Author,
   Media,
@@ -57,7 +57,7 @@ function toSlug(s: string): string {
 }
 
 interface Props {
-  initialData?: Activity;
+  initialData?: Event;
   action: ActionFn;
   themes?: Theme[];
   initialThemeIds?: string[];
@@ -68,11 +68,11 @@ interface Props {
   activityFormats?: ActivityFormat[];
   initialFormatIds?: string[];
   authors?: Author[];
-  initialAnimators?: ActivityAnimator[];
+  initialAnimators?: EventAnimator[];
   images?: Media[];
 }
 
-export function ActiviteForm({
+export function EvenementForm({
   initialData,
   action,
   themes = [],
@@ -96,9 +96,9 @@ export function ActiviteForm({
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
   const [selectedProjects, setSelectedProjects] = useState<string[]>(initialProjectIds);
   const [selectedFormats, setSelectedFormats] = useState<string[]>(initialFormatIds);
-  const [animators, setAnimators] = useState<ActivityAnimator[]>(initialAnimators);
+  const [animators, setAnimators] = useState<EventAnimator[]>(initialAnimators);
   const [selectedGallery, setSelectedGallery] = useState<string[]>(initialData?.gallery ?? []);
-  const publicHref = isEdit ? `/activites/${initialData.slug}` : null;
+  const publicHref = isEdit ? `/evenements/${initialData.slug}` : null;
   const mentionItems = useMemo(() => activityFormats.map((f) => ({ id: f.id, title: f.title })), [activityFormats]);
   const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
   const subThemesByTheme = new Map<string, SubTheme[]>();
@@ -112,7 +112,7 @@ export function ActiviteForm({
     setSpeakers((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
   }
 
-  function updateAnimator(index: number, field: keyof ActivityAnimator, value: string) {
+  function updateAnimator(index: number, field: keyof EventAnimator, value: string) {
     setAnimators((prev) => prev.map((a, i) => (i === index ? { ...a, [field]: value } : a)));
   }
 
@@ -335,7 +335,7 @@ export function ActiviteForm({
           <div className="form-section">
             <p className="form-section-title">Animateurs</p>
             <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Personnes ayant animé cette activité, et ce qu&apos;elles y ont fait (facultatif).
+              Personnes ayant animé cet événement, et ce qu&apos;elles y ont fait (facultatif).
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {animators.map((animator, index) => (
@@ -391,13 +391,13 @@ export function ActiviteForm({
           </div>
         )}
 
-        {/* Compte-rendu en images (n'apparaît côté public que si l'activité est
-            passée ou terminée, et seulement si des images sont ajoutées ici) */}
+        {/* Compte-rendu en images (n'apparaît côté public que si l'événement est
+            passé ou terminé, et seulement si des images sont ajoutées ici) */}
         {images.length > 0 && (
           <div className="form-section">
             <p className="form-section-title">Compte-rendu en images</p>
             <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Photos affichées sur la page publique une fois l&apos;activité passée ou marquée « Terminé ». Gérer les
+              Photos affichées sur la page publique une fois l&apos;événement passé ou marqué « Terminé ». Gérer les
               images dans <Link href="/admin/media">la médiathèque</Link>.
             </p>
             <CheckboxMultiSelect
@@ -414,7 +414,7 @@ export function ActiviteForm({
           <div className="form-section">
             <p className="form-section-title">Thèmes</p>
             <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Thèmes éditoriaux auxquels se rattache cette activité.
+              Thèmes éditoriaux auxquels se rattache cet événement.
             </p>
             <CheckboxMultiSelect
               idPrefix="theme"
@@ -430,7 +430,7 @@ export function ActiviteForm({
           <div className="form-section">
             <p className="form-section-title">Sous-thèmes</p>
             <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Sous-thèmes traités par cette activité.
+              Sous-thèmes traités par cet événement.
             </p>
             {[...subThemesByTheme.entries()].map(([themeId, items]) => (
               <div key={themeId} style={{ marginBottom: 14 }}>
@@ -453,7 +453,7 @@ export function ActiviteForm({
           <div className="form-section">
             <p className="form-section-title">Projets</p>
             <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Projets dans le cadre desquels cette activité est organisée.
+              Projets dans le cadre desquels cet événement est organisé.
             </p>
             <CheckboxMultiSelect
               idPrefix="project"
@@ -547,11 +547,11 @@ export function ActiviteForm({
               Voir sur le site
             </a>
           )}
-          <Link href="/admin/activites" className="button">
+          <Link href="/admin/evenements" className="button">
             Annuler
           </Link>
           <button type="submit" className="button primary" disabled={isPending}>
-            {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer l'activité"}
+            {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer l'événement"}
           </button>
         </div>
       </div>

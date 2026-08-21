@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
-import type { Activity, Production, Project, Theme } from "@/types/cms";
+import type { Event, Production, Project, Theme } from "@/types/cms";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -55,8 +55,8 @@ interface Props {
   initialThemeIds?: string[];
   productions?: Production[];
   initialProductionIds?: string[];
-  activities?: Activity[];
-  initialActivityIds?: string[];
+  events?: Event[];
+  initialEventIds?: string[];
 }
 
 export function ProjetForm({
@@ -66,8 +66,8 @@ export function ProjetForm({
   initialThemeIds = [],
   productions = [],
   initialProductionIds = [],
-  activities = [],
-  initialActivityIds = [],
+  events = [],
+  initialEventIds = [],
 }: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
@@ -75,7 +75,7 @@ export function ProjetForm({
   const [body, setBody] = useState(initialData?.body ?? "");
   const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
   const [selectedProductions, setSelectedProductions] = useState<string[]>(initialProductionIds);
-  const [selectedActivities, setSelectedActivities] = useState<string[]>(initialActivityIds);
+  const [selectedEvents, setSelectedEvents] = useState<string[]>(initialEventIds);
   const publicHref = isEdit ? `/projets/${initialData.slug}` : null;
 
   return (
@@ -85,7 +85,7 @@ export function ProjetForm({
       <input type="hidden" name="body" value={body} />
       <input type="hidden" name="themeIds" value={selectedThemes.join(",")} />
       <input type="hidden" name="productionIds" value={selectedProductions.join(",")} />
-      <input type="hidden" name="activityIds" value={selectedActivities.join(",")} />
+      <input type="hidden" name="eventIds" value={selectedEvents.join(",")} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -193,14 +193,14 @@ export function ProjetForm({
           </div>
         )}
 
-        {activities.length > 0 && (
+        {events.length > 0 && (
           <div className="form-section">
-            <p className="form-section-title">Activités liées</p>
+            <p className="form-section-title">Événements liés</p>
             <CheckboxMultiSelect
-              idPrefix="activity"
-              items={activities.map((a) => ({ id: a.id, label: a.title }))}
-              selected={selectedActivities}
-              onChange={setSelectedActivities}
+              idPrefix="event"
+              items={events.map((e) => ({ id: e.id, label: e.title }))}
+              selected={selectedEvents}
+              onChange={setSelectedEvents}
             />
           </div>
         )}

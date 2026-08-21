@@ -7,7 +7,7 @@ import { ThemeToggle } from "@/components/layout/ThemeToggle";
 const SECTION_LABELS: Record<string, string> = {
   dashboard: "Dashboard",
   themes: "Thèmes",
-  activites: "Activités",
+  evenements: "Événements",
   productions: "Productions",
   projets: "Projets",
   media: "Médiathèque",

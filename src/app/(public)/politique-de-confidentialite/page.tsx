@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
         <ul>
           <li>
             <strong>Formulaires publics</strong> (adhésion, proposition de projet, de contenu, de thème,
-            d&apos;activité, demande de partenariat, demande de don, contact) : les informations que vous saisissez
+            d&apos;événement, demande de partenariat, demande de don, contact) : les informations que vous saisissez
             volontairement (nom, email, et selon le formulaire — téléphone, ville, motivation, description de votre
             proposition...), utilisées uniquement pour étudier votre demande et vous répondre.
           </li>

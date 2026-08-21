@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Activity, Author, JournalEntry, Project } from "@/types/cms";
+import type { Event, Author, JournalEntry, Project } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { ShareButtons } from "@/components/public/ShareButtons";
@@ -19,10 +19,10 @@ interface Props {
   author?: Author | null;
   imageUrl?: string | null;
   project?: Project | null;
-  activity?: Activity | null;
+  event?: Event | null;
 }
 
-export function JournalEntryDetail({ item, author, imageUrl, project, activity }: Props) {
+export function JournalEntryDetail({ item, author, imageUrl, project, event }: Props) {
   const sanitizedBody = item.body ? sanitizeHtml(item.body) : "";
   const pageUrl = `${SITE_URL}/journal/${item.slug}`;
 
@@ -88,7 +88,7 @@ export function JournalEntryDetail({ item, author, imageUrl, project, activity }
         </div>
       </section>
 
-      {(project || activity) && (
+      {(project || event) && (
         <section className="section">
           <div className="section-head">
             <h2>Voir aussi</h2>
@@ -99,9 +99,9 @@ export function JournalEntryDetail({ item, author, imageUrl, project, activity }
                 {project.title}
               </Link>
             )}
-            {activity && (
-              <Link href={`/activites/${activity.slug}`} className="theme-chip">
-                {activity.title}
+            {event && (
+              <Link href={`/evenements/${event.slug}`} className="theme-chip">
+                {event.title}
               </Link>
             )}
           </div>

@@ -120,19 +120,19 @@ export const projectRepository = {
     }
   },
 
-  // ── Projet ↔ Activités (many-to-many) ────────────────────────────────
-  async getProjectActivityIds(projectId: string): Promise<string[]> {
+  // ── Projet ↔ Événements (many-to-many) ────────────────────────────────
+  async getProjectEventIds(projectId: string): Promise<string[]> {
     const db = getSupabaseAdmin();
-    const { data } = await db.from("project_activities").select("activity_id").eq("project_id", projectId);
-    return (data ?? []).map((r) => String(r.activity_id));
+    const { data } = await db.from("project_events").select("event_id").eq("project_id", projectId);
+    return (data ?? []).map((r) => String(r.event_id));
   },
 
-  async setProjectActivities(projectId: string, activityIds: string[]): Promise<void> {
+  async setProjectEvents(projectId: string, eventIds: string[]): Promise<void> {
     const db = getSupabaseAdmin();
-    await db.from("project_activities").delete().eq("project_id", projectId);
-    if (activityIds.length > 0) {
-      const rows = activityIds.map((activityId) => ({ project_id: projectId, activity_id: activityId }));
-      const { error } = await db.from("project_activities").insert(rows);
+    await db.from("project_events").delete().eq("project_id", projectId);
+    if (eventIds.length > 0) {
+      const rows = eventIds.map((eventId) => ({ project_id: projectId, event_id: eventId }));
+      const { error } = await db.from("project_events").insert(rows);
       if (error) throw error;
     }
   },

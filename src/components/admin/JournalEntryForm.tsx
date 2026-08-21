@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
-import type { Activity, Author, JournalEntry, Media, Production, Project, Theme } from "@/types/cms";
+import type { Event, Author, JournalEntry, Media, Production, Project, Theme } from "@/types/cms";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -46,7 +46,7 @@ interface Props {
   authors?: Author[];
   themes?: Theme[];
   projects?: Project[];
-  activities?: Activity[];
+  events?: Event[];
   productions?: Production[];
   images?: Media[];
 }
@@ -57,7 +57,7 @@ export function JournalEntryForm({
   authors = [],
   themes = [],
   projects = [],
-  activities = [],
+  events = [],
   productions = [],
   images = [],
 }: Props) {
@@ -177,7 +177,7 @@ export function JournalEntryForm({
         <div className="form-section">
           <p className="form-section-title">Contexte lié (facultatif)</p>
           <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-            Rattache cette entrée à un thème, un projet, une activité ou une production — elle apparaîtra alors
+            Rattache cette entrée à un thème, un projet, un événement ou une production — elle apparaîtra alors
             automatiquement dans son contexte (ex. chronologie du projet).
           </p>
           <div className="form-row">
@@ -210,14 +210,14 @@ export function JournalEntryForm({
           </div>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label" htmlFor="activityId">
-                Activité
+              <label className="field-label" htmlFor="eventId">
+                Événement
               </label>
-              <select id="activityId" name="activityId" defaultValue={initialData?.activityId ?? ""}>
-                <option value="">Aucune</option>
-                {activities.map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.title}
+              <select id="eventId" name="eventId" defaultValue={initialData?.eventId ?? ""}>
+                <option value="">Aucun</option>
+                {events.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.title}
                   </option>
                 ))}
               </select>

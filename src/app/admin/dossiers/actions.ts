@@ -8,7 +8,7 @@ import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
 const itemSchema = z.object({
-  entityType: z.enum(["production", "activity", "project", "resource", "journal_entry"]),
+  entityType: z.enum(["production", "event", "project", "resource", "journal_entry"]),
   entityId: z.string().min(1),
 });
 

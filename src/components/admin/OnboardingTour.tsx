@@ -21,7 +21,7 @@ const STEPS: Step[] = [
   {
     id: "navigation",
     title: "Navigation principale",
-    body: "Accédez aux Activités, Productions, Projets, Médiathèque et Formulaires depuis cette barre. La section active est mise en surbrillance.",
+    body: "Accédez aux Événements, Productions, Projets, Médiathèque et Formulaires depuis cette barre. La section active est mise en surbrillance.",
     target: "tour-nav",
     placement: "right",
   },

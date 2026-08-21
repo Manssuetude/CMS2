@@ -53,6 +53,7 @@ export const HEADQUARTERS_ADDRESS = "26 rue Henri Barbusse, 95100 Argenteuil";
 export const MAIN_NAV_ITEMS = [
   { key: "/", label: "Accueil", togglable: false, placement: "nav" },
   { key: "/themes", label: "Thèmes", togglable: true, placement: "nav" },
+  { key: "/evenements", label: "Événements", togglable: true, placement: "nav" },
   { key: "/activites", label: "Activités", togglable: true, placement: "nav" },
   { key: "/productions", label: "Productions", togglable: true, placement: "nav" },
   { key: "/projets", label: "Projets", togglable: true, placement: "nav" },
@@ -70,6 +71,7 @@ export const PAGE_DIRECTORY: Record<string, { label: string; publicPath: string;
   "a-propos": { label: "À propos", publicPath: "/a-propos" },
   "nous-rejoindre": { label: "Nous rejoindre", publicPath: "/nous-rejoindre" },
   "nous-soutenir": { label: "Nous soutenir", publicPath: "/nous-soutenir" },
+  evenements: { label: "Événements", publicPath: "/evenements" },
   activites: { label: "Activités", publicPath: "/activites" },
   productions: { label: "Productions", publicPath: "/productions" },
   projets: { label: "Projets", publicPath: "/projets" },

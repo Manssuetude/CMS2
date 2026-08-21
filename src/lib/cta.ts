@@ -6,6 +6,7 @@ export const ctaLinks: Record<string, CtaTarget> = {
   featuredTheme: "/themes/transformation-cemac",
   productions: "/productions",
   projects: "/projets",
+  events: "/evenements",
   activities: "/activites",
   resources: "/ressources",
   perca: "/perca",

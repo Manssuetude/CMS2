@@ -1,4 +1,4 @@
-import type { Activity, JournalEntry, Production, Project } from "@/types/cms";
+import type { Event, JournalEntry, Production, Project } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
@@ -37,11 +37,11 @@ const PRIORITY_COLOR: Record<string, string> = {
 interface Props {
   item: Project;
   productions?: Production[];
-  activities?: Activity[];
+  events?: Event[];
   journalEntries?: JournalEntry[];
 }
 
-export function ProjetDetail({ item, productions = [], activities = [], journalEntries = [] }: Props) {
+export function ProjetDetail({ item, productions = [], events = [], journalEntries = [] }: Props) {
   const progress = item.progressStatus ? (PROGRESS_PCT[item.progressStatus] ?? 0) : 0;
   const progressLabel = item.progressStatus ? (PROGRESS_LABEL[item.progressStatus] ?? item.progressStatus) : null;
 
@@ -130,15 +130,15 @@ export function ProjetDetail({ item, productions = [], activities = [], journalE
         />
       )}
 
-      {/* ── Activités liées ──────────────────────────────────── */}
-      {activities.length > 0 && (
+      {/* ── Événements liés ──────────────────────────────────── */}
+      {events.length > 0 && (
         <CardGrid
-          title="Activités du projet"
-          items={activities.map((a) => ({
-            title: a.title,
-            description: a.description,
-            href: `/activites/${a.slug}`,
-            meta: a.format,
+          title="Événements du projet"
+          items={events.map((e) => ({
+            title: e.title,
+            description: e.description,
+            href: `/evenements/${e.slug}`,
+            meta: e.format,
           }))}
         />
       )}

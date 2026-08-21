@@ -52,6 +52,7 @@ export const metadata: Metadata = {
     "souveraineté africaine",
     "réflexion",
     "production intellectuelle",
+    "événements",
     "activités",
     "thèmes",
     "projets",
