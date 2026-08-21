@@ -43,6 +43,13 @@ export const metadata: Metadata = {
     "association Manssuétude",
     "Manssuétude association",
     "association",
+    "association africaine",
+    "Afrique",
+    "diaspora africaine",
+    "jeunesse africaine",
+    "développement Afrique",
+    "économie africaine",
+    "souveraineté africaine",
     "réflexion",
     "production intellectuelle",
     "activités",
@@ -109,6 +116,19 @@ const jsonLd = {
       logo: `${SITE_URL}${SITE_LOGO}`,
       description: SITE_DESCRIPTION,
       sameAs: SITE_SOCIALS,
+      // Signale les axes éditoriaux réels (thèmes publiés) pour renforcer la
+      // pertinence sur les requêtes thématiques (ex. "association africaine") —
+      // à tenir à jour si les grands thèmes changent significativement.
+      knowsAbout: [
+        "Afrique",
+        "Diasporas africaines",
+        "Citoyenneté, démocratie et institutions",
+        "Jeunesses africaines, diasporas et mobilités",
+        "Transformations sociales, égalités et modes de vie",
+        "Économies africaines, développement et intégration",
+        "Souverainetés, technologies et rapports de puissance",
+        "Cultures, mémoires et représentations",
+      ],
     },
     {
       "@type": "WebSite",
