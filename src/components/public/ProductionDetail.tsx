@@ -171,12 +171,12 @@ export function ProductionDetail({
         <section className="section">
           <div className="detail-body">
             <iframe src={fileUrl} title={`Aperçu — ${item.title}`} className="pdf-preview" />
-            {/* La plupart des navigateurs mobiles n'ont pas de lecteur PDF intégré
-                utilisable dans une iframe (pas de défilement, page figée) — repli
-                affiché uniquement sur petit écran (voir detail.css), le fichier
-                s'ouvre alors correctement via le navigateur/l'app du téléphone. */}
+            {/* La plupart des navigateurs mobiles et tablettes n'ont pas de lecteur
+                PDF intégré utilisable dans une iframe (pas de défilement, page
+                figée) — repli affiché en dessous de 1024px (voir detail.css), le
+                fichier s'ouvre alors correctement via le navigateur/l'app. */}
             <div className="pdf-preview-mobile-fallback">
-              <p>L&apos;aperçu intégré n&apos;est pas disponible sur mobile.</p>
+              <p>L&apos;aperçu intégré n&apos;est pas disponible sur cet appareil.</p>
               <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="button primary">
                 <FileDown size={16} strokeWidth={1.75} />
                 Ouvrir le PDF

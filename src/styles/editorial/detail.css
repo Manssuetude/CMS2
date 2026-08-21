@@ -78,10 +78,11 @@
 .site-shell .pdf-preview-mobile-fallback {
   display: none;
 }
-@media (max-width: 640px) {
-  /* La plupart des navigateurs mobiles n'affichent pas de PDF interactif dans
-     une iframe (page figée, aucun défilement possible) — on masque l'aperçu
-     cassé et on affiche un bouton qui ouvre le fichier correctement. */
+@media (max-width: 1024px) {
+  /* La plupart des navigateurs mobiles ET tablettes n'affichent pas de PDF
+     interactif dans une iframe (page figée, aucun défilement possible) — on
+     masque l'aperçu cassé et on affiche un bouton qui ouvre le fichier
+     correctement. 1024px couvre les tablettes en mode paysage (ex. iPad). */
   .site-shell .pdf-preview {
     display: none;
   }
