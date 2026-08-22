@@ -46,10 +46,6 @@ export function PdfViewer({ url, title }: { url: string; title: string }) {
     <div className="pdf-viewer">
       <div className="pdf-viewer-toolbar">
         <span>{numPages ? `${numPages} page${numPages > 1 ? "s" : ""}` : "Chargement…"}</span>
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          <FileDown size={14} strokeWidth={1.75} style={{ verticalAlign: "text-bottom", marginRight: 4 }} />
-          Télécharger
-        </a>
       </div>
       <div className="pdf-viewer-pages" ref={containerRef} role="region" aria-label={`Aperçu PDF — ${title}`}>
         <Document
