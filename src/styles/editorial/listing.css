@@ -155,10 +155,6 @@
   font-size: var(--ed-step-3);
   margin: 0;
   transition: color 0.16s ease;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 .site-shell .card:hover .card-body h3 {
   color: var(--ed-clay);
@@ -166,22 +162,25 @@
 .site-shell .card-desc {
   color: var(--ed-ink-soft);
   font-size: 0.95rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-/* Téléphone : rectangles moins imposants — titre plus petit, coupé
-   proprement (2 lignes + points de suspension) pour inciter au clic plutôt
-   que de laisser un pavé de texte occuper tout l'écran. */
+/* Téléphone uniquement : rectangles moins imposants — titre plus petit,
+   coupé proprement (2 lignes + points de suspension) pour inciter au clic
+   plutôt que de laisser un pavé de texte occuper tout l'écran. Sur
+   ordinateur, le texte reste affiché intégralement. */
 @media (max-width: 640px) {
   .site-shell .card-body h3 {
     font-size: 1.15rem;
+    display: -webkit-box;
     -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .site-shell .card-desc {
+    display: -webkit-box;
     -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 
