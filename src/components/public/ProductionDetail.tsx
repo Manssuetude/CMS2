@@ -15,6 +15,7 @@ import { JsonLd } from "@/components/public/JsonLd";
 import { SITE_URL } from "@/constants/site";
 import { getEmbedUrl } from "@/utils/videoEmbed";
 import { buildArticleJsonLd } from "@/lib/jsonLd";
+import { PdfViewer } from "@/components/public/PdfViewerLoader";
 
 const TYPE_LABEL: Record<string, string> = {
   Article: "Article",
@@ -170,18 +171,7 @@ export function ProductionDetail({
       {isPdfFile && fileUrl && (
         <section className="section">
           <div className="detail-body">
-            <iframe src={fileUrl} title={`Aperçu — ${item.title}`} className="pdf-preview" />
-            {/* La plupart des navigateurs mobiles et tablettes n'ont pas de lecteur
-                PDF intégré utilisable dans une iframe (pas de défilement, page
-                figée) — repli affiché en dessous de 1024px (voir detail.css), le
-                fichier s'ouvre alors correctement via le navigateur/l'app. */}
-            <div className="pdf-preview-mobile-fallback">
-              <p>L&apos;aperçu intégré n&apos;est pas disponible sur cet appareil.</p>
-              <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="button primary">
-                <FileDown size={16} strokeWidth={1.75} />
-                Ouvrir le PDF
-              </a>
-            </div>
+            <PdfViewer url={fileUrl} title={item.title} />
           </div>
         </section>
       )}
