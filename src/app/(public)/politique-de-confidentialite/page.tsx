@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CONTACT_EMAIL, RNA_NUMBER } from "@/constants/site";
 
 export const metadata: Metadata = {
-  title: "Politique de confidentialité — Manssuétude",
+  title: "Politique de confidentialité · Manssuétude",
   description: "Comment Manssuétude collecte, utilise et protège vos données personnelles.",
 };
 
@@ -33,7 +33,7 @@ export default function PrivacyPolicyPage() {
           <li>
             <strong>Formulaires publics</strong> (adhésion, proposition de projet, de contenu, de thème,
             d&apos;événement, demande de partenariat, demande de don, contact) : les informations que vous saisissez
-            volontairement (nom, email, et selon le formulaire — téléphone, ville, motivation, description de votre
+            volontairement (nom, email, et selon le formulaire, téléphone, ville, motivation, description de votre
             proposition...), utilisées uniquement pour étudier votre demande et vous répondre.
           </li>
           <li>
@@ -69,16 +69,16 @@ export default function PrivacyPolicyPage() {
         </p>
         <ul>
           <li>
-            <strong>Supabase</strong> — hébergement de notre base de données et de l&apos;authentification.
+            <strong>Supabase</strong> : hébergement de notre base de données et de l&apos;authentification.
           </li>
           <li>
-            <strong>Vercel</strong> — hébergement du site, et mesure d&apos;audience si vous l&apos;acceptez.
+            <strong>Vercel</strong> : hébergement du site, et mesure d&apos;audience si vous l&apos;acceptez.
           </li>
           <li>
-            <strong>Resend</strong> — envoi des emails automatiques (accusés de réception, invitations).
+            <strong>Resend</strong> : envoi des emails automatiques (accusés de réception, invitations).
           </li>
           <li>
-            <strong>Brevo</strong> — envoi de la newsletter, si vous vous y inscrivez.
+            <strong>Brevo</strong> : envoi de la newsletter, si vous vous y inscrivez.
           </li>
         </ul>
         <p>
@@ -111,7 +111,7 @@ export default function PrivacyPolicyPage() {
         </p>
         <p>
           Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la
-          Commission nationale de l&apos;informatique et des libertés (CNIL) — <em>cnil.fr</em>.
+          Commission nationale de l&apos;informatique et des libertés (CNIL), <em>cnil.fr</em>.
         </p>
 
         <h2>Décisions automatisées</h2>

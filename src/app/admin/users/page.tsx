@@ -39,7 +39,7 @@ export default async function AdminUsersPage() {
                 <td className="col-title">
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     {u.name || <em style={{ color: "var(--muted)" }}>Sans nom</em>}
-                    {!u.name && <span className="badge-status badge-review">Invité — en attente</span>}
+                    {!u.name && <span className="badge-status badge-review">Invité, en attente</span>}
                   </span>
                 </td>
                 <td style={{ color: "var(--muted)", fontSize: 13 }}>{u.email}</td>

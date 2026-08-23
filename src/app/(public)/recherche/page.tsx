@@ -48,7 +48,7 @@ const SITE_PAGES: Array<{ title: string; href: string; keywords: string }> = [
   { title: "Ressources", href: "/ressources", keywords: "ressources documents" },
   { title: "À propos", href: "/a-propos", keywords: "à propos mission histoire association" },
   {
-    title: "PERCA — Notre méthode",
+    title: "PERCA · Notre méthode",
     href: "/perca",
     keywords: "perca méthode penser exprimer relier concrétiser ancrer",
   },

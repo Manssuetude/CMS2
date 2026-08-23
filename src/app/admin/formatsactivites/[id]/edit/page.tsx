@@ -21,7 +21,7 @@ export default async function EditActivityFormatPage({ params }: Props) {
       </Link>
       <div className="admin-page-header">
         <div>
-          <h1>Modifier — {item.title}</h1>
+          <h1>Modifier : {item.title}</h1>
           <p>Éditez cette technique d&apos;animation.</p>
         </div>
         <a

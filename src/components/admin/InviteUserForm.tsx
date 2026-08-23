@@ -45,7 +45,7 @@ export function InviteUserForm({ roles }: { roles: Role[] }) {
           </label>
           <select id="roleKey" name="roleKey" className="form-input" defaultValue="" required>
             <option value="" disabled>
-              — choisir —
+              Choisir
             </option>
             {roles.map((r) => (
               <option key={r.key} value={r.key}>
@@ -69,7 +69,7 @@ export function InviteUserForm({ roles }: { roles: Role[] }) {
             ✅ Invitation créée.{" "}
             {state.emailSent
               ? "Un e-mail vient d'être envoyé."
-              : "E-mail non configuré (ou domaine non vérifié) — partagez le lien ci-dessous :"}
+              : "E-mail non configuré (ou domaine non vérifié), partagez le lien ci-dessous :"}
           </p>
           {!state.emailSent && state.link && (
             <div className="invite-link">

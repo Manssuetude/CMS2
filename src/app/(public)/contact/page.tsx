@@ -3,7 +3,7 @@ import { ContactForm } from "@/components/public/ContactForm";
 import { CONTACT_EMAIL, SITE_SOCIALS } from "@/constants/site";
 
 export const metadata: Metadata = {
-  title: "Nous joindre — Manssuétude",
+  title: "Nous joindre · Manssuétude",
   description: "Contactez l'équipe de Manssuétude.",
 };
 

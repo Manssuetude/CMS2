@@ -177,7 +177,7 @@ export function JournalEntryForm({
         <div className="form-section">
           <p className="form-section-title">Contexte lié (facultatif)</p>
           <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-            Rattache cette entrée à un thème, un projet, un événement ou une production — elle apparaîtra alors
+            Rattache cette entrée à un thème, un projet, un événement ou une production, elle apparaîtra alors
             automatiquement dans son contexte (ex. chronologie du projet).
           </p>
           <div className="form-row">

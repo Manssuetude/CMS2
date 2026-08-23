@@ -6,7 +6,7 @@ import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Dossiers — Manssuétude",
+  title: "Dossiers · Manssuétude",
   description: "Des sélections de contenus organisées autour d'un même sujet, à parcourir librement ou pas à pas.",
 };
 
@@ -20,7 +20,7 @@ export default async function DossiersPage() {
           <div className="hero-copy">
             <p className="eyebrow">Dossiers</p>
             <h1>Explorer un sujet en profondeur</h1>
-            <p>Des sélections de contenus organisées par nos équipes — à parcourir librement ou pas à pas.</p>
+            <p>Des sélections de contenus organisées par nos équipes, à parcourir librement ou pas à pas.</p>
           </div>
         </section>
 

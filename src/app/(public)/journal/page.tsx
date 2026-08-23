@@ -9,7 +9,7 @@ import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Journal — Manssuétude",
+  title: "Journal · Manssuétude",
   description: "Actualités, coulisses et réflexions de l'association Manssuétude.",
 };
 
@@ -45,7 +45,7 @@ export default async function JournalPage({
           <div className="hero-copy">
             <p className="eyebrow">Journal</p>
             <h1>Actualités, coulisses et réflexions</h1>
-            <p>Le fil de ce qui se passe à Manssuétude — entre les productions et les événements.</p>
+            <p>Le fil de ce qui se passe à Manssuétude, entre les productions et les événements.</p>
           </div>
         </section>
 

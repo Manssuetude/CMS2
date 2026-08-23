@@ -7,7 +7,7 @@ import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Formats d'activités — Manssuétude",
+  title: "Formats d'activités · Manssuétude",
   description:
     "Le répertoire des techniques d'animation utilisées par Manssuétude pour débattre, échanger, partager et transmettre.",
 };

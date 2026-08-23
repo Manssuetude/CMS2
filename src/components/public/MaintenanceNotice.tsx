@@ -51,7 +51,7 @@ function MaintenanceArt() {
 export function MaintenanceNotice({
   eyebrow = "Bientôt disponible",
   title = "Cette page est en maintenance.",
-  body = "Nous préparons ce contenu avec soin. Revenez d'ici peu — en attendant, vous pouvez continuer à explorer Manssuétude.",
+  body = "Nous préparons ce contenu avec soin. Revenez d'ici peu. En attendant, vous pouvez continuer à explorer Manssuétude.",
 }: {
   eyebrow?: string;
   title?: string;
