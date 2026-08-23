@@ -362,6 +362,13 @@
   pointer-events: none;
 }
 
+.site-shell .turnstile-widget {
+  margin: 0.75rem 0;
+}
+.site-shell .turnstile-widget:empty {
+  display: none;
+}
+
 /* Formulaire d'inscription newsletter — un seul contrôle en pilule
    (icône + champ + bouton fusionnés) plutôt que deux boîtes séparées. */
 .site-shell .newsletter-form-row {
