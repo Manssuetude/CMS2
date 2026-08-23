@@ -80,11 +80,43 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
   padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--ed-line);
   font-size: 0.85rem;
   color: var(--ed-ink-soft);
+}
+/* Pagination page par page (téléphone uniquement, cf. PdfViewer.tsx) —
+   défiler un long PDF empilé est peu confortable sur petit écran. */
+.site-shell .pdf-viewer-pager {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-variant-numeric: tabular-nums;
+}
+.site-shell .pdf-viewer-pager button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: 50%;
+  background: var(--ed-paper);
+  color: var(--ed-ink);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    opacity 0.16s ease;
+}
+.site-shell .pdf-viewer-pager button:hover:not(:disabled) {
+  border-color: var(--ed-brand);
+  color: var(--ed-brand);
+}
+.site-shell .pdf-viewer-pager button:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 .site-shell .pdf-viewer-pages {
   max-height: 80vh;
