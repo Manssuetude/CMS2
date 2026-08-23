@@ -364,9 +364,7 @@
 
 .site-shell .turnstile-widget {
   margin: 0.75rem 0;
-}
-.site-shell .turnstile-widget:empty {
-  display: none;
+  overflow: hidden;
 }
 
 /* Formulaire d'inscription newsletter — un seul contrôle en pilule
