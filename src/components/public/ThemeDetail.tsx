@@ -7,11 +7,13 @@ import { titleFontSize } from "@/utils/titleSize";
 interface Props {
   item: Theme;
   subThemes: SubTheme[];
+  allSubThemes?: SubTheme[];
   events?: Event[];
   projects?: Project[];
 }
 
-export function ThemeDetail({ item, subThemes, events = [], projects = [] }: Props) {
+export function ThemeDetail({ item, subThemes, allSubThemes = [], events = [], projects = [] }: Props) {
+  const subThemeOptions = allSubThemes.map((st) => st.title);
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -22,7 +24,12 @@ export function ThemeDetail({ item, subThemes, events = [], projects = [] }: Pro
           {(item.longDescription ?? item.description) && <p>{item.longDescription ?? item.description}</p>}
           <div className="actions">
             <CtaButton label="Retour aux thèmes" target="/themes" variant="secondary" />
-            <CtaButton label="Contribuer" target="contribution" variant="primary" />
+            <CtaButton
+              label="Contribuer"
+              target="contribution"
+              variant="primary"
+              selectOptions={{ subTheme: subThemeOptions }}
+            />
           </div>
         </div>
         <div className="hero-image" aria-hidden="true" />

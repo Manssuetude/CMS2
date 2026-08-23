@@ -247,7 +247,8 @@
   color: var(--ed-ink);
 }
 .site-shell .form-grid input,
-.site-shell .form-grid textarea {
+.site-shell .form-grid textarea,
+.site-shell .form-grid select {
   font: inherit;
   font-weight: 400;
   color: var(--ed-ink);
@@ -260,7 +261,8 @@
     box-shadow 0.16s ease;
 }
 .site-shell .form-grid input:focus,
-.site-shell .form-grid textarea:focus {
+.site-shell .form-grid textarea:focus,
+.site-shell .form-grid select:focus {
   outline: none;
   border-color: var(--ed-clay);
   box-shadow: 0 0 0 3px var(--ed-focus);

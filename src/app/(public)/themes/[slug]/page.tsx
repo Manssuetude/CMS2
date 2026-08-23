@@ -42,10 +42,13 @@ export default async function ThemePage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const item = await themeRepository.getTheme(slug);
   if (!item) notFound();
-  const [subThemes, events, projects] = await Promise.all([
+  const [subThemes, allSubThemes, events, projects] = await Promise.all([
     subThemeRepository.listSubThemesByTheme(item.id),
+    subThemeRepository.listSubThemes(),
     eventRepository.getEventsByTheme(item.id),
     projectRepository.getProjectsByTheme(item.id),
   ]);
-  return <ThemeDetail item={item} subThemes={subThemes} events={events} projects={projects} />;
+  return (
+    <ThemeDetail item={item} subThemes={subThemes} allSubThemes={allSubThemes} events={events} projects={projects} />
+  );
 }

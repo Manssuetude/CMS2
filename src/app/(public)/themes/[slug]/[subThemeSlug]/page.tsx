@@ -54,6 +54,9 @@ export default async function SubThemePage({ params }: { params: Promise<{ slug:
   if (!theme) notFound();
   const item = await subThemeRepository.getSubTheme(subThemeSlug);
   if (!item || item.themeId !== theme.id) notFound();
-  const productions = await productionRepository.getProductionsBySubTheme(item.id);
-  return <SubThemeDetail theme={theme} item={item} productions={productions} />;
+  const [productions, allSubThemes] = await Promise.all([
+    productionRepository.getProductionsBySubTheme(item.id),
+    subThemeRepository.listSubThemes(),
+  ]);
+  return <SubThemeDetail theme={theme} item={item} productions={productions} allSubThemes={allSubThemes} />;
 }

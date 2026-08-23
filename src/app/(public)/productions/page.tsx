@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Hero } from "@/components/public/Hero";
+import { ProposeSection } from "@/components/public/ProposeSection";
 import { FilterBar } from "@/components/public/FilterBar";
 import { SortToggle } from "@/components/public/SortToggle";
 import { CardGrid } from "@/components/cards/CardGrid";
@@ -87,6 +88,7 @@ export default async function ProductionsPage({
 
     const uniqueTypes = [...new Set(all.map((p) => p.type))];
     const typeOptions = uniqueTypes.map((t) => ({ value: t, label: TYPE_LABEL[t] ?? t }));
+    const subThemeOptions = subThemes.map((st) => st.title);
 
     return (
       <>
@@ -97,10 +99,6 @@ export default async function ProductionsPage({
           imageUrl={page.imageUrl ?? undefined}
           imageCrop={page.imageCrop}
           quote={page.quote}
-          primaryLabel={page.primaryCtaLabel}
-          primaryTarget={page.primaryCtaTarget}
-          secondaryLabel={page.secondaryCtaLabel}
-          secondaryTarget={page.secondaryCtaTarget}
         />
         <Suspense>
           <FilterBar param="type" options={typeOptions} allLabel="Tous les types" />
@@ -120,6 +118,12 @@ export default async function ProductionsPage({
             meta: TYPE_LABEL[item.type] ?? item.type,
             tags: item.tags,
           }))}
+        />
+        <ProposeSection
+          lead="Vous avez un contenu à proposer ?"
+          label="Proposer un contenu"
+          target="FORM:content"
+          selectOptions={{ subTheme: subThemeOptions }}
         />
       </>
     );
