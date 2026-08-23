@@ -100,10 +100,12 @@
    minimale de colonne ne descend jamais sous 1/4 du conteneur (moins les
    espacements), ce qui empêche auto-fit d'ouvrir une 5e colonne — tout en
    restant naturellement responsive (1 à 3 colonnes) sur les écrans plus
-   étroits, où 300px reste la contrainte dominante. */
+   étroits, où 300px reste la contrainte dominante. Le min(…, 100%) évite que
+   ce plancher de 300px ne dépasse la largeur disponible sur téléphone étroit
+   (< ~370px avec le padding de page) et fasse déborder la page horizontalement. */
 .site-shell .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(max(300px, (100% - 3 * 1.5rem) / 4), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(max(300px, (100% - 3 * 1.5rem) / 4), 100%), 1fr));
   gap: 1.5rem;
 }
 

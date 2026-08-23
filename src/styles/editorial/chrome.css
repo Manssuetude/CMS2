@@ -431,7 +431,10 @@
   cursor: pointer;
 }
 .site-shell .newsletter-form-consent input {
+  /* min-height:44px fuit depuis le reset global admin (non scopé à .site-shell)
+     et l'emporte sur height:18px — voir la même correction sur .form-grid. */
   flex-shrink: 0;
+  min-height: 18px;
   width: 18px;
   height: 18px;
   margin-top: 0.15rem;

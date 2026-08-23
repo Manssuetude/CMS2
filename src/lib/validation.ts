@@ -25,6 +25,8 @@ export const formTypeSchema = z.enum([
   "theme",
   "sub_theme",
   "event",
+  "activity",
+  "production",
   "contact",
 ]);
 

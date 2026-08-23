@@ -29,11 +29,23 @@ export type FormType =
   | "theme"
   | "sub_theme"
   | "event"
+  | "activity"
+  | "production"
   | "contact";
 export type FormStatus = "reçu" | "en cours" | "traité" | "archivé";
 export type CtaTarget =
   | string
-  | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "sub_theme" | "event"}`;
+  | `FORM:${
+      | "join"
+      | "project"
+      | "content"
+      | "partner"
+      | "don"
+      | "theme"
+      | "sub_theme"
+      | "event"
+      | "activity"
+      | "production"}`;
 
 export type ContentBlock =
   | {
