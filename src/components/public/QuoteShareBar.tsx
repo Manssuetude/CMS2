@@ -42,7 +42,18 @@ export function QuoteShareBar({ url, children }: Props) {
         setSelection(null);
         return;
       }
-      setSelection({ text, top: rect.top + window.scrollY - 44, left: rect.left + rect.width / 2 + window.scrollX });
+      // La barre est centrée sur ce point via `transform: translate(-50%, ...)`
+      // — sans borne, une sélection proche du bord gauche/droit pousse la
+      // barre (et ses boutons) hors de l'écran, provoquant un défilement
+      // horizontal de toute la page sur mobile. On la maintient dans la
+      // fenêtre visible avec une largeur de barre estimée (~110px) + marge.
+      const BAR_HALF_WIDTH = 60;
+      const margin = 12;
+      const rawLeft = rect.left + rect.width / 2 + window.scrollX;
+      const minLeft = window.scrollX + BAR_HALF_WIDTH + margin;
+      const maxLeft = window.scrollX + window.innerWidth - BAR_HALF_WIDTH - margin;
+      const left = Math.min(Math.max(rawLeft, minLeft), Math.max(minLeft, maxLeft));
+      setSelection({ text, top: rect.top + window.scrollY - 44, left });
       setCopied(false);
     }
     document.addEventListener("selectionchange", onSelectionChange);

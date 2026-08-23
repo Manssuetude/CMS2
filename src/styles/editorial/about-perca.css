@@ -29,6 +29,7 @@
   line-height: 1.3;
   color: var(--ed-ink);
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .site-shell .about-perca {

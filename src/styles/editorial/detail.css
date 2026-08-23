@@ -152,6 +152,10 @@
   font-size: 0.85rem;
   font-style: italic;
   color: var(--ed-ink-soft);
+  /* Contient l'URL complète de la page en un seul token sans espace — sans
+     ça, elle force la largeur du bloc au-delà de l'écran sur mobile étroit. */
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Barre flottante de partage d'extrait — apparaît au-dessus d'un texte sélectionné */
