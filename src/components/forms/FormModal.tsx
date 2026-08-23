@@ -13,9 +13,25 @@ const SUCCESS_MESSAGES: Partial<Record<PublicFormType, string>> = {
 const DEFAULT_SUCCESS_MESSAGE =
   "Merci. Votre réponse a bien été enregistrée. Vous recevez aussi un email de confirmation.";
 
-export function FormModal({ formType, onClose }: { formType: string; onClose: () => void }) {
+export function FormModal({
+  formType,
+  onClose,
+  contextFields,
+}: {
+  formType: string;
+  onClose: () => void;
+  // Valeurs de contexte (ex. thème parent) injectées en champs cachés plutôt
+  // que saisies par le visiteur — voir ProposeSection/CtaButton. Doivent
+  // correspondre à des noms de champs déclarés dans formDefinitions pour ce
+  // type, afin d'être exclues de la liste des champs visibles ci-dessous et
+  // de bénéficier du même libellé français côté admin.
+  contextFields?: Record<string, string>;
+}) {
   const [sent, setSent] = useState(false);
   const safeFormType = formType in formDefinitions ? (formType as PublicFormType) : "join";
+  const visibleFields = formDefinitions[safeFormType].filter(
+    (field) => !contextFields || !(field.name in contextFields),
+  );
 
   async function submit(formData: FormData) {
     await formClientService.submit(formData);
@@ -58,7 +74,11 @@ export function FormModal({ formType, onClose }: { formType: string; onClose: ()
               autoComplete="off"
               aria-hidden="true"
             />
-            {formDefinitions[safeFormType].map((field) => {
+            {contextFields &&
+              Object.entries(contextFields).map(([name, value]) => (
+                <input key={name} type="hidden" name={name} value={value} />
+              ))}
+            {visibleFields.map((field) => {
               if (field.type === "checkbox") {
                 return (
                   <div key={field.name} style={{ gridColumn: "1 / -1" }}>
