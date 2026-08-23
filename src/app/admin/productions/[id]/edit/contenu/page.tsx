@@ -16,7 +16,7 @@ export default async function EditProductionContentPage({ params }: Props) {
     <section className="admin-panel">
       <div className="admin-page-header">
         <div>
-          <h1>Contenu — {item.title}</h1>
+          <h1>Contenu : {item.title}</h1>
           <p>Cet onglet se ferme automatiquement après l&apos;enregistrement.</p>
         </div>
         <a

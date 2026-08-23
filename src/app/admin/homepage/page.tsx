@@ -43,14 +43,14 @@ export default async function AdminHomepage() {
           <h2 className="admin-form-section-title">Événement du moment</h2>
           <p className="admin-form-section-hint">
             Affiché automatiquement sur la page d&apos;accueil, juste sous le hero : s&apos;il y a un événement cette
-            semaine, le plus proche s&apos;affiche. Sinon, l&apos;événement choisi ci-dessous s&apos;affiche à la place
-            — et si rien n&apos;est choisi, le plus proche d&apos;aujourd&apos;hui (passé ou futur) s&apos;affiche par
+            semaine, le plus proche s&apos;affiche. Sinon, l&apos;événement choisi ci-dessous s&apos;affiche à la place.
+            Si rien n&apos;est choisi, le plus proche d&apos;aujourd&apos;hui (passé ou futur) s&apos;affiche par
             défaut.
           </p>
           {eventOfTheMoment ? (
             <p style={{ fontSize: 13, margin: "0 0 14px" }}>
               Actuellement affiché : <strong>{eventOfTheMoment.title}</strong>
-              {eventOfTheMoment.date ? ` — ${eventOfTheMoment.date}` : ""}
+              {eventOfTheMoment.date ? ` · ${eventOfTheMoment.date}` : ""}
               {" · "}
               <a href={`/admin/evenements/${eventOfTheMoment.id}/edit`} style={{ color: "var(--orange)" }}>
                 Modifier cet événement →
@@ -67,11 +67,11 @@ export default async function AdminHomepage() {
           <div className="form-field">
             <label className="form-label">Événement de secours (si rien cette semaine)</label>
             <select name="featured_event_id" className="form-input" defaultValue={page?.featuredEventId ?? ""}>
-              <option value="">— aucun, choisir automatiquement —</option>
+              <option value="">Aucun, choisir automatiquement</option>
               {events.map((e) => (
                 <option key={e.id} value={e.id}>
                   {e.title}
-                  {e.date ? ` — ${e.date}` : ""}
+                  {e.date ? ` · ${e.date}` : ""}
                 </option>
               ))}
             </select>
@@ -133,7 +133,7 @@ export default async function AdminHomepage() {
               name="seo_title"
               className="form-input"
               defaultValue={page?.seoTitle ?? ""}
-              placeholder="Manssuétude — Réflexion, production, expérimentation"
+              placeholder="Manssuétude · Réflexion, production, expérimentation"
             />
           </div>
           <div className="form-field">

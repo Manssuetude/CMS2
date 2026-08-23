@@ -8,7 +8,7 @@ import { themeRepository } from "@/repositories/themeRepository";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Ressources — Manssuétude",
+  title: "Ressources · Manssuétude",
   description: "Documents, rapports, images et vidéos réutilisables, organisés par type et par thème.",
 };
 

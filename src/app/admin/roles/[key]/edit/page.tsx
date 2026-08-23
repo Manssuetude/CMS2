@@ -24,7 +24,7 @@ export default async function EditRolePage({ params }: Props) {
       </Link>
       <div className="admin-page-header">
         <div>
-          <h1>Permissions — {role.label}</h1>
+          <h1>Permissions : {role.label}</h1>
           <p>Cochez les actions autorisées pour ce rôle, section par section.</p>
         </div>
       </div>

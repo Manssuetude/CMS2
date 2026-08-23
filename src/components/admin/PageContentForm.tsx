@@ -96,7 +96,7 @@ export function PageContentForm({ slug, label, page, images, action }: Props) {
             name="seo_title"
             className="form-input"
             defaultValue={page?.seoTitle ?? ""}
-            placeholder={`${label} — Manssuétude`}
+            placeholder={`${label} · Manssuétude`}
           />
         </div>
         <div className="form-field">

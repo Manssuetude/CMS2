@@ -236,7 +236,7 @@ export function EvenementDetail({
           </div>
           <div className="event-gallery">
             {gallery.map((url, i) => (
-              <img key={i} src={url} alt={`${item.title} — photo ${i + 1}`} loading="lazy" />
+              <img key={i} src={url} alt={`${item.title}, photo ${i + 1}`} loading="lazy" />
             ))}
           </div>
         </section>

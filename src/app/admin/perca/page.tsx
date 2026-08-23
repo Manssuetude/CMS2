@@ -80,7 +80,7 @@ export default async function AdminPerca() {
               name="seo_title"
               className="form-input"
               defaultValue={page?.seoTitle ?? ""}
-              placeholder="PERCA — La méthode Manssuétude"
+              placeholder="PERCA · La méthode Manssuétude"
             />
           </div>
           <div className="form-field">

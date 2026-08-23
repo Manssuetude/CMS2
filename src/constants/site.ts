@@ -18,7 +18,7 @@ export const SITE_URL = resolveSiteUrl();
 export const SITE_NAME = "Manssuétude";
 
 export const SITE_DESCRIPTION =
-  "Association à but non lucratif — réflexion et production collective sur l'Afrique, ses diasporas et les grands " +
+  "Association à but non lucratif, réflexion et production collective sur l'Afrique, ses diasporas et les grands " +
   "enjeux contemporains : économie, souveraineté, citoyenneté, cultures.";
 
 // Chemin (relatif) du logo utilisé pour les partages et les données structurées.

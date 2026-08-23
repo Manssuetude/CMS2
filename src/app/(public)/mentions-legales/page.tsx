@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CONTACT_EMAIL, HEADQUARTERS_ADDRESS, RNA_NUMBER } from "@/constants/site";
 
 export const metadata: Metadata = {
-  title: "Mentions légales — Manssuétude",
+  title: "Mentions légales · Manssuétude",
   description: "Informations légales relatives à l'éditeur et à l'hébergement de ce site.",
 };
 

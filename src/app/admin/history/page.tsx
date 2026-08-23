@@ -65,7 +65,7 @@ export default async function AdminHistory() {
               name="seo_title"
               className="form-input"
               defaultValue={page?.seoTitle ?? ""}
-              placeholder="Notre histoire — Manssuétude"
+              placeholder="Notre histoire · Manssuétude"
             />
           </div>
           <div className="form-field">

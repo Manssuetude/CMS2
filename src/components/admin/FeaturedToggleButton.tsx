@@ -67,7 +67,7 @@ export function FeaturedToggleButton({
             atLimit
               ? `Maximum ${max} en vedette`
               : featured
-                ? "En avant — cliquer pour retirer"
+                ? "En avant, cliquer pour retirer"
                 : "Cliquer pour mettre en avant"
           }
           onClick={handleClick}

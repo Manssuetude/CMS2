@@ -31,7 +31,7 @@ export default async function EditPageBySlug({ params }: { params: Promise<{ slu
           <Link href="/admin/pages" className="btn-sm" style={{ marginBottom: 10 }}>
             ← Toutes les pages
           </Link>
-          <h1>Modifier — {PAGE_LABELS[slug]}</h1>
+          <h1>Modifier : {PAGE_LABELS[slug]}</h1>
           <p>Éditez le texte, la photo hero et le SEO de cette page.</p>
         </div>
         <a

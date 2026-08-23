@@ -54,7 +54,7 @@ export function PercaStepsEditor({ initial = [] }: { initial?: PercaStep[] }) {
         {steps.map((step) => (
           <div key={step.letter} className="admin-form-section" style={{ background: "var(--soft)" }}>
             <h3 className="admin-form-section-title">
-              {step.letter} — {step.word}
+              {step.letter} : {step.word}
             </h3>
             <div className="form-field">
               <label className="form-label">Titre de l&apos;étape</label>

@@ -12,7 +12,7 @@ export default async function AdminRedirectsPage() {
         <div>
           <h1>Redirections</h1>
           <p>
-            Redirige une ancienne URL vers une nouvelle. Utile après le renommage ou la suppression d&apos;une page —
+            Redirige une ancienne URL vers une nouvelle. Utile après le renommage ou la suppression d&apos;une page,
             évite les liens cassés (301 côté navigateur/moteurs de recherche).
           </p>
         </div>

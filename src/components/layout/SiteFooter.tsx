@@ -98,7 +98,7 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
       </div>
       <div className="footer-bottom">
         <span>
-          © {new Date().getFullYear()} Manssuétude — Association à but non lucratif — RNA {RNA_NUMBER}
+          © {new Date().getFullYear()} Manssuétude · Association à but non lucratif · RNA {RNA_NUMBER}
         </span>
         <span>{description}</span>
       </div>

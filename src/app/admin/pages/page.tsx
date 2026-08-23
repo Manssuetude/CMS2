@@ -29,7 +29,7 @@ export default async function AdminPages() {
       <div className="admin-form-section" style={{ marginBottom: 24 }}>
         <h2 className="admin-form-section-title">Visibilité dans le menu</h2>
         <p className="admin-form-section-hint">
-          Décochez une page pour la retirer du header et du menu public. La page reste accessible par son URL directe —
+          Décochez une page pour la retirer du header et du menu public. La page reste accessible par son URL directe,
           elle n&apos;est pas dépubliée, seule son entrée de navigation disparaît.
         </p>
         <form action={saveNavVisibilityAction} style={{ display: "flex", flexDirection: "column", gap: 2 }}>

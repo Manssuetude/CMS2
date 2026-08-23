@@ -19,7 +19,7 @@ const TYPE_LABEL: Record<string, string> = {
 export async function generateMetadata({ params }: { params: Promise<{ tag: string }> }): Promise<Metadata> {
   const { tag } = await params;
   const label = decodeURIComponent(tag);
-  return { title: `« ${label} » — Manssuétude`, description: `Contenus tagués « ${label} » sur Manssuétude.` };
+  return { title: `« ${label} » · Manssuétude`, description: `Contenus tagués « ${label} » sur Manssuétude.` };
 }
 
 export default async function TagPage({ params }: { params: Promise<{ tag: string }> }) {

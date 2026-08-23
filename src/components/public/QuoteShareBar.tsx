@@ -64,7 +64,7 @@ export function QuoteShareBar({ url, children }: Props) {
 
   async function handleCopy() {
     if (!selection) return;
-    await navigator.clipboard.writeText(`« ${selection.text} » — ${url}`);
+    await navigator.clipboard.writeText(`« ${selection.text} »\n${url}`);
     setCopied(true);
   }
 
