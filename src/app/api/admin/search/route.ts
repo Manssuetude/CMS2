@@ -12,20 +12,24 @@ export async function GET(req: NextRequest) {
   const db = getSupabaseAdmin();
   const pattern = `%${q}%`;
 
-  const [acts, prods, projs, themes, subThemes] = await Promise.all([
-    db.from("activities").select("id, title, status").ilike("title", pattern).limit(5),
+  const [acts, prods, projs, themes, subThemes, authors, journalEntries] = await Promise.all([
+    db.from("events").select("id, title, status").ilike("title", pattern).limit(5),
     db.from("productions").select("id, title, status").ilike("title", pattern).limit(5),
     db.from("projects").select("id, title, status").ilike("title", pattern).limit(5),
     db.from("themes").select("id, title, status").ilike("title", pattern).limit(5),
     db.from("sub_themes").select("id, title, status").ilike("title", pattern).limit(5),
+    db.from("authors").select("id, name").ilike("name", pattern).limit(5),
+    db.from("journal_entries").select("id, title, status").ilike("title", pattern).limit(5),
   ]);
 
   const results = [
-    ...(acts.data ?? []).map((r) => ({ ...r, type: "activity", href: `/admin/activites/${r.id}/edit` })),
+    ...(acts.data ?? []).map((r) => ({ ...r, type: "event", href: `/admin/evenements/${r.id}/edit` })),
     ...(prods.data ?? []).map((r) => ({ ...r, type: "production", href: `/admin/productions/${r.id}/edit` })),
     ...(projs.data ?? []).map((r) => ({ ...r, type: "project", href: `/admin/projets/${r.id}/edit` })),
     ...(themes.data ?? []).map((r) => ({ ...r, type: "theme", href: `/admin/themes/${r.id}/edit` })),
     ...(subThemes.data ?? []).map((r) => ({ ...r, type: "sub_theme", href: `/admin/sousthemes/${r.id}/edit` })),
+    ...(authors.data ?? []).map((r) => ({ ...r, title: r.name, type: "author", href: `/admin/auteurs/${r.id}/edit` })),
+    ...(journalEntries.data ?? []).map((r) => ({ ...r, type: "journal", href: `/admin/journal/${r.id}/edit` })),
   ];
 
   return NextResponse.json({ results });

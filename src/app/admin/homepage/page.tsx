@@ -1,18 +1,22 @@
+import { ExternalLink } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
-import { themeRepository } from "@/repositories/themeRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
-import { FOCUS_ASPECT, HERO_ASPECT } from "@/constants/imageAspects";
+import { HERO_ASPECT } from "@/constants/imageAspects";
+import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
 import { saveHomepageFieldsAction } from "./actions";
 
 export default async function AdminHomepage() {
-  const [page, media, themes] = await Promise.all([
+  const [page, media, events] = await Promise.all([
     pageRepository.getPage("accueil"),
     mediaRepository.list(),
-    themeRepository.listThemes(true),
+    eventRepository.listEvents(),
   ]);
 
   const images = media.filter((m) => m.type === "image");
+  const fallbackEvent = page?.featuredEventId ? (events.find((e) => e.id === page.featuredEventId) ?? null) : null;
+  const eventOfTheMoment = pickEventOfTheMoment(events, fallbackEvent);
 
   return (
     <section className="admin-panel">
@@ -21,9 +25,59 @@ export default async function AdminHomepage() {
           <h1>Page d&apos;accueil</h1>
           <p>Modifiez le contenu et les photos affichés sur la page d&apos;accueil du site.</p>
         </div>
+        <a
+          href="/"
+          target="_blank"
+          rel="noreferrer"
+          className="btn-sm"
+          title="Voir la page publique dans un nouvel onglet"
+        >
+          <ExternalLink size={13} strokeWidth={2} />
+          Voir le rendu final
+        </a>
       </div>
 
       <form action={saveHomepageFieldsAction} style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+        {/* ── Événement du moment ──────────────────────────────────── */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title">Événement du moment</h2>
+          <p className="admin-form-section-hint">
+            Affiché automatiquement sur la page d&apos;accueil, juste sous le hero : s&apos;il y a un événement cette
+            semaine, le plus proche s&apos;affiche. Sinon, l&apos;événement choisi ci-dessous s&apos;affiche à la place
+            — et si rien n&apos;est choisi, le plus proche d&apos;aujourd&apos;hui (passé ou futur) s&apos;affiche par
+            défaut.
+          </p>
+          {eventOfTheMoment ? (
+            <p style={{ fontSize: 13, margin: "0 0 14px" }}>
+              Actuellement affiché : <strong>{eventOfTheMoment.title}</strong>
+              {eventOfTheMoment.date ? ` — ${eventOfTheMoment.date}` : ""}
+              {" · "}
+              <a href={`/admin/evenements/${eventOfTheMoment.id}/edit`} style={{ color: "var(--orange)" }}>
+                Modifier cet événement →
+              </a>
+            </p>
+          ) : (
+            <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 14px" }}>
+              Aucun événement avec une date pour l&apos;instant, donc rien ne s&apos;affiche ici.{" "}
+              <a href="/admin/evenements" style={{ color: "var(--orange)" }}>
+                Voir les événements →
+              </a>
+            </p>
+          )}
+          <div className="form-field">
+            <label className="form-label">Événement de secours (si rien cette semaine)</label>
+            <select name="featured_event_id" className="form-input" defaultValue={page?.featuredEventId ?? ""}>
+              <option value="">— aucun, choisir automatiquement —</option>
+              {events.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.title}
+                  {e.date ? ` — ${e.date}` : ""}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {/* ── Hero ─────────────────────────────────────────────────── */}
         <div className="admin-form-section">
           <h2 className="admin-form-section-title">Texte principal (hero)</h2>
@@ -39,50 +93,6 @@ export default async function AdminHomepage() {
               defaultValue={page?.body ?? ""}
               placeholder="Manssuétude est un espace de réflexion..."
             />
-          </div>
-          <div className="form-row">
-            <div className="form-field">
-              <label className="form-label">Bouton principal — libellé</label>
-              <input
-                name="primary_cta_label"
-                className="form-input"
-                defaultValue={page?.primaryCtaLabel ?? ""}
-                placeholder="Rejoindre"
-              />
-            </div>
-            <div className="form-field">
-              <label className="form-label">Bouton principal — lien</label>
-              <input
-                name="primary_cta_target"
-                className="form-input"
-                defaultValue={page?.primaryCtaTarget ?? ""}
-                placeholder="/nous-rejoindre, FORM:join ou https://linktr.ee/..."
-              />
-              <p className="admin-form-section-hint">
-                Où mène ce bouton : une page du site (<code>/nous-rejoindre</code>), un formulaire (
-                <code>FORM:join</code>) ou un lien externe (<code>https://…</code>, ouvert dans un nouvel onglet).
-              </p>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-field">
-              <label className="form-label">Bouton secondaire — libellé</label>
-              <input
-                name="secondary_cta_label"
-                className="form-input"
-                defaultValue={page?.secondaryCtaLabel ?? ""}
-                placeholder="Nous soutenir"
-              />
-            </div>
-            <div className="form-field">
-              <label className="form-label">Bouton secondaire — cible</label>
-              <input
-                name="secondary_cta_target"
-                className="form-input"
-                defaultValue={page?.secondaryCtaTarget ?? ""}
-                placeholder="/nous-soutenir"
-              />
-            </div>
           </div>
         </div>
 
@@ -112,53 +122,6 @@ export default async function AdminHomepage() {
               </a>
             </p>
           )}
-        </div>
-
-        {/* ── Sujet du moment ──────────────────────────────────────── */}
-        <div className="admin-form-section">
-          <h2 className="admin-form-section-title">Sujet du moment</h2>
-          <p className="admin-form-section-hint">
-            Section mise en avant sur la page d&apos;accueil, juste sous le hero.
-          </p>
-          <div className="form-field">
-            <label className="form-label">Étiquette (eyebrow)</label>
-            <input
-              name="eyebrow"
-              className="form-input"
-              defaultValue={page?.eyebrow ?? ""}
-              placeholder="Thème du moment"
-            />
-          </div>
-          <div className="form-field">
-            <label className="form-label">Thème mis en avant</label>
-            <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
-              Choisissez le thème à afficher comme sujet du moment. Son titre et sa description sont repris
-              automatiquement, et le clic sur le sujet mène à la page de ce thème.
-            </p>
-            <select name="quote" className="form-input" defaultValue={page?.quote ?? ""}>
-              <option value="">— aucun sujet du moment —</option>
-              {themes.map((t) => (
-                <option key={t.id} value={t.slug}>
-                  {t.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="form-field">
-            <label className="form-label">Photo du sujet (optionnelle)</label>
-            <p className="admin-form-section-hint" style={{ marginTop: 0 }}>
-              Image affichée à côté du sujet du moment. Sans image, le sujet s&apos;affiche en pleine largeur.
-            </p>
-            <ImageCropField
-              name="seo_image_id"
-              cropName="focus_image_crop"
-              images={images}
-              defaultImageId={page?.seoImageId ?? ""}
-              defaultCrop={page?.focusImageCrop ?? null}
-              aspect={FOCUS_ASPECT}
-              emptyOptionLabel="— aucune image (pleine largeur) —"
-            />
-          </div>
         </div>
 
         {/* ── SEO ──────────────────────────────────────────────────── */}

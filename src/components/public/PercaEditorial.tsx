@@ -1,14 +1,6 @@
 import type { Page } from "@/types/cms";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
-
-// Les 5 étapes du cadre PERCA de Manssuétude.
-const perca: Array<[string, string]> = [
-  ["P", "Penser"],
-  ["E", "Exprimer"],
-  ["R", "Relier"],
-  ["C", "Concrétiser"],
-  ["A", "Ancrer"],
-];
+import { PercaStepsInteractive } from "@/components/public/PercaStepsInteractive";
 
 export function PercaEditorial({ page }: { page: Page }) {
   return (
@@ -18,14 +10,7 @@ export function PercaEditorial({ page }: { page: Page }) {
         <h1>{page.title}</h1>
       </header>
 
-      <ol className="perca-steps">
-        {perca.map(([letter, word]) => (
-          <li key={letter}>
-            <span className="perca-letter">{letter}</span>
-            <span className="perca-word">{word}</span>
-          </li>
-        ))}
-      </ol>
+      <PercaStepsInteractive steps={page.percaSteps ?? []} />
 
       {page.body ? (
         <div className="perca-body rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body) }} />

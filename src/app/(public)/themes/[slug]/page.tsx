@@ -4,6 +4,8 @@ import { ThemeDetail } from "@/components/public/ThemeDetail";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { eventRepository } from "@/repositories/eventRepository";
+import { projectRepository } from "@/repositories/projectRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -15,8 +17,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!item) return {};
     const imageUrl = await mediaRepository.getResourceUrl(item.heroImageId ?? item.thumbnailId);
     return buildDetailMetadata({
-      title: item.title,
-      description: item.longDescription ?? item.description,
+      title: item.seoTitle || item.title,
+      description: item.seoDescription || item.longDescription || item.description,
       path: `/themes/${item.slug}`,
       imageUrl,
       ogType: "website",
@@ -40,6 +42,10 @@ export default async function ThemePage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const item = await themeRepository.getTheme(slug);
   if (!item) notFound();
-  const subThemes = await subThemeRepository.listSubThemesByTheme(item.id);
-  return <ThemeDetail item={item} subThemes={subThemes} />;
+  const [subThemes, events, projects] = await Promise.all([
+    subThemeRepository.listSubThemesByTheme(item.id),
+    eventRepository.getEventsByTheme(item.id),
+    projectRepository.getProjectsByTheme(item.id),
+  ]);
+  return <ThemeDetail item={item} subThemes={subThemes} events={events} projects={projects} />;
 }

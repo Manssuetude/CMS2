@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { parseTags, uniqueTags } from "../src/utils/tags.ts";
-import { asString, asNullableString, asBoolean, asStringArray, asRecord } from "../src/utils/row.ts";
+import { asString, asNullableString, asBoolean, asStringArray, asRecord, asRecordArray } from "../src/utils/row.ts";
 
 test("parseTags — découpe, trim, ignore le vide", () => {
   assert.deepEqual(parseTags("a, b ,, c "), ["a", "b", "c"]);
@@ -40,4 +40,10 @@ test("row.asRecord — objet uniquement", () => {
   assert.deepEqual(asRecord({ a: 1 }), { a: 1 });
   assert.deepEqual(asRecord([1, 2]), {});
   assert.deepEqual(asRecord(null), {});
+});
+
+test("row.asRecordArray — filtre les entrées qui ne sont pas des objets", () => {
+  assert.deepEqual(asRecordArray([{ name: "A" }, "nope", 1, null, { name: "B" }]), [{ name: "A" }, { name: "B" }]);
+  assert.deepEqual(asRecordArray("not an array"), []);
+  assert.deepEqual(asRecordArray(undefined), []);
 });

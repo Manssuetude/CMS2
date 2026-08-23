@@ -11,10 +11,13 @@ import {
   FolderKanban,
   Images,
   Inbox,
-  Home,
   ImagePlus,
-  Clock,
   Users,
+  UserPen,
+  Newspaper,
+  Layers,
+  Route,
+  Shapes,
   ShieldCheck,
   ScrollText,
   LogOut,
@@ -25,15 +28,17 @@ import {
 
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "homepage", label: "Page d'accueil", icon: Home },
-  { id: "perca", label: "Page PERCA", icon: Home },
-  { id: "history", label: "Page Histoire", icon: Clock },
-  { id: "pages", label: "Photos des pages", icon: ImagePlus },
+  { id: "pages", label: "Gestion des pages", icon: ImagePlus },
+  { id: "redirects", label: "Redirections", icon: Route },
   { id: "themes", label: "Thèmes", icon: BookOpen },
   { id: "sousthemes", label: "Sous-thèmes", icon: ListTree },
-  { id: "activites", label: "Activités", icon: CalendarDays },
+  { id: "auteurs", label: "Auteurs", icon: UserPen },
+  { id: "evenements", label: "Événements", icon: CalendarDays },
+  { id: "formatsactivites", label: "Formats d'activités", icon: Shapes },
   { id: "productions", label: "Productions", icon: FileText },
   { id: "projets", label: "Projets", icon: FolderKanban },
+  { id: "journal", label: "Journal", icon: Newspaper },
+  { id: "dossiers", label: "Dossiers", icon: Layers },
   { id: "media", label: "Médiathèque", icon: Images },
   { id: "forms", label: "Formulaires", icon: Inbox },
 ] as const;
@@ -42,7 +47,7 @@ const NAV = [
 const ADMIN_NAV = [
   { id: "users", label: "Utilisateurs", icon: Users },
   { id: "roles", label: "Rôles", icon: ShieldCheck },
-  { id: "journal", label: "Journal", icon: ScrollText },
+  { id: "historique", label: "Historique", icon: ScrollText },
 ] as const;
 
 interface Props {
@@ -79,13 +84,7 @@ export function AdminSidebar({ collapsed, onToggle, isAdmin = false, permissions
             title={collapsed ? label : undefined}
             data-tour={id === "media" ? "tour-media" : undefined}
           >
-            {id === "perca" ? (
-              <span className="admin-nav-glyph" aria-hidden>
-                P
-              </span>
-            ) : (
-              <Icon size={16} strokeWidth={1.75} />
-            )}
+            <Icon size={16} strokeWidth={1.75} />
             <span className="admin-nav-label">{label}</span>
           </Link>
         ))}

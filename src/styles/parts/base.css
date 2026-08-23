@@ -20,3 +20,114 @@ img {
   outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
+
+/* Bandeau de consentement cookies — rendu au niveau racine (hors .site-shell),
+   donc tokens globaux non préfixés plutôt que --ed-*, pour rester correct
+   aussi bien sur le site public que sur l'admin. Boutons dédiés (pas .button) :
+   la classe .button de public-site.css est taillée pour les CTA de hero
+   (48px, poids 900, flèche "→" ajoutée en ::after) et déforme un petit toast. */
+@keyframes cookie-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.cookie-banner {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 200;
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  padding: 1.15rem 1.35rem;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow:
+    var(--shadow-modal),
+    0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent) inset;
+  animation: cookie-banner-in 0.35s ease both;
+}
+.cookie-banner-text {
+  flex: 1 1 280px;
+}
+.cookie-banner-title {
+  margin: 0 0 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.cookie-banner p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.cookie-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.cookie-banner-decline {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line-strong);
+  transition: color 0.16s ease;
+}
+.cookie-banner-decline:hover {
+  color: var(--ink);
+}
+.cookie-banner-accept {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6em 1.15em;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--orange);
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease;
+}
+.cookie-banner-accept:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--orange) 32%, transparent);
+}
+.cookie-banner-accept:active {
+  transform: translateY(0);
+}
+@media (max-width: 480px) {
+  .cookie-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .cookie-banner-actions {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+}

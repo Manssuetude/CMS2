@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { Media } from "@/types/cms";
 import { ImportWizard } from "@/components/media/ImportWizard";
-import { deleteMediaAction } from "@/app/admin/media/actions";
+import { deleteMediaAction, renameMediaAction } from "@/app/admin/media/actions";
 import { MediaCard } from "@/components/media/MediaCard";
 
 export function MediaLibrary({ media }: { media: Media[] }) {
@@ -82,7 +82,12 @@ export function MediaLibrary({ media }: { media: Media[] }) {
             ) : (
               <div className="media-grid">
                 {filtered.map((item) => (
-                  <MediaCard key={item.id} item={item} deleteAction={deleteMediaAction} />
+                  <MediaCard
+                    key={item.id}
+                    item={item}
+                    deleteAction={deleteMediaAction}
+                    renameAction={renameMediaAction}
+                  />
                 ))}
               </div>
             )}

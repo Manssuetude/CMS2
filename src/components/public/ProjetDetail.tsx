@@ -1,6 +1,16 @@
-import type { Project } from "@/types/cms";
+import type { Event, JournalEntry, Production, Project } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { CardGrid } from "@/components/cards/CardGrid";
+
+const TYPE_LABEL: Record<string, string> = {
+  Article: "Article",
+  "Note & Synthese": "Note & Synthèse",
+  "Etude & Rapport": "Étude & Rapport",
+  Video: "Vidéo",
+  Podcast: "Podcast",
+  Infographie: "Infographie",
+};
 
 const PROGRESS_LABEL: Record<string, string> = {
   idea: "Idée",
@@ -24,7 +34,14 @@ const PRIORITY_COLOR: Record<string, string> = {
   Basse: "var(--ed-muted)",
 };
 
-export function ProjetDetail({ item }: { item: Project }) {
+interface Props {
+  item: Project;
+  productions?: Production[];
+  events?: Event[];
+  journalEntries?: JournalEntry[];
+}
+
+export function ProjetDetail({ item, productions = [], events = [], journalEntries = [] }: Props) {
   const progress = item.progressStatus ? (PROGRESS_PCT[item.progressStatus] ?? 0) : 0;
   const progressLabel = item.progressStatus ? (PROGRESS_LABEL[item.progressStatus] ?? item.progressStatus) : null;
 
@@ -97,6 +114,46 @@ export function ProjetDetail({ item }: { item: Project }) {
             )}
           </div>
         </section>
+      )}
+
+      {/* ── Productions liées ─────────────────────────────────── */}
+      {productions.length > 0 && (
+        <CardGrid
+          title="Productions du projet"
+          items={productions.map((p) => ({
+            title: p.title,
+            description: p.description,
+            href: `/productions/${p.slug}`,
+            meta: TYPE_LABEL[p.type] ?? p.type,
+            tags: p.tags,
+          }))}
+        />
+      )}
+
+      {/* ── Événements liés ──────────────────────────────────── */}
+      {events.length > 0 && (
+        <CardGrid
+          title="Événements du projet"
+          items={events.map((e) => ({
+            title: e.title,
+            description: e.description,
+            href: `/evenements/${e.slug}`,
+            meta: e.format,
+          }))}
+        />
+      )}
+
+      {/* ── Chronologie du Journal ───────────────────────────── */}
+      {journalEntries.length > 0 && (
+        <CardGrid
+          title="Le Journal de ce projet"
+          items={journalEntries.map((e) => ({
+            title: e.title,
+            description: e.excerpt,
+            href: `/journal/${e.slug}`,
+            meta: e.category,
+          }))}
+        />
       )}
 
       {/* ── Documents ─────────────────────────────────────────── */}

@@ -2,6 +2,9 @@ import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { projectRepository } from "@/repositories/projectRepository";
+import { themeRepository } from "@/repositories/themeRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { eventRepository } from "@/repositories/eventRepository";
 import { ProjetForm } from "@/components/admin/ProjetForm";
 import { updateProjectAction } from "../../actions";
 
@@ -11,8 +14,18 @@ interface Props {
 
 export default async function EditProjetPage({ params }: Props) {
   const { id } = await params;
-  const item = await projectRepository.getProjectById(id);
+  const [item, themes, productions, events] = await Promise.all([
+    projectRepository.getProjectById(id),
+    themeRepository.listThemes(true),
+    productionRepository.listProductions(true),
+    eventRepository.listEvents(true),
+  ]);
   if (!item) notFound();
+  const [initialThemeIds, initialProductionIds, initialEventIds] = await Promise.all([
+    projectRepository.getProjectThemeIds(id),
+    projectRepository.getProjectProductionIds(id),
+    projectRepository.getProjectEventIds(id),
+  ]);
 
   return (
     <section className="admin-panel">
@@ -40,7 +53,16 @@ export default async function EditProjetPage({ params }: Props) {
           )}
         </a>
       </div>
-      <ProjetForm initialData={item} action={updateProjectAction} />
+      <ProjetForm
+        initialData={item}
+        action={updateProjectAction}
+        themes={themes}
+        initialThemeIds={initialThemeIds}
+        productions={productions}
+        initialProductionIds={initialProductionIds}
+        events={events}
+        initialEventIds={initialEventIds}
+      />
     </section>
   );
 }

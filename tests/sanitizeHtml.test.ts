@@ -14,6 +14,16 @@ test("sanitizeHtml — retire les handlers inline (onerror/onclick)", () => {
   assert.ok(!out.toLowerCase().includes("onclick"));
 });
 
+test("sanitizeHtml — retire tout attribut on* (pas seulement onerror/onclick), et formaction", () => {
+  const out = sanitizeHtml(
+    '<div onmouseover="x()" onfocus="y()" onanimationstart="z()">t</div><button formaction="javascript:alert(1)">b</button>',
+  );
+  assert.ok(!out.toLowerCase().includes("onmouseover"));
+  assert.ok(!out.toLowerCase().includes("onfocus"));
+  assert.ok(!out.toLowerCase().includes("onanimationstart"));
+  assert.ok(!out.toLowerCase().includes("formaction"));
+});
+
 test("sanitizeHtml — conserve le formatage riche légitime", () => {
   const out = sanitizeHtml('<h2>Titre</h2><p><strong>gras</strong> et <a href="/x">lien</a></p><ul><li>a</li></ul>');
   assert.match(out, /<h2[^>]*>Titre<\/h2>/);

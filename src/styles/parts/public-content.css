@@ -188,7 +188,42 @@
   color: var(--orange);
 }
 
-/* ─── Filter bar (productions, activités) ───────────────────────────── */
+/* ─── Boutons de partage (fiches détail) ─────────────────────────────── */
+.share-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.share-buttons a,
+.share-buttons button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.12s,
+    background 0.12s,
+    color 0.12s;
+}
+.share-buttons a:hover,
+.share-buttons button:hover {
+  background: var(--orange-soft);
+  border-color: var(--orange);
+  color: var(--orange);
+}
+.share-copied {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ─── Filter bar (productions, événements) ───────────────────────────── */
 .filter-bar {
   display: flex;
   flex-wrap: wrap;

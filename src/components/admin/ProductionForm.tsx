@@ -3,8 +3,9 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { ExternalLink, FileText, PenLine, X } from "lucide-react";
-import type { Production, SubTheme, Theme } from "@/types/cms";
+import type { Author, Media, Production, SubTheme, Theme } from "@/types/cms";
 import { mediaClientService } from "@/services/mediaClientService";
+import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -25,23 +26,44 @@ interface Props {
   themes?: Theme[];
   subThemes?: SubTheme[];
   initialSubThemeIds?: string[];
+  authors?: Author[];
+  initialAuthorIds?: string[];
+  mediaItems?: Media[];
+  initialResourceIds?: string[];
 }
 
-export function ProductionForm({ initialData, action, themes = [], subThemes = [], initialSubThemeIds = [] }: Props) {
+export function ProductionForm({
+  initialData,
+  action,
+  themes = [],
+  subThemes = [],
+  initialSubThemeIds = [],
+  authors = [],
+  initialAuthorIds = [],
+  mediaItems = [],
+  initialResourceIds = [],
+}: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
+  const [type, setType] = useState(initialData?.type ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
+  const [selectedAuthors, setSelectedAuthors] = useState<string[]>(initialAuthorIds);
+  const [selectedResources, setSelectedResources] = useState<string[]>(initialResourceIds);
   const [fileId, setFileId] = useState(initialData?.fileId ?? "");
   const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   async function handlePdfUpload(file: File) {
     setUploading(true);
+    setUploadError(null);
     try {
       const media = await mediaClientService.uploadFile(file);
       setFileId(media.id);
       setFileName(media.title);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Échec de l'envoi du fichier.");
     } finally {
       setUploading(false);
     }
@@ -62,6 +84,8 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
+      <input type="hidden" name="authorIds" value={selectedAuthors.join(",")} />
+      <input type="hidden" name="resourceIds" value={selectedResources.join(",")} />
       <input type="hidden" name="fileId" value={fileId} />
 
       {error && <p className="form-error">{error}</p>}
@@ -72,8 +96,11 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
           <p className="form-section-title">Informations générales</p>
 
           <div className="form-field">
-            <label className="field-label">Titre *</label>
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               defaultValue={initialData?.title}
@@ -87,8 +114,10 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Type *</label>
-              <select name="type" defaultValue={initialData?.type ?? ""} required>
+              <label className="field-label" htmlFor="type">
+                Type *
+              </label>
+              <select id="type" name="type" value={type} onChange={(e) => setType(e.target.value)} required>
                 <option value="" disabled>
                   Choisir un type...
                 </option>
@@ -100,8 +129,11 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Auteur</label>
+              <label className="field-label" htmlFor="author">
+                Auteur
+              </label>
               <input
+                id="author"
                 type="text"
                 name="author"
                 defaultValue={initialData?.author ?? ""}
@@ -110,26 +142,56 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
             </div>
           </div>
 
+          {(type === "Video" || type === "Podcast") && (
+            <div className="form-field">
+              <label className="field-label" htmlFor="videoUrl">
+                {type === "Video" ? "URL vidéo (YouTube ou Vimeo)" : "URL audio (fichier .mp3 ou lien YouTube/Vimeo)"}
+              </label>
+              <input
+                id="videoUrl"
+                type="url"
+                name="videoUrl"
+                defaultValue={initialData?.videoUrl ?? ""}
+                placeholder={type === "Video" ? "https://www.youtube.com/watch?v=..." : "https://.../episode.mp3"}
+              />
+            </div>
+          )}
+
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Date de publication</label>
-              <input type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
+              <label className="field-label" htmlFor="date">
+                Date de publication
+              </label>
+              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
             <div className="form-field">
-              <label className="field-label">Temps de lecture</label>
+              <label className="field-label" htmlFor="readingTime">
+                {type === "Video" || type === "Podcast" ? "Durée" : "Temps de lecture (optionnel)"}
+              </label>
               <input
+                id="readingTime"
                 type="text"
                 name="readingTime"
                 defaultValue={initialData?.readingTime ?? ""}
-                placeholder="Ex. : 7 min"
+                placeholder={
+                  type === "Video" || type === "Podcast" ? "Ex. : 12 min" : "Calculé automatiquement si laissé vide"
+                }
               />
             </div>
           </div>
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Nombre de pages</label>
-              <input type="text" name="pages" defaultValue={initialData?.pages ?? ""} placeholder="Ex. : 42" />
+              <label className="field-label" htmlFor="pages">
+                Nombre de pages
+              </label>
+              <input
+                id="pages"
+                type="text"
+                name="pages"
+                defaultValue={initialData?.pages ?? ""}
+                placeholder="Ex. : 42"
+              />
             </div>
             <div className="form-field" style={{ justifyContent: "flex-end" }}>
               <div className="form-checkbox">
@@ -144,8 +206,11 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
         <div className="form-section">
           <p className="form-section-title">Résumé court</p>
           <div className="form-field">
-            <label className="field-label">Description</label>
+            <label className="field-label" htmlFor="description">
+              Description
+            </label>
             <textarea
+              id="description"
               name="description"
               defaultValue={initialData?.description ?? ""}
               rows={3}
@@ -193,25 +258,46 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
                 <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 600, color: "var(--ink)" }}>
                   {themeTitleById.get(themeId) ?? "Thème"}
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  {items.map((st) => (
-                    <div className="form-checkbox" key={st.id}>
-                      <input
-                        type="checkbox"
-                        id={`subtheme-${st.id}`}
-                        checked={selectedSubThemes.includes(st.id)}
-                        onChange={(e) =>
-                          setSelectedSubThemes((prev) =>
-                            e.target.checked ? [...prev, st.id] : prev.filter((id) => id !== st.id),
-                          )
-                        }
-                      />
-                      <label htmlFor={`subtheme-${st.id}`}>{st.title}</label>
-                    </div>
-                  ))}
-                </div>
+                <CheckboxMultiSelect
+                  idPrefix="subtheme"
+                  items={items.map((st) => ({ id: st.id, label: st.title }))}
+                  selected={selectedSubThemes}
+                  onChange={setSelectedSubThemes}
+                />
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Relations auteurs */}
+        {authors.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Fiches auteur</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              En complément (ou au lieu) du champ « Auteur » en texte libre ci-dessus.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="author"
+              items={authors.map((a) => ({ id: a.id, label: a.name }))}
+              selected={selectedAuthors}
+              onChange={setSelectedAuthors}
+            />
+          </div>
+        )}
+
+        {/* Ressources / références */}
+        {mediaItems.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Ressources / références liées</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Documents ou médias de la médiathèque cités par cette production.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="resource"
+              items={mediaItems.map((m) => ({ id: m.id, label: m.title }))}
+              selected={selectedResources}
+              onChange={setSelectedResources}
+            />
           </div>
         )}
 
@@ -250,6 +336,7 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
                 />
               </label>
             )}
+            {uploadError && <p className="form-error">{uploadError}</p>}
           </div>
           <div className="form-field">
             <label className="field-label" htmlFor="downloadLabel">
@@ -264,12 +351,42 @@ export function ProductionForm({ initialData, action, themes = [], subThemes = [
           </div>
         </div>
 
+        {/* SEO */}
+        <div className="form-section">
+          <p className="form-section-title">SEO</p>
+          <div className="form-field">
+            <label className="field-label" htmlFor="seoTitle">
+              Titre SEO (onglet navigateur)
+            </label>
+            <input
+              id="seoTitle"
+              name="seoTitle"
+              defaultValue={initialData?.seoTitle ?? ""}
+              placeholder={initialData?.title}
+            />
+          </div>
+          <div className="form-field">
+            <label className="field-label" htmlFor="seoDescription">
+              Description SEO
+            </label>
+            <textarea
+              id="seoDescription"
+              name="seoDescription"
+              defaultValue={initialData?.seoDescription ?? ""}
+              rows={3}
+              placeholder={initialData?.description ?? ""}
+            />
+          </div>
+        </div>
+
         {/* Publication */}
         <div className="form-section">
           <p className="form-section-title">Publication</p>
           <div className="form-field" style={{ maxWidth: 280 }}>
-            <label className="field-label">Statut</label>
-            <select name="status" defaultValue={initialData?.status ?? "draft"}>
+            <label className="field-label" htmlFor="status">
+              Statut
+            </label>
+            <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
               <option value="draft">Brouillon</option>
               <option value="published">Publié</option>
               <option value="archived">Archivé</option>

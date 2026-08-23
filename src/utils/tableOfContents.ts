@@ -23,6 +23,26 @@ function stripTags(html: string): string {
   return html.replace(/<[^>]+>/g, "");
 }
 
+export type TocHeading = { id: string; label: string; level: 2 | 3 };
+
+/**
+ * Extrait les titres h2/h3 (avec leur `id`) d'un contenu déjà traité par
+ * `fixTableOfContentsLinks`, pour construire un sommaire visible. Les h4
+ * sont volontairement exclus : trop fins pour un sommaire de haut niveau.
+ */
+export function extractHeadings(html: string): TocHeading[] {
+  const headings: TocHeading[] = [];
+  const regex = /<(h[23])\s+[^>]*\bid="([^"]+)"[^>]*>([\s\S]*?)<\/\1>/gi;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(html))) {
+    const [, tag, id, inner] = match;
+    const label = stripTags(inner).replace(/\s+/g, " ").trim();
+    if (!label) continue;
+    headings.push({ id, label, level: tag === "h2" ? 2 : 3 });
+  }
+  return headings;
+}
+
 /**
  * Ajoute un `id` à chaque titre (h2-h4) du contenu, puis réécrit les liens de
  * table des matières collés depuis un éditeur externe pour qu'ils pointent
@@ -60,17 +80,25 @@ export function fixTableOfContentsLinks(html: string): string {
     },
   );
 
-  return withHeadingIds.replace(
+  const withTocEntriesResolved = withHeadingIds.replace(
     /<a\s+([^>]*\bhref="([^"]*)"[^>]*)>([\s\S]*?)<\/a>/gi,
-    (match, attrs: string, href: string, inner: string) => {
+    (match, _attrs: string, href: string, inner: string) => {
       if (!EXTERNAL_TOC_HREF_PATTERN.test(href)) return match;
 
       const label = cleanTocLabel(stripTags(inner));
       const slug = slugByLabel.get(label.toLowerCase());
-      if (!slug) return inner; // aucun titre correspondant : on retire le lien plutôt que de fuiter le document source.
-
-      const newAttrs = attrs.replace(/href="[^"]*"/, `href="#${slug}"`);
-      return `<a ${newAttrs}>${inner}</a>`;
+      // Une entrée de sommaire collée qui correspond à un vrai titre est retirée du
+      // corps : le sommaire automatique (TableOfContents) affiche déjà cette même
+      // navigation séparément, la garder ici la dupliquerait dans le texte.
+      if (slug) return "";
+      return inner; // aucun titre correspondant : on retire le lien plutôt que de fuiter le document source.
     },
   );
+
+  // Nettoie les conteneurs devenus vides après le retrait des entrées de sommaire
+  // (paragraphe ou item de liste qui ne contenait que le lien collé).
+  return withTocEntriesResolved
+    .replace(/<li[^>]*>\s*<\/li>/gi, "")
+    .replace(/<p[^>]*>\s*<\/p>/gi, "")
+    .replace(/<(ul|ol)[^>]*>\s*<\/\1>/gi, "");
 }

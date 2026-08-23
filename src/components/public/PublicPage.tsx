@@ -1,6 +1,6 @@
 import { Hero } from "@/components/public/Hero";
 import { CardGrid } from "@/components/cards/CardGrid";
-import type { Page, Production, Theme, Project, Activity } from "@/types/cms";
+import type { Page, Production, Theme, Project, Event } from "@/types/cms";
 
 export function PublicPage({
   page,
@@ -8,14 +8,14 @@ export function PublicPage({
   productions = [],
   themes = [],
   projects = [],
-  activities = [],
+  events = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
   productions?: Production[];
   themes?: Theme[];
   projects?: Project[];
-  activities?: Activity[];
+  events?: Event[];
 }) {
   return (
     <>
@@ -65,13 +65,13 @@ export function PublicPage({
           }))}
         />
       ) : null}
-      {activities.length ? (
+      {events.length ? (
         <CardGrid
-          title="Activités"
-          items={activities.map((item) => ({
+          title="Événements"
+          items={events.map((item) => ({
             title: item.title,
             description: item.description,
-            href: `/activites/${item.slug}`,
+            href: `/evenements/${item.slug}`,
             meta: item.format,
           }))}
         />

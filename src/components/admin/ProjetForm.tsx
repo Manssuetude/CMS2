@@ -4,7 +4,8 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
-import type { Project } from "@/types/cms";
+import type { Event, Production, Project, Theme } from "@/types/cms";
+import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
@@ -50,13 +51,31 @@ function toSlug(s: string): string {
 interface Props {
   initialData?: Project;
   action: ActionFn;
+  themes?: Theme[];
+  initialThemeIds?: string[];
+  productions?: Production[];
+  initialProductionIds?: string[];
+  events?: Event[];
+  initialEventIds?: string[];
 }
 
-export function ProjetForm({ initialData, action }: Props) {
+export function ProjetForm({
+  initialData,
+  action,
+  themes = [],
+  initialThemeIds = [],
+  productions = [],
+  initialProductionIds = [],
+  events = [],
+  initialEventIds = [],
+}: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [body, setBody] = useState(initialData?.body ?? "");
+  const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
+  const [selectedProductions, setSelectedProductions] = useState<string[]>(initialProductionIds);
+  const [selectedEvents, setSelectedEvents] = useState<string[]>(initialEventIds);
   const publicHref = isEdit ? `/projets/${initialData.slug}` : null;
 
   return (
@@ -64,6 +83,9 @@ export function ProjetForm({ initialData, action }: Props) {
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="body" value={body} />
+      <input type="hidden" name="themeIds" value={selectedThemes.join(",")} />
+      <input type="hidden" name="productionIds" value={selectedProductions.join(",")} />
+      <input type="hidden" name="eventIds" value={selectedEvents.join(",")} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -72,8 +94,11 @@ export function ProjetForm({ initialData, action }: Props) {
           <p className="form-section-title">Informations générales</p>
 
           <div className="form-field">
-            <label className="field-label">Titre *</label>
+            <label className="field-label" htmlFor="title">
+              Titre *
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               defaultValue={initialData?.title}
@@ -87,8 +112,10 @@ export function ProjetForm({ initialData, action }: Props) {
 
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Catégorie</label>
-              <select name="category" defaultValue={initialData?.category ?? ""}>
+              <label className="field-label" htmlFor="category">
+                Catégorie
+              </label>
+              <select id="category" name="category" defaultValue={initialData?.category ?? ""}>
                 <option value="">Non catégorisé</option>
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>
@@ -98,8 +125,10 @@ export function ProjetForm({ initialData, action }: Props) {
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Priorité</label>
-              <select name="priority" defaultValue={initialData?.priority ?? ""}>
+              <label className="field-label" htmlFor="priority">
+                Priorité
+              </label>
+              <select id="priority" name="priority" defaultValue={initialData?.priority ?? ""}>
                 <option value="">Non définie</option>
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>
@@ -119,8 +148,11 @@ export function ProjetForm({ initialData, action }: Props) {
         <div className="form-section">
           <p className="form-section-title">Résumé court</p>
           <div className="form-field">
-            <label className="field-label">Description</label>
+            <label className="field-label" htmlFor="description">
+              Description
+            </label>
             <textarea
+              id="description"
               name="description"
               defaultValue={initialData?.description ?? ""}
               rows={3}
@@ -134,20 +166,90 @@ export function ProjetForm({ initialData, action }: Props) {
           <RichTextEditor value={body} onChange={setBody} />
         </div>
 
+        {themes.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Thèmes</p>
+            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+              Thèmes éditoriaux auxquels se rattache ce projet.
+            </p>
+            <CheckboxMultiSelect
+              idPrefix="theme"
+              items={themes.map((t) => ({ id: t.id, label: t.title }))}
+              selected={selectedThemes}
+              onChange={setSelectedThemes}
+            />
+          </div>
+        )}
+
+        {productions.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Productions liées</p>
+            <CheckboxMultiSelect
+              idPrefix="production"
+              items={productions.map((p) => ({ id: p.id, label: p.title }))}
+              selected={selectedProductions}
+              onChange={setSelectedProductions}
+            />
+          </div>
+        )}
+
+        {events.length > 0 && (
+          <div className="form-section">
+            <p className="form-section-title">Événements liés</p>
+            <CheckboxMultiSelect
+              idPrefix="event"
+              items={events.map((e) => ({ id: e.id, label: e.title }))}
+              selected={selectedEvents}
+              onChange={setSelectedEvents}
+            />
+          </div>
+        )}
+
+        <div className="form-section">
+          <p className="form-section-title">SEO</p>
+          <div className="form-field">
+            <label className="field-label" htmlFor="seoTitle">
+              Titre SEO (onglet navigateur)
+            </label>
+            <input
+              id="seoTitle"
+              name="seoTitle"
+              defaultValue={initialData?.seoTitle ?? ""}
+              placeholder={initialData?.title}
+            />
+          </div>
+          <div className="form-field">
+            <label className="field-label" htmlFor="seoDescription">
+              Description SEO
+            </label>
+            <textarea
+              id="seoDescription"
+              name="seoDescription"
+              defaultValue={initialData?.seoDescription ?? ""}
+              rows={3}
+              placeholder={initialData?.description ?? ""}
+            />
+          </div>
+        </div>
+
         <div className="form-section">
           <p className="form-section-title">Publication</p>
           <div className="form-row">
             <div className="form-field">
-              <label className="field-label">Statut</label>
-              <select name="status" defaultValue={initialData?.status ?? "draft"}>
+              <label className="field-label" htmlFor="status">
+                Statut
+              </label>
+              <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
                 <option value="draft">Brouillon</option>
                 <option value="published">Publié</option>
                 <option value="archived">Archivé</option>
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label">Avancement</label>
-              <select name="progressStatus" defaultValue={initialData?.progressStatus ?? ""}>
+              <label className="field-label" htmlFor="progressStatus">
+                Avancement
+              </label>
+              <select id="progressStatus" name="progressStatus" defaultValue={initialData?.progressStatus ?? ""}>
                 <option value="">Non défini</option>
                 <option value="idea">Idée</option>
                 <option value="preparation">En préparation</option>

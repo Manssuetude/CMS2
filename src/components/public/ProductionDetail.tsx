@@ -1,9 +1,21 @@
 import Link from "next/link";
 import { FileDown } from "lucide-react";
-import type { Production, SubTheme, Theme } from "@/types/cms";
+import type { Author, Production, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { CardGrid } from "@/components/cards/CardGrid";
+import { estimateReadingTime } from "@/utils/readingTime";
+import { extractHeadings } from "@/utils/tableOfContents";
+import { TableOfContents } from "@/components/public/TableOfContents";
+import { ShareButtons } from "@/components/public/ShareButtons";
+import { ReadingProgressBar } from "@/components/public/ReadingProgressBar";
+import { CiteButton } from "@/components/public/CiteButton";
+import { QuoteShareBar } from "@/components/public/QuoteShareBar";
+import { JsonLd } from "@/components/public/JsonLd";
+import { SITE_URL } from "@/constants/site";
+import { getEmbedUrl } from "@/utils/videoEmbed";
+import { buildArticleJsonLd } from "@/lib/jsonLd";
+import { PdfViewer } from "@/components/public/PdfViewerLoader";
 
 const TYPE_LABEL: Record<string, string> = {
   Article: "Article",
@@ -22,18 +34,45 @@ interface Props {
   item: Production;
   allThemes: Theme[];
   allSubThemes: SubTheme[];
+  authors?: Author[];
   relatedProductions?: Production[];
   fileUrl?: string | null;
 }
 
-export function ProductionDetail({ item, allThemes, allSubThemes, relatedProductions = [], fileUrl }: Props) {
+export function ProductionDetail({
+  item,
+  allThemes,
+  allSubThemes,
+  authors = [],
+  relatedProductions = [],
+  fileUrl,
+}: Props) {
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const subThemes = allSubThemes.filter((st) => item.subThemeIds?.includes(st.id));
   const typeLabel = TYPE_LABEL[item.type] ?? item.type;
+  const authorNames = authors.map((a) => a.name).join(", ");
   const hasAside = subThemes.length > 0 || item.tags.length > 0;
+  const readingTime = item.readingTime || estimateReadingTime(item.body);
+  const sanitizedBody = item.body ? sanitizeHtml(item.body) : "";
+  const headings = sanitizedBody ? extractHeadings(sanitizedBody) : [];
+  const isAudioFile = item.videoUrl ? /\.(mp3|wav|m4a|ogg)$/i.test(item.videoUrl) : false;
+  const videoEmbedUrl = item.videoUrl && !isAudioFile ? getEmbedUrl(item.videoUrl) : null;
+  const isPdfFile = fileUrl ? /\.pdf($|\?)/i.test(fileUrl) : false;
+  const pageUrl = `${SITE_URL}/productions/${item.slug}`;
 
   return (
     <>
+      <JsonLd
+        data={buildArticleJsonLd({
+          title: item.title,
+          description: item.description,
+          path: `/productions/${item.slug}`,
+          authorName: authorNames || item.author,
+          datePublished: item.date,
+          dateModified: item.updatedAt,
+        })}
+      />
+      {item.body && <ReadingProgressBar />}
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className={`hero hero--detail${hasAside ? " hero--detail-split" : ""}`}>
         <div className="hero-copy">
@@ -42,8 +81,8 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
           {item.description && <p>{item.description}</p>}
           <div className="detail-meta">
             {item.date && <span className="meta-pill">{formatDate(item.date)}</span>}
-            {item.author && <span className="meta-pill">{item.author}</span>}
-            {item.readingTime && <span className="meta-pill">{item.readingTime} de lecture</span>}
+            {(authorNames || item.author) && <span className="meta-pill">{authorNames || item.author}</span>}
+            <span className="meta-pill">{readingTime} de lecture</span>
             {item.pages && <span className="meta-pill">{item.pages} pages</span>}
           </div>
           {fileUrl && (
@@ -86,27 +125,68 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
                 <p className="detail-sidebar-label">Tags</p>
                 <div className="tags" style={{ marginTop: 0 }}>
                   {item.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
+                    <Link key={tag} href={`/tags/${encodeURIComponent(tag)}`}>
+                      {tag}
+                    </Link>
                   ))}
                 </div>
               </div>
             )}
             <div className="detail-sidebar-card">
               <p className="detail-sidebar-label">Partager</p>
-              <p style={{ fontSize: 13, color: "var(--ed-muted)", margin: 0 }}>
-                Vous trouvez cette production utile ?{" "}
-                <CtaButton label="Contribuer" target="contribution" variant="secondary" />
-              </p>
+              <ShareButtons url={`${SITE_URL}/productions/${item.slug}`} title={item.title} />
             </div>
           </aside>
         )}
       </section>
 
+      {/* ── Vidéo ────────────────────────────────────────────────── */}
+      {videoEmbedUrl && (
+        <section className="section">
+          <div className="detail-body">
+            <div className="video-embed">
+              <iframe
+                src={videoEmbedUrl}
+                title={item.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Audio (podcast) ─────────────────────────────────────── */}
+      {isAudioFile && item.videoUrl && (
+        <section className="section">
+          <div className="detail-body">
+            <audio controls src={item.videoUrl} className="audio-player">
+              Votre navigateur ne prend pas en charge la lecture audio.
+            </audio>
+          </div>
+        </section>
+      )}
+
+      {/* ── Aperçu PDF ───────────────────────────────────────────── */}
+      {isPdfFile && fileUrl && (
+        <section className="section">
+          <div className="detail-body">
+            <PdfViewer url={fileUrl} title={item.title} />
+          </div>
+        </section>
+      )}
+
       {/* ── Contenu principal ──────────────────────────────────── */}
       <section className="section">
         <div className="detail-body">
           {item.body ? (
-            <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.body) }} />
+            <>
+              <TableOfContents headings={headings} />
+              <QuoteShareBar url={pageUrl}>
+                <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizedBody }} />
+              </QuoteShareBar>
+              <CiteButton title={item.title} author={authorNames || item.author} date={item.date} url={pageUrl} />
+            </>
           ) : item.description ? (
             <p className="rich-text">{item.description}</p>
           ) : (
@@ -118,17 +198,14 @@ export function ProductionDetail({ item, allThemes, allSubThemes, relatedProduct
       {/* ── Productions liées ─────────────────────────────────── */}
       {relatedProductions.length > 0 && (
         <CardGrid
-          title="Dans le même sous-thème"
-          items={relatedProductions
-            .filter((p) => p.id !== item.id)
-            .slice(0, 3)
-            .map((p) => ({
-              title: p.title,
-              description: p.description,
-              href: `/productions/${p.slug}`,
-              meta: TYPE_LABEL[p.type] ?? p.type,
-              tags: p.tags,
-            }))}
+          title="À lire aussi"
+          items={relatedProductions.slice(0, 3).map((p) => ({
+            title: p.title,
+            description: p.description,
+            href: `/productions/${p.slug}`,
+            meta: TYPE_LABEL[p.type] ?? p.type,
+            tags: p.tags,
+          }))}
         />
       )}
     </>

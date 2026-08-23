@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProjetDetail } from "@/components/public/ProjetDetail";
 import { projectRepository } from "@/repositories/projectRepository";
+import { productionRepository } from "@/repositories/productionRepository";
+import { eventRepository } from "@/repositories/eventRepository";
+import { journalRepository } from "@/repositories/journalRepository";
 import { buildDetailMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -13,8 +16,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const item = items.find((p) => p.slug === slug);
     if (!item) return {};
     return buildDetailMetadata({
-      title: item.title,
-      description: item.description,
+      title: item.seoTitle || item.title,
+      description: item.seoDescription || item.description,
       path: `/projets/${item.slug}`,
       ogType: "website",
     });
@@ -38,5 +41,10 @@ export default async function ProjetPage({ params }: { params: Promise<{ slug: s
   const items = await projectRepository.listProjects(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  return <ProjetDetail item={item} />;
+  const [productions, events, journalEntries] = await Promise.all([
+    productionRepository.getProductionsByProject(item.id),
+    eventRepository.getEventsByProject(item.id),
+    journalRepository.listEntriesByProject(item.id),
+  ]);
+  return <ProjetDetail item={item} productions={productions} events={events} journalEntries={journalEntries} />;
 }

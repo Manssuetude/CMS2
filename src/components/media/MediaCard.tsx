@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import type { Media } from "@/types/cms";
 
 interface Props {
   item: Media;
   deleteAction: (formData: FormData) => Promise<void>;
+  renameAction: (formData: FormData) => Promise<void>;
 }
 
 function MediaPreview({ item }: { item: Media }) {
@@ -21,7 +24,9 @@ function MediaPreview({ item }: { item: Media }) {
   return <span className="media-kind">{item.type.toUpperCase()}</span>;
 }
 
-export function MediaCard({ item, deleteAction }: Props) {
+export function MediaCard({ item, deleteAction, renameAction }: Props) {
+  const [isRenaming, setIsRenaming] = useState(false);
+
   function copyUrl() {
     navigator.clipboard.writeText(item.url).catch(() => undefined);
   }
@@ -32,7 +37,50 @@ export function MediaCard({ item, deleteAction }: Props) {
         <MediaPreview item={item} />
       </div>
       <div className="media-card-body">
-        <strong style={{ fontSize: 13, lineHeight: 1.3 }}>{item.title}</strong>
+        {isRenaming ? (
+          <form
+            action={async (formData) => {
+              await renameAction(formData);
+              setIsRenaming(false);
+            }}
+            style={{ display: "flex", gap: 4 }}
+          >
+            <input type="hidden" name="id" value={item.id} />
+            <input
+              name="title"
+              defaultValue={item.title}
+              autoFocus
+              required
+              aria-label="Nouveau titre du média"
+              style={{ fontSize: 13, flex: 1, minWidth: 0 }}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setIsRenaming(false);
+              }}
+            />
+            <button className="btn-sm" type="submit" title="Enregistrer">
+              ✓
+            </button>
+            <button className="btn-sm" type="button" title="Annuler" onClick={() => setIsRenaming(false)}>
+              ✕
+            </button>
+          </form>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setIsRenaming(true)}
+            title="Renommer"
+            style={{
+              all: "unset",
+              cursor: "pointer",
+              fontSize: 13,
+              lineHeight: 1.3,
+              fontWeight: 600,
+              wordBreak: "break-word",
+            }}
+          >
+            {item.title}
+          </button>
+        )}
         <p
           style={{
             fontSize: 12,
@@ -59,6 +107,9 @@ export function MediaCard({ item, deleteAction }: Props) {
           <a className="btn-sm" href={item.url} target="_blank" rel="noreferrer">
             Ouvrir
           </a>
+          <Link className="btn-sm" href={`/admin/media/${item.id}/edit`} title="Auteur, institution, date, thème...">
+            Modifier
+          </Link>
           <button className="btn-sm" type="button" onClick={copyUrl}>
             Copier URL
           </button>

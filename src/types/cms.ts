@@ -20,9 +20,9 @@ export type Visibility =
   | "archived"
   | "private"
   | "draft";
-export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "activity";
+export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "event" | "contact";
 export type FormStatus = "reçu" | "en cours" | "traité" | "archivé";
-export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "activity"}`;
+export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "event"}`;
 
 export type ContentBlock =
   | {
@@ -51,7 +51,7 @@ export type ContentBlock =
   | {
       id?: string;
       type: "feed";
-      source: "productions" | "projects" | "resources" | "activities";
+      source: "productions" | "projects" | "resources" | "events";
       variant: "compact" | "featured" | "editorial" | "media" | "masonry";
       limit?: number;
       visible?: boolean;
@@ -85,6 +85,10 @@ export type Media = {
   alt?: string | null;
   caption?: string | null;
   description?: string | null;
+  author?: string | null;
+  institution?: string | null;
+  publishedDate?: string | null;
+  themeId?: string | null;
   tags: string[];
   visibility: Visibility;
   uploadedBy?: string | null;
@@ -105,6 +109,14 @@ export type ImageCrop = {
   zoom: number;
 };
 
+// Contenu détaillé d'une étape PERCA (lettre/mot fixes, titre/corps éditables).
+export type PercaStep = {
+  letter: string;
+  word: string;
+  title?: string | null;
+  body?: string | null;
+};
+
 export type Page = {
   id: string;
   slug: string;
@@ -114,8 +126,6 @@ export type Page = {
   imageId?: string | null;
   imageUrl?: string | null;
   imageCrop?: ImageCrop | null;
-  focusImageUrl?: string | null;
-  focusImageCrop?: ImageCrop | null;
   image?: Media | null;
   quote?: string | null;
   primaryCtaLabel?: string | null;
@@ -123,6 +133,10 @@ export type Page = {
   secondaryCtaLabel?: string | null;
   secondaryCtaTarget?: CtaTarget | null;
   sections: ContentBlock[];
+  percaSteps?: PercaStep[];
+  // Événement de secours pour "Événement du moment" (accueil), utilisé
+  // uniquement quand aucun événement n'a lieu cette semaine.
+  featuredEventId?: string | null;
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImageId?: string | null;
@@ -143,6 +157,8 @@ export type Theme = {
   progressStatus?: ProgressStatus | null;
   featured: boolean;
   tags: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -160,12 +176,17 @@ export type Production = {
   thumbnailId?: string | null;
   fileId?: string | null;
   downloadLabel?: string | null;
+  videoUrl?: string | null;
   readingTime?: string | null;
   pages?: string | null;
   tags: string[];
   status: ContentStatus;
   featured: boolean;
   subThemeIds?: string[];
+  authorIds?: string[];
+  resourceIds?: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -186,7 +207,22 @@ export type SubTheme = {
   updatedAt: string;
 };
 
-export type Activity = {
+export type Speaker = {
+  name: string;
+  role?: string;
+};
+
+// Animateur d'un événement — lien vers une fiche Author réutilisable (comme
+// production_authors), avec une contribution libre et optionnelle propre à
+// cet événement ("ce que la personne y a fait").
+export type EventAnimator = {
+  authorId: string;
+  contribution?: string | null;
+};
+
+export type RegistrationStatus = "a-venir" | "ouvertes" | "complet" | "termine";
+
+export type Event = {
   id: string;
   slug: string;
   title: string;
@@ -194,11 +230,23 @@ export type Activity = {
   description?: string | null;
   body?: string | null;
   date?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  location?: string | null;
+  capacity?: string | null;
+  eventbriteUrl?: string | null;
+  registrationStatus?: RegistrationStatus | null;
   status: ContentStatus;
   progressStatus?: ProgressStatus | null;
   gallery: string[];
   documents: string[];
+  speakers: Speaker[];
   featured: boolean;
+  themeIds?: string[];
+  projectIds?: string[];
+  formatIds?: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -217,8 +265,103 @@ export type Project = {
   deliverables: string[];
   documents: string[];
   featured: boolean;
+  themeIds?: string[];
+  productionIds?: string[];
+  eventIds?: string[];
+  seoTitle?: string | null;
+  seoDescription?: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+// Fiche auteur réutilisable, reliable à plusieurs productions
+// (remplace le champ texte libre Production.author pour les productions
+// qui veulent une fiche complète — le champ texte reste un repli simple).
+export type Author = {
+  id: string;
+  name: string;
+  bio?: string | null;
+  photoId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Format/technique d'animation d'activité (Fishbowl, Hot Takes, Débat 2v2...) —
+// répertoire présenté en grille de cartes sur /activites/formats-d-activites.
+export type ActivityFormat = {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  icon?: string | null;
+  position: number;
+  status: ContentStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Journal éditorial de Manssuétude (entrées courtes publiques — actualités,
+// coulisses, réflexions). Distinct du journal d'audit RBAC (/admin/historique).
+export type JournalEntry = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt?: string | null;
+  body?: string | null;
+  thumbnailId?: string | null;
+  category?: string | null;
+  authorId?: string | null;
+  date?: string | null;
+  themeId?: string | null;
+  projectId?: string | null;
+  eventId?: string | null;
+  productionId?: string | null;
+  status: ContentStatus;
+  featured: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Dossier éditorial : collection ordonnée de contenus hétérogènes avec sa
+// propre page. Fusionne les chapitres "Dossiers" et "Parcours de lecture" du
+// plan V2 — un dossier "guide" affiche un parcours séquentiel numéroté, un
+// dossier "libre" affiche une simple grille.
+export type DossierMode = "libre" | "guide";
+
+export type DossierItemEntityType = "production" | "event" | "project" | "resource" | "journal_entry";
+
+export type DossierItem = {
+  id: string;
+  dossierId: string;
+  position: number;
+  entityType: DossierItemEntityType;
+  entityId: string;
+};
+
+export type Dossier = {
+  id: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  mode: DossierMode;
+  imageId?: string | null;
+  imageUrl?: string | null;
+  status: ContentStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Visibilité des entrées de navigation du header public, pilotée depuis
+// /admin/pages. Clé absente ou true = visible ; false = masquée (la page
+// reste accessible par son URL directe, seule l'entrée de menu disparaît).
+export type NavVisibility = Record<string, boolean>;
+
+// Redirection 301 administrable (ex. ancienne URL migrée vers une nouvelle).
+export type Redirect = {
+  id: string;
+  fromPath: string;
+  toPath: string;
+  createdAt: string;
 };
 
 export type FormSubmission = {
@@ -246,5 +389,4 @@ export type FooterConfig = {
   columns?: FooterColumn[];
   socialLinks?: FooterLink[];
   legalLinks?: FooterLink[];
-  newsletterEnabled?: boolean;
 };

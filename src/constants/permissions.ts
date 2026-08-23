@@ -17,19 +17,24 @@ export const ACTION_LABELS: Record<PermissionAction, string> = {
   publish: "Publier",
 };
 
-// Sections gérables par la matrice de rôles. (users / roles / journal = admin uniquement, hors matrice.)
+// Sections gérables par la matrice de rôles. (users / roles / historique = admin uniquement, hors matrice.)
 export const permissionCatalog: PermissionSection[] = [
   { key: "themes", label: "Thèmes", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "sousthemes", label: "Sous-thèmes", actions: ["view", "create", "edit", "delete", "publish"] },
-  { key: "activites", label: "Activités", actions: ["view", "create", "edit", "delete", "publish"] },
+  { key: "auteurs", label: "Auteurs", actions: ["view", "create", "edit", "delete"] },
+  { key: "evenements", label: "Événements", actions: ["view", "create", "edit", "delete", "publish"] },
+  { key: "formatsactivites", label: "Formats d'activités", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "productions", label: "Productions", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "projets", label: "Projets", actions: ["view", "create", "edit", "delete", "publish"] },
+  { key: "journal", label: "Journal", actions: ["view", "create", "edit", "delete", "publish"] },
+  { key: "dossiers", label: "Dossiers", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "media", label: "Médiathèque", actions: ["view", "create", "delete"] },
   { key: "forms", label: "Formulaires", actions: ["view", "edit", "delete"] },
   { key: "homepage", label: "Page d'accueil", actions: ["view", "edit"] },
   { key: "perca", label: "Page PERCA", actions: ["view", "edit"] },
   { key: "history", label: "Page Histoire", actions: ["view", "edit"] },
-  { key: "pages", label: "Photos des pages", actions: ["view", "edit"] },
+  { key: "pages", label: "Gestion des pages", actions: ["view", "edit"] },
+  { key: "redirects", label: "Redirections", actions: ["view", "edit"] },
 ];
 
 export function permKey(section: string, action: string): string {

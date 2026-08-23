@@ -1,18 +1,19 @@
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { formSubmissionRepository } from "@/repositories/formSubmissionRepository";
-import { updateFormStatusAction } from "./actions";
+import { updateFormStatusAction, deleteFormSubmissionAction } from "./actions";
 import { FormSubmissionRow } from "@/components/admin/FormSubmissionRow";
 
 const TYPE_TABS: Array<{ value: string; label: string }> = [
   { value: "", label: "Tous" },
   { value: "join", label: "Adhésion" },
   { value: "theme", label: "Thème" },
-  { value: "activity", label: "Activité" },
+  { value: "event", label: "Événement" },
   { value: "project", label: "Projet" },
   { value: "content", label: "Contenu" },
   { value: "partner", label: "Partenariat" },
   { value: "donation", label: "Don" },
+  { value: "contact", label: "Contact" },
 ];
 
 const TABLE_COLUMNS = 4;
@@ -87,7 +88,13 @@ export default async function AdminFormsPage({ searchParams }: { searchParams: P
           </thead>
           <tbody>
             {forms.map((f) => (
-              <FormSubmissionRow key={f.id} submission={f} action={updateFormStatusAction} columns={TABLE_COLUMNS} />
+              <FormSubmissionRow
+                key={f.id}
+                submission={f}
+                action={updateFormStatusAction}
+                deleteAction={deleteFormSubmissionAction}
+                columns={TABLE_COLUMNS}
+              />
             ))}
           </tbody>
         </table>

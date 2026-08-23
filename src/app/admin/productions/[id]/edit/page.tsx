@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { productionRepository } from "@/repositories/productionRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { authorRepository } from "@/repositories/authorRepository";
+import { mediaRepository } from "@/repositories/mediaRepository";
 import { ProductionForm } from "@/components/admin/ProductionForm";
 import { updateProductionAction } from "../../actions";
 
@@ -13,13 +15,19 @@ interface Props {
 
 export default async function EditProductionPage({ params }: Props) {
   const { id } = await params;
-  const [item, themes, subThemes] = await Promise.all([
+  const [item, themes, subThemes, authors, media] = await Promise.all([
     productionRepository.getProductionById(id),
     themeRepository.listThemes(true),
     subThemeRepository.listSubThemes(true),
+    authorRepository.listAuthors(),
+    mediaRepository.list(),
   ]);
   if (!item) notFound();
-  const initialSubThemeIds = await productionRepository.getProductionSubThemeIds(id);
+  const [initialSubThemeIds, initialAuthorIds, initialResourceIds] = await Promise.all([
+    productionRepository.getProductionSubThemeIds(id),
+    authorRepository.getProductionAuthorIds(id),
+    productionRepository.getProductionResourceIds(id),
+  ]);
 
   return (
     <section className="admin-panel">
@@ -53,6 +61,10 @@ export default async function EditProductionPage({ params }: Props) {
         themes={themes}
         subThemes={subThemes}
         initialSubThemeIds={initialSubThemeIds}
+        authors={authors}
+        initialAuthorIds={initialAuthorIds}
+        mediaItems={media}
+        initialResourceIds={initialResourceIds}
       />
     </section>
   );

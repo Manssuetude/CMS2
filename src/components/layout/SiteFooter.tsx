@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { FooterConfig } from "@/types/cms";
-import { MEMBER_SPACE_URL } from "@/constants/site";
+import { RNA_NUMBER } from "@/constants/site";
 
 const defaultColumns = [
   {
@@ -9,6 +9,14 @@ const defaultColumns = [
       { label: "À propos", url: "/a-propos" },
       { label: "Nous rejoindre", url: "/nous-rejoindre" },
       { label: "Nous soutenir", url: "/nous-soutenir" },
+    ],
+  },
+  {
+    title: "Informations légales",
+    links: [
+      { label: "Mentions légales", url: "/mentions-legales" },
+      { label: "Politique de confidentialité", url: "/politique-de-confidentialite" },
+      { label: "Politique cookies", url: "/politique-cookies" },
     ],
   },
 ];
@@ -80,9 +88,6 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
             ),
           )}
         </nav>
-        <a className="cta" href={MEMBER_SPACE_URL} target="_blank" rel="noopener noreferrer">
-          Espace membre
-        </a>
         <div className="footer-social">
           {socials.map(({ label, href, Icon }) => (
             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}>
@@ -92,7 +97,9 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} Manssuétude</span>
+        <span>
+          © {new Date().getFullYear()} Manssuétude — Association à but non lucratif — RNA {RNA_NUMBER}
+        </span>
         <span>{description}</span>
       </div>
     </footer>

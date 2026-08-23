@@ -3,20 +3,20 @@
 import { useState } from "react";
 import { toggleThemeFeaturedAction } from "@/app/admin/themes/actions";
 import { toggleProductionFeaturedAction } from "@/app/admin/productions/actions";
-import { toggleActivityFeaturedAction } from "@/app/admin/activites/actions";
+import { toggleEventFeaturedAction } from "@/app/admin/evenements/actions";
 
-type Kind = "theme" | "production" | "activity";
+type Kind = "theme" | "production" | "event";
 
 const ACTIONS = {
   theme: toggleThemeFeaturedAction,
   production: toggleProductionFeaturedAction,
-  activity: toggleActivityFeaturedAction,
+  event: toggleEventFeaturedAction,
 } as const;
 
 const NOUNS: Record<Kind, string> = {
   theme: "ce thème",
   production: "cette production",
-  activity: "cette activité",
+  event: "cet événement",
 };
 
 export function FeaturedToggleButton({

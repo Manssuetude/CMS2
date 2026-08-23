@@ -16,7 +16,13 @@ export async function createSupabaseServerClient() {
       },
       setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
         try {
-          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, {
+              ...options,
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+            }),
+          );
         } catch {
           // setAll depuis un Server Component : ignoré, le middleware gere le rafraichissement
         }

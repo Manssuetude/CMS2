@@ -6,7 +6,7 @@ test("toSubmissionFormType — don → donation, sinon identité", () => {
   assert.equal(toSubmissionFormType("don"), "donation");
   assert.equal(toSubmissionFormType("join"), "join");
   assert.equal(toSubmissionFormType("theme"), "theme");
-  assert.equal(toSubmissionFormType("activity"), "activity");
+  assert.equal(toSubmissionFormType("event"), "event");
 });
 
 test("formDefinitions — chaque formulaire a email + consentement RGPD", () => {

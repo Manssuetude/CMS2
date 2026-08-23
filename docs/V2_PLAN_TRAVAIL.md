@@ -8,10 +8,10 @@
 
 ## 0. Alertes à trancher avant de coder
 
-- [ ] Nom du "Journal éditorial" : le journal d'audit RBAC est renommé `/admin/historique` (« Historique »). "Journal" est libéré pour le chapitre 5. Fait.
-- [ ] Modèle relationnel : on repart sur un schéma propre par relation, au moment de construire chacune (même approche que thème↔sous-thème). Décidé, rien à coder ici — s'applique au chapitre 4.
-- [ ] Médiathèque réutilisable : `MediaField.tsx`/`/admin/identity` seront reconstruits proprement (pas réparés) au chapitre 2. Décidé.
-- [ ] `/admin/backup` retirée (page vide sans logique). Fait.
+- [x] Nom du "Journal éditorial" : le journal d'audit RBAC est renommé `/admin/historique` (« Historique »). "Journal" est libéré pour le chapitre 5, où il désigne maintenant le vrai Journal éditorial public.
+- [x] Modèle relationnel : reparti sur un schéma propre par relation au moment de construire chacune (chapitre 4) — tables de liaison mortes réactivées où pertinent, nouvelles tables sinon.
+- [x] Médiathèque réutilisable : `MediaField.tsx` retiré (code mort, plus aucun usage) plutôt que reconstruit — la réutilisation passe par `ImageCropField`, les sélecteurs auteur/ressources et `CheckboxMultiSelect` (chapitre 2).
+- [x] `/admin/backup` retirée (page vide sans logique).
 
 ---
 
@@ -19,39 +19,39 @@
 
 ### 1. Productions, articles et contenus
 
-- [ ] Ajouter un filtre par thème/sous-thème, date et tri chronologique sur `/productions` (en plus du filtre type existant).
-- [ ] Rendre les tags cliquables (page `/tags/[tag]` ou filtre équivalent) sur les fiches et les cartes.
-- [ ] Étendre le bloc "À lire aussi" à une recommandation par tag commun (pas seulement par sous-thème partagé).
-- [ ] Calculer le temps de lecture automatiquement à partir de la longueur du corps (au lieu d'un champ saisi à la main).
-- [ ] Ajouter des boutons de partage natif (LinkedIn, X, WhatsApp, copier le lien) sur les fiches publiques.
-- [ ] Générer et afficher un sommaire automatique (pas seulement corriger les liens collés) sur les contenus longs.
+- [x] Ajouter un filtre par thème/sous-thème, date et tri chronologique sur `/productions` (en plus du filtre type existant).
+- [x] Rendre les tags cliquables (page `/tags/[tag]` ou filtre équivalent) sur les fiches et les cartes.
+- [x] Étendre le bloc "À lire aussi" à une recommandation par tag commun (pas seulement par sous-thème partagé).
+- [x] Calculer le temps de lecture automatiquement à partir de la longueur du corps (au lieu d'un champ saisi à la main).
+- [x] Ajouter des boutons de partage natif (LinkedIn, X, WhatsApp, copier le lien) sur les fiches publiques.
+- [x] Générer et afficher un sommaire automatique (pas seulement corriger les liens collés) sur les contenus longs.
 - [ ] Étudier un mécanisme de notes de bas de page / bibliographie structurée pour les contenus longs.
 
 ### 2. Vidéos, audio et médias
 
-- [ ] Construire un vrai formulaire d'ajout vidéo (upload ou URL YouTube/Vimeo) avec miniature, titre, description, durée, intervenants — remplace l'embed brut CKEditor.
-- [ ] Décider d'un hébergement vidéo adapté (CDN dédié) plutôt que de servir les fichiers depuis Supabase Storage.
-- [ ] Finaliser l'assistant d'import média pour YouTube/Vimeo (actuellement un placeholder non fonctionnel).
-- [ ] Construire l'association vidéo ↔ thème/projet/activité/production (dépend du modèle relationnel du chapitre 4).
-- [ ] Ajouter une gestion audio/podcast dédiée (lecteur, durée, épisodes) — distincte de la simple catégorie "Podcast" actuelle.
-- [ ] Câbler la réutilisation d'un média déjà uploadé (réparer `MediaField.tsx` : boutons "médiathèque"/"Google Drive" actuellement sans action) et l'intégrer aux formulaires (ProductionForm, ActiviteForm...).
+- [x] Construire un vrai formulaire d'ajout vidéo (URL YouTube/Vimeo) avec miniature (thumbnail existant), titre, description, durée, auteurs/intervenants (fiches auteur du chapitre 4) — remplace l'embed brut CKEditor. Champ `videoUrl` dédié sur les productions de type Video, rendu en lecteur intégré responsive (16:9) sur la fiche publique.
+- [ ] Décider d'un hébergement vidéo adapté (CDN dédié) — écarté volontairement : on reste sur des embeds YouTube/Vimeo, pas de nouveau prestataire.
+- [x] Finaliser l'assistant d'import média pour YouTube/Vimeo — formulaire fonctionnel + récupération automatique titre/miniature via oEmbed public (YouTube/Vimeo, sans clé API), vérifié contre l'API réelle.
+- [x] Construire l'association vidéo ↔ thème/projet/production — une vidéo est une production (type Video), donc héritée du modèle relationnel du chapitre 4 (production↔projet, thème indirect via sous-thème). Vidéo↔activité non modélisée (pas demandé par le chapitre 4).
+- [x] Ajouter une gestion audio/podcast dédiée (lecteur natif `<audio>`, durée) — même champ `videoUrl` réutilisé (fichier direct ou lien). "Épisodes" (regroupement d'une série) non construit — chaque épisode reste une production Podcast individuelle pour l'instant.
+- [x] Câbler la réutilisation d'un média déjà uploadé — résolu autrement que prévu : `MediaField.tsx` était cassé et **plus utilisé nulle part** (page `/admin/identity` orpheline supprimée), donc retiré comme code mort plutôt que réparé. La réutilisation existe déjà via `ImageCropField` (images hero), le sélecteur photo des auteurs, et `CheckboxMultiSelect` (ressources/auteurs/thèmes/projets/activités) sur les formulaires de contenu.
 
 ### 3. Agenda et événements
 
-- [ ] Construire une vue calendrier publique sur `/activites` (au-delà de la liste filtrable actuelle).
-- [ ] Étendre le type `Activity` : horaires précis, adresse/lieu, capacité, intervenants, programme.
-- [ ] Ajouter un champ lien EventBrite sur les activités.
-- [ ] Ajouter un statut d'inscription (à venir / inscriptions ouvertes / complet / terminé), au-delà du badge à venir/passée calculé côté client.
-- [ ] Afficher publiquement la galerie photo (`gallery`) des activités passées (actuellement uploadée mais jamais montrée), + section "compte-rendu" structurée.
+- [x] Construire une vue calendrier publique sur `/activites` (bascule Liste/Calendrier, en plus de la liste filtrable existante). Grille mensuelle responsive (colonne unique sous 640px), logique de grille extraite en utilitaire pur partagé avec le calendrier admin (`calendarGrid.ts`, testé).
+- [x] Étendre le type `Activity` : horaires précis (début/fin), adresse/lieu, capacité, intervenants (chapitre 4). Programme = corps riche existant (CKEditor), pas de champ dédié séparé.
+- [x] Ajouter un champ lien EventBrite sur les activités — bouton d'inscription dédié sur la fiche publique s'il est renseigné.
+- [x] Ajouter un statut d'inscription (à venir / inscriptions ouvertes / complet / terminé) — saisie manuelle admin, sinon déduit automatiquement de la date (`resolveRegistrationStatus`, testé).
+- [x] Afficher publiquement la galerie photo (`gallery`) des activités passées (actuellement uploadée mais jamais montrée), + section "compte-rendu" structurée — grille photo affichée sous "Compte-rendu en images" pour les activités passées uniquement.
 
 ### 4. Architecture éditoriale relationnelle
 
-- [ ] Concevoir le modèle relationnel définitif (remplace ou adapte les tables mortes) : thème↔activité, thème↔projet, projet↔production, projet↔activité, projet↔média.
-- [ ] Structurer "auteur" en fiche réutilisable (au lieu du champ texte libre actuel), reliable à plusieurs productions.
-- [ ] Ajouter la relation production ↔ ressources/références.
-- [ ] Ajouter un champ "intervenants" structuré sur les activités.
-- [ ] Faire de la page Thème un hub complet (productions/activités/projets liés, pas seulement les sous-thèmes).
-- [ ] Faire de la page Projet un hub complet (productions, activités, Journal, équipe, médias liés — actuellement une simple fiche isolée).
+- [x] Concevoir le modèle relationnel définitif : thème↔activité, thème↔projet, projet↔production, projet↔activité réactivés (tables mortes, maintenant utilisées) — sauf projet↔média, non fait (`documents` couvre déjà l'essentiel du besoin).
+- [x] Structurer "auteur" en fiche réutilisable (au lieu du champ texte libre actuel), reliable à plusieurs productions — admin `/admin/auteurs` (CRUD complet) + sélecteur dans les productions + affichage public.
+- [x] Ajouter la relation production ↔ ressources/références.
+- [x] Ajouter un champ "intervenants" structuré sur les activités (nom + rôle, admin + affichage public).
+- [x] Faire de la page Thème un hub complet (sous-thèmes + activités + projets liés).
+- [ ] Faire de la page Projet un hub complet — productions et activités liées affichées ; **Journal** (n'existe pas encore, chapitre 5) et équipe/médias liés (projet↔média non fait) restent à construire.
 
 ---
 
@@ -59,28 +59,28 @@
 
 ### 5. Journal de Manssuétude
 
-- [ ] Créer l'entité "entrée de Journal" (titre, date, texte court/long, image/vidéo/audio, auteur facultatif, catégorie).
-- [ ] Admin : création/édition d'entrées, association à thème/projet/activité/production, programmation de publication.
-- [ ] Public : flux général du Journal, filtres par catégorie/année, mise en avant sélective sur la homepage, partage social.
-- [ ] Afficher automatiquement les entrées de Journal liées dans la chronologie d'un projet (dépend du hub Projet ci-dessus).
+- [x] Créer l'entité "entrée de Journal" (titre, date, texte court/long, image, auteur facultatif — fiche réutilisable du chapitre 4 —, catégorie). Vidéo/audio non intégrés directement sur une entrée (le corps riche permet un embed collé, comme pour les productions avant le chapitre 2 — pas de champ dédié).
+- [x] Admin `/admin/journal` : création/édition d'entrées, association à thème/projet/activité/production (FK simple, une par entrée). **Programmation de publication non faite** — statut brouillon/publié/archivé classique uniquement, pas de date de mise en ligne automatique.
+- [x] Public `/journal` : flux général, filtres par catégorie/année, mise en avant sélective sur la homepage (entrées `featured`, repli sur les 3 plus récentes), partage social (réutilise `ShareButtons` du chapitre 1).
+- [x] Affichage automatique des entrées de Journal liées dans la chronologie d'un projet — section "Le Journal de ce projet" sur `/projets/[slug]`.
 
 ### 6. Contributions extérieures
 
-- [ ] Envoyer un accusé de réception automatique par email au visiteur (Resend déjà en place, juste pas branché sur ce flux).
-- [ ] Étendre le statut générique (reçu/en cours/traité/archivé) vers un vrai workflow éditorial (soumis → en étude → accepté/refusé → en rédaction/révision → publié).
+- [x] Envoyer un accusé de réception automatique par email au visiteur — branché sur les 7 formulaires publics (un message adapté par type), best-effort (n'échoue jamais la soumission si l'email ne part pas), vérifié en local (log gracieux sans clé Resend, comme le flux d'invitation existant).
+- [ ] Étendre le statut générique (reçu/en cours/traité/archivé) vers un vrai workflow éditorial (soumis → en étude → accepté/refusé → en rédaction/révision → publié) — non fait : le statut est une colonne partagée par les 7 types de formulaires, un workflow spécifique aux contributions demanderait de la sortir de ce système commun. À concevoir avec l'équipe plutôt qu'à improviser cette nuit.
 
 ### 7. Newsletter
 
-- [ ] Choisir/valider l'outil d'emailing (Brevo pressenti) avec l'équipe.
-- [ ] Ajouter un formulaire d'inscription newsletter (footer, homepage, fin de contenu).
-- [ ] Intégrer l'API de l'outil retenu : synchronisation des inscrits, gestion du consentement et de la désinscription.
+- [x] Choisir/valider l'outil d'emailing — Brevo confirmé, clé API fournie et testée en conditions réelles.
+- [x] Ajouter un formulaire d'inscription newsletter (footer sur toutes les pages, homepage). Pas de bloc "fin de contenu" dédié — le footer couvre déjà cette position sur les fiches production/journal/activité.
+- [x] Intégrer l'API Brevo : synchronisation des inscrits (création/mise à jour de contact, appel REST direct plutôt que le SDK complet `@getbrevo/brevo` — trop large pour un seul endpoint), consentement RGPD explicite (case à cocher obligatoire, même sur la variante compacte du footer). Désinscription gérée nativement par Brevo (lien automatique dans leurs emails) — rien à construire côté application.
 
 ### 8. Rejoindre / candidater
 
-- [ ] Ajouter les champs manquants au formulaire "join" : compétences, disponibilités, commissions souhaitées.
-- [ ] Activer l'upload de CV (le type de champ existe déjà dans le modèle, juste jamais utilisé).
-- [ ] Envoyer une confirmation automatique au candidat + page de confirmation expliquant la suite.
-- [ ] Construire un suivi de statut de candidature dédié (au-delà du statut générique de soumission).
+- [x] Ajouter les champs manquants au formulaire "join" : compétences, disponibilités, commission souhaitée.
+- [ ] **⚠️ Conflit détecté, non fait délibérément** : "Activer l'upload de CV" contredit une décision déjà prise et testée sur ce projet — `CLAUDE.md` documente "Plus de pièce jointe" pour les formulaires publics, et `tests/forms.test.ts` a un test dédié (« pas de champ de type file (pièce jointe retirée) ») qui casserait si on l'ajoutait. Le point du backlog d'origine ("le type de champ existe déjà, juste jamais utilisé") est donc obsolète — le champ file a été retiré intentionnellement depuis. **À trancher avec l'équipe avant d'y toucher.**
+- [x] Envoyer une confirmation automatique au candidat (chapitre 6, déjà branché sur les 7 formulaires) + message de confirmation détaillé expliquant la suite (délai de réponse, prochaine étape) spécifique à la candidature, affiché dans la modale après envoi.
+- [ ] Construire un suivi de statut de candidature dédié — non fait, même raison que le workflow du chapitre 6 (statut partagé entre les 7 types de formulaires).
 
 ### 9. Soutenir Manssuétude
 
@@ -93,43 +93,44 @@
 
 ## P2 — Profondeur éditoriale et différenciation
 
-### 10. Dossiers / collections
+### 10. Dossiers / collections — fusionné avec le chapitre 11
 
-- [ ] Concevoir l'entité "Dossier" (regroupement hétérogène : productions, vidéos, événements, ressources, Journal) — probablement à repartir de zéro plutôt que réactiver `cms_collections`/`entity_relations`.
-- [ ] Page Dossier avec introduction éditoriale + sélection ordonnée de contenus, URL unique partageable.
-- [ ] Permettre à un même contenu d'appartenir à plusieurs dossiers.
+- [x] Concevoir l'entité "Dossier" (regroupement hétérogène : productions, activités, projets, ressources, Journal). **Décision validée** : entité neuve (`dossiers` + `dossier_items` polymorphe), pas de réactivation de `cms_collections`/`entity_relations` (schéma legacy, enum `entity_type` déjà obsolète face aux entités actuelles).
+- [x] Page Dossier avec introduction éditoriale (riche) + sélection ordonnée de contenus, URL unique partageable (`/dossiers/[slug]`).
+- [x] Permettre à un même contenu d'appartenir à plusieurs dossiers (table de liaison `dossier_items`, pas de contrainte d'unicité côté contenu).
 
-### 11. Parcours de lecture
+### 11. Parcours de lecture — fusionné avec le chapitre 10
 
-- [ ] Concevoir l'entité "Parcours" : séquence ordonnée de contenus hétérogènes (articles, vidéos, activités, ressources externes) avec progression affichée.
-- [ ] Admin de création/édition de parcours ; page publique de lecture guidée.
+- [x] **Décision validée** : pas de seconde entité "Parcours" — un Dossier a un mode `guide` (parcours séquentiel numéroté, avec filet de connexion visuel) ou `libre` (grille), pour éviter deux systèmes quasi identiques.
+- [x] Admin de création/édition (`/admin/dossiers`, sélecteur de contenus par type + réordonnancement manuel) ; page publique de lecture guidée (rendu numéroté en mode guidé).
 
 ### 12. Bibliothèque de ressources
 
-- [ ] Étendre le modèle `Media`/`Ressource` : auteur/institution, date, source, description, thème associé (au-delà des champs actuels title/description/tags/type).
-- [ ] Ajouter recherche et filtres dédiés sur `/ressources` (actuellement une simple grille sans filtre).
-- [ ] Décider si l'administration reste dans `/admin/media` ou devient une section "Commission Ressources" séparée.
+- [x] Étendre le modèle `Media`/`Ressource` : auteur, institution, date de publication, thème associé (colonnes `author`/`institution`/`published_date`/`theme_id` sur `resources`). Édition via `/admin/media/[id]/edit` (nouveau, la médiathèque n'avait qu'un renommage rapide auparavant).
+- [x] Ajouter recherche et filtres dédiés sur `/ressources` (texte + type + thème). **Bonus corrigé au passage** : `/ressources` et `/ressources/[slug]` affichaient tous les médias sans filtrer sur `visibility="public"` (brouillons/privés visibles publiquement) — `mediaRepository.list()` accepte maintenant un paramètre `onlyPublic`.
+- [x] **Décision validée** : l'administration reste dans `/admin/media`, pas de section "Commission Ressources" séparée (pas de nouvelle permission RBAC à créer).
 
 ### 13. Expérience de lecture avancée
 
-- [ ] Barre de progression de lecture sur les contenus longs.
-- [ ] Mode impression dédié (feuille de style `@media print`).
-- [ ] Aperçu PDF intégré (viewer, pas seulement un lien de téléchargement).
-- [ ] Fonction "Citer cette publication" (référence bibliographique générée).
-- [ ] Gestion de versions/éditions d'une publication.
-- [ ] Fonction de partage d'un extrait ou d'une citation forte.
+- [x] Barre de progression de lecture sur les contenus longs (`ReadingProgressBar`, productions et Journal).
+- [x] Mode impression dédié (`@media print` — masque header/footer/CTA/sommaire, garde le texte).
+- [x] Aperçu PDF intégré (`<iframe>` natif du navigateur, pas de nouvelle dépendance — sur les productions avec fichier PDF).
+- [x] Fonction "Citer cette publication" (`CiteButton`, référence courte générée + copie).
+- [x] Fonction de partage d'un extrait ou d'une citation forte (`QuoteShareBar`, barre flottante à la sélection de texte).
+
+~~Gestion de versions/éditions d'une publication.~~ **Retiré du plan** (décision validée) : trop lourd pour la valeur apportée à ce stade.
 
 ### 14. PERCA dynamique
 
-- [ ] Rendre chaque étape de la méthode PERCA cliquable, avec un contenu détaillé propre par étape (au lieu du texte statique actuel).
-- [ ] Ajouter les champs admin correspondants (actuellement `/admin/perca` ne gère qu'un texte global).
+- [x] Rendre chaque étape de la méthode PERCA cliquable, avec un contenu détaillé propre par étape (déplié sur place, lettre/mot restent fixes). Une étape sans contenu reste non cliquable.
+- [x] Ajouter les champs admin correspondants (`/admin/perca` gère maintenant un titre + un corps riche par étape, en plus du texte global).
 
 ### 15. Mesure d'impact et analytics
 
-- [ ] Compteurs administrables (membres, productions, activités, participants, projets, contributeurs).
-- [ ] Suivi des vues et téléchargements par production.
-- [ ] Suivi des inscriptions aux événements et des conversions (visiteur → newsletter/événement/candidature/contribution/don).
-- [ ] Dashboard analytics interne dans l'admin.
+- [x] Compteurs administrables (membres, productions, activités, participants, projets, contributeurs...). **Décision validée** : chiffres saisis à la main par l'équipe (`impact_stats` sur la page d'accueil, éditeur libre label/valeur dans `/admin/homepage`, affichés en page d'accueil) plutôt que calculés — un chiffre comme "membres de l'association" n'a pas de source DB naturelle, et l'équipe garde la main sur ce qui est mis en avant.
+- [ ] Suivi des vues et téléchargements par production. **Décision validée : non fait** — on s'appuie sur Vercel Analytics déjà intégré plutôt que construire des compteurs maison.
+- [ ] Suivi des inscriptions aux événements et des conversions (visiteur → newsletter/événement/candidature/contribution/don). **Non fait** : suppose un système d'inscription aux événements qui n'existe pas encore (les activités renvoient vers Eventbrite) — chantier à part entière, pas décidé cette nuit.
+- [x] Dashboard analytics interne dans l'admin. `/admin/dashboard` avait déjà activités/productions/projets/formulaires ; ajout d'un compteur Contributeurs (auteurs référencés).
 
 ---
 
@@ -146,26 +147,26 @@
 
 ### 16. Homepage et mise en avant éditoriale
 
-- [ ] Ajouter des sélections éditoriales nommées ("À découvrir", "En débat", "Pour aller plus loin") en complément du bloc "sujet du moment" déjà administrable.
+- [x] Ajouter des sélections éditoriales nommées ("À découvrir", "En débat", "Pour aller plus loin") en complément du bloc "sujet du moment" déjà administrable. **Réutilise l'entité Dossier** (chapitre 10+11) plutôt qu'un second mécanisme de sélection : dans `/admin/homepage`, on choisit des dossiers existants à mettre en avant, chacun rendu en page d'accueil sous son propre titre.
 
 ### 17. SEO, partage et navigation
 
-- [ ] Ajouter des champs meta title/description administrables sur productions, activités, projets et thèmes (actuellement réservés aux pages statiques).
-- [ ] Ajouter des données structurées JSON-LD spécifiques par type de contenu (Article, Event, Person) en complément du JSON-LD global existant.
-- [ ] Ajouter un mécanisme de redirections 301.
-- [ ] Enrichir la page 404 (recherche + recommandations de contenus).
+- [x] Ajouter des champs meta title/description administrables sur productions, activités, projets et thèmes (mêmes colonnes `seo_title`/`seo_description` que les pages statiques ; les fiches d'édition affichent une section SEO dédiée, avec repli automatique sur le titre/la description existants si non renseignés).
+- [x] Ajouter des données structurées JSON-LD spécifiques par type de contenu (Article sur productions et Journal, Event sur activités) en complément du JSON-LD global existant. Person intégré comme `author` structuré de l'Article plutôt qu'en page dédiée (pas de page publique par auteur).
+- [x] Ajouter un mécanisme de redirections 301. Table `redirects` administrable (`/admin/redirects`), appliquée par le middleware sur les routes publiques (lookup léger via l'API REST Supabase, politique RLS de lecture anonyme dédiée à cette table).
+- [x] Enrichir la page 404 (recherche + recommandations de contenus). `MaintenanceNotice` inchangé (réutilisé ailleurs pour d'autres états vides) ; formulaire de recherche + sélection de productions/thèmes ajoutés autour, uniquement sur la 404 racine.
 
 ### 18. Socle technique
 
-- [ ] Migrer les images vers `next/image` (la config `remotePatterns` existe déjà, juste inexploitée) — gain de performance rapide.
-- [ ] Ajouter un skip-link "aller au contenu" et poursuivre l'audit d'accessibilité (contrastes, ARIA, navigation clavier).
-- [ ] Ajouter une bannière de consentement cookies/RGPD.
-- [ ] Ajouter une protection anti-spam sur les 7 formulaires publics (captcha ou honeypot).
-- [ ] Implémenter réellement l'export/import de sauvegarde (ou retirer la page vide actuelle).
-- [ ] Brancher un outil de suivi d'erreurs applicatif (Sentry ou équivalent).
-- [ ] Ajouter des en-têtes de sécurité (CSP, X-Frame-Options) dans `next.config.ts`.
+- [ ] Migrer les images vers `next/image` (la config `remotePatterns` existe déjà, juste inexploitée) — gain de performance rapide. **Reporté** : migration transversale à risque (recadrage non destructif `cropToImageStyle` à revalider sur chaque emplacement), pas de déploiement live cette nuit pour vérifier visuellement chaque page — à faire de jour avec vérification visuelle.
+- [x] Ajouter un skip-link "aller au contenu" et poursuivre l'audit d'accessibilité (contrastes, ARIA, navigation clavier). Skip-link fonctionnel (`(public)/layout.tsx`, CSS dédiée), vérifié en HTML rendu.
+- [x] Ajouter une bannière de consentement cookies/RGPD. `CookieConsentBanner` (localStorage, opt-in), stylée indépendamment de `.button` (qui était taillée pour les CTA de hero et déformait le bandeau).
+- [x] Ajouter une protection anti-spam sur les 7 formulaires publics (captcha ou honeypot). Honeypot simple (`src/lib/honeypot.ts`) sur `FormModal` et `NewsletterForm`, vérifié côté serveur.
+- [x] Implémenter réellement l'export/import de sauvegarde (ou retirer la page vide actuelle). Page vide déjà retirée lors du nettoyage précédent.
+- [ ] Brancher un outil de suivi d'erreurs applicatif (Sentry ou équivalent). **Reporté** : pas de compte Sentry disponible cette nuit.
+- [x] Ajouter des en-têtes de sécurité (CSP, X-Frame-Options) dans `next.config.ts`. X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy ajoutés. **CSP volontairement omise** : trop risqué de la configurer à l'aveugle sans déploiement live pour vérifier qu'elle ne casse pas CKEditor/embeds vidéo/Analytics.
 - [ ] Ajouter un rate-limiting sur les routes API publiques (formulaires notamment).
-- [ ] Conditionner les analytics au consentement cookies une fois la bannière RGPD en place.
+- [x] Conditionner les analytics au consentement cookies une fois la bannière RGPD en place. `ConsentGate` masque `<Analytics/>`/`<SpeedInsights/>` tant que le consentement n'est pas explicitement accepté.
 
 ---
 

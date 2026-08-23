@@ -98,6 +98,34 @@ export function ImportWizard() {
               {loading ? "Import en cours…" : "Importer dans la médiathèque"}
             </button>
           </form>
+        ) : source === "video" ? (
+          <form ref={formRef} onSubmit={handleUpload} className="form-grid">
+            <input type="hidden" name="type" value="video" />
+            <label>
+              URL YouTube ou Vimeo
+              <input name="externalUrl" type="url" required placeholder="https://www.youtube.com/watch?v=..." />
+            </label>
+            <label>
+              Titre (optionnel)
+              <input name="title" placeholder="Récupéré automatiquement si laissé vide" />
+            </label>
+            <label>
+              Tags
+              <input name="tags" placeholder="conférence, PERCA, 2026" />
+            </label>
+            <label>
+              Visibilité
+              <select name="visibility" defaultValue="public">
+                <option value="draft">Brouillon</option>
+                <option value="public">Public</option>
+                <option value="private">Privé</option>
+              </select>
+            </label>
+            {error && <p style={{ color: "var(--error, #b91c1c)", margin: 0 }}>{error}</p>}
+            <button className="button primary" type="submit" disabled={loading}>
+              {loading ? "Import en cours…" : "Ajouter la vidéo"}
+            </button>
+          </form>
         ) : source === "url" ? (
           <form ref={formRef} onSubmit={handleUpload} className="form-grid">
             <input type="hidden" name="type" value="document" />

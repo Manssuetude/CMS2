@@ -4,22 +4,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { MEMBER_SPACE_URL } from "@/constants/site";
+import { MAIN_NAV_ITEMS, MEMBER_SPACE_URL } from "@/constants/site";
+import type { NavVisibility } from "@/types/cms";
 
-const nav = [
-  ["Accueil", "/"],
-  ["Thèmes", "/themes"],
-  ["Activités", "/activites"],
-  ["Productions", "/productions"],
-  ["Projets", "/projets"],
-  ["À propos", "/a-propos"],
-] as const;
-
-export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
+export function SiteHeader({
+  logoUrl,
+  navVisibility = {},
+}: {
+  logoUrl?: string | null;
+  navVisibility?: NavVisibility;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const isVisible = (item: (typeof MAIN_NAV_ITEMS)[number]) => !item.togglable || navVisibility[item.key] !== false;
+  const nav = MAIN_NAV_ITEMS.filter((item) => item.placement === "nav" && isVisible(item)).map(
+    (item) => [item.label, item.key] as const,
+  );
+  const showSupportLink = MAIN_NAV_ITEMS.some((item) => item.key === "/nous-soutenir" && isVisible(item));
 
   return (
     <header className="site-header">
@@ -53,9 +56,11 @@ export function SiteHeader({ logoUrl }: { logoUrl?: string | null }) {
           ))}
         </div>
         <div className="header-actions">
-          <Link className="support-link" href="/nous-soutenir" onClick={() => setOpen(false)}>
-            Nous soutenir
-          </Link>
+          {showSupportLink && (
+            <Link className="support-link" href="/nous-soutenir" onClick={() => setOpen(false)}>
+              Nous soutenir
+            </Link>
+          )}
           <ThemeToggle />
           <Link className="cta" href="/nous-rejoindre" onClick={() => setOpen(false)}>
             Rejoindre

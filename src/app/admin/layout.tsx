@@ -9,15 +9,20 @@ export const dynamic = "force-dynamic";
 const GATED_SECTIONS = [
   "themes",
   "sousthemes",
-  "activites",
+  "auteurs",
+  "evenements",
+  "formatsactivites",
   "productions",
   "projets",
+  "journal",
+  "dossiers",
   "media",
   "forms",
   "homepage",
   "perca",
   "history",
   "pages",
+  "redirects",
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

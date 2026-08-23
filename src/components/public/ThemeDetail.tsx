@@ -1,4 +1,4 @@
-import type { Theme, SubTheme } from "@/types/cms";
+import type { Event, Project, Theme, SubTheme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { titleFontSize } from "@/utils/titleSize";
@@ -6,9 +6,11 @@ import { titleFontSize } from "@/utils/titleSize";
 interface Props {
   item: Theme;
   subThemes: SubTheme[];
+  events?: Event[];
+  projects?: Project[];
 }
 
-export function ThemeDetail({ item, subThemes }: Props) {
+export function ThemeDetail({ item, subThemes, events = [], projects = [] }: Props) {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -28,7 +30,7 @@ export function ThemeDetail({ item, subThemes }: Props) {
       {/* ── Sous-thèmes ──────────────────────────────────────────── */}
       {subThemes.length > 0 ? (
         <CardGrid
-          title={`Sujets traités sur « ${item.title} »`}
+          title="Sujets traités sur ce thème"
           items={subThemes.map((st) => ({
             title: st.title,
             description: st.description,
@@ -43,6 +45,32 @@ export function ThemeDetail({ item, subThemes }: Props) {
           </div>
           <p style={{ color: "var(--ed-muted)" }}>Aucun sous-thème publié sur ce thème pour l&apos;instant.</p>
         </section>
+      )}
+
+      {/* ── Projets liés ─────────────────────────────────────────── */}
+      {projects.length > 0 && (
+        <CardGrid
+          title="Projets liés"
+          items={projects.map((p) => ({
+            title: p.title,
+            description: p.description,
+            href: `/projets/${p.slug}`,
+            meta: p.category,
+          }))}
+        />
+      )}
+
+      {/* ── Événements liés ──────────────────────────────────────── */}
+      {events.length > 0 && (
+        <CardGrid
+          title="Événements liés"
+          items={events.map((e) => ({
+            title: e.title,
+            description: e.description,
+            href: `/evenements/${e.slug}`,
+            meta: e.format,
+          }))}
+        />
       )}
     </>
   );

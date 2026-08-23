@@ -20,12 +20,15 @@ function mapProduction(row: DataRow): Production {
     date: asNullableString(row.date),
     thumbnailId: asNullableString(row.thumbnail_id),
     fileId: asNullableString(row.file_id),
+    videoUrl: asNullableString(row.video_url),
     readingTime: asNullableString(row.reading_time),
     pages: asNullableString(row.pages),
     tags: asStringArray(row.tags),
     status: asString(row.status, "draft") as ContentStatus,
     featured: asBoolean(row.featured),
     downloadLabel: asNullableString(row.download_label),
+    seoTitle: asNullableString(row.seo_title),
+    seoDescription: asNullableString(row.seo_description),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };
@@ -105,6 +108,18 @@ export const productionRepository = {
     }
   },
 
+  async getAllProductionSubThemeLinks(): Promise<Record<string, string[]>> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("sub_theme_productions").select("production_id, sub_theme_id");
+    if (error) throw error;
+    const map: Record<string, string[]> = {};
+    for (const row of data ?? []) {
+      const productionId = String(row.production_id);
+      (map[productionId] ??= []).push(String(row.sub_theme_id));
+    }
+    return map;
+  },
+
   async getProductionsBySubTheme(subThemeId: string): Promise<Production[]> {
     const db = getSupabaseAdmin();
     const { data } = await db.from("sub_theme_productions").select("production_id").eq("sub_theme_id", subThemeId);
@@ -118,5 +133,38 @@ export const productionRepository = {
       .order("date", { ascending: false });
     if (error) throw error;
     return (rows ?? []).map(mapProduction);
+  },
+
+  // ── Production ↔ Projets (many-to-many) ──────────────────────────────
+  async getProductionsByProject(projectId: string): Promise<Production[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("production_projects").select("production_id").eq("project_id", projectId);
+    const ids = (data ?? []).map((r) => String(r.production_id));
+    if (ids.length === 0) return [];
+    const { data: rows, error } = await db
+      .from("productions")
+      .select("*")
+      .in("id", ids)
+      .eq("status", "published")
+      .order("date", { ascending: false });
+    if (error) throw error;
+    return (rows ?? []).map(mapProduction);
+  },
+
+  // ── Production ↔ Ressources/références (many-to-many) ────────────────
+  async getProductionResourceIds(productionId: string): Promise<string[]> {
+    const db = getSupabaseAdmin();
+    const { data } = await db.from("production_resources").select("resource_id").eq("production_id", productionId);
+    return (data ?? []).map((r) => String(r.resource_id));
+  },
+
+  async setProductionResources(productionId: string, resourceIds: string[]): Promise<void> {
+    const db = getSupabaseAdmin();
+    await db.from("production_resources").delete().eq("production_id", productionId);
+    if (resourceIds.length > 0) {
+      const rows = resourceIds.map((resourceId) => ({ production_id: productionId, resource_id: resourceId }));
+      const { error } = await db.from("production_resources").insert(rows);
+      if (error) throw error;
+    }
   },
 };

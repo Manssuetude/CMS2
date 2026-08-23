@@ -16,7 +16,21 @@ export const visibilitySchema = z.enum([
   "draft",
 ]);
 
-export const formTypeSchema = z.enum(["join", "project", "content", "partner", "donation", "theme", "activity"]);
+export const formTypeSchema = z.enum([
+  "join",
+  "project",
+  "content",
+  "partner",
+  "donation",
+  "theme",
+  "event",
+  "contact",
+]);
+
+export const newsletterSubscribeSchema = z.object({
+  email: z.string().email("Adresse email invalide."),
+  consent: z.literal("on", { errorMap: () => ({ message: "Le consentement est requis." }) }),
+});
 
 export const mediaMetadataSchema = z.object({
   title: z.string().optional(),

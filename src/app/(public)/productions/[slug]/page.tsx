@@ -5,7 +5,9 @@ import { productionRepository } from "@/repositories/productionRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { authorRepository } from "@/repositories/authorRepository";
 import { buildDetailMetadata } from "@/lib/seo";
+import { rankRelatedProductions } from "@/utils/relatedProductions";
 
 export const revalidate = 60;
 
@@ -16,8 +18,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!item) return {};
     const imageUrl = await mediaRepository.getResourceUrl(item.thumbnailId);
     return buildDetailMetadata({
-      title: item.title,
-      description: item.description,
+      title: item.seoTitle || item.title,
+      description: item.seoDescription || item.description,
       path: `/productions/${item.slug}`,
       imageUrl,
       ogType: "article",
@@ -42,22 +44,28 @@ export default async function ProductionPage({ params }: { params: Promise<{ slu
   const item = await productionRepository.getProduction(slug);
   if (!item) notFound();
 
-  const [allThemes, allSubThemes, subThemeIds, fileUrl] = await Promise.all([
-    themeRepository.listThemes(false),
-    subThemeRepository.listSubThemes(false),
-    productionRepository.getProductionSubThemeIds(item.id),
-    mediaRepository.getResourceUrl(item.fileId),
-  ]);
+  const [allThemes, allSubThemes, subThemeIds, fileUrl, allProductions, subThemeLinks, authorIds, allAuthors] =
+    await Promise.all([
+      themeRepository.listThemes(false),
+      subThemeRepository.listSubThemes(false),
+      productionRepository.getProductionSubThemeIds(item.id),
+      mediaRepository.getResourceUrl(item.fileId),
+      productionRepository.listProductions(),
+      productionRepository.getAllProductionSubThemeLinks(),
+      authorRepository.getProductionAuthorIds(item.id),
+      authorRepository.listAuthors(),
+    ]);
 
   const enriched = { ...item, subThemeIds };
-  const relatedProductions =
-    subThemeIds.length > 0 ? await productionRepository.getProductionsBySubTheme(subThemeIds[0]) : [];
+  const relatedProductions = rankRelatedProductions(item, subThemeIds, allProductions, subThemeLinks);
+  const authors = allAuthors.filter((a) => authorIds.includes(a.id));
 
   return (
     <ProductionDetail
       item={enriched}
       allThemes={allThemes}
       allSubThemes={allSubThemes}
+      authors={authors}
       relatedProductions={relatedProductions}
       fileUrl={fileUrl}
     />

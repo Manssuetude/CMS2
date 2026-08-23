@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, FileText, FolderKanban, Inbox, Clock, ArrowRight } from "lucide-react";
+import { CalendarDays, FileText, FolderKanban, Inbox, Clock, ArrowRight, UserPen } from "lucide-react";
 import { dashboardRepository } from "@/repositories/dashboardRepository";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -17,13 +17,13 @@ const FORM_TYPE_LABEL: Record<string, string> = {
 };
 
 export default async function DashboardPage() {
-  const { activities, productions, projects, forms } = await dashboardRepository.getMetrics();
+  const { events, productions, projects, forms, authorsCount } = await dashboardRepository.getMetrics();
 
   const now = new Date();
 
-  const actPublished = activities.filter((a) => a.status === "published").length;
-  const actDraft = activities.filter((a) => a.status === "draft").length;
-  const actUpcoming = activities.filter((a) => a.date && new Date(a.date) >= now).length;
+  const actPublished = events.filter((e) => e.status === "published").length;
+  const actDraft = events.filter((e) => e.status === "draft").length;
+  const actUpcoming = events.filter((e) => e.date && new Date(e.date) >= now).length;
 
   const prodPublished = productions.filter((p) => p.status === "published").length;
   const prodDraft = productions.filter((p) => p.status === "draft").length;
@@ -35,15 +35,15 @@ export default async function DashboardPage() {
   const formsTotal = forms.length;
 
   const recent = [
-    ...activities.slice(0, 6).map((a) => ({ ...a, type: "Activité", href: `/admin/activites/${a.id}/edit` })),
+    ...events.slice(0, 6).map((e) => ({ ...e, type: "Événement", href: `/admin/evenements/${e.id}/edit` })),
     ...productions.slice(0, 6).map((p) => ({ ...p, type: "Production", href: `/admin/productions/${p.id}/edit` })),
     ...projects.slice(0, 6).map((p) => ({ ...p, type: "Projet", href: `/admin/projets/${p.id}/edit` })),
   ]
     .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
     .slice(0, 10);
 
-  const upcoming = activities
-    .filter((a) => a.date && new Date(a.date) >= now)
+  const upcoming = events
+    .filter((e) => e.date && new Date(e.date) >= now)
     .sort((a, b) => new Date(a.date!).getTime() - new Date(b.date!).getTime())
     .slice(0, 5);
 
@@ -53,10 +53,10 @@ export default async function DashboardPage() {
     <div style={{ maxWidth: 1100, marginLeft: "auto", marginRight: "auto" }}>
       {/* Metrics */}
       <div className="admin-metrics">
-        <Link href="/admin/activites" className="metric-card">
+        <Link href="/admin/evenements" className="metric-card">
           <div className="metric-card-header">
             <div>
-              <div className="metric-card-label">Activités</div>
+              <div className="metric-card-label">Événements</div>
               <div className="metric-card-count">{actPublished + actDraft}</div>
             </div>
             <div className="metric-icon orange">
@@ -98,6 +98,19 @@ export default async function DashboardPage() {
           <div className="metric-card-sub">
             {projDraft} brouillon{projDraft !== 1 ? "s" : ""}
           </div>
+        </Link>
+
+        <Link href="/admin/auteurs" className="metric-card">
+          <div className="metric-card-header">
+            <div>
+              <div className="metric-card-label">Contributeurs</div>
+              <div className="metric-card-count">{authorsCount}</div>
+            </div>
+            <div className="metric-icon green">
+              <UserPen size={18} strokeWidth={1.75} />
+            </div>
+          </div>
+          <div className="metric-card-sub">Auteurs et autrices référencés</div>
         </Link>
 
         <Link href="/admin/forms" className="metric-card">
@@ -168,43 +181,43 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      {/* Upcoming activities */}
+      {/* Upcoming events */}
       {upcoming.length > 0 && (
         <div className="admin-section-card">
           <div className="admin-section-card-header">
             <h2 className="admin-section-card-title">
               <CalendarDays size={13} />
-              Prochaines activités
+              Prochains événements
             </h2>
-            <Link href="/admin/activites/calendar" className="btn-sm">
+            <Link href="/admin/evenements/calendar" className="btn-sm">
               Calendrier
             </Link>
           </div>
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Activité</th>
+                <th>Événement</th>
                 <th>Date</th>
                 <th>Statut</th>
               </tr>
             </thead>
             <tbody>
-              {upcoming.map((a) => (
-                <tr key={a.id}>
+              {upcoming.map((e) => (
+                <tr key={e.id}>
                   <td className="col-title">
-                    <Link href={`/admin/activites/${a.id}/edit`} style={{ color: "inherit" }}>
-                      {a.title}
+                    <Link href={`/admin/evenements/${e.id}/edit`} style={{ color: "inherit" }}>
+                      {e.title}
                     </Link>
                   </td>
                   <td style={{ fontSize: 13, color: "var(--muted)", whiteSpace: "nowrap" }}>
-                    {new Date(a.date!).toLocaleDateString("fr-FR", {
+                    {new Date(e.date!).toLocaleDateString("fr-FR", {
                       weekday: "short",
                       day: "numeric",
                       month: "long",
                     })}
                   </td>
                   <td>
-                    <span className={`badge-status badge-${a.status}`}>{STATUS_LABEL[a.status] ?? a.status}</span>
+                    <span className={`badge-status badge-${e.status}`}>{STATUS_LABEL[e.status] ?? e.status}</span>
                   </td>
                 </tr>
               ))}

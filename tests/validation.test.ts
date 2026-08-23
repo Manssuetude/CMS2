@@ -1,9 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formTypeSchema, idSchema, contentStatusSchema, mediaMetadataSchema } from "../src/lib/validation.ts";
+import {
+  formTypeSchema,
+  idSchema,
+  contentStatusSchema,
+  mediaMetadataSchema,
+  newsletterSubscribeSchema,
+} from "../src/lib/validation.ts";
 
-test("formTypeSchema — accepte les 7 types, refuse le reste", () => {
-  for (const t of ["join", "project", "content", "partner", "donation", "theme", "activity"]) {
+test("formTypeSchema — accepte les 8 types, refuse le reste", () => {
+  for (const t of ["join", "project", "content", "partner", "donation", "theme", "event", "contact"]) {
     assert.equal(formTypeSchema.safeParse(t).success, true, t);
   }
   assert.equal(formTypeSchema.safeParse("don").success, false);
@@ -23,4 +29,11 @@ test("contentStatusSchema — enum de statuts", () => {
 test("mediaMetadataSchema — visibility par défaut = draft", () => {
   const parsed = mediaMetadataSchema.parse({ title: "x" });
   assert.equal(parsed.visibility, "draft");
+});
+
+test("newsletterSubscribeSchema — exige un email valide et le consentement coché", () => {
+  assert.equal(newsletterSubscribeSchema.safeParse({ email: "a@b.com", consent: "on" }).success, true);
+  assert.equal(newsletterSubscribeSchema.safeParse({ email: "pas-un-email", consent: "on" }).success, false);
+  assert.equal(newsletterSubscribeSchema.safeParse({ email: "a@b.com", consent: "" }).success, false);
+  assert.equal(newsletterSubscribeSchema.safeParse({ email: "a@b.com" }).success, false);
 });

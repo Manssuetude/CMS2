@@ -8,6 +8,7 @@ const envSchema = z.object({
   GOOGLE_API_KEY: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().default("Manssuétude <noreply@manssuetude.com>"),
+  BREVO_API_KEY: z.string().optional(),
   ADMIN_INITIAL_EMAIL: z.string().email().optional(),
   ADMIN_INITIAL_PASSWORD: z.string().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),

@@ -3,6 +3,8 @@ import { Newsreader, Inter, Satisfy } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOGO, SITE_SOCIALS } from "@/constants/site";
+import { ConsentGate } from "@/components/public/ConsentGate";
+import { CookieConsentBanner } from "@/components/public/CookieConsentBanner";
 import "@/styles/globals.css";
 import "@/styles/editorial.css";
 
@@ -41,8 +43,16 @@ export const metadata: Metadata = {
     "association Manssuétude",
     "Manssuétude association",
     "association",
+    "association africaine",
+    "Afrique",
+    "diaspora africaine",
+    "jeunesse africaine",
+    "développement Afrique",
+    "économie africaine",
+    "souveraineté africaine",
     "réflexion",
     "production intellectuelle",
+    "événements",
     "activités",
     "thèmes",
     "projets",
@@ -95,7 +105,9 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
+      // NGO (sous-type schema.org d'Organization) plutôt qu'Organization générique —
+      // signale explicitement le caractère associatif/à but non lucratif aux moteurs.
+      "@type": "NGO",
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
       // Variantes du nom (sans accent, avec « association ») pour que Google rattache
@@ -105,6 +117,19 @@ const jsonLd = {
       logo: `${SITE_URL}${SITE_LOGO}`,
       description: SITE_DESCRIPTION,
       sameAs: SITE_SOCIALS,
+      // Signale les axes éditoriaux réels (thèmes publiés) pour renforcer la
+      // pertinence sur les requêtes thématiques (ex. "association africaine") —
+      // à tenir à jour si les grands thèmes changent significativement.
+      knowsAbout: [
+        "Afrique",
+        "Diasporas africaines",
+        "Citoyenneté, démocratie et institutions",
+        "Jeunesses africaines, diasporas et mobilités",
+        "Transformations sociales, égalités et modes de vie",
+        "Économies africaines, développement et intégration",
+        "Souverainetés, technologies et rapports de puissance",
+        "Cultures, mémoires et représentations",
+      ],
     },
     {
       "@type": "WebSite",
@@ -140,8 +165,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
-        <Analytics />
-        <SpeedInsights />
+        <ConsentGate>
+          <Analytics />
+          <SpeedInsights />
+        </ConsentGate>
+        <CookieConsentBanner />
       </body>
     </html>
   );

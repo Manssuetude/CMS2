@@ -5,4 +5,3 @@
  * enregistré correspond exactement à ce qui est rendu.
  */
 export const HERO_ASPECT = 5 / 4;
-export const FOCUS_ASPECT = 5 / 4;

@@ -1,4 +1,5 @@
 import { getSupabaseAdmin } from "@/lib/db";
+import { validateUpload } from "@/utils/uploadValidation";
 import type { MediaType } from "@/types/cms";
 
 export function inferMediaType(filename: string): MediaType {
@@ -12,6 +13,7 @@ export function inferMediaType(filename: string): MediaType {
 }
 
 export async function uploadToStorage(file: File, folder = "media") {
+  validateUpload(file);
   const db = getSupabaseAdmin();
   const path = `${folder}/${Date.now()}-${file.name}`;
   const bytes = Buffer.from(await file.arrayBuffer());

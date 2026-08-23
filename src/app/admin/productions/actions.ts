@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { productionRepository } from "@/repositories/productionRepository";
+import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
 
@@ -11,11 +12,11 @@ export async function toggleProductionFeaturedAction(formData: FormData): Promis
   const id = (formData.get("id") as string | null)?.trim();
   const featured = formData.get("featured") === "true";
   if (!id) return;
-  // Garde-fou : maximum 4 productions en vedette sur l'accueil.
+  // Garde-fou : maximum 3 productions en vedette sur l'accueil.
   if (featured) {
     const all = await productionRepository.listProductions(true);
     const count = all.filter((p) => p.featured).length;
-    if (count >= 4) return;
+    if (count >= 3) return;
   }
   await productionRepository.updateProduction(id, { featured });
   revalidatePath("/admin/productions");
@@ -34,6 +35,9 @@ const schema = z.object({
   description: z.string().optional().nullable(),
   fileId: z.string().optional().nullable(),
   downloadLabel: z.string().optional().nullable(),
+  videoUrl: z.string().optional().nullable(),
+  seoTitle: z.string().optional().nullable(),
+  seoDescription: z.string().optional().nullable(),
 });
 
 function toInput(data: z.infer<typeof schema>) {
@@ -49,11 +53,14 @@ function toInput(data: z.infer<typeof schema>) {
     description: data.description || null,
     file_id: data.fileId || null,
     download_label: data.downloadLabel || null,
+    video_url: data.videoUrl || null,
+    seo_title: data.seoTitle || null,
+    seo_description: data.seoDescription || null,
   };
 }
 
-function parseSubThemeIds(formData: FormData): string[] {
-  return ((formData.get("subThemeIds") as string | null) ?? "")
+function parseIdList(formData: FormData, field: string): string[] {
+  return ((formData.get(field) as string | null) ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
@@ -72,6 +79,9 @@ export async function createProductionAction(_: string | null, formData: FormDat
     description: formData.get("description") || null,
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
+    videoUrl: formData.get("videoUrl") || null,
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {
@@ -87,9 +97,17 @@ export async function createProductionAction(_: string | null, formData: FormDat
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
-  const subThemeIds = parseSubThemeIds(formData);
+  const subThemeIds = parseIdList(formData, "subThemeIds");
   if (subThemeIds.length > 0) {
     await productionRepository.setProductionSubThemes(production.id, subThemeIds);
+  }
+  const authorIds = parseIdList(formData, "authorIds");
+  if (authorIds.length > 0) {
+    await authorRepository.setProductionAuthors(production.id, authorIds);
+  }
+  const resourceIds = parseIdList(formData, "resourceIds");
+  if (resourceIds.length > 0) {
+    await productionRepository.setProductionResources(production.id, resourceIds);
   }
 
   await logAction("create", {
@@ -117,6 +135,9 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     description: formData.get("description") || null,
     fileId: formData.get("fileId") || null,
     downloadLabel: formData.get("downloadLabel") || null,
+    videoUrl: formData.get("videoUrl") || null,
+    seoTitle: formData.get("seoTitle") || null,
+    seoDescription: formData.get("seoDescription") || null,
   });
 
   if (!parsed.success) {
@@ -129,7 +150,9 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
 
-  await productionRepository.setProductionSubThemes(id, parseSubThemeIds(formData));
+  await productionRepository.setProductionSubThemes(id, parseIdList(formData, "subThemeIds"));
+  await authorRepository.setProductionAuthors(id, parseIdList(formData, "authorIds"));
+  await productionRepository.setProductionResources(id, parseIdList(formData, "resourceIds"));
 
   await logAction("update", {
     entityType: "production",

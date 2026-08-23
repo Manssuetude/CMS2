@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
+import { authorRepository } from "@/repositories/authorRepository";
+import { mediaRepository } from "@/repositories/mediaRepository";
 import { ProductionForm } from "@/components/admin/ProductionForm";
 import { createProductionAction } from "../actions";
 
 export default async function NewProductionPage() {
-  const [themes, subThemes] = await Promise.all([
+  const [themes, subThemes, authors, media] = await Promise.all([
     themeRepository.listThemes(true),
     subThemeRepository.listSubThemes(true),
+    authorRepository.listAuthors(),
+    mediaRepository.list(),
   ]);
 
   return (
@@ -21,7 +25,13 @@ export default async function NewProductionPage() {
           <p>Créez un article, rapport, vidéo ou podcast. Elle sera en brouillon jusqu&apos;à publication.</p>
         </div>
       </div>
-      <ProductionForm action={createProductionAction} themes={themes} subThemes={subThemes} />
+      <ProductionForm
+        action={createProductionAction}
+        themes={themes}
+        subThemes={subThemes}
+        authors={authors}
+        mediaItems={media}
+      />
     </section>
   );
 }

@@ -1,107 +1,101 @@
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth";
-import { auditRepository } from "@/repositories/auditRepository";
+import { Pencil, Plus } from "lucide-react";
+import { journalRepository } from "@/repositories/journalRepository";
+import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { AdminListHeader } from "@/components/admin/AdminListHeader";
+import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
+import {
+  buildStatusTabs,
+  countByStatus,
+  resolveActiveStatus,
+  STATUS_LABELS,
+  type FilterStatus,
+} from "@/utils/adminStatus";
+import { deleteJournalEntryAction } from "./actions";
 
-const ACTION_LABEL: Record<string, string> = {
-  create: "Création",
-  update: "Modification",
-  delete: "Suppression",
-  publish: "Publication",
-  invite: "Invitation",
-  "role change": "Changement de rôle",
-  login: "Connexion",
+const STATUS_BADGE: Record<FilterStatus, string> = {
+  draft: "badge-draft",
+  published: "badge-published",
+  archived: "badge-archived",
 };
 
-function actionClass(action: string) {
-  if (action === "create") return "badge-published";
-  if (action === "delete") return "badge-archived";
-  if (action === "update" || action === "publish") return "badge-encours";
-  return "badge-draft";
+function StatusBadge({ status }: { status: string }) {
+  const cls = STATUS_BADGE[status as FilterStatus] ?? "badge-draft";
+  const label = STATUS_LABELS[status as FilterStatus] ?? status;
+  return <span className={`badge-status ${cls}`}>{label}</span>;
 }
 
-function formatDate(iso: string) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-}
-
-export default async function AdminJournalPage({ searchParams }: { searchParams: Promise<{ action?: string }> }) {
-  await requireAdmin();
-  const { action } = await searchParams;
-  const [logs, actions] = await Promise.all([
-    auditRepository.list({ action: action || undefined }),
-    auditRepository.distinctActions(),
-  ]);
+export default async function AdminJournalListPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const { status } = await searchParams;
+  const all = await journalRepository.listEntries(true);
+  const activeStatus = resolveActiveStatus(status);
+  const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
+  const tabs = buildStatusTabs(countByStatus(all), "f");
 
   return (
     <section className="admin-panel">
-      <div
-        className="admin-page-header"
-        style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}
+      <AdminListHeader
+        title="Journal"
+        count={items.length}
+        singular="entrée"
+        plural="entrées"
+        activeStatusLabel={activeStatus ? STATUS_LABELS[activeStatus] : null}
       >
-        <div>
-          <h1>Journal d&apos;activité</h1>
-          <p>Historique des actions des membres. Réservé aux administrateurs.</p>
-        </div>
-        <a
-          className="button"
-          href={`/api/journal/export${action ? `?action=${encodeURIComponent(action)}` : ""}`}
-          download
-        >
-          Exporter CSV
-        </a>
-      </div>
-
-      <div className="filter-bar" style={{ justifyContent: "flex-start" }}>
-        <Link href="/admin/journal" className={`filter-chip${!action ? " active" : ""}`}>
-          Tout
+        <Link href="/admin/journal/new" className="button primary">
+          <Plus size={15} strokeWidth={2} />
+          Nouvelle entrée
         </Link>
-        {actions.map((a) => (
-          <Link
-            key={a}
-            href={`/admin/journal?action=${encodeURIComponent(a)}`}
-            className={`filter-chip${action === a ? " active" : ""}`}
-          >
-            {ACTION_LABEL[a] ?? a}
-          </Link>
-        ))}
-      </div>
+      </AdminListHeader>
 
-      {logs.length === 0 ? (
+      <StatusFilterTabs basePath="/admin/journal" activeStatus={activeStatus} tabs={tabs} />
+
+      {items.length === 0 ? (
         <div className="admin-empty">
-          <strong>Aucune activité{action ? " de ce type" : ""}</strong>
-          <p>Les actions des membres apparaîtront ici.</p>
+          <strong>
+            Aucune entrée{activeStatus ? ` avec le statut « ${STATUS_LABELS[activeStatus]} »` : " en base"}
+          </strong>
+          <p>
+            {activeStatus ? (
+              <Link href="/admin/journal">Voir toutes les entrées</Link>
+            ) : (
+              "Créez une première entrée de Journal (actualité, coulisses, réflexion...)."
+            )}
+          </p>
         </div>
       ) : (
         <table className="admin-table">
           <thead>
             <tr>
+              <th>Titre</th>
+              <th>Catégorie</th>
               <th>Date</th>
-              <th>Membre</th>
-              <th>Action</th>
-              <th>Détail</th>
+              <th>Statut</th>
+              <th className="col-actions">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {logs.map((log) => (
-              <tr key={log.id}>
-                <td style={{ whiteSpace: "nowrap", color: "var(--muted)", fontSize: 13 }}>
-                  {formatDate(log.createdAt)}
-                </td>
-                <td className="col-title">
-                  {log.actorEmail ?? "—"}
-                  {log.actorRole && (
-                    <span className="form-type-pill" style={{ marginLeft: 8 }}>
-                      {log.actorRole}
-                    </span>
-                  )}
+            {items.map((item) => (
+              <tr key={item.id}>
+                <td className="col-title">{item.title}</td>
+                <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.category ?? "—"}</td>
+                <td style={{ color: "var(--muted)", fontSize: 13, whiteSpace: "nowrap" }}>
+                  {item.date ? new Date(item.date).toLocaleDateString("fr-FR") : "—"}
                 </td>
                 <td>
-                  <span className={`badge-status ${actionClass(log.action)}`}>
-                    {ACTION_LABEL[log.action] ?? log.action}
-                  </span>
+                  <StatusBadge status={item.status} />
                 </td>
-                <td style={{ color: "var(--ink-soft)", fontSize: 14 }}>{log.summary ?? "—"}</td>
+                <td className="col-actions">
+                  <div className="row-actions">
+                    <Link href={`/admin/journal/${item.id}/edit`} className="btn-sm">
+                      <Pencil size={13} strokeWidth={2} />
+                      Modifier
+                    </Link>
+                    <form action={deleteJournalEntryAction}>
+                      <input type="hidden" name="id" value={item.id} />
+                      <ConfirmDeleteButton />
+                    </form>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

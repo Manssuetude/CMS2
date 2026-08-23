@@ -6,7 +6,7 @@ const PROGRESS_LABELS: Record<string, string> = {
   paused: "En pause",
 };
 
-/** Étiquette d'avancement (idée, en cours, terminé…) pour activités et projets. */
+/** Étiquette d'avancement (idée, en cours, terminé…) pour événements et projets. */
 export function ProgressTag({ status }: { status: string | null | undefined }) {
   if (!status) return <span style={{ color: "var(--muted)" }}>-</span>;
   return <span className="progress-tag">{PROGRESS_LABELS[status] ?? status}</span>;

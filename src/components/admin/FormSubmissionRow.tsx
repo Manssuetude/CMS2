@@ -3,17 +3,19 @@
 import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { FormStatusSelect } from "@/components/admin/FormStatusSelect";
+import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { formDefinitions, type PublicFormType } from "@/constants/forms";
 import type { FormSubmission } from "@/types/cms";
 
 const FORM_TYPE_LABEL: Record<string, string> = {
   join: "Adhésion",
   theme: "Thème",
-  activity: "Activité",
+  event: "Événement",
   project: "Projet",
   content: "Contenu",
   partner: "Partenariat",
   donation: "Don",
+  contact: "Contact",
 };
 
 // Champs affichés en secondaire (déjà résumés ailleurs) — masqués du détail brut si voulu.
@@ -36,10 +38,12 @@ function labelFor(formType: string, key: string): string {
 export function FormSubmissionRow({
   submission,
   action,
+  deleteAction,
   columns,
 }: {
   submission: FormSubmission;
   action: (formData: FormData) => Promise<void>;
+  deleteAction: (formData: FormData) => Promise<void>;
   columns: number;
 }) {
   const [open, setOpen] = useState(false);
@@ -91,6 +95,10 @@ export function FormSubmissionRow({
                 </div>
               ))}
             </dl>
+            <form action={deleteAction} style={{ marginTop: 12 }}>
+              <input type="hidden" name="id" value={submission.id} />
+              <ConfirmDeleteButton />
+            </form>
           </td>
         </tr>
       )}

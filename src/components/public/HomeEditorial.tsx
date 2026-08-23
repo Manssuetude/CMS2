@@ -2,7 +2,8 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
-import type { Page, Production, Activity, Theme } from "@/types/cms";
+import { NewsletterForm } from "@/components/public/NewsletterForm";
+import type { Page, Production, Event, JournalEntry } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
 
 const percaLetters = ["P", "E", "R", "C", "A"] as const;
@@ -17,17 +18,17 @@ function formatDate(value?: string | null) {
 export function HomeEditorial({
   page,
   heroImageUrl,
-  focusImageUrl,
-  focusTheme = null,
-  activities = [],
+  eventOfTheMoment = null,
+  events = [],
   productions = [],
+  journalEntries = [],
 }: {
   page: Page;
   heroImageUrl?: string | null;
-  focusImageUrl?: string | null;
-  focusTheme?: Theme | null;
-  activities?: Activity[];
+  eventOfTheMoment?: Event | null;
+  events?: Event[];
   productions?: Production[];
+  journalEntries?: JournalEntry[];
 }) {
   // L'identité de l'association vit dans `body` (demande de René : l'asso d'abord).
   const sentences = (page.body || "").split(/\.\s+/).filter(Boolean);
@@ -60,23 +61,19 @@ export function HomeEditorial({
         ) : null}
       </section>
 
-      {/* 2 — Sujet du moment : le thème sélectionné en admin (carte cliquable, image optionnelle) */}
-      {focusTheme ? (
-        <Link
-          className={`home-focus${focusImageUrl ? "" : " home-focus--no-image"}`}
-          href={`/themes/${focusTheme.slug}`}
-        >
-          {focusImageUrl ? (
-            <div className="home-focus-media">
-              <img src={focusImageUrl} alt="" loading="lazy" style={cropToImageStyle(page.focusImageCrop)} />
-            </div>
-          ) : null}
+      {/* 2 — Événement du moment : l'événement le plus proche d'aujourd'hui
+             (à venir ou passé), calculé automatiquement — pas de sélection
+             admin, se met à jour seul. */}
+      {eventOfTheMoment ? (
+        <Link className="home-focus home-focus--no-image" href={`/evenements/${eventOfTheMoment.slug}`}>
           <div className="home-focus-copy">
-            {page.eyebrow ? <p className="eyebrow">{page.eyebrow}</p> : null}
-            <h2>{focusTheme.title}</h2>
-            {focusTheme.description ? <p className="home-focus-desc">{focusTheme.description}</p> : null}
+            <p className="eyebrow">Événement du moment</p>
+            <h2>{eventOfTheMoment.title}</h2>
+            <p className="home-focus-desc">
+              {[formatDate(eventOfTheMoment.date), eventOfTheMoment.description].filter(Boolean).join(" — ")}
+            </p>
             <span className="home-focus-link">
-              Explorer ce thème
+              Découvrir cet événement
               <span aria-hidden>→</span>
             </span>
           </div>
@@ -96,27 +93,56 @@ export function HomeEditorial({
         </section>
       ) : null}
 
-      {/* 4 — Activités récentes */}
-      {activities.length ? (
-        <section className="home-section home-activities">
+      {/* 4 — Événements récents */}
+      {events.length ? (
+        <section className="home-section home-events">
           <div className="home-section-head">
-            <h2>Activités récentes</h2>
-            <Link className="home-section-more" href="/activites">
-              Toutes les activités <span aria-hidden>→</span>
+            <h2>Événements récents</h2>
+            <Link className="home-section-more" href="/evenements">
+              Tous les événements <span aria-hidden>→</span>
             </Link>
           </div>
-          <ul className="home-activity-list" style={{ "--acount": activities.slice(0, 3).length } as CSSProperties}>
-            {activities.slice(0, 3).map((a) => {
-              const date = formatDate(a.date);
+          <ul className="home-event-list" style={{ "--acount": events.slice(0, 3).length } as CSSProperties}>
+            {events.slice(0, 3).map((e) => {
+              const date = formatDate(e.date);
               return (
-                <li key={a.id}>
-                  <Link href={`/activites/${a.slug}`}>
-                    <div className="home-activity-meta">
-                      <span className="home-activity-format">{a.format}</span>
-                      {date ? <span className="home-activity-date">{date}</span> : null}
+                <li key={e.id}>
+                  <Link href={`/evenements/${e.slug}`}>
+                    <div className="home-event-meta">
+                      <span className="home-event-format">{e.format}</span>
+                      {date ? <span className="home-event-date">{date}</span> : null}
                     </div>
-                    <h3>{a.title}</h3>
-                    {a.description ? <p>{a.description}</p> : null}
+                    <h3>{e.title}</h3>
+                    {e.description ? <p>{e.description}</p> : null}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
+
+      {/* 4bis — Journal (dernières entrées) */}
+      {journalEntries.length ? (
+        <section className="home-section home-journal">
+          <div className="home-section-head">
+            <h2>Le Journal</h2>
+            <Link className="home-section-more" href="/journal">
+              Tout le Journal <span aria-hidden>→</span>
+            </Link>
+          </div>
+          <ul className="home-event-list" style={{ "--acount": journalEntries.slice(0, 3).length } as CSSProperties}>
+            {journalEntries.slice(0, 3).map((e) => {
+              const date = formatDate(e.date);
+              return (
+                <li key={e.id}>
+                  <Link href={`/journal/${e.slug}`}>
+                    <div className="home-event-meta">
+                      {e.category ? <span className="home-event-format">{e.category}</span> : null}
+                      {date ? <span className="home-event-date">{date}</span> : null}
+                    </div>
+                    <h3>{e.title}</h3>
+                    {e.excerpt ? <p>{e.excerpt}</p> : null}
                   </Link>
                 </li>
               );
@@ -137,10 +163,25 @@ export function HomeEditorial({
           <p className="home-method-text">
             PERCA structure notre façon de partir d&apos;un dossier pour apprendre, débattre, produire et créer du lien.
           </p>
+          <Link href="/perca" className="home-method-link">
+            Découvrir la méthode PERCA
+            <span aria-hidden>→</span>
+          </Link>
         </div>
       </section>
 
-      {/* 6 — Appel à rejoindre */}
+      {/* 6 — Newsletter */}
+      <section className="home-section home-newsletter">
+        <div className="home-newsletter-panel">
+          <div className="home-newsletter-text">
+            <p className="eyebrow">Newsletter</p>
+            <h2>Recevez nos actualités</h2>
+            <p>Productions, événements et entrées du Journal — un email de temps en temps, pas plus.</p>
+          </div>
+          <NewsletterForm />
+        </div>
+      </section>
+
       <section className="home-join">
         <h2>Rejoindre une communauté qui pense, débat et produit.</h2>
         <div className="home-join-actions">
