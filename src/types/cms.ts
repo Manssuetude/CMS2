@@ -20,9 +20,20 @@ export type Visibility =
   | "archived"
   | "private"
   | "draft";
-export type FormType = "join" | "project" | "content" | "partner" | "donation" | "theme" | "event" | "contact";
+export type FormType =
+  | "join"
+  | "project"
+  | "content"
+  | "partner"
+  | "donation"
+  | "theme"
+  | "sub_theme"
+  | "event"
+  | "contact";
 export type FormStatus = "reçu" | "en cours" | "traité" | "archivé";
-export type CtaTarget = string | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "event"}`;
+export type CtaTarget =
+  | string
+  | `FORM:${"join" | "project" | "content" | "partner" | "don" | "theme" | "sub_theme" | "event"}`;
 
 export type ContentBlock =
   | {

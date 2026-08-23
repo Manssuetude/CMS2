@@ -1,6 +1,7 @@
 import type { Event, Project, Theme, SubTheme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { CardGrid } from "@/components/cards/CardGrid";
+import { ProposeSection } from "@/components/public/ProposeSection";
 import { titleFontSize } from "@/utils/titleSize";
 
 interface Props {
@@ -72,6 +73,14 @@ export function ThemeDetail({ item, subThemes, events = [], projects = [] }: Pro
           }))}
         />
       )}
+
+      {/* ── Proposer un sous-thème ───────────────────────────────── */}
+      <ProposeSection
+        lead={`Vous souhaitez proposer un sous-thème pour « ${item.title} » ?`}
+        label="Proposer un sous-thème"
+        target="FORM:sub_theme"
+        contextFields={{ themeTitle: item.title }}
+      />
     </>
   );
 }
