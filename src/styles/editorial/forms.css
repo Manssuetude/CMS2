@@ -196,6 +196,35 @@
   font-size: var(--ed-step-4);
   margin: 0.25rem 0 1.5rem;
 }
+/* Confirmation d'envoi (état "sent" de FormModal) — même logique visuelle que
+   .newsletter-form-success (badge rond + coche), pour bien se lire comme une
+   confirmation plutôt qu'un simple paragraphe. */
+.site-shell .modal-success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.site-shell .modal-success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ed-clay) 16%, transparent);
+  color: var(--ed-clay);
+  margin-bottom: 0.25rem;
+}
+.site-shell .modal-success p {
+  margin: 0;
+  color: var(--ed-ink);
+  line-height: 1.6;
+}
+.site-shell .modal-success p.modal-success-note {
+  font-size: 0.85rem;
+  color: var(--ed-ink-soft);
+}
 @media (max-width: 480px) {
   .site-shell .modal-backdrop {
     padding: 0.75rem;
