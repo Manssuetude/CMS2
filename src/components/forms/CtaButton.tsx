@@ -10,10 +10,12 @@ export function CtaButton({
   label,
   target,
   variant = "secondary",
+  contextFields,
 }: {
   label: string;
   target: CtaTarget;
   variant?: "primary" | "secondary";
+  contextFields?: Record<string, string>;
 }) {
   const resolved = resolveCta(target);
   const [formType, setFormType] = useState<string | null>(null);
@@ -28,7 +30,9 @@ export function CtaButton({
         >
           {label}
         </button>
-        {formType ? <FormModal formType={formType} onClose={() => setFormType(null)} /> : null}
+        {formType ? (
+          <FormModal formType={formType} onClose={() => setFormType(null)} contextFields={contextFields} />
+        ) : null}
       </>
     );
   }

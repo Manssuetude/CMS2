@@ -1,4 +1,13 @@
-export type PublicFormType = "join" | "project" | "content" | "partner" | "don" | "theme" | "event" | "contact";
+export type PublicFormType =
+  | "join"
+  | "project"
+  | "content"
+  | "partner"
+  | "don"
+  | "theme"
+  | "sub_theme"
+  | "event"
+  | "contact";
 
 export type FormFieldDefinition = {
   name: string;
@@ -93,6 +102,8 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
       hint: "En cochant cette case, vous autorisez Manssuétude à conserver et traiter les informations de cette demande de don uniquement pour la traiter et vous recontacter. Vos données ne sont jamais revendues et vous pouvez demander leur suppression à tout moment.",
     },
   ],
+  // Plus proposé publiquement (remplacé par "sub_theme", ci-dessous) — conservé
+  // uniquement pour l'affichage correct des soumissions historiques en admin.
   theme: [
     { name: "name", label: "Nom", type: "text", required: true },
     { name: "email", label: "Email", type: "email", required: true },
@@ -104,6 +115,23 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
       type: "checkbox",
       required: true,
       hint: "En cochant cette case, vous autorisez Manssuétude à conserver et traiter les informations de cette proposition de thème uniquement pour l'étudier et vous recontacter. Vos données ne sont jamais revendues et vous pouvez demander leur suppression à tout moment.",
+    },
+  ],
+  // Proposé depuis chaque page de thème (pas depuis /themes) — "themeTitle" est
+  // injecté en champ caché (voir ThemeDetail.tsx) plutôt que saisi par le
+  // visiteur, pour que le sous-thème proposé reste rattaché au bon thème.
+  sub_theme: [
+    { name: "name", label: "Nom", type: "text", required: true },
+    { name: "email", label: "Email", type: "email", required: true },
+    { name: "themeTitle", label: "Thème parent", type: "text", required: true },
+    { name: "subThemeTitle", label: "Sous-thème proposé", type: "text", required: true },
+    { name: "description", label: "Pourquoi ce sous-thème ?", type: "text" },
+    {
+      name: "consent",
+      label: "Consentement RGPD",
+      type: "checkbox",
+      required: true,
+      hint: "En cochant cette case, vous autorisez Manssuétude à conserver et traiter les informations de cette proposition de sous-thème uniquement pour l'étudier et vous recontacter. Vos données ne sont jamais revendues et vous pouvez demander leur suppression à tout moment.",
     },
   ],
   event: [

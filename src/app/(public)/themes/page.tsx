@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
-import { ProposeSection } from "@/components/public/ProposeSection";
 import { pageRepository } from "@/repositories/pageRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
@@ -34,16 +33,7 @@ export default async function ThemesPage() {
       secondaryCtaLabel: null,
       secondaryCtaTarget: null,
     };
-    return (
-      <>
-        <PublicPage page={pageNoCta} heroImageUrl={page.imageUrl ?? undefined} themes={themes} />
-        <ProposeSection
-          lead="Vous souhaitez proposer un thème de réflexion ?"
-          label="Proposer un thème"
-          target="FORM:theme"
-        />
-      </>
-    );
+    return <PublicPage page={pageNoCta} heroImageUrl={page.imageUrl ?? undefined} themes={themes} />;
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.
