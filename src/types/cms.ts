@@ -356,14 +356,6 @@ export type Dossier = {
 // reste accessible par son URL directe, seule l'entrée de menu disparaît).
 export type NavVisibility = Record<string, boolean>;
 
-// Redirection 301 administrable (ex. ancienne URL migrée vers une nouvelle).
-export type Redirect = {
-  id: string;
-  fromPath: string;
-  toPath: string;
-  createdAt: string;
-};
-
 export type FormSubmission = {
   id: string;
   formType: FormType;
