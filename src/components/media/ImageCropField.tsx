@@ -19,7 +19,7 @@ export function ImageCropField({
   defaultImageId,
   defaultCrop,
   aspect,
-  emptyOptionLabel = "— image par défaut —",
+  emptyOptionLabel = "Image par défaut",
 }: {
   label?: string;
   /** Nom du champ pour l'id de l'image (ex. "image_id"). */

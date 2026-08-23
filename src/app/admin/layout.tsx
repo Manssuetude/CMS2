@@ -22,7 +22,6 @@ const GATED_SECTIONS = [
   "perca",
   "history",
   "pages",
-  "redirects",
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

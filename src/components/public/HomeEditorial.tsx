@@ -70,7 +70,7 @@ export function HomeEditorial({
             <p className="eyebrow">Événement du moment</p>
             <h2>{eventOfTheMoment.title}</h2>
             <p className="home-focus-desc">
-              {[formatDate(eventOfTheMoment.date), eventOfTheMoment.description].filter(Boolean).join(" — ")}
+              {[formatDate(eventOfTheMoment.date), eventOfTheMoment.description].filter(Boolean).join(" · ")}
             </p>
             <span className="home-focus-link">
               Découvrir cet événement
@@ -176,7 +176,7 @@ export function HomeEditorial({
           <div className="home-newsletter-text">
             <p className="eyebrow">Newsletter</p>
             <h2>Recevez nos actualités</h2>
-            <p>Productions, événements et entrées du Journal — un email de temps en temps, pas plus.</p>
+            <p>Productions, événements et entrées du Journal, un email de temps en temps, pas plus.</p>
           </div>
           <NewsletterForm />
         </div>

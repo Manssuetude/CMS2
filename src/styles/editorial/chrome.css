@@ -433,7 +433,11 @@
   cursor: pointer;
 }
 .site-shell .newsletter-form-consent input {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
   margin-top: 0.15rem;
+  accent-color: var(--ed-brand);
 }
 .site-shell .newsletter-form-error {
   color: var(--ed-brand);

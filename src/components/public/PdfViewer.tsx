@@ -47,7 +47,7 @@ export function PdfViewer({ url, title }: { url: string; title: string }) {
       <div className="pdf-viewer-toolbar">
         <span>{numPages ? `${numPages} page${numPages > 1 ? "s" : ""}` : "Chargement…"}</span>
       </div>
-      <div className="pdf-viewer-pages" ref={containerRef} role="region" aria-label={`Aperçu PDF — ${title}`}>
+      <div className="pdf-viewer-pages" ref={containerRef} role="region" aria-label={`Aperçu PDF : ${title}`}>
         <Document
           file={url}
           onLoadSuccess={({ numPages: n }) => setNumPages(n)}

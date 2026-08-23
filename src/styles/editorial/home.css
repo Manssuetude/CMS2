@@ -434,6 +434,14 @@
   border-radius: calc(var(--ed-radius) * 2);
   box-shadow: 0 20px 45px -30px rgba(0, 0, 0, 0.35);
 }
+/* Les enfants de grille ont un min-width auto par défaut (basé sur leur
+   min-content) : sans ce reset, le formulaire ne peut pas rétrécir sous sa
+   largeur de contenu et fait déborder toute la page horizontalement sur les
+   téléphones étroits (< 375px environ). */
+.site-shell .home-newsletter-text,
+.site-shell .newsletter-form {
+  min-width: 0;
+}
 .site-shell .home-newsletter-text .eyebrow {
   margin-bottom: 0.6rem;
 }

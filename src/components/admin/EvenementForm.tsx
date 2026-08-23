@@ -469,7 +469,7 @@ export function EvenementForm({
           <div className="form-section">
             <p className="form-section-title">Formats d&apos;activité</p>
             <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Techniques d&apos;animation utilisées (Fishbowl, Hot Takes...) — voir{" "}
+              Techniques d&apos;animation utilisées (Fishbowl, Hot Takes...), voir{" "}
               <a href="/admin/formatsactivites" target="_blank" rel="noreferrer" style={{ color: "var(--orange)" }}>
                 le répertoire
               </a>

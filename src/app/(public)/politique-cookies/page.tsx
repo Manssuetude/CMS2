@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CONTACT_EMAIL } from "@/constants/site";
 
 export const metadata: Metadata = {
-  title: "Politique cookies — Manssuétude",
+  title: "Politique cookies · Manssuétude",
   description: "Liste des cookies et services tiers utilisés par ce site, et comment gérer votre consentement.",
 };
 
@@ -53,37 +53,37 @@ export default function CookiesPolicyPage() {
             <tr>
               <td>Google Fonts</td>
               <td>Typographie du site</td>
-              <td>Non — polices auto-hébergées, aucun appel à Google au chargement</td>
+              <td>Non, polices auto-hébergées, aucun appel à Google au chargement</td>
               <td>Aucune</td>
             </tr>
             <tr>
               <td>Resend</td>
               <td>Envoi des emails transactionnels (accusés de réception, invitations)</td>
-              <td>Non — nécessaire au service demandé</td>
+              <td>Non, nécessaire au service demandé</td>
               <td>Email du visiteur, serveur-à-serveur</td>
             </tr>
             <tr>
               <td>Brevo</td>
               <td>Envoi de la newsletter</td>
-              <td>Oui — case dédiée lors de l&apos;inscription</td>
+              <td>Oui, case dédiée lors de l&apos;inscription</td>
               <td>Email, serveur-à-serveur</td>
             </tr>
             <tr>
               <td>Supabase</td>
               <td>Hébergement des données et de l&apos;authentification</td>
-              <td>Non — infrastructure du site</td>
+              <td>Non, infrastructure du site</td>
               <td>Toutes les données de l&apos;application</td>
             </tr>
             <tr>
               <td>Google (images), Cloudinary</td>
               <td>Affichage de certaines images du site</td>
-              <td>Non — requête passive au chargement de la page</td>
+              <td>Non, requête passive au chargement de la page</td>
               <td>Adresse IP et navigateur, transmis à Google/Cloudinary lors du chargement de l&apos;image</td>
             </tr>
             <tr>
               <td>Google Drive</td>
               <td>Import de médias par l&apos;équipe éditoriale (usage interne, espace d&apos;administration)</td>
-              <td>Non — usage réservé à l&apos;équipe, pas aux visiteurs</td>
+              <td>Non, usage réservé à l&apos;équipe, pas aux visiteurs</td>
               <td>Fichiers importés par l&apos;équipe</td>
             </tr>
           </tbody>
@@ -98,7 +98,7 @@ export default function CookiesPolicyPage() {
         <p>
           Vous pouvez accepter ou refuser les cookies de mesure d&apos;audience (Vercel Analytics et Speed Insights) via
           le bandeau affiché lors de votre première visite. Pour modifier votre choix, effacez les données de navigation
-          de votre navigateur pour ce site — le bandeau réapparaîtra à votre prochaine visite.
+          de votre navigateur pour ce site, le bandeau réapparaîtra à votre prochaine visite.
         </p>
 
         <h2>Questions</h2>

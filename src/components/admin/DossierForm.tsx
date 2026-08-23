@@ -141,7 +141,7 @@ export function DossierForm({
         <div className="form-section">
           <p className="form-section-title">Contenus du dossier</p>
           <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-            Cochez les contenus à inclure, puis ajustez leur ordre — déterminant en mode guidé, indicatif en mode libre.
+            Cochez les contenus à inclure, puis ajustez leur ordre, déterminant en mode guidé, indicatif en mode libre.
           </p>
           <DossierItemPicker groups={groups} value={items} onChange={setItems} />
         </div>
