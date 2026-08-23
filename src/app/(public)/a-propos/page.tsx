@@ -23,10 +23,12 @@ export default async function AboutPage() {
   try {
     const [page, percaPage] = await Promise.all([pageRepository.getPage("a-propos"), pageRepository.getPage("perca")]);
     if (!page) notFound();
-    // "Voir notre impact" renvoie vers la page de maintenance (contenu à venir).
+    // "Voir notre impact" n'a pas de contenu réel derrière (pointait vers une
+    // page de maintenance vide, repérable en un clic) — bouton retiré plutôt
+    // que de promettre un contenu qui n'existe pas.
     const aboutPage =
       (page.secondaryCtaLabel ?? "").trim().toLowerCase() === "voir notre impact"
-        ? { ...page, secondaryCtaTarget: "/maintenance" }
+        ? { ...page, secondaryCtaLabel: null, secondaryCtaTarget: null }
         : page;
     return <AboutEditorial page={aboutPage} percaPage={percaPage} />;
   } catch (error) {
