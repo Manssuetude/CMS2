@@ -20,9 +20,21 @@ test("formDefinitions — chaque formulaire a email + consentement RGPD", () => 
   }
 });
 
-test("formDefinitions — pas de champ de type file (pièce jointe retirée)", () => {
-  for (const fields of Object.values(formDefinitions)) {
-    assert.ok(fields.every((f) => f.type !== "file"));
+test("formDefinitions — champs de type file uniquement là où une pièce jointe est prévue", () => {
+  const fileFieldsByType = Object.fromEntries(
+    Object.entries(formDefinitions).map(([type, fields]) => [type, fields.filter((f) => f.type === "file")]),
+  );
+  assert.deepEqual(
+    fileFieldsByType.join.map((f) => f.name),
+    ["cv"],
+  );
+  assert.deepEqual(
+    fileFieldsByType.content.map((f) => f.name),
+    ["attachment"],
+  );
+  for (const [type, fields] of Object.entries(fileFieldsByType)) {
+    if (type === "join" || type === "content") continue;
+    assert.deepEqual(fields, [], `${type} ne devrait pas avoir de champ file`);
   }
 });
 

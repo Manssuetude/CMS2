@@ -14,6 +14,8 @@ const ALLOWED_EXTENSIONS = [
   "m4a",
   "pdf",
   "zip",
+  "doc",
+  "docx",
 ];
 
 // Préfixe MIME attendu par extension — vérification de cohérence légère (le
@@ -33,6 +35,8 @@ const MIME_PREFIX_BY_EXTENSION: Record<string, string[]> = {
   m4a: ["audio/"],
   pdf: ["application/pdf"],
   zip: ["application/zip", "application/x-zip-compressed", "application/octet-stream"],
+  doc: ["application/msword"],
+  docx: ["application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
 };
 
 export const MAX_UPLOAD_BYTES = 50 * 1024 * 1024; // 50 Mo

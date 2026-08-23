@@ -21,9 +21,11 @@ interface Props {
   theme: Theme;
   item: SubTheme;
   productions: Production[];
+  allSubThemes?: SubTheme[];
 }
 
-export function SubThemeDetail({ theme, item, productions }: Props) {
+export function SubThemeDetail({ theme, item, productions, allSubThemes = [] }: Props) {
+  const subThemeOptions = allSubThemes.map((st) => st.title);
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────── */}
@@ -44,7 +46,12 @@ export function SubThemeDetail({ theme, item, productions }: Props) {
           )}
           <div className="actions">
             <CtaButton label="Retour au thème" target={`/themes/${theme.slug}`} variant="secondary" />
-            <CtaButton label="Contribuer" target="contribution" variant="primary" />
+            <CtaButton
+              label="Contribuer"
+              target="contribution"
+              variant="primary"
+              selectOptions={{ subTheme: subThemeOptions }}
+            />
           </div>
         </div>
         <div className="hero-image" aria-hidden="true" />
@@ -76,7 +83,12 @@ export function SubThemeDetail({ theme, item, productions }: Props) {
         <p className="eyebrow">Manssuétude</p>
         <h2 style={{ maxWidth: 640, margin: "12px auto 24px" }}>Vous avez des travaux sur ce sujet ?</h2>
         <div className="actions" style={{ justifyContent: "center" }}>
-          <CtaButton label="Proposer une contribution" target="contribution" variant="primary" />
+          <CtaButton
+            label="Proposer une contribution"
+            target="contribution"
+            variant="primary"
+            selectOptions={{ subTheme: subThemeOptions }}
+          />
         </div>
       </section>
     </>

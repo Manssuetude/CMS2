@@ -33,6 +33,7 @@ export function FormModal({
   formType,
   onClose,
   contextFields,
+  selectOptions,
 }: {
   formType: string;
   onClose: () => void;
@@ -42,16 +43,29 @@ export function FormModal({
   // type, afin d'être exclues de la liste des champs visibles ci-dessous et
   // de bénéficier du même libellé français côté admin.
   contextFields?: Record<string, string>;
+  // Options réelles (contenu de la base, ex. liste des sous-thèmes) pour un
+  // champ de type "select" — clé = nom du champ dans formDefinitions.
+  selectOptions?: Record<string, string[]>;
 }) {
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const safeFormType = formType in formDefinitions ? (formType as PublicFormType) : "join";
   const visibleFields = formDefinitions[safeFormType].filter(
     (field) => !contextFields || !(field.name in contextFields),
   );
 
   async function submit(formData: FormData) {
-    await formClientService.submit(formData);
-    setSent(true);
+    setSubmitting(true);
+    setError(null);
+    try {
+      await formClientService.submit(formData);
+      setSent(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -149,6 +163,27 @@ export function FormModal({
                   </label>
                 );
               }
+              if (field.type === "select") {
+                const options = selectOptions?.[field.name] ?? [];
+                return (
+                  <label key={field.name}>
+                    <span>
+                      {field.label}
+                      {field.required ? <span className="required-mark">*</span> : null}
+                    </span>
+                    <select name={field.name} required={field.required} defaultValue="">
+                      <option value="" disabled={field.required}>
+                        Choisir...
+                      </option>
+                      {options.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              }
               return (
                 <label key={field.name}>
                   <span>
@@ -160,8 +195,13 @@ export function FormModal({
               );
             })}
             <TurnstileWidget />
-            <button className="button primary" type="submit">
-              Envoyer
+            {error && (
+              <p className="field-error" style={{ gridColumn: "1 / -1" }}>
+                {error}
+              </p>
+            )}
+            <button className="button primary" type="submit" disabled={submitting}>
+              {submitting ? "Envoi..." : "Envoyer"}
             </button>
           </form>
         )}
