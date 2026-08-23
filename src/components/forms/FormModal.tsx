@@ -1,17 +1,33 @@
 "use client";
 
 import { useState } from "react";
+import { Check } from "lucide-react";
 import { formDefinitions, toSubmissionFormType, type PublicFormType } from "@/constants/forms";
 import { formClientService } from "@/services/formClientService";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 
-// Message affiché après envoi — plus détaillé pour la candidature (chapitre 8
-// du plan V2 : "page de confirmation expliquant la suite"), générique sinon.
-const SUCCESS_MESSAGES: Partial<Record<PublicFormType, string>> = {
-  join: "Merci pour votre candidature ! L'équipe Manssuétude va l'étudier et reviendra vers vous par email sous 1 à 2 semaines pour vous proposer un premier échange. Vous recevez aussi un email de confirmation.",
+// Message affiché après envoi, adapté à ce que le visiteur peut réellement
+// attendre ensuite : un vrai échange à venir pour les demandes qui en
+// nécessitent un (candidature, partenariat, don, contribution production,
+// contact), une simple prise en compte éditoriale pour les propositions qui
+// alimentent un contenu existant (thème, sous-thème, événement, activité,
+// contenu). Toujours complété par l'email de confirmation (src/lib/email.ts).
+const SUCCESS_MESSAGES: Record<PublicFormType, string> = {
+  join: "Merci pour votre candidature ! L'équipe Manssuétude va l'étudier et reviendra vers vous par email sous 1 à 2 semaines pour vous proposer un premier échange.",
+  project:
+    "Merci pour votre proposition de projet ! Quelqu'un de l'équipe va l'étudier et reviendra vers vous par email pour en discuter.",
+  content: "Merci pour votre contribution ! Elle est prise en compte et sera étudiée par l'équipe éditoriale.",
+  partner:
+    "Merci pour votre demande de partenariat ! Quelqu'un de l'équipe vous recontactera par email pour en discuter.",
+  don: "Merci pour votre message ! Quelqu'un de l'équipe vous recontactera par email pour organiser votre don.",
+  theme: "Merci pour votre proposition de thème ! Elle est prise en compte et sera étudiée par l'équipe éditoriale.",
+  sub_theme:
+    "Merci pour votre proposition de sous-thème ! Elle est prise en compte et sera étudiée par l'équipe éditoriale.",
+  event: "Merci pour votre proposition d'événement ! Elle est prise en compte et sera étudiée par l'équipe.",
+  activity: "Merci pour votre proposition d'activité ! Elle est prise en compte et sera étudiée par l'équipe.",
+  production: "Merci pour votre contribution ! Quelqu'un de l'équipe vous recontactera par email pour en discuter.",
+  contact: "Merci pour votre message ! Nous vous répondrons par email dans les meilleurs délais.",
 };
-const DEFAULT_SUCCESS_MESSAGE =
-  "Merci. Votre réponse a bien été enregistrée. Vous recevez aussi un email de confirmation.";
 
 export function FormModal({
   formType,
@@ -47,13 +63,23 @@ export function FormModal({
         aria-labelledby="form-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <button type="button" className="button" onClick={onClose}>
-          Fermer
-        </button>
-        <p className="eyebrow">Formulaire Manssuétude</p>
-        <h2 id="form-title">{formType === "don" ? "Faire un don" : "Envoyer une demande"}</h2>
+        <div className="modal-header">
+          <p className="eyebrow">Formulaire Manssuétude</p>
+          <button type="button" className="button" onClick={onClose}>
+            Fermer
+          </button>
+        </div>
+        <h2 id="form-title">
+          {sent ? "Demande envoyée" : formType === "don" ? "Faire un don" : "Envoyer une demande"}
+        </h2>
         {sent ? (
-          <p>{SUCCESS_MESSAGES[safeFormType] ?? DEFAULT_SUCCESS_MESSAGE}</p>
+          <div className="modal-success">
+            <span className="modal-success-icon" aria-hidden>
+              <Check size={22} strokeWidth={2.5} />
+            </span>
+            <p>{SUCCESS_MESSAGES[safeFormType]}</p>
+            <p className="modal-success-note">Vous recevez aussi un email de confirmation.</p>
+          </div>
         ) : (
           <form
             className="form-grid"
@@ -110,6 +136,17 @@ export function FormModal({
                       </a>
                     ) : null}
                   </div>
+                );
+              }
+              if (field.type === "textarea") {
+                return (
+                  <label key={field.name} style={{ gridColumn: "1 / -1" }}>
+                    <span>
+                      {field.label}
+                      {field.required ? <span className="required-mark">*</span> : null}
+                    </span>
+                    <textarea name={field.name} required={field.required} rows={6} placeholder={field.hint} />
+                  </label>
                 );
               }
               return (

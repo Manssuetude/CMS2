@@ -10,6 +10,8 @@ const TYPE_TABS: Array<{ value: string; label: string }> = [
   { value: "theme", label: "Thème" },
   { value: "sub_theme", label: "Sous-thème" },
   { value: "event", label: "Événement" },
+  { value: "activity", label: "Activité" },
+  { value: "production", label: "Contribution production" },
   { value: "project", label: "Projet" },
   { value: "content", label: "Contenu" },
   { value: "partner", label: "Partenariat" },

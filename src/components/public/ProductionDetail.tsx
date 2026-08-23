@@ -99,7 +99,12 @@ export function ProductionDetail({
           )}
           <div className="actions">
             <CtaButton label="Retour aux productions" target="/productions" variant="secondary" />
-            <CtaButton label="Contribuer" target="contribution" variant="primary" />
+            <CtaButton
+              label="Contribuer"
+              target="FORM:production"
+              variant="primary"
+              contextFields={{ productionTitle: item.title }}
+            />
           </div>
         </div>
 
