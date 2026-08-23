@@ -42,7 +42,9 @@ export const MEMBER_SPACE_URL = "https://membre.manssuetude.com";
 export const CONTACT_EMAIL = "contact@manssuetude.com";
 export const RNA_NUMBER = "W951008077";
 // Siège social — mentions légales (/mentions-legales) uniquement.
-export const HEADQUARTERS_ADDRESS = "26 rue Henri Barbusse, 95100 Argenteuil";
+export const HEADQUARTERS_ADDRESS = "5 passage Dubois, 75019 Paris";
+// Représentant légal (mentions légales uniquement, obligatoire pour un éditeur de site).
+export const LEGAL_REPRESENTATIVE = "Rachid Nassourou, président de l'association";
 
 // Grandes pages du header public. Source unique partagée entre SiteHeader (rendu)
 // et /admin/pages (activer/désactiver la visibilité dans le menu). "Accueil" n'est
