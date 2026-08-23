@@ -34,7 +34,6 @@ export const permissionCatalog: PermissionSection[] = [
   { key: "perca", label: "Page PERCA", actions: ["view", "edit"] },
   { key: "history", label: "Page Histoire", actions: ["view", "edit"] },
   { key: "pages", label: "Gestion des pages", actions: ["view", "edit"] },
-  { key: "redirects", label: "Redirections", actions: ["view", "edit"] },
 ];
 
 export function permKey(section: string, action: string): string {
