@@ -38,6 +38,12 @@ function labelFor(formType: string, key: string): string {
   return def?.label ?? key;
 }
 
+// Une pièce jointe (CV, document) est stockée comme une simple URL Supabase
+// Storage dans `data` — rendue cliquable ici plutôt qu'en texte brut illisible.
+function isFileUrl(value: string): boolean {
+  return /^https?:\/\//.test(value);
+}
+
 export function FormSubmissionRow({
   submission,
   action,
@@ -94,7 +100,21 @@ export function FormSubmissionRow({
               {entries.map(([k, v]) => (
                 <div key={k} className="form-detail-item">
                   <dt>{labelFor(submission.formType, k)}</dt>
-                  <dd>{HIDDEN_IN_DETAIL.has(k) ? (v ? "Oui" : "Non") : String(v)}</dd>
+                  <dd>
+                    {HIDDEN_IN_DETAIL.has(k) ? (
+                      v ? (
+                        "Oui"
+                      ) : (
+                        "Non"
+                      )
+                    ) : typeof v === "string" && isFileUrl(v) ? (
+                      <a href={v} target="_blank" rel="noopener noreferrer">
+                        Ouvrir le fichier
+                      </a>
+                    ) : (
+                      String(v)
+                    )}
+                  </dd>
                 </div>
               ))}
             </dl>

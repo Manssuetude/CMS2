@@ -7,6 +7,7 @@ import { logger } from "@/lib/logger";
 import { sendEmail, submissionConfirmationSubject, submissionConfirmationHtml } from "@/lib/email";
 import { isHoneypotFilled } from "@/lib/honeypot";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { uploadToStorage } from "@/lib/media";
 
 export async function POST(request: Request) {
   try {
@@ -31,7 +32,14 @@ export async function POST(request: Request) {
     const data: Record<string, unknown> = {};
     for (const [key, value] of formData.entries()) {
       if (key === "formType") continue;
-      if (value instanceof File) continue;
+      if (value instanceof File) {
+        // Champ file facultatif non rempli : le navigateur envoie quand même
+        // un File vide (size 0, name ""), à ignorer silencieusement.
+        if (value.size === 0) continue;
+        const { url } = await uploadToStorage(value, "form-uploads");
+        data[key] = url;
+        continue;
+      }
       data[key] = value;
     }
 

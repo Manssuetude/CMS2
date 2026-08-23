@@ -14,7 +14,7 @@ export type PublicFormType =
 export type FormFieldDefinition = {
   name: string;
   label: string;
-  type: "text" | "email" | "checkbox" | "file" | "textarea";
+  type: "text" | "email" | "checkbox" | "file" | "textarea" | "select";
   required?: boolean;
   hint?: string;
 };
@@ -33,6 +33,7 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
       type: "textarea",
       hint: "Parlez-nous de votre parcours, ce qui vous amène vers Manssuétude et comment vous aimeriez contribuer.",
     },
+    { name: "cv", label: "CV (PDF, DOC, DOCX)", type: "file" },
     {
       name: "consent",
       label: "Consentement RGPD",
@@ -64,7 +65,10 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
     { name: "contentType", label: "Type de contenu", type: "text" },
     { name: "title", label: "Titre", type: "text" },
     { name: "summary", label: "Résumé", type: "text" },
-    { name: "theme", label: "Thème associé", type: "text" },
+    // Options dynamiques (sous-thèmes réels de la base) fournies via la prop
+    // selectOptions de FormModal, pas déclarées ici — voir CtaButton.tsx.
+    { name: "subTheme", label: "Sous-thème associé", type: "select" },
+    { name: "attachment", label: "Document (PDF, DOC, DOCX)", type: "file" },
     {
       name: "consent",
       label: "Consentement RGPD",

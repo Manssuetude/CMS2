@@ -7,16 +7,24 @@ export function ProposeSection({
   label,
   target,
   contextFields,
+  selectOptions,
 }: {
   lead: string;
   label: string;
   target: CtaTarget;
   contextFields?: Record<string, string>;
+  selectOptions?: Record<string, string[]>;
 }) {
   return (
     <section className="propose-section">
       <p className="propose-lead">{lead}</p>
-      <CtaButton label={label} target={target} variant="primary" contextFields={contextFields} />
+      <CtaButton
+        label={label}
+        target={target}
+        variant="primary"
+        contextFields={contextFields}
+        selectOptions={selectOptions}
+      />
     </section>
   );
 }
