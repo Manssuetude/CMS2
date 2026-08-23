@@ -10,16 +10,21 @@ export function NewsletterForm() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // Capturé avant l'await : React remet `currentTarget` à null une fois la
+    // phase synchrone du gestionnaire terminée, donc y accéder après un await
+    // (ex. e.currentTarget.reset() plus bas) lève "Cannot read properties of
+    // null" — piège classique des gestionnaires d'événements React async.
+    const form = e.currentTarget;
     setStatus("loading");
     setError(null);
     try {
-      const res = await fetch("/api/newsletter", { method: "POST", body: new FormData(e.currentTarget) });
+      const res = await fetch("/api/newsletter", { method: "POST", body: new FormData(form) });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error((body as { error?: string }).error ?? "Erreur lors de l'inscription.");
       }
       setStatus("success");
-      e.currentTarget.reset();
+      form.reset();
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Erreur lors de l'inscription.");
