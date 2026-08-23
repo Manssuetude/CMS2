@@ -77,7 +77,6 @@ export function SubThemeDetail({ theme, item, productions }: Props) {
         <h2 style={{ maxWidth: 640, margin: "12px auto 24px" }}>Vous avez des travaux sur ce sujet ?</h2>
         <div className="actions" style={{ justifyContent: "center" }}>
           <CtaButton label="Proposer une contribution" target="contribution" variant="primary" />
-          <CtaButton label="Rejoindre le think tank" target="memberApplication" variant="secondary" />
         </div>
       </section>
     </>
