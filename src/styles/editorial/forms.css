@@ -97,7 +97,10 @@
   gap: 0.6rem;
 }
 .site-shell .field-checkbox input {
+  /* min-height:44px fuit depuis le reset global admin (non scopé à
+     .site-shell) et l'emporte sur height:18px — voir .form-grid. */
   margin-top: 0.2rem;
+  min-height: 18px;
   width: 18px;
   height: 18px;
   accent-color: var(--ed-brand);
@@ -160,10 +163,20 @@
   padding: clamp(1.75rem, 4vw, 2.75rem);
   box-shadow: 0 30px 80px rgba(28, 23, 20, 0.3);
 }
-.site-shell .modal > .button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+/* En-tête en ligne (eyebrow + bouton Fermer) : évite que le bouton, autrefois
+   positionné en absolu au-dessus du texte, ne chevauche l'eyebrow sur mobile
+   quand le texte "Formulaire Manssuétude" tient sur une seule ligne. */
+.site-shell .modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.site-shell .modal-header .eyebrow {
+  margin: 0;
+}
+.site-shell .modal-header .button {
+  flex-shrink: 0;
   padding: 0.4rem 0.85rem;
   font-size: 0.85rem;
   background: transparent;
@@ -175,16 +188,21 @@
     border-color 0.16s ease,
     color 0.16s ease;
 }
-.site-shell .modal > .button:hover {
+.site-shell .modal-header .button:hover {
   border-color: var(--ed-ink);
   color: var(--ed-ink);
-}
-.site-shell .modal .eyebrow {
-  margin-top: 0;
 }
 .site-shell .modal h2 {
   font-size: var(--ed-step-4);
   margin: 0.25rem 0 1.5rem;
+}
+@media (max-width: 480px) {
+  .site-shell .modal-backdrop {
+    padding: 0.75rem;
+  }
+  .site-shell .modal {
+    padding: 1.25rem;
+  }
 }
 .site-shell .form-grid {
   display: grid;
@@ -199,7 +217,8 @@
   font-weight: 600;
   color: var(--ed-ink);
 }
-.site-shell .form-grid input {
+.site-shell .form-grid input,
+.site-shell .form-grid textarea {
   font: inherit;
   font-weight: 400;
   color: var(--ed-ink);
@@ -211,10 +230,15 @@
     border-color 0.16s ease,
     box-shadow 0.16s ease;
 }
-.site-shell .form-grid input:focus {
+.site-shell .form-grid input:focus,
+.site-shell .form-grid textarea:focus {
   outline: none;
   border-color: var(--ed-clay);
   box-shadow: 0 0 0 3px var(--ed-focus);
+}
+.site-shell .form-grid textarea {
+  resize: vertical;
+  min-height: 7rem;
 }
 .site-shell .form-grid label:has(input[type="checkbox"]) {
   flex-direction: row;
@@ -225,6 +249,10 @@
   color: var(--ed-ink-soft);
 }
 .site-shell .form-grid input[type="checkbox"] {
+  /* min-height:44px fuit depuis le reset global admin (input,textarea,select,
+     non scopé à .site-shell) et l'emporte sur height:18px (min-height prime
+     toujours sur height) — sans ce reset la case dépasse largement le texte. */
+  min-height: 18px;
   width: 18px;
   height: 18px;
   accent-color: var(--ed-brand);

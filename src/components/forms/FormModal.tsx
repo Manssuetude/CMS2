@@ -47,10 +47,12 @@ export function FormModal({
         aria-labelledby="form-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <button type="button" className="button" onClick={onClose}>
-          Fermer
-        </button>
-        <p className="eyebrow">Formulaire Manssuétude</p>
+        <div className="modal-header">
+          <p className="eyebrow">Formulaire Manssuétude</p>
+          <button type="button" className="button" onClick={onClose}>
+            Fermer
+          </button>
+        </div>
         <h2 id="form-title">{formType === "don" ? "Faire un don" : "Envoyer une demande"}</h2>
         {sent ? (
           <p>{SUCCESS_MESSAGES[safeFormType] ?? DEFAULT_SUCCESS_MESSAGE}</p>
@@ -110,6 +112,17 @@ export function FormModal({
                       </a>
                     ) : null}
                   </div>
+                );
+              }
+              if (field.type === "textarea") {
+                return (
+                  <label key={field.name} style={{ gridColumn: "1 / -1" }}>
+                    <span>
+                      {field.label}
+                      {field.required ? <span className="required-mark">*</span> : null}
+                    </span>
+                    <textarea name={field.name} required={field.required} rows={6} placeholder={field.hint} />
+                  </label>
                 );
               }
               return (

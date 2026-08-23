@@ -12,6 +12,8 @@ const FORM_TYPE_LABEL: Record<string, string> = {
   theme: "Thème",
   sub_theme: "Sous-thème",
   event: "Événement",
+  activity: "Activité",
+  production: "Contribution production",
   project: "Projet",
   content: "Contenu",
   partner: "Partenariat",
