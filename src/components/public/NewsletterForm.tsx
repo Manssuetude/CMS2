@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { Mail, Check } from "lucide-react";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 
 export function NewsletterForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -58,6 +59,7 @@ export function NewsletterForm() {
       <a href="/politique-de-confidentialite" target="_blank" rel="noopener noreferrer" className="field-hint-link">
         En savoir plus sur l&apos;utilisation de vos données
       </a>
+      <TurnstileWidget />
       {error && <p className="newsletter-form-error">{error}</p>}
     </form>
   );

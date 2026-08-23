@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { formRepository } from "@/repositories/formRepository";
 import type { FormType } from "@/types/cms";
-import { errorResponse } from "@/lib/errors";
+import { errorResponse, AppError } from "@/lib/errors";
 import { formTypeSchema } from "@/lib/validation";
 import { logger } from "@/lib/logger";
 import { sendEmail, submissionConfirmationSubject, submissionConfirmationHtml } from "@/lib/email";
 import { isHoneypotFilled } from "@/lib/honeypot";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export async function POST(request: Request) {
   try {
@@ -17,6 +18,11 @@ export async function POST(request: Request) {
     if (isHoneypotFilled(formData)) {
       logger.warn("form.honeypot_triggered");
       return NextResponse.json({ id: "ok" });
+    }
+
+    if (!(await verifyTurnstile(formData))) {
+      logger.warn("form.turnstile_rejected");
+      throw new AppError("Vérification anti-robot échouée. Merci de réessayer.", 400, "TURNSTILE_FAILED");
     }
 
     const rawFormType = String(formData.get("formType") || "");

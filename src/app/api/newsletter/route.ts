@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { errorResponse } from "@/lib/errors";
+import { errorResponse, AppError } from "@/lib/errors";
 import { newsletterSubscribeSchema } from "@/lib/validation";
 import { subscribeToNewsletter } from "@/lib/newsletter";
 import { logger } from "@/lib/logger";
 import { isHoneypotFilled } from "@/lib/honeypot";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export async function POST(request: Request) {
   try {
@@ -12,6 +13,11 @@ export async function POST(request: Request) {
     if (isHoneypotFilled(formData)) {
       logger.warn("newsletter.honeypot_triggered");
       return NextResponse.json({ success: true });
+    }
+
+    if (!(await verifyTurnstile(formData))) {
+      logger.warn("newsletter.turnstile_rejected");
+      throw new AppError("Vérification anti-robot échouée. Merci de réessayer.", 400, "TURNSTILE_FAILED");
     }
 
     const parsed = newsletterSubscribeSchema.parse({

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { formClientService } from "@/services/formClientService";
 import { HONEYPOT_FIELD_NAME } from "@/lib/honeypot";
+import { TURNSTILE_FIELD_NAME } from "@/lib/turnstileField";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 
 type Fields = { name: string; email: string; subject: string; message: string; consent: boolean };
 type Errors = Partial<Record<keyof Fields, string>>;
@@ -27,7 +29,7 @@ export function ContactForm() {
     return Object.keys(e).length === 0;
   }
 
-  async function handleSubmit(ev: React.FormEvent) {
+  async function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault();
     if (!validate()) return;
     setSubmitError(null);
@@ -40,6 +42,8 @@ export function ContactForm() {
       formData.set("subject", fields.subject);
       formData.set("message", fields.message);
       formData.set(HONEYPOT_FIELD_NAME, "");
+      const turnstileField = ev.currentTarget.elements.namedItem(TURNSTILE_FIELD_NAME) as HTMLInputElement | null;
+      if (turnstileField?.value) formData.set(TURNSTILE_FIELD_NAME, turnstileField.value);
       await formClientService.submit(formData);
       setSent(true);
     } catch {
@@ -151,6 +155,7 @@ export function ContactForm() {
           {errors.consent}
         </span>
       ) : null}
+      <TurnstileWidget />
       {submitError ? <span className="field-error">{submitError}</span> : null}
 
       <button className="button primary" type="submit" disabled={sending}>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { formDefinitions, toSubmissionFormType, type PublicFormType } from "@/constants/forms";
 import { formClientService } from "@/services/formClientService";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 
 // Message affiché après envoi — plus détaillé pour la candidature (chapitre 8
 // du plan V2 : "page de confirmation expliquant la suite"), générique sinon.
@@ -101,6 +102,7 @@ export function FormModal({ formType, onClose }: { formType: string; onClose: ()
                 </label>
               );
             })}
+            <TurnstileWidget />
             <button className="button primary" type="submit">
               Envoyer
             </button>
