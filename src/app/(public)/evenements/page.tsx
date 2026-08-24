@@ -99,7 +99,7 @@ export default async function EvenementsPage({
             </div>
             <PublicEventCalendar events={filtered} />
           </section>
-        ) : (
+        ) : filtered.length > 0 ? (
           <CardGrid
             title={
               showAll
@@ -122,6 +122,30 @@ export default async function EvenementsPage({
               meta: FORMAT_LABEL[item.format] ?? item.format,
             }))}
           />
+        ) : (
+          <section className="section">
+            <div className="section-head">
+              <h2>
+                {showAll
+                  ? "Tous les événements"
+                  : showCurrent
+                    ? "Événements en cours"
+                    : showPast
+                      ? "Événements passés"
+                      : "Événements à venir"}
+              </h2>
+              <Suspense>
+                <ViewToggle />
+              </Suspense>
+            </div>
+            <p style={{ color: "var(--ed-muted)" }}>
+              {showPast
+                ? "Aucun événement passé pour l'instant."
+                : showCurrent
+                  ? "Aucun événement en cours cette semaine."
+                  : "Aucun événement à venir pour l'instant — revenez bientôt."}
+            </p>
+          </section>
         )}
         <ProposeSection
           lead="Vous avez une idée d'événement à proposer ?"
