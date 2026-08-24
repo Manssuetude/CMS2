@@ -83,18 +83,18 @@ Contient les composants UI.
 
 **Sous-dossiers :**
 
-| Dossier      | Contenu                                                                                                                   |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `admin`      | Composants d'administration (sidebar, shell, formulaires CRUD, EditorStudio, BlockSettings, OnboardingTour, GlobalSearch) |
-| `blocks`     | Blocs CMS verrouillés (BlockRenderer, blockRegistry)                                                                      |
-| `cards`      | Composants de cartes et grilles                                                                                           |
-| `editor`     | Éditeur riche CKEditor 5 (RichTextEditor)                                                                                 |
-| `forms`      | CTA et modales de formulaires                                                                                             |
-| `layout`     | Header, footer, shell public/admin                                                                                        |
-| `media`      | Médiathèque (MediaLibrary, MediaCard, ImportWizard, MediaField)                                                           |
-| `navigation` | Futur emplacement pour navigation réutilisable                                                                            |
-| `public`     | Composants de rendu public des entités                                                                                    |
-| `ui`         | Futur emplacement pour primitives UI génériques                                                                           |
+| Dossier      | Contenu                                                                                                  |
+| ------------ | -------------------------------------------------------------------------------------------------------- |
+| `admin`      | Composants d'administration (sidebar, topbar, formulaires CRUD par entité, OnboardingTour, GlobalSearch) |
+| `blocks`     | Blocs CMS verrouillés (BlockRenderer, blockRegistry)                                                     |
+| `cards`      | Composants de cartes et grilles                                                                          |
+| `editor`     | Éditeur riche CKEditor 5 (RichTextEditor)                                                                |
+| `forms`      | CTA et modales de formulaires                                                                            |
+| `layout`     | Header, footer, shell public/admin                                                                       |
+| `media`      | Médiathèque (MediaLibrary, MediaCard, ImportWizard)                                                      |
+| `navigation` | Futur emplacement pour navigation réutilisable                                                           |
+| `public`     | Composants de rendu public des entités                                                                   |
+| `ui`         | Futur emplacement pour primitives UI génériques                                                          |
 
 ---
 
@@ -108,7 +108,7 @@ Contient l'accès aux données uniquement : CRUD, requêtes Supabase, mapping DB
 
 ### `src/services`
 
-Contient la logique métier : relations, graphe éditorial, recommandations, SEO, health checks, smart defaults, taxonomie, orchestration entre repositories.
+Contient la logique métier destinée à être appelée depuis des composants clients (actions fetch/submit orchestrées) — aujourd'hui `formClientService.ts`, `mediaClientService.ts`. Pour la logique métier serveur (relations, recommandations, SEO), le pattern actuel du projet est de la garder directement dans le repository de l'entité concernée, ou dans un helper dédié sous `src/utils/` (ex. `relatedProductions.ts`, `dossierItems.ts`, `eventOfTheMoment.ts`) quand elle est pure et testable indépendamment de Supabase. Un vrai service serveur dédié (`src/services/xxxService.ts`) se justifie seulement si cette logique devient trop complexe pour rester dans le repository — pas de service créé par anticipation.
 
 > Un service peut appeler un repository. Un repository ne doit **jamais** appeler un service.
 
@@ -241,44 +241,46 @@ route handler
 
 ## 6. Où créer un nouveau module CMS
 
-### Themes
+### Themes / SubThemes
 
 - Type partagé : `src/types/cms.ts`
-- Accès données : `src/repositories/themesRepository.ts`
-- Logique métier : `src/services/relationService.ts`, `src/services/recommendationService.ts` ou service dédié
+- Accès données : `src/repositories/themeRepository.ts`, `src/repositories/subThemeRepository.ts`
+- Logique métier : directement dans `themeRepository.ts`/`subThemeRepository.ts` ; service dédié seulement si une vraie règle plus complexe apparaît
 - UI publique : `src/components/public` ou `src/components/cards`
 - Route publique : `src/app/(public)/themes`
-- Admin : `src/app/admin/themes`
+- Admin : `src/app/admin/themes`, `src/app/admin/sousthemes`
 
-### Activities
+### Events (évènements datés)
 
-- Type partagé : `src/types/cms.ts`
-- Accès données : `src/repositories/activitiesRepository.ts`
-- Logique métier : service dédié seulement si une vraie règle métier apparaît
-- Route publique : `src/app/(public)/activites`
-- Admin : `src/app/admin/activites`
+- Type partagé : `src/types/cms.ts` (`Event`)
+- Accès données : `src/repositories/eventRepository.ts`
+- Logique métier : dans `eventRepository.ts` (ex. `isThisWeek`/`pickEventOfTheMoment` dans `src/utils/eventOfTheMoment.ts`) ; service dédié seulement si une vraie règle métier plus complexe apparaît
+- Route publique : `src/app/(public)/evenements`
+- Admin : `src/app/admin/evenements`
+
+Distinct du catalogue de formats d'animation (« Activités » côté produit) : `src/repositories/activityFormatRepository.ts`, route publique `src/app/(public)/activites`, admin `src/app/admin/formatsactivites`.
 
 ### Productions
 
 - Type partagé : `src/types/cms.ts`
-- Accès données : `src/repositories/productionsRepository.ts`
-- Logique métier : recommandations, lecture, relations et SEO dans `src/services`
+- Accès données : `src/repositories/productionRepository.ts`
+- Logique métier : recommandations (`src/utils/relatedProductions.ts`), relations et champs SEO directement dans `productionRepository.ts`
 - Route publique : `src/app/(public)/productions`
 - Admin : `src/app/admin/productions`
 
 ### Resources
 
 - Type partagé : `src/types/cms.ts`
-- Accès données : `src/repositories/resourcesRepository.ts` ou `mediaRepository` si contenu réellement média
-- Logique média : `src/services/mediaService.ts` et `src/lib/media.ts`
+- Accès données : `src/repositories/mediaRepository.ts`
+- Logique média : `src/services/mediaClientService.ts` et `src/lib/media.ts`
 - Route publique : `src/app/(public)/ressources`
-- Admin : `src/app/admin/resources` ou `src/app/admin/media`
+- Admin : `src/components/media`
 
 ### Projects
 
 - Type partagé : `src/types/cms.ts`
-- Accès données : `src/repositories/projectsRepository.ts`
-- Logique métier : avancement, relations, recommandations dans `src/services`
+- Accès données : `src/repositories/projectRepository.ts`
+- Logique métier : avancement, relations et recommandations directement dans `projectRepository.ts`
 - Route publique : `src/app/(public)/projets`
 - Admin : `src/app/admin/projets`
 
@@ -290,18 +292,16 @@ L'espace admin est accessible sur `/admin/*` et protégé par middleware Supabas
 
 **Composants clés :**
 
-| Composant        | Rôle                                                 |
-| ---------------- | ---------------------------------------------------- |
-| `AdminShell`     | Coquille cliente : sidebar + topbar + OnboardingTour |
-| `AdminSidebar`   | Navigation + bouton "Aide" pour rejouer le tour      |
-| `EditorStudio`   | Éditeur de structure de page par blocs (homepage)    |
-| `BlockSettings`  | Panneau de réglages contextuel selon le type de bloc |
-| `OnboardingTour` | Tour guidé 5 étapes, auto-affiché au premier accès   |
-| `RichTextEditor` | CKEditor 5 GPL pour les corps de texte HTML          |
-| `MediaLibrary`   | Médiathèque avec recherche client-side               |
-| `GlobalSearch`   | Recherche transversale via `/api/admin/search`       |
+| Composant        | Rôle                                            |
+| ---------------- | ----------------------------------------------- |
+| `AdminSidebar`   | Navigation + bouton "Aide" pour rejouer le tour |
+| `AdminTopbar`    | Barre supérieure (recherche globale, session)   |
+| `OnboardingTour` | Tour guidé, auto-affiché au premier accès       |
+| `RichTextEditor` | CKEditor 5 GPL pour les corps de texte HTML     |
+| `MediaLibrary`   | Médiathèque avec recherche client-side          |
+| `GlobalSearch`   | Recherche transversale via `/api/admin/search`  |
 
-**Server Actions :** chaque entité (activités, productions, projets, thèmes) dispose de ses propres actions dans `src/app/admin/[entite]/actions.ts`.
+**Server Actions :** chaque entité (évènements, productions, projets, thèmes, dossiers, journal…) dispose de ses propres actions dans `src/app/admin/[entite]/actions.ts`.
 
 ---
 

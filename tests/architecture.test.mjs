@@ -8,7 +8,6 @@ const root = process.cwd();
 const requiredFiles = [
   "ENGINEERING_GUIDE.md",
   "docs/ARCHITECTURE.md",
-  "docs/AUDIT.md",
   "docs/CMS.md",
   "docs/DATABASE.md",
   "docs/WORKFLOWS.md",
@@ -20,7 +19,7 @@ const requiredFiles = [
   "src/utils/slug.ts",
 ];
 
-test("Phase 0 foundation files exist", () => {
+test("foundation files exist", () => {
   for (const file of requiredFiles) {
     assert.equal(existsSync(join(root, file)), true, `${file} should exist`);
   }

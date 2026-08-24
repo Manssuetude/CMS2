@@ -71,14 +71,14 @@ Les CTA dont la cible commence par `FORM:` ouvrent la modale de formulaire corre
 5. Stocké en DB dans `form_submissions`
 6. Visible dans `/admin/forms` avec statut modifiable : `reçu` → `en cours` → `traité` → `archivé`
 
-**Types de formulaires disponibles :** `join` (adhésion), `project`, `content` (contribution), `partner`, `don`
+**Types de formulaires disponibles :** `join` (adhésion), `project`, `content` (contribution), `partner`, `don`, `theme`, `sub_theme`, `event`, `activity`, `production`, `contact` — voir `src/constants/forms.ts`.
 
 ## Pages statiques
 
 Les pages de contenu (accueil, a-propos, nous-rejoindre, etc.) sont stockées dans la table `pages` avec :
 
 - `image_id` (FK → `resources`) : photo hero personnalisée, modifiable via `/admin/pages`
-- `sections` (jsonb[]) : blocs de contenu, éditables via EditorStudio
+- `sections` (jsonb[]) : blocs de contenu, éditables via `/admin/homepage`
 - `seo_title`, `seo_description` : métadonnées SEO
 
 L'admin dispose de deux interfaces :
