@@ -69,7 +69,7 @@ export function AdminSidebar({ collapsed, onToggle, isAdmin = false, permissions
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
-        <img className="admin-sidebar-logo" src="/assets/photos/logo-manssuetude.png?v=3" alt="Manssuétude" />
+        <img className="admin-sidebar-logo" src="/assets/photos/logo-manssuetude.png?v=4" alt="Manssuétude" />
         <span className="admin-sidebar-brand-name">Manssuétude</span>
       </div>
 

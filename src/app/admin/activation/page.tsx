@@ -66,7 +66,7 @@ export default function ActivationPage() {
     <div className="act-shell">
       <div className="act-grid">
         <aside className="act-aside">
-          <img className="act-logo" src="/assets/photos/logo-manssuetude.png?v=3" alt="Manssuétude" />
+          <img className="act-logo" src="/assets/photos/logo-manssuetude.png?v=4" alt="Manssuétude" />
           <p className="act-eyebrow">Espace d&apos;administration</p>
           <h1 className="act-welcome">Bienvenue chez Manssuétude.</h1>
           <p className="act-lede">

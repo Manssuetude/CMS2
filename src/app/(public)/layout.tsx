@@ -18,7 +18,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <a href="#main-content" className="skip-link">
         Aller au contenu
       </a>
-      <SiteHeader logoUrl="/assets/photos/logo-manssuetude.png?v=2" navVisibility={navVisibility} />
+      <SiteHeader logoUrl="/assets/photos/logo-manssuetude.png?v=4" navVisibility={navVisibility} />
       <main className="page-main" id="main-content">
         {children}
       </main>
