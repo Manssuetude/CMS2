@@ -156,6 +156,23 @@
   align-items: center;
   gap: 0.6em;
 }
+/* Chapô « Thème · Sous-thème » (fiche sous-thème) : le titre du thème parent
+   varie beaucoup en longueur, jamais coupé sur deux lignes (le rétrécissement
+   de police via eyebrowFontSize() suffit dans les cas réels du site) — scopé
+   à ce seul contexte, pas au .eyebrow générique utilisé ailleurs. */
+.site-shell .eyebrow--breadcrumb {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.site-shell .eyebrow--breadcrumb > a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
 .site-shell .eyebrow::before {
   content: "";
   width: 26px;
