@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Theme, SubTheme, Production } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { CardGrid } from "@/components/cards/CardGrid";
-import { titleFontSize } from "@/utils/titleSize";
+import { titleFontSize, eyebrowFontSize } from "@/utils/titleSize";
 
 const TYPE_LABEL: Record<string, string> = {
   Article: "Article",
@@ -31,7 +31,10 @@ export function SubThemeDetail({ theme, item, productions, allSubThemes = [] }: 
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="hero hero--detail">
         <div className="hero-copy">
-          <p className="eyebrow">
+          <p
+            className="eyebrow eyebrow--breadcrumb"
+            style={{ fontSize: eyebrowFontSize(`${theme.title} · Sous-thème`) }}
+          >
             <Link href={`/themes/${theme.slug}`} style={{ color: "inherit" }}>
               {theme.title}
             </Link>{" "}
