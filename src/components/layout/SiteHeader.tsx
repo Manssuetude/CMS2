@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { HeaderSearch } from "@/components/layout/HeaderSearch";
 import { MAIN_NAV_ITEMS, MEMBER_SPACE_URL } from "@/constants/site";
 import type { NavVisibility } from "@/types/cms";
 
@@ -61,6 +62,7 @@ export function SiteHeader({
               Nous soutenir
             </Link>
           )}
+          <HeaderSearch />
           <ThemeToggle />
           <Link className="cta" href="/nous-rejoindre" onClick={() => setOpen(false)}>
             Rejoindre
