@@ -63,15 +63,15 @@ Copy `.env.example` to `.env.local`. Required vars:
 
 ## Database
 
-SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.sql`, `storage.sql`. Main entities: Users, Roles, Pages, Themes, Productions, Activities, Projects, Resources, Forms, FormSubmissions, SiteSettings, Media, AuditLogs.
+SQL schema files are in `supabase/`: `schema.sql` (full schema — single source of truth, regenerated via `pg_dump` from production on 2026-08-24, replaces the former `schema.sql` + `cms-advanced.sql` pair), `storage.sql` (bucket). Main entities: Users, Roles, Pages, Themes, SubThemes, Productions, Events (formerly Activities), ActivityFormats, Projects, Dossiers, JournalEntries, Authors, Resources, Forms, FormSubmissions, SiteSettings, Media, AuditLogs.
 
-**Migrations** dans `supabase/migrations/` (à exécuter dans Supabase, non lancées automatiquement) : RBAC (`roles`/`users.role_key`/`audit_logs`), `activities.featured`, enum `form_type` (`theme`/`activity`). Voir `docs/DATABASE.md`.
+**Migrations** dans `supabase/migrations/` (à exécuter dans Supabase, non lancées automatiquement) — dossier vidé après consolidation dans `schema.sql` : toute évolution du schéma à partir de maintenant démarre une nouvelle migration ici, puis doit être répercutée dans `schema.sql` et `docs/DATABASE.md`. Voir `docs/DATABASE.md`.
 
 ## Patterns établis
 
 **ISR (revalidation)** — toutes les pages publiques ont `export const revalidate = 60`. Ne pas supprimer. Les éditions admin se propagent au front en <60s sans redéploiement.
 
-**Images des pages** — `contentRepository.getPage(slug)` joint la table `resources` via `image_id` et renvoie `page.imageUrl` (URL absolue normalisée). Les pages publiques utilisent `page.imageUrl ?? "/assets/photos/hero-xxx.png"` comme fallback. Ne jamais hardcoder d'URL statique sans ce fallback.
+**Images des pages** — `pageRepository.getPage(slug)` joint la table `resources` via `image_id` et renvoie `page.imageUrl` (URL absolue normalisée). Les pages publiques utilisent `page.imageUrl ?? "/assets/photos/hero-xxx.png"` comme fallback. Ne jamais hardcoder d'URL statique sans ce fallback.
 
 **Recadrage d'image (non destructif)** — chaque emplacement peut cadrer une image **sans modifier le fichier** (les ressources sont partagées). Le cadrage est stocké par emplacement en jsonb (`pages.image_crop`, `pages.focus_image_crop`) au format `{ x, y, width, height, zoom }` (% — croppedArea de `react-easy-crop`) et appliqué en CSS à l'affichage : point focal `object-position` + zoom via la propriété CSS `scale` (composable avec un `transform` de survol). Éditeur admin réutilisable : `<ImageCropField>` (`src/components/media/ImageCropField.tsx`, bouton « Éditer l'image » → modale `react-easy-crop`) ; affichage : helper `cropToImageStyle` (`src/utils/imageCrop.ts`), utilisé côté public **et** dans l'aperçu admin (WYSIWYG). Ratios partagés dans `src/constants/imageAspects.ts`. Étendre à un nouvel emplacement = colonne `xxx_crop jsonb` + `<ImageCropField>` + `cropToImageStyle` sur son `<img>`.
 
@@ -96,7 +96,7 @@ SQL schema files are in `supabase/`: `schema.sql` (core tables), `cms-advanced.s
 - Mise en avant accueil : étoile cliquable (thèmes / productions max 4 / activités max 3)
 - Toute action « Enregistrer » redirige avec `?saved=1` → toast (`AdminToaster`)
 
-**contentRepository — méthodes utiles**
+**pageRepository — méthodes utiles**
 
 - `getPage(slug)` — retourne page + `imageUrl` résolue (jointure resources)
 - `updatePage(slug, fields)` — met à jour n'importe quel champ de la table `pages`

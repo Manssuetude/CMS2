@@ -24,7 +24,7 @@ Manssuétude doit ressembler à une plateforme éditoriale intellectuelle, séri
 
 ## 2. Tokens
 
-Les tokens de référence vivent dans `src/config/designTokens.ts`. Les variables CSS opérationnelles vivent dans `src/styles/globals.css`.
+Les tokens de référence vivent en variables CSS : `src/styles/globals.css` (admin) et `--ed-*` dans `src/styles/editorial/base.css` (site public, thème clair/sombre).
 
 **Familles de tokens stabilisées :**
 

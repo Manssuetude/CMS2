@@ -35,8 +35,7 @@ Le codebase doit rester prévisible pour une petite équipe. Chaque fichier doit
 
 **Repositories :**
 
-- Fichiers au pluriel + `Repository.ts` — ex : `themesRepository.ts`
-- Exception temporaire documentée : `formRepository.ts` coexiste avec `formsRepository.ts` pour compatibilité progressive
+- Fichiers au singulier + `Repository.ts` — ex : `themeRepository.ts`, `eventRepository.ts`, `productionRepository.ts`
 - Fonctions orientées accès données : `listThemes`, `getThemeBySlug`, `upsertProduction`
 
 **Types :**
@@ -104,11 +103,10 @@ Voir [`ARCHITECTURE.md`](ARCHITECTURE.md#srcservices) pour les responsabilités,
 Quand plusieurs fonctions appartiennent au même domaine, exporter un objet service :
 
 ```ts
-export const editorBlockService = {
-  createFromDefinition,
-  duplicate,
-  move,
-  patch,
+export const formClientService = {
+  async submit(formData: FormData) {
+    /* ... */
+  },
 };
 ```
 
@@ -138,7 +136,7 @@ route handler → auth/permission → validation → service/repository → rép
 
 ## 9. Styles
 
-Les styles globaux vivent dans `src/styles/globals.css`. Les tokens stables vivent dans `src/config/designTokens.ts`.
+Les styles globaux vivent dans `src/styles/globals.css` (admin) et `src/styles/editorial.css` (site public, scopé `.site-shell`, prioritaire). Les tokens stables (couleurs, échelle typographique) vivent en CSS custom properties dans `src/styles/editorial/base.css` (`--ed-*`) et `globals.css`.
 
 **Règles :**
 
@@ -161,7 +159,7 @@ Voir [`WORKFLOWS.md`](WORKFLOWS.md#branches) pour les branches, conventions de c
 **Import interne propre :**
 
 ```ts
-import { themesRepository } from "@/repositories/themesRepository";
+import { themeRepository } from "@/repositories/themeRepository";
 import type { Theme } from "@/types/cms";
 ```
 

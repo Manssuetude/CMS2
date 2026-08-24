@@ -24,6 +24,13 @@
 
 ## ⚠️ Alertes à traiter avant tout développement V2
 
+> **Mise à jour 2026-08-24** : les 4 alertes ci-dessous, telles que constatées le 17/08, sont **toutes résolues** depuis. Conservées à titre historique (le reste du document — priorisation, items non traités — reste pertinent).
+>
+> 1. Résolu — `/admin/journal` renommé `/admin/historique` (audit RBAC), le nom « Journal » est réservé au Journal éditorial public, désormais implémenté (table `journal_entries`, page `/journal`).
+> 2. Résolu — `theme_projects`/`production_projects` sont utilisées (migration `20260818_relational_architecture.sql`). `theme_activities`/`production_activities`/`activity_resources` ont été renommées `theme_events`/`production_events`/`event_resources` (migration `20260821_rename_activity_to_event.sql`) et sont actives. `cms-advanced.sql` (contenant `entity_relations`/`cms_collections`, jamais concrétisées en base) a été supprimé — voir `docs/DATABASE.md`.
+> 3. Résolu — `MediaField.tsx` et `/admin/identity` ont été supprimés.
+> 4. Résolu — `/admin/backup` a été supprimé.
+
 1. **Collision de nom "Journal"** — `/admin/journal` existe déjà et désigne le **journal d'audit RBAC** (historique des actions admin, table `audit_logs`, `src/app/admin/journal/`, `src/lib/audit.ts`). Le "Journal éditorial" décrit en §3.1 (entrées courtes publiques, actualités/coulisses) est une **entité complètement différente et inexistante**. Il faudra soit renommer l'existant ("Historique"/"Journal d'audit"), soit choisir un autre nom pour la nouvelle fonctionnalité, pour éviter toute confusion en admin.
 2. **Tables de liaison mortes** — `theme_projects`, `theme_activities`, `production_projects`, `production_activities`, `activity_resources`, `project_resources` (`supabase/schema.sql`) existent en base mais **ne sont référencées par aucun repository ni composant** (0 usage confirmé). Idem pour `entity_relations`/`cms_collections` (`supabase/cms-advanced.sql`). L'architecture relationnelle demandée en §2.4 est donc en grande partie **à construire**, pas juste à "activer" — mais une partie du schéma existe déjà, à évaluer au cas par cas (garder/adapter vs. repartir sur un schéma plus simple, sur le modèle de ce qu'on a fait pour thème↔sous-thème).
 3. **`MediaField.tsx`** (sélecteur de média réutilisable) a des boutons "Choisir depuis la médiathèque" / "Choisir depuis Google Drive" **sans `onClick`** — composant non fonctionnel, utilisé nulle part sauf `/admin/identity` (page elle-même non câblée). La "réutilisation d'un média déjà ajouté" (§2.2) est à construire.

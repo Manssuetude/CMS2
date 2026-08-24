@@ -130,22 +130,22 @@ Pour un développeur qui arrive sur le projet, dans cet ordre :
 | [docs/DATABASE.md](docs/DATABASE.md)                     | Tables et fichiers SQL Supabase         |
 | [docs/WORKFLOWS.md](docs/WORKFLOWS.md)                   | Branches, PR et validations             |
 | [docs/COLLABORATION.md](docs/COLLABORATION.md)           | Organisation du travail en équipe       |
-| [docs/PHASE_0_AUDIT.md](docs/PHASE_0_AUDIT.md)           | Audit initial                           |
-| [docs/PHASE_0_CLEANUP.md](docs/PHASE_0_CLEANUP.md)       | Nettoyage initial                       |
+| [docs/V2_ETAT_DES_LIEUX.md](docs/V2_ETAT_DES_LIEUX.md)   | État des lieux fonctionnel V2           |
+| [docs/V2_PLAN_TRAVAIL.md](docs/V2_PLAN_TRAVAIL.md)       | Plan de travail V2 en cours             |
+| [docs/AUDIT_CONFORMITE.md](docs/AUDIT_CONFORMITE.md)     | Audit conformité RGPD/sécurité          |
 
 ---
 
 ## Statut du projet
 
-**Phase actuelle : Phase 0 — Consolidation technique**
+**Phase actuelle : V2 — développement produit actif**
 
-Objectifs de la phase :
+La consolidation initiale (Phase 0 : architecture, conventions, fondations) est terminée. Le projet est désormais en développement de fonctionnalités continu, encadré par :
 
-- Clarifier l'architecture
-- Documenter les conventions
-- Éviter les refactors risqués
-- Préparer l'arrivée de nouveaux développeurs
-- Ne pas lancer de nouvelle fonctionnalité produit tant que les fondations ne sont pas stabilisées
+- [docs/V2_PLAN_TRAVAIL.md](docs/V2_PLAN_TRAVAIL.md) — chantiers produit en cours
+- [docs/AUDIT_CONFORMITE_PLAN.md](docs/AUDIT_CONFORMITE_PLAN.md) — mise en conformité RGPD/sécurité en cours
+
+L'architecture et les conventions documentées ci-dessus restent la référence — toute nouvelle fonctionnalité s'y conforme.
 
 ---
 

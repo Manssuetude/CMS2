@@ -6,18 +6,17 @@
 
 ## 1. Comprendre le projet
 
-Manssuétude est une association et plateforme intellectuelle. Le CMS aide l'équipe à publier, organiser, relier et administrer ses contenus : pages publiques, productions, thèmes, projets, activités, ressources, médias et formulaires.
+Manssuétude est une association et plateforme intellectuelle. Le CMS aide l'équipe à publier, organiser, relier et administrer ses contenus : pages publiques, productions, thèmes, évènements, projets, dossiers, journal éditorial, ressources, médias et formulaires.
 
 Le produit doit être **simple** pour une équipe interne de 5 à 8 personnes. L'architecture peut être robuste, mais l'interface ne doit jamais devenir technique ou intimidante.
 
 **État actuel :**
 
-| Statut                 | Description                                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
-| ✅ Existant            | Next.js, routes publiques, admin, API routes, Supabase, repositories, services, seed, documentation Phase 0  |
-| 🗂 Existant temporaire | Ancien prototype vanilla à la racine                                                                         |
-| 🔜 Prévu               | CRUD admin plus complet, workflows éditoriaux, intégration Google Drive finalisée, composants UI centralisés |
-| ⛔ À éviter maintenant | Développer de nouvelles fonctionnalités avant la fin de la stabilisation Phase 0                             |
+| Statut                 | Description                                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| ✅ Existant            | Next.js, routes publiques, admin, API routes, Supabase, repositories, RBAC — développement V2 en cours |
+| 🗂 Existant temporaire | Ancien prototype vanilla à la racine                                                                   |
+| 🔜 Prévu               | Voir `docs/V2_PLAN_TRAVAIL.md` pour les chantiers en cours                                             |
 
 ---
 
@@ -55,17 +54,16 @@ Nous ne construisons pas :
 
 ## 4. Stack technique
 
-| Domaine         | Technologie                                    |
-| --------------- | ---------------------------------------------- |
-| Framework       | Next.js / React / TypeScript                   |
-| API             | Route Handlers Next.js                         |
-| Base de données | Supabase / PostgreSQL                          |
-| Stockage médias | Supabase Storage                               |
-| Styles          | CSS propriétaire dans `src/styles/globals.css` |
-| Tokens design   | `src/config/designTokens.ts`                   |
-| Emails          | Resend (prévu)                                 |
-| Google Drive    | Picker/OAuth préparé, à finaliser              |
-| Déploiement     | Vercel                                         |
+| Domaine         | Technologie                                                                          |
+| --------------- | ------------------------------------------------------------------------------------ |
+| Framework       | Next.js / React / TypeScript                                                         |
+| API             | Route Handlers Next.js                                                               |
+| Base de données | Supabase / PostgreSQL                                                                |
+| Stockage médias | Supabase Storage                                                                     |
+| Styles          | CSS propriétaire (`src/styles/globals.css` admin, `src/styles/editorial.css` public) |
+| Emails          | Resend (`src/lib/email.ts`) — invitations, confirmations de formulaire               |
+| Google Drive    | Picker/OAuth préparé, à finaliser                                                    |
+| Déploiement     | Vercel                                                                               |
 
 ---
 
@@ -188,40 +186,40 @@ Voir [`ARCHITECTURE.md`](ARCHITECTURE.md) pour l'arborescence complète, les res
 **Pages publiques**
 
 - Routes : `src/app/(public)`
-- Rendu page : `src/components/public/PublicPage.tsx`
-- Pages détail : `src/components/public/DetailPage.tsx`
+- Rendu page générique : `src/components/public/PublicPage.tsx`
+- Pages détail : un composant dédié par entité (`ProductionDetail.tsx`, `EvenementDetail.tsx`, `ThemeDetail.tsx`, `ProjetDetail.tsx`, `SubThemeDetail.tsx`, `DossierDetail.tsx`, `JournalEntryDetail.tsx`…)
 
 **Admin**
 
 - Routes : `src/app/admin`
 - Sidebar : `src/components/admin/AdminSidebar.tsx`
-- Tables : `src/components/admin/AdminTable.tsx`
-- Studio éditorial : `src/components/admin/EditorStudio.tsx`
+- Topbar : `src/components/admin/AdminTopbar.tsx`
+- Un formulaire dédié par entité (`ProductionForm.tsx`, `EvenementForm.tsx`, `ThemeForm.tsx`…)
 
 **Médias**
 
 - Composants : `src/components/media`
 - Repository : `src/repositories/mediaRepository.ts`
-- Services : `src/services/mediaService.ts`, `src/services/mediaClientService.ts`
+- Service client : `src/services/mediaClientService.ts`
 - Stockage : `src/lib/media.ts`
 
 **Formulaires**
 
 - Composants : `src/components/forms`
 - Constantes : `src/constants/forms.ts`
-- Repositories : `src/repositories/formRepository.ts`, `src/repositories/formsRepository.ts`
+- Repositories : `src/repositories/formRepository.ts` (config admin), `src/repositories/formSubmissionRepository.ts` (soumissions)
 - Service client : `src/services/formClientService.ts`
 
 **Contenus**
 
-- Repositories : `themesRepository.ts`, `productionsRepository.ts`, `projectsRepository.ts`, `activitiesRepository.ts`, `resourcesRepository.ts`
+- Repositories : `themeRepository.ts`, `subThemeRepository.ts`, `productionRepository.ts`, `projectRepository.ts`, `eventRepository.ts`, `activityFormatRepository.ts`, `dossierRepository.ts`, `journalRepository.ts`, `authorRepository.ts`, `mediaRepository.ts`
 - Types : `src/types/cms.ts`
-- Relations : `src/services/relationService.ts`, `src/services/graphService.ts`
+- Relations/recommandations : directement dans le repository de l'entité, ou dans un helper `src/utils/` (ex. `relatedProductions.ts`)
 
 **Design**
 
-- Tokens : `src/config/designTokens.ts`
-- CSS global : `src/styles/globals.css`
+- CSS admin : `src/styles/globals.css`
+- CSS public : `src/styles/editorial.css` (scopé `.site-shell`, prioritaire)
 - Documentation : [`docs/DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md)
 
 ---
