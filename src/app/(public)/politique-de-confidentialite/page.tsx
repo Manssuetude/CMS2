@@ -49,6 +49,11 @@ export default function PrivacyPolicyPage() {
             site. Détail de chaque cookie et service tiers : <a href="/politique-cookies">politique cookies</a>.
           </li>
           <li>
+            <strong>Dons</strong> : le bouton « Faire un don » vous redirige vers une page de paiement hébergée par
+            Stripe (buy.stripe.com). Nous ne recevons ni ne stockons aucune donnée de paiement (coordonnées bancaires,
+            montant) : elle est saisie et traitée directement par Stripe, selon sa propre politique de confidentialité.
+          </li>
+          <li>
             <strong>Comptes de l&apos;équipe éditoriale</strong> (accès à l&apos;espace d&apos;administration) :
             réservés aux membres de l&apos;équipe, gérés séparément de vos données de visiteur.
           </li>
