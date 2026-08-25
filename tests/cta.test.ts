@@ -19,6 +19,11 @@ test("resolveCta — vide → accueil", () => {
 
 test("isFormCta — détecte les cibles de formulaire", () => {
   assert.equal(isFormCta("FORM:join"), true);
-  assert.equal(isFormCta(ctaLinks.donate), true);
+  assert.equal(isFormCta(ctaLinks.partner), true);
   assert.equal(isFormCta("/themes"), false);
+});
+
+test("resolveCta — don → lien de paiement Stripe direct (pas un formulaire)", () => {
+  assert.equal(isFormCta(ctaLinks.donate), false);
+  assert.equal(resolveCta("donate"), ctaLinks.donate);
 });
