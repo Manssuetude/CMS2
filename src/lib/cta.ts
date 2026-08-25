@@ -11,7 +11,7 @@ export const ctaLinks: Record<string, CtaTarget> = {
   resources: "/ressources",
   perca: "/perca",
   about: "/a-propos",
-  donate: "FORM:don",
+  donate: "https://buy.stripe.com/dRm00ccY22az0E17JSdEs04",
   partner: "FORM:partner",
   contribution: "FORM:content",
   projectProposal: "FORM:project",
