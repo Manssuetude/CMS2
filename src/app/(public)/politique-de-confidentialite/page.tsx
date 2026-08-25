@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
             votre première visite, des statistiques de fréquentation anonymisées (pages consultées, performance du site)
             via Vercel Analytics et Vercel Speed Insights. Rien n&apos;est activé avant votre accord, et vous pouvez
             retirer votre consentement à tout moment en effaçant les données de navigation de votre navigateur pour ce
-            site.
+            site. Détail de chaque cookie et service tiers : <a href="/politique-cookies">politique cookies</a>.
           </li>
           <li>
             <strong>Comptes de l&apos;équipe éditoriale</strong> (accès à l&apos;espace d&apos;administration) :
