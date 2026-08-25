@@ -41,6 +41,8 @@ export const MEMBER_SPACE_URL = "https://membre.manssuetude.com";
 // (numéro RNA), pour la vérification Google for Nonprofits.
 export const CONTACT_EMAIL = "contact@manssuetude.com";
 export const RNA_NUMBER = "W951008077";
+// SIREN (9 chiffres) — mentions légales (/mentions-legales) uniquement.
+export const SIREN_NUMBER = "105013122";
 // Siège social — mentions légales (/mentions-legales) uniquement.
 export const HEADQUARTERS_ADDRESS = "5 passage Dubois, 75019 Paris";
 // Représentant légal (mentions légales uniquement, obligatoire pour un éditeur de site).
