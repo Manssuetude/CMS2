@@ -17,7 +17,7 @@ const schema = z.object({
   format: z.string().min(1, "Le format est requis."),
   status: z.enum(["draft", "published", "archived"]).default("draft"),
   progressStatus: z.string().optional().nullable(),
-  date: z.string().min(1, "La date est requise."),
+  date: z.string(),
   startTime: z.string().optional().nullable(),
   endTime: z.string().optional().nullable(),
   location: z.string().optional().nullable(),

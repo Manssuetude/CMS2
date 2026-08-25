@@ -315,8 +315,7 @@ CREATE TABLE public.events (
     eventbrite_url text,
     registration_status text,
     seo_title text,
-    seo_description text,
-    CONSTRAINT events_published_requires_date CHECK (((status <> 'published'::public.content_status) OR (date IS NOT NULL)))
+    seo_description text
 );
 
 
