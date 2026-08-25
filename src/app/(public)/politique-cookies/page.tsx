@@ -104,7 +104,8 @@ export default function CookiesPolicyPage() {
         <h2>Questions</h2>
         <p>
           Pour toute question sur cette politique, contactez-nous à{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Pour le détail complet du traitement de vos données
+          personnelles, voir notre <a href="/politique-de-confidentialite">politique de confidentialité</a>.
         </p>
       </div>
     </div>
