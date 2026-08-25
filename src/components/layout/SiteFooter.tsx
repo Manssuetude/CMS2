@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { FooterConfig } from "@/types/cms";
-import { RNA_NUMBER } from "@/constants/site";
+import { CONTACT_EMAIL, RNA_NUMBER } from "@/constants/site";
 
 const defaultColumns = [
   {
@@ -98,7 +98,8 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
       </div>
       <div className="footer-bottom">
         <span>
-          © {new Date().getFullYear()} Manssuétude · Association à but non lucratif · RNA {RNA_NUMBER}
+          © {new Date().getFullYear()} Manssuétude · Association à but non lucratif · RNA {RNA_NUMBER} ·{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         </span>
         <span>{description}</span>
       </div>
