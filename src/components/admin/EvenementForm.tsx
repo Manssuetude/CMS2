@@ -170,9 +170,9 @@ export function EvenementForm({
             </div>
             <div className="form-field">
               <label className="field-label" htmlFor="date">
-                Date *
+                Date
               </label>
-              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} required />
+              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
             </div>
           </div>
 
