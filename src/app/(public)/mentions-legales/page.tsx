@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
-import { CONTACT_EMAIL, HEADQUARTERS_ADDRESS, LEGAL_REPRESENTATIVE, RNA_NUMBER, SIREN_NUMBER } from "@/constants/site";
+import {
+  CONTACT_EMAIL,
+  HEADQUARTERS_ADDRESS,
+  LEGAL_REPRESENTATIVE,
+  RNA_NUMBER,
+  SIREN_NUMBER,
+  SIRET_NUMBER,
+} from "@/constants/site";
 
 export const metadata: Metadata = {
   title: "Mentions légales · Manssuétude",
@@ -28,6 +35,9 @@ export default function LegalNoticePage() {
           </li>
           <li>
             <strong>Numéro SIREN :</strong> {SIREN_NUMBER}
+          </li>
+          <li>
+            <strong>Numéro SIRET :</strong> {SIRET_NUMBER}
           </li>
           <li>
             <strong>Siège social :</strong> {HEADQUARTERS_ADDRESS}
