@@ -53,10 +53,12 @@ export default function LegalNoticePage() {
         <h2>Hébergement</h2>
         <ul>
           <li>
-            <strong>Hébergement du site :</strong> Vercel Inc.
+            <strong>Hébergement du site :</strong> Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis —{" "}
+            <a href="mailto:legalnotices@vercel.com">legalnotices@vercel.com</a>
           </li>
           <li>
-            <strong>Hébergement de la base de données :</strong> Supabase Inc.
+            <strong>Hébergement de la base de données :</strong> Supabase Pte. Ltd., 65 Chulia Street #38-02/03, OCBC
+            Centre, Singapour 049513
           </li>
         </ul>
 
