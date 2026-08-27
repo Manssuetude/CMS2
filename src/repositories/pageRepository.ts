@@ -52,7 +52,15 @@ export const pageRepository = {
       .select("*, image_resource:resources!image_id(url)")
       .eq("slug", slug)
       .single();
-    if (error) return null;
+    if (error) {
+      // PGRST116 = aucune ligne trouvée (page réellement inexistante) → 404 légitime.
+      // Toute autre erreur (réseau, timeout de connexion froide sur Vercel après une
+      // période d'inactivité...) doit remonter en exception, pas se transformer
+      // silencieusement en "page introuvable" : les pages appelantes catchent déjà
+      // ces exceptions pour afficher <MaintenanceNotice /> au lieu d'une vraie 404.
+      if (error.code === "PGRST116") return null;
+      throw error;
+    }
     return mapPage(data);
   },
 
