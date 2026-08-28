@@ -5,19 +5,22 @@ import { Document, Page, pdfjs } from "react-pdf";
 import { FileDown, ChevronLeft, ChevronRight } from "lucide-react";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import { readSavedPdfPage, savePdfPage } from "@/lib/readingProgress";
 
 // Copié dans public/ (voir node_modules/pdfjs-dist/build/pdf.worker.min.mjs) —
 // évite de dépendre de la résolution d'assets du bundler ou d'un CDN externe.
 // À resynchroniser si la version de pdfjs-dist embarquée par react-pdf change.
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
-export function PdfViewer({ url, title }: { url: string; title: string }) {
+export function PdfViewer({ url, title, slug }: { url: string; title: string; slug?: string }) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [error, setError] = useState(false);
   const [width, setWidth] = useState<number>(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => (slug ? (readSavedPdfPage(slug) ?? 1) : 1));
   const containerRef = useRef<HTMLDivElement>(null);
+  const pageRefs = useRef(new Map<number, HTMLDivElement>());
+  const hasScrolledToResume = useRef(false);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -40,9 +43,37 @@ export function PdfViewer({ url, title }: { url: string; title: string }) {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
+  const previousUrl = useRef(url);
   useEffect(() => {
-    setCurrentPage(1);
-  }, [url]);
+    if (previousUrl.current === url) return;
+    previousUrl.current = url;
+    hasScrolledToResume.current = false;
+    setCurrentPage(slug ? (readSavedPdfPage(slug) ?? 1) : 1);
+  }, [url, slug]);
+
+  // Clamp une page reprise depuis une session précédente si le document a
+  // depuis été remplacé par une version plus courte.
+  useEffect(() => {
+    if (numPages && currentPage > numPages) setCurrentPage(numPages);
+  }, [numPages, currentPage]);
+
+  useEffect(() => {
+    if (slug) savePdfPage(slug, currentPage);
+  }, [slug, currentPage]);
+
+  // Défilement en vue empilée (desktop) : ramène une seule fois la page
+  // reprise dans le cadre au chargement, sans suivre le défilement ensuite.
+  // Déclenché par le rendu effectif (canvas peint) de la page cible, pas par
+  // un délai arbitraire : react-pdf peint chaque page de façon asynchrone,
+  // le conteneur n'a pas de hauteur réelle à défiler avant ce moment.
+  function handlePageRenderSuccess(pageNumber: number) {
+    if (isMobile || hasScrolledToResume.current || pageNumber !== currentPage || currentPage <= 1) return;
+    const el = pageRefs.current.get(pageNumber);
+    if (el) {
+      el.scrollIntoView({ block: "start" });
+      hasScrolledToResume.current = true;
+    }
+  }
 
   if (error) {
     return (
@@ -99,15 +130,24 @@ export function PdfViewer({ url, title }: { url: string; title: string }) {
           {numPages &&
             width > 0 &&
             (isMobile ? [currentPage] : Array.from({ length: numPages }, (_, i) => i + 1)).map((pageNumber) => (
-              <Page
+              <div
                 key={pageNumber}
-                pageNumber={pageNumber}
-                width={width}
-                className="pdf-viewer-page"
-                renderAnnotationLayer
-                renderTextLayer
-                loading=""
-              />
+                className="pdf-viewer-page-wrap"
+                ref={(el) => {
+                  if (el) pageRefs.current.set(pageNumber, el);
+                  else pageRefs.current.delete(pageNumber);
+                }}
+              >
+                <Page
+                  pageNumber={pageNumber}
+                  width={width}
+                  className="pdf-viewer-page"
+                  renderAnnotationLayer
+                  renderTextLayer
+                  loading=""
+                  onRenderSuccess={() => handlePageRenderSuccess(pageNumber)}
+                />
+              </div>
             ))}
         </Document>
       </div>
