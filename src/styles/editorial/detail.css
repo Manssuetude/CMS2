@@ -128,6 +128,11 @@
   align-items: center;
   gap: 1rem;
 }
+.site-shell .pdf-viewer-page-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 .site-shell .pdf-viewer-page {
   box-shadow: 0 1px 3px color-mix(in srgb, black 12%, transparent);
   max-width: 100%;
@@ -164,6 +169,50 @@
   background: var(--ed-brand);
   box-shadow: 0 0 6px color-mix(in srgb, var(--ed-brand) 60%, transparent);
   transition: width 0.1s linear;
+}
+
+/* Bandeau « reprendre la lecture » — flotte en bas, discret, jamais bloquant. */
+.site-shell .reading-resume-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 22;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 0.9rem 0.7rem 1.1rem;
+  background: var(--ed-ink);
+  color: var(--ed-paper);
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  font-size: 0.875rem;
+  max-width: min(92vw, 420px);
+}
+.site-shell .reading-resume-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.site-shell .reading-resume-accept,
+.site-shell .reading-resume-dismiss {
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.4em 0.9em;
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.site-shell .reading-resume-accept {
+  background: var(--ed-brand);
+  color: #fff;
+}
+.site-shell .reading-resume-dismiss {
+  background: transparent;
+  color: var(--ed-paper);
+  border-color: color-mix(in srgb, var(--ed-paper) 35%, transparent);
 }
 
 /* Citation bibliographique générée */
