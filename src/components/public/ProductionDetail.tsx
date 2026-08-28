@@ -72,7 +72,7 @@ export function ProductionDetail({
           dateModified: item.updatedAt,
         })}
       />
-      {item.body && <ReadingProgressBar />}
+      {item.body && <ReadingProgressBar slug={item.slug} />}
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className={`hero hero--detail${hasAside ? " hero--detail-split" : ""}`}>
         <div className="hero-copy">
@@ -176,7 +176,7 @@ export function ProductionDetail({
       {isPdfFile && fileUrl && (
         <section className="section">
           <div className="detail-body">
-            <PdfViewer url={fileUrl} title={item.title} />
+            <PdfViewer url={fileUrl} title={item.title} slug={item.slug} />
           </div>
         </section>
       )}
