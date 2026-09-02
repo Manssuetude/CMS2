@@ -1,6 +1,6 @@
-import sharp from "sharp";
 import { getSupabaseAdmin } from "@/lib/db";
 import { validateUpload } from "@/utils/uploadValidation";
+import { logger } from "@/lib/logger";
 import type { MediaType } from "@/types/cms";
 
 export function inferMediaType(filename: string): MediaType {
@@ -26,15 +26,34 @@ const STORAGE_CACHE_CONTROL = "31536000";
 
 async function optimizeImage(bytes: Buffer, mimeType: string): Promise<Buffer> {
   if (!RESIZABLE_IMAGE_TYPES.has(mimeType)) return bytes;
-  const image = sharp(bytes).rotate(); // rotate() applique l'orientation EXIF puis la retire
-  const metadata = await image.metadata();
-  const needsResize = (metadata.width ?? 0) > MAX_IMAGE_DIMENSION || (metadata.height ?? 0) > MAX_IMAGE_DIMENSION;
-  const resized = needsResize
-    ? image.resize({ width: MAX_IMAGE_DIMENSION, height: MAX_IMAGE_DIMENSION, fit: "inside", withoutEnlargement: true })
-    : image;
-  if (mimeType === "image/png") return resized.png({ quality: 82, effort: 8 }).toBuffer();
-  if (mimeType === "image/webp") return resized.webp({ quality: 82 }).toBuffer();
-  return resized.jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+  try {
+    // Import dynamique : sharp est un module natif (binaire spécifique à la
+    // plateforme). S'il échoue à charger ou à traiter l'image pour une raison
+    // quelconque, l'upload ne doit jamais être bloqué pour autant — on retombe
+    // sur le fichier original tel quel plutôt que de faire échouer tout envoi
+    // (PDF et autres types compris, qui ne passent même pas par cette fonction).
+    const sharp = (await import("sharp")).default;
+    const image = sharp(bytes).rotate(); // rotate() applique l'orientation EXIF puis la retire
+    const metadata = await image.metadata();
+    const needsResize = (metadata.width ?? 0) > MAX_IMAGE_DIMENSION || (metadata.height ?? 0) > MAX_IMAGE_DIMENSION;
+    const resized = needsResize
+      ? image.resize({
+          width: MAX_IMAGE_DIMENSION,
+          height: MAX_IMAGE_DIMENSION,
+          fit: "inside",
+          withoutEnlargement: true,
+        })
+      : image;
+    if (mimeType === "image/png") return await resized.png({ quality: 82, effort: 8 }).toBuffer();
+    if (mimeType === "image/webp") return await resized.webp({ quality: 82 }).toBuffer();
+    return await resized.jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+  } catch (error) {
+    logger.error("optimizeImage: échec de l'optimisation, envoi du fichier original", {
+      mimeType,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return bytes;
+  }
 }
 
 export async function uploadToStorage(file: File, folder = "media") {
