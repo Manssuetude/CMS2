@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { logAction } from "@/lib/audit";
+import { slugify } from "@/utils/slug";
 
 const updateSchema = z.object({
   title: z.string().min(1, "Le titre est requis."),
@@ -85,6 +86,10 @@ export async function updateSubThemeAction(_: string | null, formData: FormData)
   }
 
   try {
+    // Le lien (slug) suit le titre tant que le sous-thème est encore en
+    // brouillon — se fige dès la première publication.
+    const current = await subThemeRepository.getSubThemeById(id);
+    const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
     await subThemeRepository.updateSubTheme(id, {
       title: parsed.data.title,
       theme_id: parsed.data.themeId,
@@ -92,6 +97,7 @@ export async function updateSubThemeAction(_: string | null, formData: FormData)
       long_description: parsed.data.longDescription || null,
       date: parsed.data.date || null,
       status: parsed.data.status,
+      ...slugSync,
     });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez réessayer.";

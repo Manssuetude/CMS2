@@ -103,7 +103,12 @@ export async function updateProjectAction(_: string | null, formData: FormData):
   }
 
   try {
-    await projectRepository.updateProject(id, toInput(parsed.data));
+    // Le lien (slug) suit le titre tant que le projet est encore en
+    // brouillon — se fige dès la première publication.
+    const current = await projectRepository.getProjectById(id);
+    const input = toInput(parsed.data);
+    const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
+    await projectRepository.updateProject(id, { ...input, ...slugSync });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }

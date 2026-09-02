@@ -93,7 +93,12 @@ export async function updateJournalEntryAction(_: string | null, formData: FormD
   }
 
   try {
-    await journalRepository.updateEntry(id, toInput(parsed.data));
+    // Le lien (slug) suit le titre tant que l'entrée est encore en
+    // brouillon — se fige dès la première publication.
+    const current = await journalRepository.getEntryById(id);
+    const input = toInput(parsed.data);
+    const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
+    await journalRepository.updateEntry(id, { ...input, ...slugSync });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez réessayer.";
   }

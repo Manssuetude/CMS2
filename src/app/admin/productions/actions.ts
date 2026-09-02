@@ -145,7 +145,14 @@ export async function updateProductionAction(_: string | null, formData: FormDat
   }
 
   try {
-    await productionRepository.updateProduction(id, toInput(parsed.data));
+    // Le lien (slug) suit le titre tant que le contenu est encore en
+    // brouillon (jamais publié) — évite qu'un titre provisoire (ex. "aaaa")
+    // reste figé dans l'URL. Se fige dès la première publication, pour ne
+    // jamais casser un lien déjà partagé/indexé.
+    const current = await productionRepository.getProductionById(id);
+    const input = toInput(parsed.data);
+    const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
+    await productionRepository.updateProduction(id, { ...input, ...slugSync });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }

@@ -166,7 +166,12 @@ export async function updateEventAction(_: string | null, formData: FormData): P
   }
 
   try {
-    await eventRepository.updateEvent(id, toInput(parsed.data));
+    // Le lien (slug) suit le titre tant que l'événement est encore en
+    // brouillon — se fige dès la première publication.
+    const current = await eventRepository.getEventById(id);
+    const input = toInput(parsed.data);
+    const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
+    await eventRepository.updateEvent(id, { ...input, ...slugSync });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
