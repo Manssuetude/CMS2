@@ -94,7 +94,12 @@ export async function updateDossierAction(_: string | null, formData: FormData):
   const items = parseItems(parsed.data.items);
 
   try {
-    await dossierRepository.updateDossier(id, toInput(parsed.data));
+    // Le lien (slug) suit le titre tant que le dossier est encore en
+    // brouillon — se fige dès la première publication.
+    const current = await dossierRepository.getDossierById(id);
+    const input = toInput(parsed.data);
+    const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
+    await dossierRepository.updateDossier(id, { ...input, ...slugSync });
     await dossierRepository.setDossierItems(id, items);
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez réessayer.";
