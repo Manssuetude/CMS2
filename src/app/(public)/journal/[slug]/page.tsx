@@ -5,16 +5,17 @@ import { authorRepository } from "@/repositories/authorRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { eventRepository } from "@/repositories/eventRepository";
-import { buildDetailMetadata } from "@/lib/seo";
+import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
 import { JournalEntryDetail } from "@/components/public/JournalEntryDetail";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const robots = await sectionRobots("/journal");
   try {
     const item = await journalRepository.getEntry(slug);
-    if (!item) return {};
+    if (!item) return { robots };
     const imageUrl = await mediaRepository.getResourceUrl(item.thumbnailId);
     return buildDetailMetadata({
       title: item.title,
@@ -22,9 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       path: `/journal/${item.slug}`,
       imageUrl,
       ogType: "article",
+      robots,
     });
   } catch {
-    return {};
+    return { robots };
   }
 }
 

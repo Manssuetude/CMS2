@@ -6,6 +6,8 @@ import { projectRepository } from "@/repositories/projectRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { journalRepository } from "@/repositories/journalRepository";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
+import type { NavVisibility } from "@/types/cms";
 
 // Régénéré au plus toutes les 60s (cohérent avec l'ISR des pages publiques).
 export const revalidate = 60;
@@ -31,10 +33,33 @@ const STATIC_PATHS: Array<{
   { path: "/contact", priority: 0.5, changeFrequency: "yearly" },
 ];
 
+// Section (voir MAIN_NAV_ITEMS, src/constants/site.ts) dont dépend chaque chemin
+// statique — une section masquée du menu retire aussi son URL du sitemap.
+// `null` = jamais togglable, toujours inclus.
+const STATIC_PATH_SECTION: Record<string, string | null> = {
+  "/": null,
+  "/themes": "/themes",
+  "/evenements": "/evenements",
+  "/activites": "/activites",
+  "/productions": "/productions",
+  "/journal": "/journal",
+  "/projets": "/projets",
+  "/perca": null,
+  "/a-propos": "/a-propos",
+  "/nous-soutenir": "/nous-soutenir",
+  "/nous-rejoindre": null,
+  "/ressources": null,
+  "/contact": null,
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const navVisibility = await siteSettingsRepository.getNavVisibility().catch(() => ({}) as NavVisibility);
+  const isHidden = (section: string | null) => section !== null && navVisibility[section] === false;
 
-  const staticEntries: MetadataRoute.Sitemap = STATIC_PATHS.map(({ path, priority, changeFrequency }) => ({
+  const staticEntries: MetadataRoute.Sitemap = STATIC_PATHS.filter(
+    ({ path }) => !isHidden(STATIC_PATH_SECTION[path] ?? null),
+  ).map(({ path, priority, changeFrequency }) => ({
     url: `${SITE_URL}${path}`,
     lastModified: now,
     changeFrequency,
@@ -54,49 +79,61 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const themeSlugById = new Map(themes.map((t) => [t.id, t.slug]));
 
     const dynamicEntries: MetadataRoute.Sitemap = [
-      ...themes.map((t) => ({
-        url: `${SITE_URL}/themes/${t.slug}`,
-        lastModified: new Date(t.updatedAt),
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-      })),
-      ...subThemes.flatMap((st) => {
-        const themeSlug = themeSlugById.get(st.themeId);
-        return themeSlug
-          ? [
-              {
-                url: `${SITE_URL}/themes/${themeSlug}/${st.slug}`,
-                lastModified: new Date(st.updatedAt),
-                changeFrequency: "monthly" as const,
-                priority: 0.6,
-              },
-            ]
-          : [];
-      }),
-      ...productions.map((p) => ({
-        url: `${SITE_URL}/productions/${p.slug}`,
-        lastModified: new Date(p.updatedAt),
-        changeFrequency: "monthly" as const,
-        priority: 0.7,
-      })),
-      ...events.map((e) => ({
-        url: `${SITE_URL}/evenements/${e.slug}`,
-        lastModified: new Date(e.updatedAt),
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-      })),
-      ...projects.map((p) => ({
-        url: `${SITE_URL}/projets/${p.slug}`,
-        lastModified: new Date(p.updatedAt),
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-      })),
-      ...journalEntries.map((e) => ({
-        url: `${SITE_URL}/journal/${e.slug}`,
-        lastModified: new Date(e.updatedAt),
-        changeFrequency: "monthly" as const,
-        priority: 0.5,
-      })),
+      ...(isHidden("/themes")
+        ? []
+        : themes.map((t) => ({
+            url: `${SITE_URL}/themes/${t.slug}`,
+            lastModified: new Date(t.updatedAt),
+            changeFrequency: "monthly" as const,
+            priority: 0.7,
+          }))),
+      ...(isHidden("/themes")
+        ? []
+        : subThemes.flatMap((st) => {
+            const themeSlug = themeSlugById.get(st.themeId);
+            return themeSlug
+              ? [
+                  {
+                    url: `${SITE_URL}/themes/${themeSlug}/${st.slug}`,
+                    lastModified: new Date(st.updatedAt),
+                    changeFrequency: "monthly" as const,
+                    priority: 0.6,
+                  },
+                ]
+              : [];
+          })),
+      ...(isHidden("/productions")
+        ? []
+        : productions.map((p) => ({
+            url: `${SITE_URL}/productions/${p.slug}`,
+            lastModified: new Date(p.updatedAt),
+            changeFrequency: "monthly" as const,
+            priority: 0.7,
+          }))),
+      ...(isHidden("/evenements")
+        ? []
+        : events.map((e) => ({
+            url: `${SITE_URL}/evenements/${e.slug}`,
+            lastModified: new Date(e.updatedAt),
+            changeFrequency: "monthly" as const,
+            priority: 0.6,
+          }))),
+      ...(isHidden("/projets")
+        ? []
+        : projects.map((p) => ({
+            url: `${SITE_URL}/projets/${p.slug}`,
+            lastModified: new Date(p.updatedAt),
+            changeFrequency: "monthly" as const,
+            priority: 0.6,
+          }))),
+      ...(isHidden("/journal")
+        ? []
+        : journalEntries.map((e) => ({
+            url: `${SITE_URL}/journal/${e.slug}`,
+            lastModified: new Date(e.updatedAt),
+            changeFrequency: "monthly" as const,
+            priority: 0.5,
+          }))),
     ];
 
     return [...staticEntries, ...dynamicEntries];

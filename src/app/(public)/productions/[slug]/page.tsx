@@ -6,16 +6,17 @@ import { mediaRepository } from "@/repositories/mediaRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { authorRepository } from "@/repositories/authorRepository";
-import { buildDetailMetadata } from "@/lib/seo";
+import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
 import { rankRelatedProductions } from "@/utils/relatedProductions";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const robots = await sectionRobots("/productions");
   try {
     const item = await productionRepository.getProduction(slug);
-    if (!item) return {};
+    if (!item) return { robots };
     const imageUrl = await mediaRepository.getResourceUrl(item.thumbnailId);
     return buildDetailMetadata({
       title: item.seoTitle || item.title,
@@ -23,9 +24,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       path: `/productions/${item.slug}`,
       imageUrl,
       ogType: "article",
+      robots,
     });
   } catch {
-    return {};
+    return { robots };
   }
 }
 

@@ -3,14 +3,18 @@ import { CtaButton } from "@/components/forms/CtaButton";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { resolveActivityFormatIcon } from "@/utils/activityFormatIcons";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
+import { sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Formats d'activités · Manssuétude",
-  description:
-    "Le répertoire des techniques d'animation utilisées par Manssuétude pour débattre, échanger, partager et transmettre.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Formats d'activités · Manssuétude",
+    description:
+      "Le répertoire des techniques d'animation utilisées par Manssuétude pour débattre, échanger, partager et transmettre.",
+    robots: await sectionRobots("/activites"),
+  };
+}
 
 export default async function ActivityFormatsPage() {
   try {
