@@ -8,24 +8,26 @@ import { projectRepository } from "@/repositories/projectRepository";
 import { journalRepository } from "@/repositories/journalRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { resolveDossierItems } from "@/utils/dossierItems";
-import { buildDetailMetadata } from "@/lib/seo";
+import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const robots = await sectionRobots("/dossiers");
   try {
     const item = await dossierRepository.getDossier(slug);
-    if (!item) return {};
+    if (!item) return { robots };
     return buildDetailMetadata({
       title: item.title,
       description: item.description?.replace(/<[^>]+>/g, "").slice(0, 200),
       path: `/dossiers/${item.slug}`,
       imageUrl: item.imageUrl,
       ogType: "article",
+      robots,
     });
   } catch {
-    return {};
+    return { robots };
   }
 }
 

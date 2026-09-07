@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_LOGO } from "@/constants/site";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 
 // Tronque une description pour une meta description propre (~160 caractères, coupée sur un mot).
 function toMetaDescription(input: string | null | undefined): string {
@@ -19,6 +20,8 @@ type DetailMetadataInput = {
   imageUrl?: string | null;
   // Type Open Graph (article pour une production, website sinon).
   ogType?: "article" | "website";
+  // Voir `sectionRobots` — passé tel quel si la section parente est masquée du menu.
+  robots?: Metadata["robots"];
 };
 
 // Construit les métadonnées SEO complètes d'une fiche détail : titre, meta description,
@@ -29,6 +32,7 @@ export function buildDetailMetadata({
   path,
   imageUrl,
   ogType = "article",
+  robots,
 }: DetailMetadataInput): Metadata {
   const desc = toMetaDescription(description);
   const image = imageUrl ?? SITE_LOGO;
@@ -36,6 +40,7 @@ export function buildDetailMetadata({
     title,
     description: desc,
     alternates: { canonical: path },
+    robots,
     openGraph: {
       type: ogType,
       siteName: SITE_NAME,
@@ -52,4 +57,23 @@ export function buildDetailMetadata({
       images: [image],
     },
   };
+}
+
+// Masquer une section du menu public (voir MAIN_NAV_ITEMS, src/constants/site.ts,
+// géré depuis /admin/pages) doit aussi retirer de l'indexation Google la page de
+// section ET toutes ses pages de détail (ex : masquer « Journal » retire
+// /journal ET /journal/mon-article de l'indexation, pas seulement le lien du
+// menu). Chaque page de la section (listing + détail) appelle cette fonction
+// avec la clé de section correspondante (ex. "/journal") dans generateMetadata.
+export async function sectionRobots(navKey: string): Promise<Metadata["robots"]> {
+  try {
+    const navVisibility = await siteSettingsRepository.getNavVisibility();
+    if (navVisibility[navKey] === false) {
+      return { index: false, follow: false };
+    }
+  } catch {
+    // Erreur de connexion DB (ex. build sans credentials) : ne pas bloquer
+    // l'indexation par défaut, l'incertitude ne doit jamais coûter le SEO.
+  }
+  return undefined;
 }

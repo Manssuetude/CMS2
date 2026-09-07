@@ -7,16 +7,17 @@ import { activityFormatRepository } from "@/repositories/activityFormatRepositor
 import { authorRepository } from "@/repositories/authorRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
-import { buildDetailMetadata } from "@/lib/seo";
+import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const robots = await sectionRobots("/evenements");
   try {
     const items = await eventRepository.listEvents(true);
     const item = items.find((e) => e.slug === slug);
-    if (!item) return {};
+    if (!item) return { robots };
     const imageUrl = await mediaRepository.getResourceUrl(item.gallery[0]);
     return buildDetailMetadata({
       title: item.seoTitle || item.title,
@@ -24,9 +25,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       path: `/evenements/${item.slug}`,
       imageUrl,
       ogType: "article",
+      robots,
     });
   } catch {
-    return {};
+    return { robots };
   }
 }
 

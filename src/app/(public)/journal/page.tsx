@@ -5,13 +5,17 @@ import { CardGrid } from "@/components/cards/CardGrid";
 import { journalRepository } from "@/repositories/journalRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
+import { sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Journal · Manssuétude",
-  description: "Actualités, coulisses et réflexions de l'association Manssuétude.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Journal · Manssuétude",
+    description: "Actualités, coulisses et réflexions de l'association Manssuétude.",
+    robots: await sectionRobots("/journal"),
+  };
+}
 
 export default async function JournalPage({
   searchParams,
