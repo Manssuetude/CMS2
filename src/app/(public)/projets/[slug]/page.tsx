@@ -5,24 +5,26 @@ import { projectRepository } from "@/repositories/projectRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { eventRepository } from "@/repositories/eventRepository";
 import { journalRepository } from "@/repositories/journalRepository";
-import { buildDetailMetadata } from "@/lib/seo";
+import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const robots = await sectionRobots("/projets");
   try {
     const items = await projectRepository.listProjects(true);
     const item = items.find((p) => p.slug === slug);
-    if (!item) return {};
+    if (!item) return { robots };
     return buildDetailMetadata({
       title: item.seoTitle || item.title,
       description: item.seoDescription || item.description,
       path: `/projets/${item.slug}`,
       ogType: "website",
+      robots,
     });
   } catch {
-    return {};
+    return { robots };
   }
 }
 

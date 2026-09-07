@@ -4,7 +4,7 @@ import { SubThemeDetail } from "@/components/public/SubThemeDetail";
 import { productionRepository } from "@/repositories/productionRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
-import { buildDetailMetadata } from "@/lib/seo";
+import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -14,18 +14,20 @@ export async function generateMetadata({
   params: Promise<{ slug: string; subThemeSlug: string }>;
 }): Promise<Metadata> {
   const { slug, subThemeSlug } = await params;
+  const robots = await sectionRobots("/themes");
   try {
     const theme = await themeRepository.getTheme(slug);
     const item = await subThemeRepository.getSubTheme(subThemeSlug);
-    if (!theme || !item || item.themeId !== theme.id) return {};
+    if (!theme || !item || item.themeId !== theme.id) return { robots };
     return buildDetailMetadata({
       title: `${item.title} · ${theme.title}`,
       description: item.longDescription ?? item.description,
       path: `/themes/${theme.slug}/${item.slug}`,
       ogType: "website",
+      robots,
     });
   } catch {
-    return {};
+    return { robots };
   }
 }
 

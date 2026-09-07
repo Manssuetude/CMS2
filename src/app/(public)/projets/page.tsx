@@ -5,19 +5,22 @@ import { ProposeSection } from "@/components/public/ProposeSection";
 import { pageRepository } from "@/repositories/pageRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
+import { sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
+  const robots = await sectionRobots("/projets");
   try {
     const page = await pageRepository.getPage("projets");
-    if (!page) return {};
+    if (!page) return { robots };
     return {
       title: { absolute: page.seoTitle ?? page.title },
       description: page.seoDescription ?? undefined,
+      robots,
     };
   } catch {
-    return {};
+    return { robots };
   }
 }
 

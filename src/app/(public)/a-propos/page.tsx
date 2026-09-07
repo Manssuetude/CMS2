@@ -3,19 +3,22 @@ import { notFound } from "next/navigation";
 import { AboutEditorial } from "@/components/public/AboutEditorial";
 import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
+import { sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
+  const robots = await sectionRobots("/a-propos");
   try {
     const page = await pageRepository.getPage("a-propos");
-    if (!page) return {};
+    if (!page) return { robots };
     return {
       title: { absolute: page.seoTitle ?? page.title },
       description: page.seoDescription ?? undefined,
+      robots,
     };
   } catch {
-    return {};
+    return { robots };
   }
 }
 

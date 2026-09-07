@@ -2,13 +2,17 @@ import type { Metadata } from "next";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { dossierRepository } from "@/repositories/dossierRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
+import { sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Dossiers · Manssuétude",
-  description: "Des sélections de contenus organisées autour d'un même sujet, à parcourir librement ou pas à pas.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Dossiers · Manssuétude",
+    description: "Des sélections de contenus organisées autour d'un même sujet, à parcourir librement ou pas à pas.",
+    robots: await sectionRobots("/dossiers"),
+  };
+}
 
 export default async function DossiersPage() {
   try {

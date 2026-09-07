@@ -6,15 +6,16 @@ import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { eventRepository } from "@/repositories/eventRepository";
 import { projectRepository } from "@/repositories/projectRepository";
-import { buildDetailMetadata } from "@/lib/seo";
+import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const robots = await sectionRobots("/themes");
   try {
     const item = await themeRepository.getTheme(slug);
-    if (!item) return {};
+    if (!item) return { robots };
     const imageUrl = await mediaRepository.getResourceUrl(item.heroImageId ?? item.thumbnailId);
     return buildDetailMetadata({
       title: item.seoTitle || item.title,
@@ -22,9 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       path: `/themes/${item.slug}`,
       imageUrl,
       ogType: "website",
+      robots,
     });
   } catch {
-    return {};
+    return { robots };
   }
 }
 

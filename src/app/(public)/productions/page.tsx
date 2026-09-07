@@ -11,6 +11,7 @@ import { productionRepository } from "@/repositories/productionRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
+import { sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -30,15 +31,17 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
+  const robots = await sectionRobots("/productions");
   try {
     const page = await pageRepository.getPage("productions");
-    if (!page) return {};
+    if (!page) return { robots };
     return {
       title: { absolute: page.seoTitle ?? page.title },
       description: page.seoDescription ?? undefined,
+      robots,
     };
   } catch {
-    return {};
+    return { robots };
   }
 }
 
