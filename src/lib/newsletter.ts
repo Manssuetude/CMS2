@@ -8,6 +8,9 @@ import { logger } from "@/lib/logger";
 // rien à construire côté application pour ça.
 const BREVO_CONTACTS_URL = "https://api.brevo.com/v3/contacts";
 
+// Liste Brevo "Perspective" (Contacts > Listes) — tout inscrit depuis le site y est rattaché.
+const NEWSLETTER_LIST_ID = 2;
+
 export type NewsletterSubscribeResult = { success: boolean; error?: string };
 
 export async function subscribeToNewsletter(email: string): Promise<NewsletterSubscribeResult> {
@@ -24,7 +27,7 @@ export async function subscribeToNewsletter(email: string): Promise<NewsletterSu
         "content-type": "application/json",
         accept: "application/json",
       },
-      body: JSON.stringify({ email, updateEnabled: true }),
+      body: JSON.stringify({ email, listIds: [NEWSLETTER_LIST_ID], updateEnabled: true }),
     });
 
     // 204 = créé, 400 "duplicate_parameter" = déjà inscrit (on considère ça comme un succès côté visiteur).
