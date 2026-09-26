@@ -420,6 +420,7 @@
 .site-shell .home-newsletter {
   background: var(--ed-sink);
   padding-block: clamp(2.5rem, 5vw, 4rem);
+  scroll-margin-top: 96px;
 }
 .site-shell .home-newsletter-panel {
   display: grid;
