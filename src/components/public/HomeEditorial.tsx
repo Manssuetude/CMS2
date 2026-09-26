@@ -171,7 +171,7 @@ export function HomeEditorial({
       </section>
 
       {/* 6 — Newsletter */}
-      <section className="home-section home-newsletter">
+      <section id="newsletter" className="home-section home-newsletter">
         <div className="home-newsletter-panel">
           <div className="home-newsletter-text">
             <p className="eyebrow">Newsletter</p>
