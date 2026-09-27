@@ -51,6 +51,12 @@ export default function CookiesPolicyPage() {
               <td>Performance du navigateur</td>
             </tr>
             <tr>
+              <td>Google Analytics</td>
+              <td>Mesure d&apos;audience (pages vues, provenance des visites)</td>
+              <td>Oui</td>
+              <td>Visite, pages vues, adresse IP (anonymisée)</td>
+            </tr>
+            <tr>
               <td>Google Fonts</td>
               <td>Typographie du site</td>
               <td>Non, polices auto-hébergées, aucun appel à Google au chargement</td>
@@ -89,16 +95,13 @@ export default function CookiesPolicyPage() {
           </tbody>
         </table>
 
-        <p>
-          Aucun outil de suivi publicitaire ou comportemental n&apos;est utilisé sur ce site (pas de Google Analytics,
-          pas de pixel publicitaire, pas de reciblage).
-        </p>
+        <p>Aucun pixel publicitaire ni outil de reciblage n&apos;est utilisé sur ce site.</p>
 
         <h2>Gérer votre consentement</h2>
         <p>
-          Vous pouvez accepter ou refuser les cookies de mesure d&apos;audience (Vercel Analytics et Speed Insights) via
-          le bandeau affiché lors de votre première visite. Pour modifier votre choix, effacez les données de navigation
-          de votre navigateur pour ce site, le bandeau réapparaîtra à votre prochaine visite.
+          Vous pouvez accepter ou refuser les cookies de mesure d&apos;audience (Vercel Analytics, Vercel Speed Insights
+          et Google Analytics) via le bandeau affiché lors de votre première visite. Pour modifier votre choix, effacez
+          les données de navigation de votre navigateur pour ce site, le bandeau réapparaîtra à votre prochaine visite.
         </p>
 
         <h2>Questions</h2>
