@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Newsreader, Inter, Satisfy } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -152,6 +153,8 @@ const jsonLd = {
   ],
 };
 
+const GA_MEASUREMENT_ID = "G-5TJZEVV0G9";
+
 // Applique le thème choisi avant le premier paint pour éviter tout flash (FOUC).
 // Aucun choix stocké = on laisse la préférence système décider (via les media queries CSS).
 const themeInitScript = `(function(){try{var t=localStorage.getItem("ms-theme");if(t==="dark"||t==="light"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();`;
@@ -168,6 +171,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ConsentGate>
           <Analytics />
           <SpeedInsights />
+          <Script
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          />
+          <Script id="ga4-init" strategy="afterInteractive">
+            {`window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}');`}
+          </Script>
         </ConsentGate>
         <CookieConsentBanner />
       </body>

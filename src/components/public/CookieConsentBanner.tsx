@@ -23,9 +23,9 @@ export function CookieConsentBanner() {
       <div className="cookie-banner-text">
         <p className="cookie-banner-title">Cookies</p>
         <p>
-          Ce site utilise des cookies de mesure d&apos;audience (Vercel Analytics et Vercel Speed Insights) pour
-          comprendre comment il est utilisé et sa performance. Aucune donnée n&apos;est revendue. Détails sur notre{" "}
-          <Link href="/politique-cookies">politique cookies</Link>.
+          Ce site utilise des cookies de mesure d&apos;audience (Vercel Analytics, Vercel Speed Insights et Google
+          Analytics) pour comprendre comment il est utilisé et sa performance. Aucune donnée n&apos;est revendue.
+          Détails sur notre <Link href="/politique-cookies">politique cookies</Link>.
         </p>
       </div>
       <div className="cookie-banner-actions">
