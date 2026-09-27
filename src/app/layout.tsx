@@ -4,6 +4,7 @@ import { Newsreader, Inter, Satisfy } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_LOGO, SITE_SOCIALS } from "@/constants/site";
+import { CONSENT_STORAGE_KEY } from "@/lib/consent";
 import { ConsentGate } from "@/components/public/ConsentGate";
 import { CookieConsentBanner } from "@/components/public/CookieConsentBanner";
 import "@/styles/globals.css";
@@ -159,11 +160,40 @@ const GA_MEASUREMENT_ID = "G-5TJZEVV0G9";
 // Aucun choix stocké = on laisse la préférence système décider (via les media queries CSS).
 const themeInitScript = `(function(){try{var t=localStorage.getItem("ms-theme");if(t==="dark"||t==="light"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();`;
 
+// Google Consent Mode (avancé) : les signaux par défaut (tout refusé) doivent être
+// poussés dans le dataLayer AVANT le chargement de gtag.js, pour que Google Analytics
+// respecte le consentement dès sa première exécution (voir CookieConsentBanner/consent.ts
+// pour la mise à jour au moment du choix du visiteur). Un visiteur ayant déjà répondu
+// (localStorage) passe directement en granted, sans attendre une nouvelle interaction.
+const consentDefaultScript = `(function(){
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 500
+  });
+  try {
+    if (localStorage.getItem('${CONSENT_STORAGE_KEY}') === 'accepted') {
+      gtag('consent', 'update', {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted'
+      });
+    }
+  } catch (e) {}
+})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className={`${serif.variable} ${sans.variable} ${script.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: consentDefaultScript }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       </head>
       <body>
@@ -171,17 +201,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ConsentGate>
           <Analytics />
           <SpeedInsights />
-          <Script
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          />
-          <Script id="ga4-init" strategy="afterInteractive">
-            {`window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_MEASUREMENT_ID}');`}
-          </Script>
         </ConsentGate>
+        {/* Google Analytics se charge sur toutes les pages (mode de consentement avancé) :
+            les signaux par défaut posés dans consentDefaultScript empêchent tout cookie ou
+            identifiant tant que le visiteur n'a pas donné son accord. */}
+        <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');`}
+        </Script>
         <CookieConsentBanner />
       </body>
     </html>
