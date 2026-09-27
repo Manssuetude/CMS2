@@ -53,7 +53,10 @@ export default function CookiesPolicyPage() {
             <tr>
               <td>Google Analytics</td>
               <td>Mesure d&apos;audience (pages vues, provenance des visites)</td>
-              <td>Oui</td>
+              <td>
+                Oui pour les cookies et les statistiques détaillées ; sans votre accord, seul un signal anonyme sans
+                cookie est envoyé (voir ci-dessous)
+              </td>
               <td>Visite, pages vues, adresse IP (anonymisée)</td>
             </tr>
             <tr>
@@ -96,6 +99,14 @@ export default function CookiesPolicyPage() {
         </table>
 
         <p>Aucun pixel publicitaire ni outil de reciblage n&apos;est utilisé sur ce site.</p>
+
+        <p>
+          Google Analytics utilise le « mode de consentement » de Google : tant que vous n&apos;avez pas répondu au
+          bandeau, aucun cookie n&apos;est déposé et Google ne reçoit qu&apos;un signal anonyme, sans cookie ni
+          identifiant, utilisé uniquement à des fins de modélisation statistique agrégée (il ne permet pas de vous
+          identifier individuellement). Les cookies et les statistiques de fréquentation détaillées (pages consultées,
+          provenance) ne sont activés qu&apos;après votre consentement explicite.
+        </p>
 
         <h2>Gérer votre consentement</h2>
         <p>

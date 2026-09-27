@@ -44,10 +44,12 @@ export default function PrivacyPolicyPage() {
           <li>
             <strong>Mesure d&apos;audience</strong> (cookies) : si vous l&apos;acceptez via le bandeau affiché lors de
             votre première visite, des statistiques de fréquentation anonymisées (pages consultées, performance du site)
-            via Vercel Analytics, Vercel Speed Insights et Google Analytics. Rien n&apos;est activé avant votre accord,
-            et vous pouvez retirer votre consentement à tout moment en effaçant les données de navigation de votre
-            navigateur pour ce site. Détail de chaque cookie et service tiers :{" "}
-            <a href="/politique-cookies">politique cookies</a>.
+            via Vercel Analytics, Vercel Speed Insights et Google Analytics. Aucun cookie n&apos;est déposé avant votre
+            accord ; Google Analytics utilise le « mode de consentement » de Google, qui lui transmet uniquement un
+            signal anonyme sans cookie ni identifiant tant que vous n&apos;avez pas répondu au bandeau (à des fins de
+            modélisation statistique agrégée, sans possibilité de vous identifier). Vous pouvez retirer votre
+            consentement à tout moment en effaçant les données de navigation de votre navigateur pour ce site. Détail de
+            chaque cookie et service tiers : <a href="/politique-cookies">politique cookies</a>.
           </li>
           <li>
             <strong>Dons</strong> : le bouton « Faire un don » vous redirige vers une page de paiement hébergée par
