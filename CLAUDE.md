@@ -60,6 +60,7 @@ Copy `.env.example` to `.env.local`. Required vars:
 - `RESEND_API_KEY`, `EMAIL_FROM` (expéditeur des invitations ; défaut `onboarding@resend.dev`)
 - `ADMIN_INITIAL_EMAIL`, `ADMIN_INITIAL_PASSWORD`
 - `NEXT_PUBLIC_SITE_URL`
+- `CRON_SECRET` (protège `/api/cron/form-digest` — Vercel l'envoie automatiquement en en-tête sur les invocations cron)
 
 ## Database
 

@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import type { FormStatus } from "@/types/cms";
 import { formSubmissionRepository } from "@/repositories/formSubmissionRepository";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { logAction } from "@/lib/audit";
 
 const VALID_STATUSES: FormStatus[] = ["reçu", "en cours", "traité", "archivé"];
@@ -27,4 +29,13 @@ export async function deleteFormSubmissionAction(formData: FormData): Promise<vo
   });
   revalidatePath("/admin/forms");
   revalidatePath("/admin/dashboard");
+}
+
+export async function updateFormDigestSettingsAction(formData: FormData): Promise<void> {
+  const recipientEmail = (formData.get("recipientEmail") as string | null)?.trim();
+  const intervalDays = Number(formData.get("intervalDays"));
+  if (!recipientEmail || !Number.isFinite(intervalDays) || intervalDays < 1) return;
+  await siteSettingsRepository.updateFormDigestSettings({ recipientEmail, intervalDays });
+  revalidatePath("/admin/forms");
+  redirect("/admin/forms?saved=1");
 }
