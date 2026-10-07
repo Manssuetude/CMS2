@@ -17,6 +17,11 @@ export type FormFieldDefinition = {
   type: "text" | "email" | "checkbox" | "file" | "textarea" | "select";
   required?: boolean;
   hint?: string;
+  // Options fixes pour un champ "select" dont la liste ne dépend pas de la
+  // base (ex. "Oui"/"Non"). Pour un select dynamique (ex. liste des
+  // sous-thèmes), les options sont fournies à l'exécution via la prop
+  // selectOptions de FormModal plutôt que déclarées ici.
+  options?: string[];
 };
 
 export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
@@ -26,6 +31,25 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
     { name: "email", label: "Email", type: "email", required: true },
     { name: "phone", label: "Téléphone", type: "text", required: true },
     { name: "city", label: "Ville ou région", type: "text", required: true },
+    {
+      name: "source",
+      label: "Comment avez-vous connu l'association ?",
+      type: "select",
+      options: ["Réseaux sociaux", "Bouche-à-oreille", "Autre"],
+    },
+    {
+      name: "sponsored",
+      label: "Êtes-vous parrainé par un membre ?",
+      type: "select",
+      options: ["Oui", "Non"],
+    },
+    { name: "sponsorName", label: "Nom du parrain (si parrainé)", type: "text" },
+    {
+      name: "participationReason",
+      label: "Motif de votre participation",
+      type: "select",
+      options: ["Participer à l'échange du jour", "Découvrir l'association", "Adhérer"],
+    },
     { name: "interests", label: "Centres d'intérêt", type: "text" },
     {
       name: "motivation",
