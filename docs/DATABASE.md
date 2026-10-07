@@ -246,14 +246,17 @@ Soumissions des formulaires publics (`/admin/forms`).
 
 Paramètres globaux du site (singleton, `id = 'default'`).
 
-| Colonne                                      | Type                | Notes                                    |
-| -------------------------------------------- | ------------------- | ---------------------------------------- |
-| `primary_color`, `secondary_color`           | text                | défaut `#ff4d12` / `#0d0d0f`             |
-| `tagline`                                    | text                |                                          |
-| `footer_config`                              | jsonb               | colonnes, réseaux, newsletter            |
-| `homepage_config`                            | jsonb               |                                          |
-| `nav_visibility`                             | jsonb               | items de nav togglables masqués/affichés |
-| `logo_id`, `favicon_id`, `fallback_image_id` | uuid FK → resources |                                          |
+| Colonne                                      | Type                | Notes                                                                   |
+| -------------------------------------------- | ------------------- | ----------------------------------------------------------------------- |
+| `primary_color`, `secondary_color`           | text                | défaut `#ff4d12` / `#0d0d0f`                                            |
+| `tagline`                                    | text                |                                                                         |
+| `footer_config`                              | jsonb               | colonnes, réseaux, newsletter                                           |
+| `homepage_config`                            | jsonb               |                                                                         |
+| `nav_visibility`                             | jsonb               | items de nav togglables masqués/affichés                                |
+| `logo_id`, `favicon_id`, `fallback_image_id` | uuid FK → resources |                                                                         |
+| `form_digest_recipient_email`                | text                | défaut `contact@manssuetude.com` — voir `/admin/forms`                  |
+| `form_digest_interval_days`                  | integer             | défaut `3` — intervalle entre deux emails récapitulatifs d'inscriptions |
+| `form_digest_last_sent_at`                   | timestamptz         | dernier envoi (voir `src/lib/formDigest.ts`)                            |
 
 ### RBAC — `roles` / `audit_logs`
 

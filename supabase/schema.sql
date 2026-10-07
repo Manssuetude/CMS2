@@ -578,7 +578,10 @@ CREATE TABLE public.site_settings (
     tagline text,
     footer_config jsonb DEFAULT '{}'::jsonb NOT NULL,
     homepage_config jsonb DEFAULT '{}'::jsonb NOT NULL,
-    nav_visibility jsonb DEFAULT '{}'::jsonb NOT NULL
+    nav_visibility jsonb DEFAULT '{}'::jsonb NOT NULL,
+    form_digest_recipient_email text DEFAULT 'contact@manssuetude.com'::text NOT NULL,
+    form_digest_interval_days integer DEFAULT 3 NOT NULL,
+    form_digest_last_sent_at timestamp with time zone
 );
 
 
