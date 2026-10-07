@@ -12,6 +12,9 @@ const envSchema = z.object({
   ADMIN_INITIAL_EMAIL: z.string().email().optional(),
   ADMIN_INITIAL_PASSWORD: z.string().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
+  // Protège /api/cron/form-digest — voir ce fichier pour le détail. Vercel
+  // l'envoie automatiquement en en-tête Authorization sur les invocations cron.
+  CRON_SECRET: z.string().optional(),
 });
 
 export const env = envSchema.parse(process.env);

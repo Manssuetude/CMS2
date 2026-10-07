@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { formSubmissionRepository } from "@/repositories/formSubmissionRepository";
-import { updateFormStatusAction, deleteFormSubmissionAction } from "./actions";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
+import { updateFormStatusAction, deleteFormSubmissionAction, updateFormDigestSettingsAction } from "./actions";
 import { FormSubmissionRow } from "@/components/admin/FormSubmissionRow";
 
 const TYPE_TABS: Array<{ value: string; label: string }> = [
@@ -28,6 +29,7 @@ export default async function AdminFormsPage({ searchParams }: { searchParams: P
   const all = await formSubmissionRepository.listFormSubmissions();
   const forms = activeType ? all.filter((f) => f.formType === activeType) : all;
   const pending = forms.filter((f) => f.status === "reçu").length;
+  const digestSettings = await siteSettingsRepository.getFormDigestSettings();
 
   const exportHref = activeType ? `/api/forms/export?type=${activeType}` : "/api/forms/export";
 
@@ -102,6 +104,49 @@ export default async function AdminFormsPage({ searchParams }: { searchParams: P
           </tbody>
         </table>
       )}
+
+      <div className="admin-card" style={{ marginTop: 24 }}>
+        <div className="form-section">
+          <p className="form-section-title">Notifications</p>
+          <p style={{ color: "var(--muted)", fontSize: 14, marginTop: -8, marginBottom: 16 }}>
+            Un email récapitulatif des nouvelles inscriptions (toutes origines confondues) est envoyé automatiquement,
+            avec un lien pour télécharger le détail en CSV, valable 14 jours. Rien n&apos;est envoyé s&apos;il n&apos;y
+            a aucune nouvelle inscription depuis le dernier email.
+          </p>
+          <form action={updateFormDigestSettingsAction}>
+            <div className="form-row">
+              <div className="form-field">
+                <label className="field-label" htmlFor="recipientEmail">
+                  Adresse destinataire
+                </label>
+                <input
+                  id="recipientEmail"
+                  type="email"
+                  name="recipientEmail"
+                  defaultValue={digestSettings.recipientEmail}
+                  required
+                />
+              </div>
+              <div className="form-field" style={{ maxWidth: 220 }}>
+                <label className="field-label" htmlFor="intervalDays">
+                  Intervalle entre deux emails (jours)
+                </label>
+                <input
+                  id="intervalDays"
+                  type="number"
+                  name="intervalDays"
+                  defaultValue={digestSettings.intervalDays}
+                  min={1}
+                  required
+                />
+              </div>
+            </div>
+            <button type="submit" className="button" style={{ marginTop: 8 }}>
+              Enregistrer
+            </button>
+          </form>
+        </div>
+      </div>
     </section>
   );
 }
