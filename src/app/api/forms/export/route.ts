@@ -80,11 +80,12 @@ export async function GET(request: Request) {
   // BOM UTF-8 : sans lui, Excel (Windows et macOS) affiche les accents de
   // travers à l'ouverture directe d'un CSV UTF-8.
   const csv = "﻿" + lines.join("\r\n");
+  const exportDate = new Date().toISOString().slice(0, 10);
 
   return new Response(csv, {
     headers: {
       "content-type": "text/csv;charset=utf-8",
-      "content-disposition": "attachment; filename=formulaires-manssuetude.csv",
+      "content-disposition": `attachment; filename=formulaires-manssuetude-${exportDate}.csv`,
     },
   });
 }
