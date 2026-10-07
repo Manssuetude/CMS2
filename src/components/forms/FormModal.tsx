@@ -164,7 +164,7 @@ export function FormModal({
                 );
               }
               if (field.type === "select") {
-                const options = selectOptions?.[field.name] ?? [];
+                const options = selectOptions?.[field.name] ?? field.options ?? [];
                 return (
                   <label key={field.name}>
                     <span>
