@@ -213,3 +213,20 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
 export function toSubmissionFormType(formType: PublicFormType) {
   return formType === "don" ? "donation" : formType;
 }
+
+// Libellé français par type de soumission (FormSubmission.formType, donc "donation"
+// plutôt que "don" — voir toSubmissionFormType ci-dessus). Partagé entre l'admin
+// (FormSubmissionRow) et l'export CSV (api/forms/export).
+export const FORM_TYPE_LABEL: Record<string, string> = {
+  join: "Adhésion",
+  theme: "Thème",
+  sub_theme: "Sous-thème",
+  event: "Événement",
+  activity: "Activité",
+  production: "Contribution production",
+  project: "Projet",
+  content: "Contenu",
+  partner: "Partenariat",
+  donation: "Don",
+  contact: "Contact",
+};
