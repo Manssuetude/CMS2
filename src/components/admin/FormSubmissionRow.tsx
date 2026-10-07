@@ -4,22 +4,8 @@ import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { FormStatusSelect } from "@/components/admin/FormStatusSelect";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
-import { formDefinitions, type PublicFormType } from "@/constants/forms";
+import { formDefinitions, FORM_TYPE_LABEL, type PublicFormType } from "@/constants/forms";
 import type { FormSubmission } from "@/types/cms";
-
-const FORM_TYPE_LABEL: Record<string, string> = {
-  join: "Adhésion",
-  theme: "Thème",
-  sub_theme: "Sous-thème",
-  event: "Événement",
-  activity: "Activité",
-  production: "Contribution production",
-  project: "Projet",
-  content: "Contenu",
-  partner: "Partenariat",
-  donation: "Don",
-  contact: "Contact",
-};
 
 // Champs affichés en secondaire (déjà résumés ailleurs) — masqués du détail brut si voulu.
 const HIDDEN_IN_DETAIL = new Set(["consent"]);
