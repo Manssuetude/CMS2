@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, ChevronDown, X } from "lucide-react";
 import { formDefinitions, toSubmissionFormType, type PublicFormType } from "@/constants/forms";
 import { formClientService } from "@/services/formClientService";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
@@ -79,8 +79,8 @@ export function FormModal({
       >
         <div className="modal-header">
           <p className="eyebrow">Formulaire Manssuétude</p>
-          <button type="button" className="button" onClick={onClose}>
-            Fermer
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Fermer">
+            <X size={18} strokeWidth={1.75} />
           </button>
         </div>
         <h2 id="form-title">
@@ -171,16 +171,19 @@ export function FormModal({
                       {field.label}
                       {field.required ? <span className="required-mark">*</span> : null}
                     </span>
-                    <select name={field.name} required={field.required} defaultValue="">
-                      <option value="" disabled={field.required}>
-                        Choisir...
-                      </option>
-                      {options.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
+                    <span className="select-wrap">
+                      <select name={field.name} required={field.required} defaultValue="">
+                        <option value="" disabled={field.required}>
+                          Choisir...
                         </option>
-                      ))}
-                    </select>
+                        {options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown size={16} strokeWidth={1.75} className="select-chevron" aria-hidden />
+                    </span>
                   </label>
                 );
               }
