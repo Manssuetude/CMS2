@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import type { Author, Media } from "@/types/cms";
+import { SingleMediaField } from "@/components/media/SingleMediaField";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -54,17 +55,13 @@ export function AuthorForm({ initialData, action, images }: Props) {
           </div>
 
           <div className="form-field">
-            <label className="field-label" htmlFor="photoId">
-              Photo
-            </label>
-            <select id="photoId" name="photoId" defaultValue={initialData?.photoId ?? ""}>
-              <option value="">Aucune photo</option>
-              {images.map((img) => (
-                <option key={img.id} value={img.id}>
-                  {img.title}
-                </option>
-              ))}
-            </select>
+            <span className="field-label">Photo</span>
+            <SingleMediaField
+              name="photoId"
+              initialMedia={images}
+              initialSelectedId={initialData?.photoId}
+              buttonLabel="Choisir une photo"
+            />
           </div>
         </div>
 

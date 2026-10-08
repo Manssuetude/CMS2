@@ -6,6 +6,7 @@ import { ExternalLink, FileText, PenLine, X } from "lucide-react";
 import type { Author, Media, Production, SubTheme, Theme } from "@/types/cms";
 import { mediaClientService } from "@/services/mediaClientService";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
+import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -49,7 +50,6 @@ export function ProductionForm({
   const [type, setType] = useState(initialData?.type ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
   const [selectedAuthors, setSelectedAuthors] = useState<string[]>(initialAuthorIds);
-  const [selectedResources, setSelectedResources] = useState<string[]>(initialResourceIds);
   const [fileId, setFileId] = useState(initialData?.fileId ?? "");
   const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
   const [uploading, setUploading] = useState(false);
@@ -85,7 +85,6 @@ export function ProductionForm({
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
       <input type="hidden" name="authorIds" value={selectedAuthors.join(",")} />
-      <input type="hidden" name="resourceIds" value={selectedResources.join(",")} />
       <input type="hidden" name="fileId" value={fileId} />
 
       {error && <p className="form-error">{error}</p>}
@@ -286,20 +285,18 @@ export function ProductionForm({
         )}
 
         {/* Ressources / références */}
-        {mediaItems.length > 0 && (
-          <div className="form-section">
-            <p className="form-section-title">Ressources / références liées</p>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Documents ou médias de la médiathèque cités par cette production.
-            </p>
-            <CheckboxMultiSelect
-              idPrefix="resource"
-              items={mediaItems.map((m) => ({ id: m.id, label: m.title }))}
-              selected={selectedResources}
-              onChange={setSelectedResources}
-            />
-          </div>
-        )}
+        <div className="form-section">
+          <p className="form-section-title">Ressources / références liées</p>
+          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+            Documents ou médias de la médiathèque cités par cette production.
+          </p>
+          <SortableMediaGallery
+            name="resourceIds"
+            initialMedia={mediaItems}
+            initialSelectedIds={initialResourceIds}
+            buttonLabel="Ajouter des ressources"
+          />
+        </div>
 
         {/* PDF joint */}
         <div className="form-section">
