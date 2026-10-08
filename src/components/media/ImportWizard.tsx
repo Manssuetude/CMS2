@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { GoogleDrivePicker } from "@/components/media/GoogleDrivePicker";
+import { mediaClientService } from "@/services/mediaClientService";
 
 const SOURCES = [
   ["computer", "Ordinateur"],
@@ -42,6 +43,37 @@ export function ImportWizard() {
     }
   }
 
+  // Passe par l'envoi direct vers Supabase Storage (voir mediaClientService) :
+  // un fichier lourd posté directement à /api/media dépasse la limite de
+  // taille de requête des fonctions Vercel (413), avant même d'atteindre
+  // notre code.
+  async function handleComputerUpload(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const form = e.currentTarget;
+      const fd = new FormData(form);
+      const file = fd.get("file");
+      if (!(file instanceof File) || !file.size) {
+        throw new Error("Sélectionnez un fichier.");
+      }
+      await mediaClientService.uploadFile(file, {
+        title: String(fd.get("title") || ""),
+        alt: String(fd.get("alt") || ""),
+        tags: String(fd.get("tags") || ""),
+        description: String(fd.get("description") || ""),
+        visibility: String(fd.get("visibility") || "draft"),
+      });
+      form.reset();
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erreur lors de l'import.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <section className="import-wizard">
       <div>
@@ -65,7 +97,7 @@ export function ImportWizard() {
       </div>
       <div className="wizard-panel">
         {source === "computer" ? (
-          <form ref={formRef} onSubmit={handleUpload} className="form-grid">
+          <form ref={formRef} onSubmit={handleComputerUpload} className="form-grid">
             <label>
               Fichier
               <input name="file" type="file" required />
