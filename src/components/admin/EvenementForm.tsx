@@ -16,6 +16,7 @@ import type {
   Theme,
 } from "@/types/cms";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
+import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
@@ -97,7 +98,6 @@ export function EvenementForm({
   const [selectedProjects, setSelectedProjects] = useState<string[]>(initialProjectIds);
   const [selectedFormats, setSelectedFormats] = useState<string[]>(initialFormatIds);
   const [animators, setAnimators] = useState<EventAnimator[]>(initialAnimators);
-  const [selectedGallery, setSelectedGallery] = useState<string[]>(initialData?.gallery ?? []);
   const publicHref = isEdit ? `/evenements/${initialData.slug}` : null;
   const mentionItems = useMemo(() => activityFormats.map((f) => ({ id: f.id, title: f.title })), [activityFormats]);
   const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
@@ -127,7 +127,6 @@ export function EvenementForm({
       <input type="hidden" name="projectIds" value={selectedProjects.join(",")} />
       <input type="hidden" name="formatIds" value={selectedFormats.join(",")} />
       <input type="hidden" name="animators" value={JSON.stringify(animators.filter((a) => a.authorId))} />
-      <input type="hidden" name="gallery" value={selectedGallery.join(",")} />
 
       {error && <p className="form-error">{error}</p>}
 
@@ -393,21 +392,13 @@ export function EvenementForm({
 
         {/* Compte-rendu en images (n'apparaît côté public que si l'événement est
             passé ou terminé, et seulement si des images sont ajoutées ici) */}
-        {images.length > 0 && (
-          <div className="form-section">
-            <p className="form-section-title">Compte-rendu en images</p>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Photos affichées sur la page publique une fois l&apos;événement passé ou marqué « Terminé ». Gérer les
-              images dans <Link href="/admin/media">la médiathèque</Link>.
-            </p>
-            <CheckboxMultiSelect
-              idPrefix="gallery"
-              items={images.map((img) => ({ id: img.id, label: img.title }))}
-              selected={selectedGallery}
-              onChange={setSelectedGallery}
-            />
-          </div>
-        )}
+        <div className="form-section">
+          <p className="form-section-title">Compte-rendu en images</p>
+          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+            Photos affichées sur la page publique une fois l&apos;événement passé ou marqué « Terminé ».
+          </p>
+          <SortableMediaGallery name="gallery" initialMedia={images} initialSelectedIds={initialData?.gallery ?? []} />
+        </div>
 
         {/* Relations thèmes */}
         {themes.length > 0 && (

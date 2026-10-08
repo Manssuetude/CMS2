@@ -5,6 +5,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
 import type { Event, Author, JournalEntry, Media, Production, Project, Theme } from "@/types/cms";
+import { SingleMediaField } from "@/components/media/SingleMediaField";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -133,17 +134,8 @@ export function JournalEntryForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label" htmlFor="thumbnailId">
-                Image
-              </label>
-              <select id="thumbnailId" name="thumbnailId" defaultValue={initialData?.thumbnailId ?? ""}>
-                <option value="">Aucune image</option>
-                {images.map((img) => (
-                  <option key={img.id} value={img.id}>
-                    {img.title}
-                  </option>
-                ))}
-              </select>
+              <span className="field-label">Image</span>
+              <SingleMediaField name="thumbnailId" initialMedia={images} initialSelectedId={initialData?.thumbnailId} />
             </div>
           </div>
 
