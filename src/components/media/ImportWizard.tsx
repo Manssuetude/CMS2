@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { GoogleDrivePicker } from "@/components/media/GoogleDrivePicker";
 
 const SOURCES = [
   ["computer", "Ordinateur"],
@@ -154,6 +155,8 @@ export function ImportWizard() {
               {loading ? "Enregistrement…" : "Ajouter le lien"}
             </button>
           </form>
+        ) : source === "google-drive" ? (
+          <GoogleDrivePicker onImported={() => router.refresh()} />
         ) : (
           <div className="wizard-placeholder">
             <strong>{SOURCES.find(([id]) => id === source)?.[1]}</strong>
