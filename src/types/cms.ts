@@ -323,6 +323,17 @@ export type ActivityFormat = {
   updatedAt: string;
 };
 
+export type LinkItem = {
+  id: string;
+  label: string;
+  url: string;
+  icon: string;
+  position: number;
+  status: ContentStatus;
+  createdAt: string;
+  updatedAt: string;
+};
+
 // Journal éditorial de Manssuétude (entrées courtes publiques — actualités,
 // coulisses, réflexions). Distinct du journal d'audit RBAC (/admin/historique).
 export type JournalEntry = {

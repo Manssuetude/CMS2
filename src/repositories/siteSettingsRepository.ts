@@ -66,4 +66,19 @@ export const siteSettingsRepository = {
       .upsert({ id: "default", form_digest_last_sent_at: sentAt }, { onConflict: "id" });
     if (error) throw error;
   },
+
+  async getLinkPageDescription(): Promise<string> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("site_settings").select("link_page_description").eq("id", "default").single();
+    if (error || !data) return "";
+    return asString(data.link_page_description);
+  },
+
+  async updateLinkPageDescription(description: string): Promise<void> {
+    const db = getSupabaseAdmin();
+    const { error } = await db
+      .from("site_settings")
+      .upsert({ id: "default", link_page_description: description }, { onConflict: "id" });
+    if (error) throw error;
+  },
 };
