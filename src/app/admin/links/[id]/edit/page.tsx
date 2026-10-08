@@ -25,7 +25,7 @@ export default async function EditLinkPage({ params }: Props) {
           <p>Éditez ce lien.</p>
         </div>
         <a
-          href="/link"
+          href="/links"
           target="_blank"
           rel="noreferrer"
           className="btn-sm"
