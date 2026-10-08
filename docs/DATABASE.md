@@ -203,17 +203,17 @@ Journal éditorial public (actualités courtes, distinct du journal d'audit RBAC
 
 ### `link_items`
 
-Liens affichés sur la page `/link` (façon Linktree — gérée depuis `/admin/links`).
+Liens affichés sur la page `/links` (façon Linktree — gérée depuis `/admin/links`).
 
-| Colonne    | Type           | Notes                                                |
-| ---------- | -------------- | ---------------------------------------------------- |
-| `label`    | text           | libellé affiché                                      |
-| `url`      | text           |                                                      |
-| `icon`     | text           | clé d'icône (voir `src/utils/linkIcons.ts`)          |
-| `position` | integer        | ordre d'affichage                                    |
-| `status`   | content_status | seuls les liens `published` apparaissent sur `/link` |
+| Colonne    | Type           | Notes                                                 |
+| ---------- | -------------- | ----------------------------------------------------- |
+| `label`    | text           | libellé affiché                                       |
+| `url`      | text           |                                                       |
+| `icon`     | text           | clé d'icône (voir `src/utils/linkIcons.ts`)           |
+| `position` | integer        | ordre d'affichage                                     |
+| `status`   | content_status | seuls les liens `published` apparaissent sur `/links` |
 
-`site_settings.link_page_description` (text) : court texte affiché sous le logo sur `/link`, éditable depuis `/admin/links`.
+`site_settings.link_page_description` (text) : court texte affiché sous le logo sur `/links`, éditable depuis `/admin/links`.
 
 ### `authors`
 

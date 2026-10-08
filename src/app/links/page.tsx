@@ -17,13 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Liens · ${SITE_NAME}`,
     description,
-    alternates: { canonical: "/link" },
+    alternates: { canonical: "/links" },
     openGraph: {
       type: "website",
       siteName: SITE_NAME,
       title: `Liens · ${SITE_NAME}`,
       description,
-      url: `${SITE_URL}/link`,
+      url: `${SITE_URL}/links`,
       locale: "fr_FR",
       images: [{ url: SITE_LOGO, alt: SITE_NAME }],
     },
@@ -54,6 +54,7 @@ export default async function LinkPage() {
         M
       </span>
       <main className="link-page-main">
+        <img src={SITE_LOGO} alt="" className="link-page-avatar" />
         <h1 className="link-page-title">
           <span className="link-page-initial">{SITE_NAME.charAt(0)}</span>
           {SITE_NAME.slice(1)}

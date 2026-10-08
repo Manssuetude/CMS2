@@ -40,7 +40,7 @@ const NAV = [
   { id: "dossiers", label: "Dossiers", icon: Layers },
   { id: "media", label: "Médiathèque", icon: Images },
   { id: "forms", label: "Formulaires", icon: Inbox },
-  { id: "links", label: "Liens (/link)", icon: Link2 },
+  { id: "links", label: "Liens (/links)", icon: Link2 },
 ] as const;
 
 // Sections réservées aux administrateurs.

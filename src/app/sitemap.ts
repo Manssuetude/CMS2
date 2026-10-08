@@ -31,7 +31,7 @@ const STATIC_PATHS: Array<{
   { path: "/nous-rejoindre", priority: 0.6, changeFrequency: "monthly" },
   { path: "/ressources", priority: 0.6, changeFrequency: "monthly" },
   { path: "/contact", priority: 0.5, changeFrequency: "yearly" },
-  { path: "/link", priority: 0.4, changeFrequency: "monthly" },
+  { path: "/links", priority: 0.4, changeFrequency: "monthly" },
 ];
 
 // Section (voir MAIN_NAV_ITEMS, src/constants/site.ts) dont dépend chaque chemin
@@ -51,7 +51,7 @@ const STATIC_PATH_SECTION: Record<string, string | null> = {
   "/nous-rejoindre": null,
   "/ressources": null,
   "/contact": null,
-  "/link": null,
+  "/links": null,
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

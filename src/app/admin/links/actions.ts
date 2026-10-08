@@ -40,7 +40,7 @@ export async function createLinkAction(_: string | null, formData: FormData): Pr
 
   await logAction("create", { entityType: "link_item", entityId: item.id, summary: `Lien créé : ${item.label}` });
   revalidatePath("/admin/links");
-  revalidatePath("/link");
+  revalidatePath("/links");
   redirect("/admin/links");
 }
 
@@ -61,7 +61,7 @@ export async function updateLinkAction(_: string | null, formData: FormData): Pr
 
   await logAction("update", { entityType: "link_item", entityId: id, summary: "Lien modifié" });
   revalidatePath("/admin/links");
-  revalidatePath("/link");
+  revalidatePath("/links");
   redirect("/admin/links");
 }
 
@@ -71,7 +71,7 @@ export async function deleteLinkAction(formData: FormData): Promise<void> {
   await linkRepository.deleteLink(id);
   await logAction("delete", { entityType: "link_item", entityId: id, summary: "Lien supprimé" });
   revalidatePath("/admin/links");
-  revalidatePath("/link");
+  revalidatePath("/links");
 }
 
 export async function updateLinkPageDescriptionAction(formData: FormData): Promise<void> {
@@ -79,6 +79,6 @@ export async function updateLinkPageDescriptionAction(formData: FormData): Promi
   if (description == null) return;
   await siteSettingsRepository.updateLinkPageDescription(description);
   revalidatePath("/admin/links");
-  revalidatePath("/link");
+  revalidatePath("/links");
   redirect("/admin/links?saved=1");
 }
