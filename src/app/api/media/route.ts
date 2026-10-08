@@ -22,6 +22,7 @@ export async function POST(request: Request) {
     await requireRole(["admin", "editor"]);
     const formData = await request.formData();
     const file = formData.get("file");
+    const registeredPath = formData.get("path");
 
     if (file instanceof File) {
       const metadata = mediaMetadataSchema.parse({
@@ -33,6 +34,31 @@ export async function POST(request: Request) {
         visibility: String(formData.get("visibility") || "draft"),
       });
       const media = await mediaRepository.upload(file, metadata);
+      logger.info("media.uploaded", { id: media.id, type: media.type });
+      return NextResponse.json(media);
+    }
+
+    if (typeof registeredPath === "string" && registeredPath) {
+      // Fichier déjà envoyé directement vers Supabase Storage (voir
+      // mediaClientService.uploadFile) — on enregistre juste les métadonnées.
+      const metadata = mediaMetadataSchema.parse({
+        title: String(formData.get("title") || ""),
+        alt: String(formData.get("alt") || ""),
+        caption: String(formData.get("caption") || ""),
+        description: String(formData.get("description") || ""),
+        tags: String(formData.get("tags") || ""),
+        visibility: String(formData.get("visibility") || "draft"),
+      });
+      const media = await mediaRepository.registerUpload(
+        {
+          path: registeredPath,
+          url: String(formData.get("url") || ""),
+          filename: String(formData.get("filename") || ""),
+          sizeBytes: Number(formData.get("size") || 0),
+          mimeType: String(formData.get("mimeType") || ""),
+        },
+        metadata,
+      );
       logger.info("media.uploaded", { id: media.id, type: media.type });
       return NextResponse.json(media);
     }

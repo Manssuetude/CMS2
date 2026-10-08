@@ -1,6 +1,6 @@
 import { AppError } from "@/lib/errors";
 
-const ALLOWED_EXTENSIONS = [
+export const ALLOWED_EXTENSIONS = [
   "jpg",
   "jpeg",
   "png",

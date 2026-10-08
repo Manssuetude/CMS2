@@ -30,6 +30,21 @@ function sanitizeFilename(filename: string): string {
   return ext ? `${safeBase}.${ext}` : safeBase;
 }
 
+// Ticket d'upload signé : le binaire est envoyé directement du navigateur vers
+// Supabase Storage, sans jamais transiter par notre fonction serveur — les
+// fonctions Vercel ont une limite de taille de requête bien inférieure à ce
+// qu'un fichier média peut peser (une photo d'appareil photo dépasse souvent
+// cette limite), ce qui faisait échouer l'upload en production avec un 413
+// avant même d'atteindre notre code. Voir mediaClientService.uploadFile.
+export async function createUploadTicket(filename: string, folder = "media") {
+  const db = getSupabaseAdmin();
+  const path = `${folder}/${Date.now()}-${sanitizeFilename(filename)}`;
+  const { data, error } = await db.storage.from("manssuetude-media").createSignedUploadUrl(path);
+  if (error) throw error;
+  const { data: publicUrlData } = db.storage.from("manssuetude-media").getPublicUrl(path);
+  return { path, token: data.token, url: publicUrlData.publicUrl };
+}
+
 export async function uploadToStorage(file: File, folder = "media") {
   validateUpload(file);
   const db = getSupabaseAdmin();

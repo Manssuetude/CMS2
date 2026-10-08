@@ -76,6 +76,31 @@ export const mediaRepository = {
     });
   },
 
+  // Enregistre un fichier déjà envoyé directement vers Supabase Storage
+  // (voir lib/media.ts createUploadTicket) — même logique que upload() ci-
+  // dessus, sans refaire transiter le binaire par notre serveur.
+  async registerUpload(
+    file: { path: string; url: string; filename: string; sizeBytes: number; mimeType: string },
+    metadata: Record<string, string>,
+  ) {
+    return this.create({
+      title: metadata.title || file.filename,
+      filename: file.filename,
+      source: "upload",
+      type: inferMediaType(file.filename),
+      mime_type: file.mimeType || "application/octet-stream",
+      url: file.url,
+      preview_url: file.url,
+      thumbnail_url: inferMediaType(file.filename) === "image" ? file.url : null,
+      size: `${Math.max(1, Math.round(file.sizeBytes / 1024))} Ko`,
+      alt: metadata.alt || metadata.title || file.filename,
+      caption: metadata.caption || null,
+      description: metadata.description || null,
+      tags: parseTags(metadata.tags),
+      visibility: metadata.visibility || "draft",
+    });
+  },
+
   async remove(id: string) {
     const db = getSupabaseAdmin();
     const { error } = await db.from("resources").delete().eq("id", id);
