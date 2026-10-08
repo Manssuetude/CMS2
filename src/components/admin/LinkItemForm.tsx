@@ -73,7 +73,7 @@ export function LinkItemForm({ initialData, action }: Props) {
               Statut
             </label>
             <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
-              <option value="draft">Brouillon (masqué sur /link)</option>
+              <option value="draft">Brouillon (masqué sur /links)</option>
               <option value="published">Publié</option>
             </select>
           </div>

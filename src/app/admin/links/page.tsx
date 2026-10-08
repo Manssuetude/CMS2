@@ -17,9 +17,9 @@ export default async function AdminLinksPage() {
   return (
     <section className="admin-panel">
       <AdminListHeader title="Liens" count={items.length} singular="lien" plural="liens">
-        <a href="/link" target="_blank" rel="noreferrer" className="btn-sm">
+        <a href="/links" target="_blank" rel="noreferrer" className="btn-sm">
           <ExternalLink size={13} strokeWidth={2} />
-          Voir /link
+          Voir /links
         </a>
         <Link href="/admin/links/new" className="button primary">
           <Plus size={15} strokeWidth={2} />
@@ -27,7 +27,7 @@ export default async function AdminLinksPage() {
         </Link>
       </AdminListHeader>
       <p style={{ marginTop: -8, marginBottom: 20, fontSize: 13, color: "var(--muted)" }}>
-        Page façon « Linktree » (manssuetude.com/link) : liste de liens à partager en bio sur les réseaux sociaux.
+        Page façon « Linktree » (manssuetude.com/links) : liste de liens à partager en bio sur les réseaux sociaux.
       </p>
 
       {items.length === 0 ? (

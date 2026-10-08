@@ -45,6 +45,21 @@
   text-align: center;
 }
 
+/* Le fichier logo est le lockup complet (marque + nom) : la vignette est
+   dimensionnée avec de la marge interne pour qu'il tienne en entier dans le
+   rond, sans rogner le texte du bas. */
+.link-page-avatar {
+  width: 6.5rem;
+  height: 6.5rem;
+  padding: 1.1rem;
+  margin-bottom: 1.25rem;
+  border-radius: 50%;
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line);
+  box-shadow: 0 6px 18px rgba(28, 23, 20, 0.08);
+  object-fit: contain;
+}
+
 .link-page-title {
   font-size: clamp(2rem, 7vw, 2.6rem);
   line-height: 1.1;
