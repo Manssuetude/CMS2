@@ -49,15 +49,23 @@ export default async function LinkPage() {
 
   return (
     <div className="site-shell link-page">
+      <span className="link-page-watermark" aria-hidden="true">
+        M
+      </span>
       <main className="link-page-main">
-        <img src={SITE_LOGO} alt={SITE_NAME} className="link-page-logo" />
-        <h1 className="link-page-title">{SITE_NAME}</h1>
+        <h1 className="link-page-title">
+          <span className="link-page-initial">{SITE_NAME.charAt(0)}</span>
+          {SITE_NAME.slice(1)}
+        </h1>
         {description && <p className="link-page-description">{description}</p>}
         <div className="link-page-list">
           {items.map((item) => (
             <LinkButton key={item.id} label={item.label} url={item.url} icon={item.icon} />
           ))}
         </div>
+        <p className="link-page-footer">
+          © {new Date().getFullYear()} <a href="/">manssuetude.com</a>
+        </p>
       </main>
     </div>
   );

@@ -25,7 +25,9 @@ export function LinkButton({ label, url, icon }: { label: string; url: string; i
       className="link-page-button"
       onClick={() => trackClick(label, url)}
     >
-      <Icon size={20} />
+      <span className="link-page-icon">
+        <Icon size={18} strokeWidth={1.8} />
+      </span>
       <span>{label}</span>
     </a>
   );
