@@ -361,6 +361,22 @@ CREATE TABLE public.journal_entries (
 
 
 --
+-- Name: link_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.link_items (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    label text NOT NULL,
+    url text NOT NULL,
+    icon text DEFAULT 'website'::text NOT NULL,
+    "position" integer DEFAULT 0 NOT NULL,
+    status public.content_status DEFAULT 'draft'::public.content_status NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
 -- Name: pages; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -581,7 +597,8 @@ CREATE TABLE public.site_settings (
     nav_visibility jsonb DEFAULT '{}'::jsonb NOT NULL,
     form_digest_recipient_email text DEFAULT 'contact@manssuetude.com'::text NOT NULL,
     form_digest_interval_days integer DEFAULT 3 NOT NULL,
-    form_digest_last_sent_at timestamp with time zone
+    form_digest_last_sent_at timestamp with time zone,
+    link_page_description text DEFAULT 'Retrouvez Manssuétude sur les réseaux et ailleurs.'::text NOT NULL
 );
 
 
@@ -809,6 +826,14 @@ ALTER TABLE ONLY public.journal_entries
 
 ALTER TABLE ONLY public.journal_entries
     ADD CONSTRAINT journal_entries_slug_key UNIQUE (slug);
+
+
+--
+-- Name: link_items link_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.link_items
+    ADD CONSTRAINT link_items_pkey PRIMARY KEY (id);
 
 
 --
@@ -1103,6 +1128,13 @@ CREATE INDEX journal_entries_project_id_idx ON public.journal_entries USING btre
 --
 
 CREATE INDEX journal_entries_slug_idx ON public.journal_entries USING btree (slug);
+
+
+--
+-- Name: link_items_position_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX link_items_position_idx ON public.link_items USING btree ("position");
 
 
 --
@@ -1654,6 +1686,12 @@ ALTER TABLE public.form_submissions ENABLE ROW LEVEL SECURITY;
 --
 
 ALTER TABLE public.journal_entries ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: link_items; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.link_items ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: pages; Type: ROW SECURITY; Schema: public; Owner: -
