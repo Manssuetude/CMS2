@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import type { ImageCrop, Media } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
+import { MediaPickerModal } from "@/components/media/MediaPickerModal";
 
 function toAbsoluteUrl(url: string | null | undefined): string {
   if (!url) return "";
@@ -36,11 +37,13 @@ export function ImageCropField({
   const [imageId, setImageId] = useState(defaultImageId ?? "");
   const [crop, setCrop] = useState<ImageCrop | null>(defaultCrop ?? null);
   const [editing, setEditing] = useState(false);
+  const [media, setMedia] = useState(images);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const selectedUrl = useMemo(() => {
-    const found = images.find((img) => img.id === imageId);
+    const found = media.find((img) => img.id === imageId);
     return toAbsoluteUrl(found?.url);
-  }, [images, imageId]);
+  }, [media, imageId]);
 
   function handleImageChange(nextId: string) {
     setImageId(nextId);
@@ -56,20 +59,7 @@ export function ImageCropField({
     <div className="image-crop-field">
       {label ? <label className="form-label">{label}</label> : null}
 
-      <select
-        name={name}
-        className="form-input"
-        value={imageId}
-        onChange={(event) => handleImageChange(event.target.value)}
-      >
-        <option value="">{emptyOptionLabel}</option>
-        {images.map((img) => (
-          <option key={img.id} value={img.id}>
-            {img.title || img.filename}
-          </option>
-        ))}
-      </select>
-
+      <input type="hidden" name={name} value={imageId} />
       {/* Valeur du recadrage soumise avec le formulaire (chaîne JSON ou vide). */}
       <input type="hidden" name={cropName} value={crop ? JSON.stringify(crop) : ""} />
 
@@ -86,6 +76,9 @@ export function ImageCropField({
             <button type="button" className="button" onClick={() => setEditing(true)}>
               Éditer l&apos;image
             </button>
+            <button type="button" className="button button--ghost" onClick={() => setPickerOpen(true)}>
+              Changer d&apos;image
+            </button>
             {crop ? (
               <button type="button" className="button button--ghost" onClick={() => setCrop(null)}>
                 Cadrage par défaut
@@ -93,7 +86,11 @@ export function ImageCropField({
             ) : null}
           </div>
         </div>
-      ) : null}
+      ) : (
+        <button type="button" className="button" onClick={() => setPickerOpen(true)}>
+          {emptyOptionLabel === "Image par défaut" ? "Choisir une image" : emptyOptionLabel}
+        </button>
+      )}
 
       {editing && selectedUrl ? (
         <CropModal
@@ -107,6 +104,16 @@ export function ImageCropField({
           }}
         />
       ) : null}
+
+      <MediaPickerModal
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        media={media}
+        mode="single"
+        selectedIds={imageId ? [imageId] : []}
+        onConfirm={(ids) => handleImageChange(ids[0] ?? "")}
+        onUploaded={(item) => setMedia((prev) => [item, ...prev])}
+      />
     </div>
   );
 }

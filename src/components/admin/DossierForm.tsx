@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
 import type { Event, Dossier, JournalEntry, Media, Production, Project } from "@/types/cms";
 import { DossierItemPicker, type DossierPickableItem, type DossierPickerGroup } from "./DossierItemPicker";
+import { SingleMediaField } from "@/components/media/SingleMediaField";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -118,17 +119,8 @@ export function DossierForm({
               </select>
             </div>
             <div className="form-field">
-              <label className="field-label" htmlFor="imageId">
-                Image
-              </label>
-              <select id="imageId" name="imageId" defaultValue={initialData?.imageId ?? ""}>
-                <option value="">Aucune image</option>
-                {images.map((img) => (
-                  <option key={img.id} value={img.id}>
-                    {img.title}
-                  </option>
-                ))}
-              </select>
+              <span className="field-label">Image</span>
+              <SingleMediaField name="imageId" initialMedia={images} initialSelectedId={initialData?.imageId} />
             </div>
           </div>
         </div>
