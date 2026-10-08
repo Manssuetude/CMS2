@@ -1,0 +1,76 @@
+/* Page /link (façon Linktree) — autonome, sans en-tête ni pied de page du
+   site, juste le logo, une courte description et la liste de liens. */
+
+.site-shell.link-page {
+  min-height: 100dvh;
+  display: block;
+  background: var(--ed-paper);
+}
+
+.link-page-main {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: clamp(3rem, 10vh, 5rem) var(--ed-gutter) clamp(2.5rem, 8vh, 4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.link-page-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin-bottom: 1.25rem;
+}
+
+.link-page-title {
+  font-size: var(--ed-step-3);
+  margin: 0 0 0.6rem;
+}
+
+.link-page-description {
+  color: var(--ed-ink-soft);
+  font-size: var(--ed-step-0);
+  line-height: 1.6;
+  margin: 0 0 2rem;
+  max-width: 36ch;
+}
+
+.link-page-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.link-page-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.95rem 1.25rem;
+  background: var(--ed-raise);
+  border: 1px solid var(--ed-line-strong);
+  border-radius: var(--ed-radius-lg);
+  color: var(--ed-ink);
+  font-weight: 600;
+  font-size: 0.98rem;
+  text-decoration: none;
+  transition:
+    border-color 0.16s ease,
+    background 0.16s ease,
+    transform 0.16s ease;
+}
+.link-page-button:hover {
+  border-color: var(--ed-brand);
+  background: var(--ed-sink);
+  transform: translateY(-1px);
+}
+.link-page-button:active {
+  transform: translateY(0);
+}
+.link-page-button span {
+  flex: 1;
+  text-align: left;
+}
