@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SITE_NAME, SITE_LOGO, SITE_URL, SITE_DESCRIPTION } from "@/constants/site";
 import { linkRepository } from "@/repositories/linkRepository";
 import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
@@ -64,7 +65,7 @@ export default async function LinkPage() {
           ))}
         </div>
         <p className="link-page-footer">
-          © {new Date().getFullYear()} <a href="/">manssuetude.com</a>
+          © {new Date().getFullYear()} <Link href="/">manssuetude.com</Link>
         </p>
       </main>
     </div>
