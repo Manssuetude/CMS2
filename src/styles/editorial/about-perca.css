@@ -72,6 +72,9 @@
 .site-shell .perca-word {
   font-size: var(--ed-step-2);
   font-weight: 500;
+  /* Dans un <button> : la couleur n'est pas héritée (noir navigateur par défaut),
+     d'où le texte illisible en mode sombre sur /a-propos. */
+  color: var(--ed-ink);
 }
 .site-shell .about-perca-link {
   display: inline-flex;
@@ -146,10 +149,6 @@
 }
 .site-shell .perca-page .perca-letter {
   font-size: clamp(2.9rem, 5vw, 4.1rem);
-}
-.site-shell .perca-page .perca-word {
-  font-size: var(--ed-step-2);
-  color: var(--ed-ink);
 }
 .site-shell .perca-step-trigger:disabled {
   cursor: default;
