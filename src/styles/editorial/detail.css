@@ -112,7 +112,7 @@
 }
 .site-shell .pdf-viewer-pager button:hover:not(:disabled) {
   border-color: var(--ed-brand);
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
 }
 .site-shell .pdf-viewer-pager button:disabled {
   opacity: 0.35;
@@ -206,7 +206,7 @@
   white-space: nowrap;
 }
 .site-shell .reading-resume-accept {
-  background: var(--ed-brand);
+  background: var(--ed-accent-strong);
   color: #fff;
 }
 .site-shell .reading-resume-dismiss {
@@ -390,7 +390,7 @@
   margin-bottom: 1rem;
   border-radius: var(--ed-radius);
   background: color-mix(in srgb, var(--ed-brand) 12%, transparent);
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
 }
 .site-shell .format-card h2 {
   font-family: var(--font-serif), Georgia, serif;
@@ -423,7 +423,7 @@
   align-items: center;
   gap: 0.4rem;
   font-size: var(--ed-step-small);
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   padding: 0.4rem 0.9rem;
   border: 1px solid color-mix(in srgb, var(--ed-brand) 30%, var(--ed-line));
   border-radius: 999px;
@@ -473,7 +473,7 @@
   line-height: 1.6;
 }
 .site-shell .format-chip-list-link {
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -490,7 +490,7 @@
 .site-shell .rich-text .format-chip-tip {
   position: relative;
   cursor: pointer;
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   font-weight: 600;
   text-decoration: underline dotted;
   text-underline-offset: 3px;

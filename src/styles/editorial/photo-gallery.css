@@ -18,7 +18,7 @@
   color: var(--ed-ink-soft);
 }
 .site-shell .photo-gallery-count svg {
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
 }
 .site-shell .photo-gallery-section {
   scroll-margin-top: 96px;

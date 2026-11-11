@@ -43,7 +43,7 @@
 .nav .cta {
   padding: 14px 22px;
   color: #fff;
-  background: var(--orange);
+  background: var(--orange-fill);
   border-radius: var(--radius);
 }
 .page-main {
@@ -145,8 +145,8 @@ h2 span {
 }
 .button.primary {
   color: #fff;
-  background: var(--orange);
-  border-color: var(--orange);
+  background: var(--orange-fill);
+  border-color: var(--orange-fill);
 }
 .button::after {
   content: "→";

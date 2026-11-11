@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -34,6 +35,10 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          // HSTS : HTTPS imposé 2 ans, sous-domaines compris (membre., apis.… sont
+          // tous en HTTPS). « preload » rend le domaine éligible à la liste HSTS
+          // des navigateurs — l'inscription sur hstspreload.org reste manuelle.
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
         ],
       },
     ];
@@ -48,4 +53,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Analyse du bundle JS à la demande : ANALYZE=true npm run build
+// (rapports dans .next/analyze/, jamais activé en CI ni sur Vercel).
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+  openAnalyzer: false,
+  analyzerMode: "json",
+});
+
+export default withBundleAnalyzer(nextConfig);

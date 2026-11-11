@@ -112,7 +112,7 @@ img {
   font-size: 0.85rem;
   font-weight: 600;
   color: #fff;
-  background: var(--orange);
+  background: var(--orange-fill);
   cursor: pointer;
   transition:
     transform 0.16s ease,
@@ -134,4 +134,55 @@ img {
     margin-left: 0;
     justify-content: flex-end;
   }
+}
+
+/* ─── Bouton bascule thème clair/sombre (header public ET topbar admin) ─── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background 0.16s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--soft);
+}
+
+/* ─── Champs de formulaire (socle commun) ────────────────────────────────
+   Règles historiquement définies dans admin-foundation.css, mais sans
+   préfixe : elles s'appliquaient aussi aux formulaires du site public
+   (newsletter, contact, modales), construits avec. Reprises ici à
+   l'identique depuis que le CSS admin n'est plus chargé côté public. */
+label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 850;
+}
+input,
+textarea,
+select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font: inherit;
+}
+textarea {
+  min-height: 120px;
+  padding-top: 12px;
 }

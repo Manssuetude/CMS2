@@ -92,7 +92,7 @@
   cursor: pointer;
 }
 .site-shell .header-search-submit:hover {
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
 }
 
 .site-shell .search-page {

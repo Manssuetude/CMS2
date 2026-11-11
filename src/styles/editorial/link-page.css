@@ -26,7 +26,7 @@
   font-family: var(--font-script), "Segoe Script", cursive;
   font-size: min(68vw, 640px);
   line-height: 1;
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   opacity: 0.08;
   pointer-events: none;
   user-select: none;
@@ -67,7 +67,7 @@
 }
 .link-page-initial {
   font-family: var(--font-script), "Segoe Script", cursive;
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   font-size: 1.5em;
   line-height: 0;
   padding-right: 0.03em;
