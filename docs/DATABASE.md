@@ -121,20 +121,22 @@ Contenus éditoriaux publiés (articles, rapports, notes).
 
 Évènements datés (séances, débats, ateliers) — anciennement `activities` (renommé, migration `20260821`). À ne pas confondre avec `activity_formats` (catalogue de formats d'animation, concept distinct et toujours nommé « activité » côté produit, page `/activites`).
 
-| Colonne                                          | Type            | Notes               |
-| ------------------------------------------------ | --------------- | ------------------- |
-| `slug`                                           | text unique     |                     |
-| `title`, `format`                                | text NOT NULL   |                     |
-| `description`, `body`                            | text            |                     |
-| `date`                                           | date            | optionnelle         |
-| `status`                                         | content_status  |                     |
-| `progress_status`                                | progress_status |                     |
-| `gallery`, `documents`                           | uuid[]          | référence resources |
-| `featured`                                       | boolean         |                     |
-| `speakers`                                       | jsonb           |                     |
-| `start_time`, `end_time`, `location`, `capacity` | text            |                     |
-| `eventbrite_url`, `registration_status`          | text            |                     |
-| `seo_title`, `seo_description`                   | text            |                     |
+| Colonne                                          | Type                                     | Notes                                                                                                                 |
+| ------------------------------------------------ | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `slug`                                           | text unique                              |                                                                                                                       |
+| `title`, `format`                                | text NOT NULL                            |                                                                                                                       |
+| `description`, `body`                            | text                                     |                                                                                                                       |
+| `date`                                           | date                                     | optionnelle                                                                                                           |
+| `status`                                         | content_status                           |                                                                                                                       |
+| `progress_status`                                | progress_status                          |                                                                                                                       |
+| `gallery`, `documents`                           | uuid[]                                   | référence resources                                                                                                   |
+| `featured`                                       | boolean                                  |                                                                                                                       |
+| `speakers`                                       | jsonb                                    |                                                                                                                       |
+| `start_time`, `end_time`, `location`, `capacity` | text                                     |                                                                                                                       |
+| `eventbrite_url`, `registration_status`          | text                                     |                                                                                                                       |
+| `seo_title`, `seo_description`                   | text                                     |                                                                                                                       |
+| `poster_id`                                      | uuid FK → resources (ON DELETE SET NULL) | image principale / affiche : en-tête de la page et partage social                                                     |
+| `header_style`                                   | text NOT NULL, défaut `classic`          | `classic` ou `banner` (repli automatique sur `classic` si l'image n'est pas assez large, voir `utils/eventHeader.ts`) |
 
 ### `activity_formats`
 

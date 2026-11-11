@@ -1,0 +1,560 @@
+/* Page événement (EvenementDetail) — deux styles d'en-tête (Classique /
+   Bannière) et un corps commun en grille 8 + 4 colonnes. Même bord gauche que
+   le logo du header du site (padding var(--ed-gutter), pas de largeur max). */
+
+.site-shell .event-page {
+  --event-gap: clamp(2rem, 4vw, 4rem);
+  --event-sticky-top: 104px; /* hauteur du header collant du site + marge */
+  /* .page-main ajoute sa propre marge latérale (--page-x) : on l'annule pour
+     que le contenu reprenne exactement le bord gauche du logo (--ed-gutter). */
+  margin-inline: calc(-1 * var(--page-x, 0px));
+}
+
+/* ── Éléments communs aux deux en-têtes ─────────────────────────────── */
+.site-shell .event-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0 0 1.25rem;
+  font-size: var(--ed-step-small);
+  color: var(--ed-muted);
+}
+.site-shell .event-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+.site-shell .event-breadcrumb a:hover {
+  color: var(--ed-clay);
+  text-decoration: underline;
+}
+.site-shell .event-breadcrumb [aria-current] {
+  overflow: hidden;
+  max-width: 40ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.site-shell .event-eyebrow {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ed-brand);
+}
+.site-shell .event-title {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(2.5rem, 5.2vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.site-shell .event-lead {
+  margin: 1rem 0 0;
+  max-width: 62ch;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  line-height: 1.45;
+  color: var(--ed-ink-soft);
+  text-wrap: pretty;
+}
+
+/* Bouton-image (ouvre la visionneuse). */
+.site-shell .event-header-image {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--surface);
+  cursor: zoom-in;
+}
+.site-shell .event-header-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.site-shell .event-header-image--cover img {
+  object-fit: cover;
+}
+.site-shell .event-header-image--contain img {
+  object-fit: contain;
+}
+.site-shell .event-header-image:focus-visible {
+  outline: 3px solid var(--ed-focus);
+  outline-offset: 3px;
+}
+
+/* ── Classique ───────────────────────────────────────────────────────── */
+.site-shell .event-header--classic {
+  padding: clamp(2rem, 4vw, 3.25rem) var(--ed-gutter) 0;
+}
+.site-shell .event-header-image--classic {
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
+  aspect-ratio: 2.5 / 1;
+  border-radius: var(--ed-radius);
+}
+@media (max-width: 767px) {
+  .site-shell .event-header-image--classic {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+/* ── Bannière ────────────────────────────────────────────────────────── */
+/* Hauteur MINIMALE (560 / 420 / 360px) : la bannière s'agrandit si le texte
+   (titre long, chapô) ne tient pas, au lieu de déborder de l'image. */
+.site-shell .event-banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 560px;
+  overflow: hidden;
+  background: var(--surface);
+}
+@media (max-width: 1023px) {
+  .site-shell .event-banner {
+    min-height: 420px;
+  }
+}
+@media (max-width: 640px) {
+  .site-shell .event-banner {
+    min-height: 360px;
+  }
+}
+.site-shell .event-header-image--banner {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+/* Dégradé sombre sur la moitié basse : garantit le contraste AA du texte
+   blanc quelle que soit la photo (≥ 0,6 d'opacité sous toutes les lignes). */
+.site-shell .event-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(var(--ed-image-scrim), 0.9) 0%,
+    rgba(var(--ed-image-scrim), 0.78) 40%,
+    rgba(var(--ed-image-scrim), 0.5) 62%,
+    rgba(var(--ed-image-scrim), 0) 85%
+  );
+}
+.site-shell .event-banner-text {
+  position: relative;
+  z-index: 1;
+  padding: clamp(5rem, 12vw, 9rem) var(--ed-gutter) clamp(2rem, 4vw, 3.5rem);
+  color: var(--ed-on-image);
+  pointer-events: none; /* le clic traverse vers l'image (visionneuse)… */
+  text-shadow: 0 1px 12px rgba(var(--ed-image-scrim), 0.45);
+}
+.site-shell .event-banner-text a {
+  pointer-events: auto; /* …sauf sur le fil d'Ariane */
+}
+.site-shell .event-banner-text .event-breadcrumb,
+.site-shell .event-banner-text .event-lead {
+  color: var(--ed-on-image);
+}
+.site-shell .event-banner-text .event-breadcrumb {
+  opacity: 0.85;
+}
+.site-shell .event-banner-text .event-title {
+  color: var(--ed-on-image);
+}
+
+/* Barre d'infos sous la bannière. */
+.site-shell .event-infobar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin: 0 var(--ed-gutter);
+  padding: 1.1rem 1.5rem;
+  border: 1px solid var(--ed-line);
+  border-top: 0;
+  border-radius: 0 0 var(--ed-radius-lg) var(--ed-radius-lg);
+  background: var(--ed-raise);
+  box-shadow: 0 12px 28px rgba(var(--ed-image-scrim), 0.08);
+}
+.site-shell .event-infobar-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-shell .event-infobar-facts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 1.5rem;
+  color: var(--ed-ink);
+}
+.site-shell .event-infobar-facts li:first-child {
+  padding-left: 0;
+}
+.site-shell .event-infobar-facts li + li {
+  border-left: 1px solid var(--ed-line);
+}
+.site-shell .event-infobar-facts svg {
+  flex-shrink: 0;
+  color: var(--ed-ink-soft);
+}
+.site-shell .event-infobar-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--ed-clay);
+  text-decoration: none;
+}
+.site-shell .event-infobar-cta:hover {
+  text-decoration: underline;
+}
+@media (max-width: 767px) {
+  .site-shell .event-infobar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 0;
+    border-radius: 0;
+    border-inline: 0;
+  }
+  .site-shell .event-infobar-facts {
+    display: contents;
+  }
+  .site-shell .event-infobar-facts li,
+  .site-shell .event-infobar-facts li:first-child,
+  .site-shell .event-infobar-facts li + li {
+    padding: 0;
+    border: 0;
+  }
+  .site-shell .event-infobar .event-status {
+    justify-self: start;
+  }
+  .site-shell .event-infobar-cta {
+    grid-column: 1 / -1;
+    justify-content: center;
+    margin: 0.25rem 0 0;
+    padding: 0.75rem;
+    border: 1px solid var(--ed-line-strong);
+    border-radius: var(--ed-radius);
+  }
+}
+
+/* ── Statut unique ───────────────────────────────────────────────────── */
+.site-shell .event-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ed-brand) 13%, transparent);
+  color: var(--ed-clay);
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+}
+
+/* ── Corps : grille 12 colonnes (8 + 4) ──────────────────────────────── */
+.site-shell .event-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--event-gap);
+  align-items: start;
+  padding: clamp(2.5rem, 5vw, 4rem) var(--ed-gutter);
+}
+.site-shell .event-main {
+  grid-column: 1 / span 8;
+  grid-row: 1;
+}
+.site-shell .event-aside {
+  grid-column: 9 / span 4;
+  grid-row: 1;
+}
+.site-shell .event-aside--sticky {
+  align-self: stretch;
+}
+.site-shell .event-aside--sticky .event-infocard {
+  position: sticky;
+  top: var(--event-sticky-top);
+}
+.site-shell .event-aside--ruled {
+  padding-left: var(--event-gap);
+  border-left: 1px solid var(--ed-line);
+  margin-left: calc(var(--event-gap) / -2);
+}
+.site-shell .event-mobile-only {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .site-shell .event-layout {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2.5rem;
+  }
+  .site-shell .event-main,
+  .site-shell .event-aside {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .site-shell .event-aside--sticky .event-infocard {
+    position: static;
+  }
+  .site-shell .event-aside--ruled {
+    padding-left: 0;
+    border-left: 0;
+    margin-left: 0;
+  }
+  .site-shell .event-mobile-only {
+    display: block;
+  }
+  .site-shell .event-infocard-themes {
+    display: none;
+  }
+}
+
+/* Sections de la colonne principale et latérale, séparées par un filet. */
+.site-shell .event-section + .event-section,
+.site-shell .event-mobile-only .event-section,
+.site-shell .event-main > .event-section ~ .event-section {
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--ed-line);
+}
+.site-shell .event-section h2 {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+.site-shell .event-pending,
+.site-shell .event-people--pending {
+  color: var(--ed-muted);
+}
+
+/* Texte riche (CKEditor) : aligné à gauche, même si l'éditeur l'a justifié. */
+.site-shell .event-body {
+  max-width: 68ch;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: break-word;
+}
+.site-shell .event-body p,
+.site-shell .event-body li,
+.site-shell .event-body [style] {
+  text-align: left !important;
+}
+.site-shell .event-body p + p {
+  margin-top: 1em;
+}
+/* Listes numérotées : pastilles rondes orange (contenu existant inchangé). */
+.site-shell .event-body ol {
+  counter-reset: event-step;
+  margin: 1.25rem 0;
+  padding: 0;
+  list-style: none;
+}
+.site-shell .event-body ol > li {
+  counter-increment: event-step;
+  position: relative;
+  margin: 0.85rem 0;
+  padding-left: 2.75rem;
+  min-height: 1.9rem;
+}
+.site-shell .event-body ol > li::before {
+  content: counter(event-step);
+  position: absolute;
+  left: 0;
+  top: -0.1rem;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1.5px solid var(--ed-brand);
+  border-radius: 50%;
+  color: var(--ed-clay);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Intervenants. */
+.site-shell .event-people {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-shell .event-people li,
+.site-shell p.event-people {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+.site-shell .event-people svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--ed-ink-soft);
+}
+.site-shell .event-people-role {
+  display: block;
+  font-size: var(--ed-step-small);
+  color: var(--ed-muted);
+}
+.site-shell .event-aside--ruled .event-people li,
+.site-shell .event-aside--ruled p.event-people {
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  background: var(--ed-raise);
+}
+
+.site-shell .event-documents {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ── Carte « Infos pratiques » (Classique) ───────────────────────────── */
+.site-shell .event-infocard {
+  padding: clamp(1.25rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius-lg);
+  background: color-mix(in srgb, var(--ed-raise) 55%, var(--ed-sink));
+  box-shadow: 0 10px 30px rgba(var(--ed-image-scrim), 0.05);
+}
+.site-shell .event-infocard h2 {
+  margin: 0 0 1rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.5rem, 2.2vw, 1.9rem);
+  font-weight: 500;
+}
+.site-shell .event-infocard h3 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.site-shell .event-infocard-facts {
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--ed-line);
+}
+.site-shell .event-infocard-facts li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--ed-line);
+  color: var(--ed-ink);
+}
+.site-shell .event-infocard-facts svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--ed-ink-soft);
+}
+.site-shell .is-pending,
+.site-shell .event-infocard-facts .is-pending {
+  color: var(--ed-muted);
+}
+.site-shell .event-maps-link {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: var(--ed-step-small);
+  color: var(--ed-clay);
+}
+.site-shell .event-infocard-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  margin-top: 1.1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--ed-radius);
+  background: var(--ed-brand);
+  color: var(--ed-on-accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.site-shell .event-infocard-cta:hover {
+  background: var(--ed-brand-strong);
+}
+.site-shell .event-infocard-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+  font-size: var(--ed-step-small);
+  color: var(--ed-clay);
+}
+.site-shell .event-infocard-block {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ed-line);
+}
+
+/* Thèmes : pastilles orange en contour. */
+.site-shell .event-theme-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-shell .event-theme-chips a {
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--ed-brand) 60%, transparent);
+  border-radius: 999px;
+  color: var(--ed-clay);
+  font-size: var(--ed-step-small);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.site-shell .event-theme-chips a:hover {
+  background: color-mix(in srgb, var(--ed-brand) 10%, transparent);
+}
+
+/* Galerie : même bord gauche que le reste de la page, filet au-dessus, titre
+   en serif comme les autres sections (pas la majuscule héritée des listings). */
+.site-shell .event-page .photo-gallery-section .section-head {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.site-shell .event-page .photo-gallery-section .section-head h2 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  font-weight: 500;
+  text-transform: none;
+}
+/* Galerie : même bord gauche que le reste de la page, filet au-dessus. */
+.site-shell .event-page .photo-gallery-section {
+  max-width: none;
+  margin: 0 var(--ed-gutter);
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+  border-top: 1px solid var(--ed-line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell .event-infocard-cta,
+  .site-shell .event-theme-chips a {
+    transition: none;
+  }
+}

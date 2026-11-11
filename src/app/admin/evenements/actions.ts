@@ -2,111 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import { eventRepository } from "@/repositories/eventRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
-import type { EventAnimator } from "@/types/cms";
-
-const speakerSchema = z.object({ name: z.string().min(1), role: z.string().optional() });
-
-const schema = z.object({
-  title: z.string().min(1, "Le titre est requis."),
-  format: z.string().min(1, "Le format est requis."),
-  status: z.enum(["draft", "published", "archived"]).default("draft"),
-  progressStatus: z.string().optional().nullable(),
-  date: z.string(),
-  startTime: z.string().optional().nullable(),
-  endTime: z.string().optional().nullable(),
-  location: z.string().optional().nullable(),
-  capacity: z.string().optional().nullable(),
-  eventbriteUrl: z.string().optional().nullable(),
-  registrationStatus: z.enum(["a-venir", "ouvertes", "complet", "termine", ""]).optional().nullable(),
-  description: z.string().optional().nullable(),
-  body: z.string().optional().nullable(),
-  speakers: z.array(speakerSchema).default([]),
-  gallery: z.array(z.string()).default([]),
-  seoTitle: z.string().optional().nullable(),
-  seoDescription: z.string().optional().nullable(),
-});
-
-function toInput(data: z.infer<typeof schema>) {
-  return {
-    title: data.title,
-    format: data.format,
-    status: data.status,
-    progress_status: data.progressStatus || null,
-    date: data.date || null,
-    start_time: data.startTime || null,
-    end_time: data.endTime || null,
-    location: data.location || null,
-    capacity: data.capacity || null,
-    eventbrite_url: data.eventbriteUrl || null,
-    registration_status: data.registrationStatus || null,
-    description: data.description || null,
-    body: data.body || null,
-    speakers: data.speakers,
-    gallery: data.gallery,
-    seo_title: data.seoTitle || null,
-    seo_description: data.seoDescription || null,
-  };
-}
-
-function parseSpeakers(formData: FormData): { name: string; role?: string }[] {
-  const raw = (formData.get("speakers") as string | null) ?? "[]";
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((s) => s && typeof s.name === "string" && s.name.trim()) : [];
-  } catch {
-    return [];
-  }
-}
-
-function parseIdList(formData: FormData, field: string): string[] {
-  return ((formData.get(field) as string | null) ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
-function parseAnimators(formData: FormData): EventAnimator[] {
-  const raw = (formData.get("animators") as string | null) ?? "[]";
-  try {
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter((a) => a && typeof a.authorId === "string" && a.authorId.trim())
-      .map((a) => ({
-        authorId: a.authorId,
-        contribution: typeof a.contribution === "string" && a.contribution.trim() ? a.contribution.trim() : null,
-      }));
-  } catch {
-    return [];
-  }
-}
+import { eventFormSchema, parseAnimators, parseIdList, readEventForm, toEventInput } from "./eventForm";
 
 export async function createEventAction(_: string | null, formData: FormData): Promise<string | null> {
-  const parsed = schema.safeParse({
-    title: formData.get("title"),
-    format: formData.get("format"),
-    status: formData.get("status") || "draft",
-    progressStatus: formData.get("progressStatus") || null,
-    date: formData.get("date") || "",
-    startTime: formData.get("startTime") || null,
-    endTime: formData.get("endTime") || null,
-    location: formData.get("location") || null,
-    capacity: formData.get("capacity") || null,
-    eventbriteUrl: formData.get("eventbriteUrl") || null,
-    registrationStatus: (formData.get("registrationStatus") as string | null) || null,
-    description: formData.get("description") || null,
-    body: formData.get("body") || null,
-    speakers: parseSpeakers(formData),
-    gallery: parseIdList(formData, "gallery"),
-    seoTitle: formData.get("seoTitle") || null,
-    seoDescription: formData.get("seoDescription") || null,
-  });
+  const parsed = eventFormSchema.safeParse(readEventForm(formData));
 
   if (!parsed.success) {
     return parsed.error.errors[0]?.message ?? "Donnees invalides.";
@@ -116,7 +20,7 @@ export async function createEventAction(_: string | null, formData: FormData): P
 
   let event;
   try {
-    event = await eventRepository.createEvent({ slug, ...toInput(parsed.data) });
+    event = await eventRepository.createEvent({ slug, ...toEventInput(parsed.data) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -141,25 +45,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return "Identifiant manquant.";
 
-  const parsed = schema.safeParse({
-    title: formData.get("title"),
-    format: formData.get("format"),
-    status: formData.get("status") || "draft",
-    progressStatus: formData.get("progressStatus") || null,
-    date: formData.get("date") || "",
-    startTime: formData.get("startTime") || null,
-    endTime: formData.get("endTime") || null,
-    location: formData.get("location") || null,
-    capacity: formData.get("capacity") || null,
-    eventbriteUrl: formData.get("eventbriteUrl") || null,
-    registrationStatus: (formData.get("registrationStatus") as string | null) || null,
-    description: formData.get("description") || null,
-    body: formData.get("body") || null,
-    speakers: parseSpeakers(formData),
-    gallery: parseIdList(formData, "gallery"),
-    seoTitle: formData.get("seoTitle") || null,
-    seoDescription: formData.get("seoDescription") || null,
-  });
+  const parsed = eventFormSchema.safeParse(readEventForm(formData));
 
   if (!parsed.success) {
     return parsed.error.errors[0]?.message ?? "Donnees invalides.";
@@ -169,7 +55,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
     // Le lien (slug) suit le titre tant que l'événement est encore en
     // brouillon — se fige dès la première publication.
     const current = await eventRepository.getEventById(id);
-    const input = toInput(parsed.data);
+    const input = toEventInput(parsed.data);
     const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
     await eventRepository.updateEvent(id, { ...input, ...slugSync });
   } catch {

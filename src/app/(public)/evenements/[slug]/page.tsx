@@ -2,12 +2,8 @@ import type { Metadata } from "next";
 import { completeDescription, formatDateFr } from "@/utils/seoText";
 import { notFound } from "next/navigation";
 import { EvenementDetail } from "@/components/public/EvenementDetail";
+import { buildEventPageProps, loadEventMedia, loadEventRelations } from "@/services/eventPageService";
 import { eventRepository } from "@/repositories/eventRepository";
-import { mediaRepository } from "@/repositories/mediaRepository";
-import { activityFormatRepository } from "@/repositories/activityFormatRepository";
-import { authorRepository } from "@/repositories/authorRepository";
-import { themeRepository } from "@/repositories/themeRepository";
-import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { buildPageMetadata, sectionRobots } from "@/lib/seo";
 import { JsonLd } from "@/components/public/JsonLd";
 import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
@@ -27,10 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const items = await eventRepository.listEvents(true);
     const item = items.find((e) => e.slug === slug);
     if (!item) return { robots };
-    // Première photo réellement existante (un id de galerie peut pointer vers
-    // une ressource supprimée — l'image de partage restait alors vide).
-    const [firstPhoto] = await mediaRepository.getGalleryPhotos(item.gallery);
-    const imageUrl = firstPhoto?.url ?? null;
+    // Affiche, sinon première photo réellement existante de la galerie (un id
+    // peut pointer vers une ressource supprimée), sinon logo (buildPageMetadata).
+    const { poster, gallery } = await loadEventMedia(item.posterId, item.gallery);
+    const imageUrl = poster?.url ?? gallery[0]?.url ?? null;
     return buildPageMetadata({
       title: item.seoTitle || item.title,
       description:
@@ -63,26 +59,7 @@ export default async function EvenementPage({ params }: { params: Promise<{ slug
   const items = await eventRepository.listEvents(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  const [formatIds, allFormats, animatorLinks, authors, gallery, themeIds, subThemeIds, allThemes, allSubThemes] =
-    await Promise.all([
-      activityFormatRepository.getActivityFormatIds(item.id),
-      activityFormatRepository.listFormats(),
-      authorRepository.getEventAnimators(item.id),
-      authorRepository.listAuthors(),
-      mediaRepository.getGalleryPhotos(item.gallery),
-      eventRepository.getEventThemeIds(item.id),
-      eventRepository.getEventSubThemeIds(item.id),
-      themeRepository.listThemes(),
-      subThemeRepository.listSubThemes(),
-    ]);
-  const formats = allFormats.filter((f) => formatIds.includes(f.id));
-  const authorsById = new Map(authors.map((a) => [a.id, a]));
-  const animators = animatorLinks.flatMap((link) => {
-    const author = authorsById.get(link.authorId);
-    return author ? [{ author, contribution: link.contribution }] : [];
-  });
-  const themes = allThemes.filter((t) => themeIds.includes(t.id));
-  const subThemes = allSubThemes.filter((st) => subThemeIds.includes(st.id));
+  const props = await buildEventPageProps(item, await loadEventRelations(item.id));
   return (
     <>
       <JsonLd
@@ -91,16 +68,7 @@ export default async function EvenementPage({ params }: { params: Promise<{ slug
           { name: item.title, path: `/evenements/${item.slug}` },
         ])}
       />
-      <EvenementDetail
-        item={item}
-        formats={formats}
-        allFormats={allFormats}
-        animators={animators}
-        gallery={gallery}
-        themes={themes}
-        subThemes={subThemes}
-        allThemes={allThemes}
-      />
+      <EvenementDetail {...props} />
     </>
   );
 }

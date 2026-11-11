@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/db";
 import type { Event, ContentStatus, ProgressStatus, RegistrationStatus, Speaker } from "@/types/cms";
+import { toHeaderStyle } from "@/utils/eventHeader";
 import { asBoolean, asNullableString, asRecordArray, asString, asStringArray, type DataRow } from "@/utils/row";
 
 function mapSpeaker(row: Record<string, unknown>): Speaker {
@@ -23,6 +24,8 @@ function mapEvent(row: DataRow): Event {
     registrationStatus: asNullableString(row.registration_status) as RegistrationStatus | null,
     status: asString(row.status, "draft") as ContentStatus,
     progressStatus: asNullableString(row.progress_status) as ProgressStatus | null,
+    posterId: asNullableString(row.poster_id),
+    headerStyle: toHeaderStyle(row.header_style),
     gallery: asStringArray(row.gallery),
     documents: asStringArray(row.documents),
     speakers: asRecordArray(row.speakers).map(mapSpeaker),
