@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { eventRepository } from "@/repositories/eventRepository";
 import { productionRepository } from "@/repositories/productionRepository";
@@ -10,8 +11,13 @@ import { journalRepository } from "@/repositories/journalRepository";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Recherche",
-  description: "Rechercher dans les thèmes, productions, événements et projets de Manssuétude.",
+  ...buildPageMetadata({
+    title: "Recherche",
+    description: "Rechercher dans les thèmes, productions, événements et projets de Manssuétude.",
+    path: "/recherche",
+  }),
+  // Pages de résultats : sans valeur propre dans Google (contenu dupliqué des fiches).
+  robots: { index: false, follow: true },
 };
 
 type Result = {

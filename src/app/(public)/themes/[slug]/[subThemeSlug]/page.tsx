@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
+import { mediaRepository } from "@/repositories/mediaRepository";
+import { completeDescription } from "@/utils/seoText";
 import { notFound } from "next/navigation";
 import { SubThemeDetail } from "@/components/public/SubThemeDetail";
 import { productionRepository } from "@/repositories/productionRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
-import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
+import { JsonLd } from "@/components/public/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 60;
 
@@ -19,11 +23,14 @@ export async function generateMetadata({
     const theme = await themeRepository.getTheme(slug);
     const item = await subThemeRepository.getSubTheme(subThemeSlug);
     if (!theme || !item || item.themeId !== theme.id) return { robots };
-    return buildDetailMetadata({
+    return buildPageMetadata({
       title: `${item.title} · ${theme.title}`,
-      description: item.longDescription ?? item.description,
+      description: completeDescription(item.description || item.longDescription, [
+        `Un sujet traité par Manssuétude dans le thème « ${theme.title} ».`,
+        "Think tank jeunesse sur l'Afrique et ses diasporas.",
+      ]),
       path: `/themes/${theme.slug}/${item.slug}`,
-      ogType: "website",
+      imageUrl: await mediaRepository.getResourceUrl(theme.heroImageId ?? theme.thumbnailId),
       robots,
     });
   } catch {
@@ -60,5 +67,16 @@ export default async function SubThemePage({ params }: { params: Promise<{ slug:
     productionRepository.getProductionsBySubTheme(item.id),
     subThemeRepository.listSubThemes(),
   ]);
-  return <SubThemeDetail theme={theme} item={item} productions={productions} allSubThemes={allSubThemes} />;
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Thèmes", path: "/themes" },
+          { name: theme.title, path: `/themes/${theme.slug}` },
+          { name: item.title, path: `/themes/${theme.slug}/${item.slug}` },
+        ])}
+      />
+      <SubThemeDetail theme={theme} item={item} productions={productions} allSubThemes={allSubThemes} />
+    </>
+  );
 }

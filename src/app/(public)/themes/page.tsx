@@ -4,23 +4,19 @@ import { PublicPage } from "@/components/public/PublicPage";
 import { pageRepository } from "@/repositories/pageRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { cmsPageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const robots = await sectionRobots("/themes");
-  try {
-    const page = await pageRepository.getPage("themes");
-    if (!page) return { robots };
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-      robots,
-    };
-  } catch {
-    return { robots };
-  }
+  return cmsPageMetadata({
+    slug: "themes",
+    path: "/themes",
+    fallbackTitle: "Thèmes",
+    fallbackDescription:
+      "Économie, souveraineté, institutions, cultures et mémoires : explorez les grands thèmes de réflexion de Manssuétude sur l'Afrique et ses diasporas.",
+    navKey: "/themes",
+  });
 }
 
 export default async function ThemesPage() {

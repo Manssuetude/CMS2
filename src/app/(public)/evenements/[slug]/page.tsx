@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { completeDescription, formatDateFr } from "@/utils/seoText";
 import { notFound } from "next/navigation";
 import { EvenementDetail } from "@/components/public/EvenementDetail";
 import { eventRepository } from "@/repositories/eventRepository";
@@ -7,9 +8,17 @@ import { activityFormatRepository } from "@/repositories/activityFormatRepositor
 import { authorRepository } from "@/repositories/authorRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
-import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
+import { JsonLd } from "@/components/public/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 60;
+
+function eventFacts(date: string | null | undefined, location: string | null | undefined) {
+  const when = formatDateFr(date);
+  if (!when) return location ? `Événement à ${location}.` : null;
+  return `Événement du ${when}${location ? ` à ${location}` : ""}.`;
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -22,12 +31,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     // une ressource supprimée — l'image de partage restait alors vide).
     const [firstPhoto] = await mediaRepository.getGalleryPhotos(item.gallery);
     const imageUrl = firstPhoto?.url ?? null;
-    return buildDetailMetadata({
+    return buildPageMetadata({
       title: item.seoTitle || item.title,
-      description: item.seoDescription || item.description,
+      description:
+        item.seoDescription ||
+        completeDescription(item.description, [
+          eventFacts(item.date, item.location),
+          "Un événement Manssuétude sur l'Afrique et ses diasporas.",
+        ]),
       path: `/evenements/${item.slug}`,
       imageUrl,
-      ogType: "article",
       robots,
     });
   } catch {
@@ -71,15 +84,23 @@ export default async function EvenementPage({ params }: { params: Promise<{ slug
   const themes = allThemes.filter((t) => themeIds.includes(t.id));
   const subThemes = allSubThemes.filter((st) => subThemeIds.includes(st.id));
   return (
-    <EvenementDetail
-      item={item}
-      formats={formats}
-      allFormats={allFormats}
-      animators={animators}
-      gallery={gallery}
-      themes={themes}
-      subThemes={subThemes}
-      allThemes={allThemes}
-    />
+    <>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Événements", path: "/evenements" },
+          { name: item.title, path: `/evenements/${item.slug}` },
+        ])}
+      />
+      <EvenementDetail
+        item={item}
+        formats={formats}
+        allFormats={allFormats}
+        animators={animators}
+        gallery={gallery}
+        themes={themes}
+        subThemes={subThemes}
+        allThemes={allThemes}
+      />
+    </>
   );
 }

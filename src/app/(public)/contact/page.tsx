@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import { ContactForm } from "@/components/public/ContactForm";
 import { CONTACT_EMAIL, SITE_SOCIALS } from "@/constants/site";
 
-export const metadata: Metadata = {
-  title: "Nous joindre · Manssuétude",
-  description: "Contactez l'équipe de Manssuétude.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Nous joindre",
+  description:
+    "Contactez l'équipe Manssuétude : une question, une proposition de partenariat, d'intervention ou de contenu ? Écrivez-nous, nous vous répondons vite.",
+  path: "/contact",
+});
 
 const SOCIAL_LABELS = ["Instagram", "TikTok", "LinkedIn"];
 

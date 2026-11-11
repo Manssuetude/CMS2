@@ -161,6 +161,8 @@ export type Page = {
   body?: string | null;
   imageId?: string | null;
   imageUrl?: string | null;
+  // alt de la ressource image (jointure resources, voir pageRepository.getPage).
+  imageAlt?: string | null;
   imageCrop?: ImageCrop | null;
   image?: Media | null;
   quote?: string | null;

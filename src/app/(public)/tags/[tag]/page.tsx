@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { completeDescription } from "@/utils/seoText";
+import { buildPageMetadata } from "@/lib/seo";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { productionRepository } from "@/repositories/productionRepository";
 import { themeRepository } from "@/repositories/themeRepository";
@@ -19,7 +21,13 @@ const TYPE_LABEL: Record<string, string> = {
 export async function generateMetadata({ params }: { params: Promise<{ tag: string }> }): Promise<Metadata> {
   const { tag } = await params;
   const label = decodeURIComponent(tag);
-  return { title: `« ${label} » · Manssuétude`, description: `Contenus tagués « ${label} » sur Manssuétude.` };
+  return buildPageMetadata({
+    title: `« ${label} »`,
+    description: completeDescription(`Productions, événements et ressources de Manssuétude tagués « ${label} ».`, [
+      "Analyses, débats et projets d'une jeunesse engagée sur l'Afrique et ses diasporas.",
+    ]),
+    path: `/tags/${tag}`,
+  });
 }
 
 export default async function TagPage({ params }: { params: Promise<{ tag: string }> }) {

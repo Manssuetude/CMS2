@@ -58,3 +58,9 @@ test("sanitizeHtml — retire style/iframe/object/embed/form", () => {
   assert.ok(!out.toLowerCase().includes("<form"));
   assert.ok(out.includes("<p>ok</p>"));
 });
+
+test("sanitizeHtml — ajoute un alt de repli aux images qui n'en ont pas, garde l'alt existant", () => {
+  assert.match(sanitizeHtml('<img src="https://x/a.png">'), /alt="Illustration"/);
+  assert.match(sanitizeHtml('<img src="https://x/a.png" alt="">'), /alt="Illustration"/);
+  assert.match(sanitizeHtml('<img src="https://x/a.png" alt="Carte de la CEMAC">'), /alt="Carte de la CEMAC"/);
+});

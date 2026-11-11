@@ -5,16 +5,18 @@ import { CardGrid } from "@/components/cards/CardGrid";
 import { journalRepository } from "@/repositories/journalRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Journal · Manssuétude",
-    description: "Actualités, coulisses et réflexions de l'association Manssuétude.",
+  return buildPageMetadata({
+    title: "Journal",
+    description:
+      "Le journal de Manssuétude : actualités, coulisses et réflexions de l'association, au fil de nos événements, de nos projets et de la vie de la communauté.",
+    path: "/journal",
     robots: await sectionRobots("/journal"),
-  };
+  });
 }
 
 export default async function JournalPage({

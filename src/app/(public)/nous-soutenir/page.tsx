@@ -3,23 +3,19 @@ import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
 import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { cmsPageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const robots = await sectionRobots("/nous-soutenir");
-  try {
-    const page = await pageRepository.getPage("nous-soutenir");
-    if (!page) return { robots };
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-      robots,
-    };
-  } catch {
-    return { robots };
-  }
+  return cmsPageMetadata({
+    slug: "nous-soutenir",
+    path: "/nous-soutenir",
+    fallbackTitle: "Nous soutenir",
+    fallbackDescription:
+      "Soutenez Manssuétude : dons, partenariats et mécénat pour financer les productions, les événements et les projets d'une jeunesse engagée pour l'Afrique.",
+    navKey: "/nous-soutenir",
+  });
 }
 
 export default async function SupportPage() {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { completeDescription } from "@/utils/seoText";
 import { notFound } from "next/navigation";
 import { DossierDetail } from "@/components/public/DossierDetail";
 import { dossierRepository } from "@/repositories/dossierRepository";
@@ -8,7 +9,9 @@ import { projectRepository } from "@/repositories/projectRepository";
 import { journalRepository } from "@/repositories/journalRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { resolveDossierItems } from "@/utils/dossierItems";
-import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
+import { JsonLd } from "@/components/public/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 60;
 
@@ -18,12 +21,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   try {
     const item = await dossierRepository.getDossier(slug);
     if (!item) return { robots };
-    return buildDetailMetadata({
+    return buildPageMetadata({
       title: item.title,
-      description: item.description?.replace(/<[^>]+>/g, "").slice(0, 200),
+      description: completeDescription(item.description, [
+        "Un dossier Manssuétude : productions, événements et ressources réunis autour d'un même sujet.",
+      ]),
       path: `/dossiers/${item.slug}`,
       imageUrl: item.imageUrl,
-      ogType: "article",
       robots,
     });
   } catch {
@@ -62,5 +66,15 @@ export default async function DossierPage({ params }: { params: Promise<{ slug: 
     journalEntries,
   });
 
-  return <DossierDetail item={item} items={resolvedItems} />;
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Dossiers", path: "/dossiers" },
+          { name: item.title, path: `/dossiers/${item.slug}` },
+        ])}
+      />
+      <DossierDetail item={item} items={resolvedItems} />
+    </>
+  );
 }

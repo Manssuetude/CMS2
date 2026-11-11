@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import { CONTACT_EMAIL, RNA_NUMBER } from "@/constants/site";
 
-export const metadata: Metadata = {
-  title: "Politique de confidentialité · Manssuétude",
-  description: "Comment Manssuétude collecte, utilise et protège vos données personnelles.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Politique de confidentialité",
+  description:
+    "Politique de confidentialité de Manssuétude : quelles données nous collectons, pourquoi, combien de temps nous les gardons et comment exercer vos droits.",
+  path: "/politique-de-confidentialite",
+});
 
 export default function PrivacyPolicyPage() {
   return (
