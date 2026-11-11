@@ -771,3 +771,203 @@
   overflow: hidden;
   background: #f4f5f7;
 }
+
+/* ─── Événement : style d'en-tête (cartes radio) ─────────────────────── */
+.header-style-field {
+  margin: 18px 0 0;
+  padding: 0;
+  border: 0;
+}
+.header-style-field legend {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.header-style-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.header-style-option {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.header-style-option:hover {
+  border-color: var(--line-strong);
+}
+.header-style-option.is-selected {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 1px var(--orange);
+}
+.header-style-option input {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  accent-color: var(--orange);
+}
+.header-style-option:has(input:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.header-style-option svg {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  border-radius: 6px;
+  background: var(--soft);
+}
+.header-style-option .thumb-accent {
+  fill: var(--orange);
+}
+.header-style-option .thumb-ink {
+  fill: var(--ink);
+}
+.header-style-option .thumb-soft {
+  fill: var(--muted);
+}
+.header-style-option .thumb-image {
+  fill: var(--line-strong);
+}
+.header-style-option .thumb-scrim {
+  fill: var(--ink);
+  opacity: 0.55;
+}
+.header-style-option .thumb-light {
+  fill: var(--surface);
+}
+.header-style-option .thumb-bar {
+  fill: var(--surface);
+  stroke: var(--line);
+}
+.header-style-option-title {
+  font-weight: 600;
+  color: var(--ink);
+}
+.header-style-option-help {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.header-style-warning {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border-left: 3px solid var(--warning);
+  border-radius: 4px;
+  background: var(--orange-soft);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/* ─── Événement : aperçu plein écran (iframe) ────────────────────────── */
+.event-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background: var(--soft-panel, var(--paper));
+}
+.event-preview-flag {
+  margin: 0;
+  padding: 6px 16px;
+  background: #f5c518;
+  color: #1c1714;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+.event-preview-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.event-preview-group {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.event-preview-group button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.event-preview-group button:last-child {
+  border-right: 0;
+}
+.event-preview-group button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--surface);
+}
+.event-preview-group button:focus-visible,
+.event-preview-actions button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+.event-preview-width {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.event-preview-actions {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: auto;
+}
+.event-preview-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  overflow: hidden;
+}
+.event-preview-frame {
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: var(--shadow-modal);
+  background: var(--surface);
+}
+/* Tablette et téléphone : bord arrondi d'appareil. */
+.event-preview-frame--tablet {
+  border-radius: 18px;
+}
+.event-preview-frame--mobile {
+  border-radius: 28px;
+}
+.event-preview-stage {
+  align-items: flex-start;
+}
+.event-preview-frame iframe {
+  display: block;
+  border: 0;
+  transform-origin: top left;
+}
+.event-preview-loading,
+.event-preview-error {
+  padding: 48px var(--ed-gutter, 24px);
+  text-align: center;
+  color: var(--ed-muted, var(--muted));
+}

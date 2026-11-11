@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Media } from "@/types/cms";
 import { MediaPickerModal } from "./MediaPickerModal";
 
@@ -9,16 +9,36 @@ interface Props {
   initialMedia: Media[];
   initialSelectedId?: string | null;
   buttonLabel?: string;
+  /** Appelé à chaque changement de sélection, avec le média choisi (dimensions comprises). */
+  onChange?: (media: Media | null) => void;
 }
 
 // Remplace l'ancien <select> (liste de titres en texte) par un aperçu visuel
 // + une fenêtre de sélection à vignettes — voir MediaPickerModal.
-export function SingleMediaField({ name, initialMedia, initialSelectedId, buttonLabel = "Choisir une image" }: Props) {
+export function SingleMediaField({
+  name,
+  initialMedia,
+  initialSelectedId,
+  buttonLabel = "Choisir une image",
+  onChange,
+}: Props) {
   const [media, setMedia] = useState(initialMedia);
   const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId ?? null);
   const [open, setOpen] = useState(false);
 
   const selected = selectedId ? media.find((m) => m.id === selectedId) : undefined;
+
+  // Notifie le parent (ex. avertissement de style d'en-tête) — pas au montage.
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+  const firstRender = useRef(true);
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    onChangeRef.current?.(selected ?? null);
+  }, [selected]);
 
   return (
     <div className="single-media-field">

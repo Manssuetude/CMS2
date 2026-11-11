@@ -1,9 +1,9 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ExternalLink, Plus, X } from "lucide-react";
+import { ExternalLink, Eye, Plus, X } from "lucide-react";
 import type {
   Event,
   EventAnimator,
@@ -16,7 +16,11 @@ import type {
   Theme,
 } from "@/types/cms";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
+import { SingleMediaField } from "@/components/media/SingleMediaField";
 import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
+import { EventHeaderStyleField } from "@/components/admin/EventHeaderStyleField";
+import { EventPreviewModal } from "@/components/admin/EventPreviewModal";
+import { isBannerCompatible, pickHeaderImage, type HeaderStyle } from "@/utils/eventHeader";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
@@ -99,6 +103,19 @@ export function EvenementForm({
   const [selectedFormats, setSelectedFormats] = useState<string[]>(initialFormatIds);
   const [animators, setAnimators] = useState<EventAnimator[]>(initialAnimators);
   const publicHref = isEdit ? `/evenements/${initialData.slug}` : null;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [headerStyle, setHeaderStyle] = useState<HeaderStyle>(initialData?.headerStyle ?? "classic");
+  const [posterMedia, setPosterMedia] = useState<Media | null>(
+    images.find((m) => m.id === initialData?.posterId) ?? null,
+  );
+  const [firstGalleryMedia, setFirstGalleryMedia] = useState<Media | null>(
+    images.find((m) => m.id === initialData?.gallery[0]) ?? null,
+  );
+  // Même règle que la page publique : affiche, sinon 1re photo de la galerie.
+  const bannerFits = isBannerCompatible(
+    pickHeaderImage(posterMedia, firstGalleryMedia ? [firstGalleryMedia] : []).image,
+  );
   const mentionItems = useMemo(() => activityFormats.map((f) => ({ id: f.id, title: f.title })), [activityFormats]);
   const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
   const subThemesByTheme = new Map<string, SubTheme[]>();
@@ -117,7 +134,7 @@ export function EvenementForm({
   }
 
   return (
-    <form action={formAction}>
+    <form action={formAction} ref={formRef}>
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="body" value={body} />
@@ -390,6 +407,23 @@ export function EvenementForm({
           </div>
         )}
 
+        {/* Affiche et en-tête : image principale (une seule, jamais recadrée
+            si c'est une affiche) et style d'en-tête de la page publique. */}
+        <div className="form-section">
+          <p className="form-section-title">Affiche et en-tête</p>
+          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+            Image affichée en haut de la page et utilisée pour le partage sur les réseaux.
+          </p>
+          <SingleMediaField
+            name="posterId"
+            initialMedia={images}
+            initialSelectedId={initialData?.posterId ?? null}
+            buttonLabel="Choisir l'image principale"
+            onChange={setPosterMedia}
+          />
+          <EventHeaderStyleField value={headerStyle} onChange={setHeaderStyle} warning={!bannerFits} />
+        </div>
+
         {/* Compte-rendu en images (n'apparaît côté public que si l'événement est
             passé ou terminé, et seulement si des images sont ajoutées ici) */}
         <div className="form-section">
@@ -397,7 +431,12 @@ export function EvenementForm({
           <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
             Photos affichées sur la page publique une fois l&apos;événement passé ou marqué « Terminé ».
           </p>
-          <SortableMediaGallery name="gallery" initialMedia={images} initialSelectedIds={initialData?.gallery ?? []} />
+          <SortableMediaGallery
+            name="gallery"
+            initialMedia={images}
+            initialSelectedIds={initialData?.gallery ?? []}
+            onChange={(items) => setFirstGalleryMedia(items[0] ?? null)}
+          />
         </div>
 
         {/* Relations thèmes */}
@@ -541,11 +580,27 @@ export function EvenementForm({
           <Link href="/admin/evenements" className="button">
             Annuler
           </Link>
+          <button type="button" className="button" onClick={() => setPreviewOpen(true)}>
+            <Eye size={15} strokeWidth={1.75} />
+            Aperçu
+          </button>
           <button type="submit" className="button primary" disabled={isPending}>
             {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer l'événement"}
           </button>
         </div>
       </div>
+      {previewOpen && (
+        <EventPreviewModal
+          formRef={formRef}
+          headerStyle={headerStyle}
+          onHeaderStyleChange={setHeaderStyle}
+          onClose={() => setPreviewOpen(false)}
+          onSave={() => {
+            setPreviewOpen(false);
+            formRef.current?.requestSubmit();
+          }}
+        />
+      )}
     </form>
   );
 }

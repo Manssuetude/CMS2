@@ -276,6 +276,11 @@ export type Event = {
   registrationStatus?: RegistrationStatus | null;
   status: ContentStatus;
   progressStatus?: ProgressStatus | null;
+  // Affiche / visuel principal (resources.id) : en-tête public et partage social.
+  posterId?: string | null;
+  // Style d'en-tête de la page publique (repli automatique sur « classic » si
+  // l'image ne convient pas à la bannière — voir utils/eventHeader).
+  headerStyle: "classic" | "banner";
   gallery: string[];
   documents: string[];
   speakers: Speaker[];

@@ -18,6 +18,11 @@
   /* -- Neutres chauds -- */
   --ed-paper: #faf6f0; /* fond crème chaud */
   --ed-raise: #fffdfa; /* surface légèrement plus claire */
+  /* Texte posé sur une photo (bannière d'événement) et sur l'accent orange :
+     blanc dans les deux thèmes, d'où des jetons non redéfinis en sombre. */
+  --ed-on-image: #fff;
+  --ed-on-accent: #fff;
+  --ed-image-scrim: 12, 10, 8; /* RVB du dégradé sombre sous le texte d'une bannière */
   --ed-sink: #f1e8dc; /* surface alternative */
   --ed-ink: #1c1714; /* brun-noir chaud (texte principal) */
   --ed-ink-soft: #574f48; /* texte secondaire */
