@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cmsPageMetadata } from "@/lib/seo";
 import { HistoryEditorial } from "@/components/public/HistoryEditorial";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 import { pageRepository } from "@/repositories/pageRepository";
@@ -9,16 +10,13 @@ import { pageRepository } from "@/repositories/pageRepository";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const page = await pageRepository.getPage("history");
-    if (!page) return { title: "Notre histoire" };
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-    };
-  } catch {
-    return { title: "Notre histoire" };
-  }
+  return cmsPageMetadata({
+    slug: "history",
+    path: "/history",
+    fallbackTitle: "Notre histoire",
+    fallbackDescription:
+      "L'histoire de Manssuétude : comment une jeunesse africaine et diasporique a créé un lieu pour prendre du recul, déconstruire les idées reçues et agir.",
+  });
 }
 
 export default async function HistoryPage() {

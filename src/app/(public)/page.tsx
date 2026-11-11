@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { HomeEditorial } from "@/components/public/HomeEditorial";
 import { eventRepository } from "@/repositories/eventRepository";
@@ -10,16 +11,31 @@ import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
 
 export const revalidate = 60;
 
+const HOME_TITLE = "Manssuétude | Think tank jeunesse sur l'Afrique et ses diasporas";
+const HOME_DESCRIPTION =
+  "Manssuétude, think tank de jeunes engagés sur l'Afrique et ses diasporas : analyses, débats et projets pour penser et transformer durablement le continent.";
+
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await pageRepository.getPage("accueil");
-    return {
-      title: { absolute: page?.seoTitle ?? "Manssuétude" },
-      description: page?.seoDescription ?? "Un espace de réflexion, de production et d'expérimentation collective.",
-      alternates: { canonical: "/" },
-    };
+    // Titre complet modifiable depuis /admin/homepage (champ SEO). L'ancien titre
+    // générique « Manssuétude - Accueil » est ignoré au profit du titre par défaut.
+    const custom = page?.seoTitle?.trim();
+    const title = custom && !/accueil$/i.test(custom) ? custom : HOME_TITLE;
+    return buildPageMetadata({
+      title,
+      absoluteTitle: title,
+      description: page?.seoDescription?.trim() || HOME_DESCRIPTION,
+      path: "/",
+      imageUrl: page?.imageUrl,
+    });
   } catch {
-    return {};
+    return buildPageMetadata({
+      title: HOME_TITLE,
+      absoluteTitle: HOME_TITLE,
+      description: HOME_DESCRIPTION,
+      path: "/",
+    });
   }
 }
 

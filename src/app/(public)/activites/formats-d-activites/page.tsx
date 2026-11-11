@@ -3,17 +3,18 @@ import { CtaButton } from "@/components/forms/CtaButton";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { resolveActivityFormatIcon } from "@/utils/activityFormatIcons";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Formats d'activités · Manssuétude",
+  return buildPageMetadata({
+    title: "Formats d'activités",
     description:
-      "Le répertoire des techniques d'animation utilisées par Manssuétude pour débattre, échanger, partager et transmettre.",
+      "Le répertoire des techniques d'animation de Manssuétude : fishbowl, hot takes, débats mouvants… Des formats pour faire réfléchir et débattre un groupe.",
+    path: "/activites/formats-d-activites",
     robots: await sectionRobots("/activites"),
-  };
+  });
 }
 
 export default async function ActivityFormatsPage() {

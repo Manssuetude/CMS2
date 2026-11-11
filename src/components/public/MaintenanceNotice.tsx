@@ -59,6 +59,10 @@ export function MaintenanceNotice({
 }) {
   return (
     <section className="maintenance">
+      {/* Ce repli s'affiche aussi à la place d'une vraie page (base injoignable,
+          contenu vide) avec un statut 200 : il ne doit jamais être indexé à la
+          place du contenu. React 19 remonte cette balise dans le <head>. */}
+      <meta name="robots" content="noindex, follow" />
       <MaintenanceArt />
       <p className="eyebrow">{eyebrow}</p>
       <h1>{title}</h1>

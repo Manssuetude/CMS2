@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { FilterBar } from "@/components/public/FilterBar";
@@ -7,10 +8,12 @@ import { themeRepository } from "@/repositories/themeRepository";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Ressources · Manssuétude",
-  description: "Documents, rapports, images et vidéos réutilisables, organisés par type et par thème.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Ressources",
+  description:
+    "Ressources Manssuétude : documents, rapports, images et vidéos réutilisables, classés par thème, pour nourrir vos travaux sur l'Afrique et ses diasporas.",
+  path: "/ressources",
+});
 
 const TYPE_LABEL: Record<string, string> = {
   image: "Image",

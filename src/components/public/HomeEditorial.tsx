@@ -5,6 +5,7 @@ import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
 import { NewsletterForm } from "@/components/public/NewsletterForm";
 import type { Page, Production, Event, JournalEntry } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
+import { isMeaningfulAlt } from "@/utils/gallery";
 
 const percaLetters = ["P", "E", "R", "C", "A"] as const;
 
@@ -56,7 +57,12 @@ export function HomeEditorial({
         </div>
         {heroImageUrl ? (
           <figure className="home-hero-media">
-            <img src={heroImageUrl} alt="" loading="eager" style={cropToImageStyle(page.imageCrop)} />
+            <img
+              src={heroImageUrl}
+              alt={isMeaningfulAlt(page.imageAlt) ? page.imageAlt : page.title}
+              loading="eager"
+              style={cropToImageStyle(page.imageCrop)}
+            />
           </figure>
         ) : null}
       </section>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cmsPageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { PercaEditorial } from "@/components/public/PercaEditorial";
 import { pageRepository } from "@/repositories/pageRepository";
@@ -7,16 +8,13 @@ import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const page = await pageRepository.getPage("perca");
-    if (!page) return {};
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-    };
-  } catch {
-    return {};
-  }
+  return cmsPageMetadata({
+    slug: "perca",
+    path: "/perca",
+    fallbackTitle: "PERCA",
+    fallbackDescription:
+      "PERCA, la méthode Manssuétude en cinq étapes : Penser, Exprimer, Relier, Concrétiser, Ancrer. Un cadre pour passer de la réflexion collective à l'action.",
+  });
 }
 
 export default async function PercaPage() {

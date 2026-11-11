@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { completeDescription } from "@/utils/seoText";
 import { notFound } from "next/navigation";
 import { ProjetDetail } from "@/components/public/ProjetDetail";
 import { projectRepository } from "@/repositories/projectRepository";
 import { productionRepository } from "@/repositories/productionRepository";
 import { eventRepository } from "@/repositories/eventRepository";
 import { journalRepository } from "@/repositories/journalRepository";
-import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
+import { JsonLd } from "@/components/public/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 60;
 
@@ -16,11 +19,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const items = await projectRepository.listProjects(true);
     const item = items.find((p) => p.slug === slug);
     if (!item) return { robots };
-    return buildDetailMetadata({
+    return buildPageMetadata({
       title: item.seoTitle || item.title,
-      description: item.seoDescription || item.description,
+      description:
+        item.seoDescription ||
+        completeDescription(item.description, [
+          "Un projet de Manssuétude, think tank jeunesse sur l'Afrique et ses diasporas.",
+        ]),
       path: `/projets/${item.slug}`,
-      ogType: "website",
       robots,
     });
   } catch {
@@ -48,5 +54,15 @@ export default async function ProjetPage({ params }: { params: Promise<{ slug: s
     eventRepository.getEventsByProject(item.id),
     journalRepository.listEntriesByProject(item.id),
   ]);
-  return <ProjetDetail item={item} productions={productions} events={events} journalEntries={journalEntries} />;
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Projets", path: "/projets" },
+          { name: item.title, path: `/projets/${item.slug}` },
+        ])}
+      />
+      <ProjetDetail item={item} productions={productions} events={events} journalEntries={journalEntries} />
+    </>
+  );
 }

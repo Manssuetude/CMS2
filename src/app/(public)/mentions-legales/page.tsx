@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import {
   CONTACT_EMAIL,
   HEADQUARTERS_ADDRESS,
@@ -8,10 +9,12 @@ import {
   SIRET_NUMBER,
 } from "@/constants/site";
 
-export const metadata: Metadata = {
-  title: "Mentions légales · Manssuétude",
-  description: "Informations légales relatives à l'éditeur et à l'hébergement de ce site.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Mentions légales",
+  description:
+    "Mentions légales du site Manssuétude : éditeur, directeur de la publication, hébergement, propriété intellectuelle et conditions d'utilisation du site.",
+  path: "/mentions-legales",
+});
 
 export default function LegalNoticePage() {
   return (

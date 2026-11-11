@@ -41,6 +41,9 @@ export function sanitizeHtml(html: string | null | undefined): string {
         for (const [name, value] of Object.entries(attribs)) {
           if (!isForbiddenAttr(name)) kept[name] = value;
         }
+        // Images collées depuis Google Docs/Word : souvent sans alt. Toute image
+        // publique doit en avoir un (accessibilité + SEO) — repli générique.
+        if (tagName === "img" && !kept.alt?.trim()) kept.alt = "Illustration";
         return { tagName, attribs: kept };
       },
     },

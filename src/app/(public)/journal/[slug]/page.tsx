@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import { completeDescription } from "@/utils/seoText";
 import { notFound } from "next/navigation";
 import { journalRepository } from "@/repositories/journalRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { eventRepository } from "@/repositories/eventRepository";
-import { buildDetailMetadata, sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
 import { JournalEntryDetail } from "@/components/public/JournalEntryDetail";
+import { JsonLd } from "@/components/public/JsonLd";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 60;
 
@@ -17,9 +20,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const item = await journalRepository.getEntry(slug);
     if (!item) return { robots };
     const imageUrl = await mediaRepository.getResourceUrl(item.thumbnailId);
-    return buildDetailMetadata({
+    return buildPageMetadata({
       title: item.title,
-      description: item.excerpt,
+      description: completeDescription(item.excerpt, [
+        "Le journal de Manssuétude : actualités, coulisses et réflexions de l'association.",
+      ]),
       path: `/journal/${item.slug}`,
       imageUrl,
       ogType: "article",
@@ -51,5 +56,15 @@ export default async function JournalEntryPage({ params }: { params: Promise<{ s
     item.eventId ? eventRepository.getEventById(item.eventId) : null,
   ]);
 
-  return <JournalEntryDetail item={item} author={author} imageUrl={imageUrl} project={project} event={event} />;
+  return (
+    <>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Journal", path: "/journal" },
+          { name: item.title, path: `/journal/${item.slug}` },
+        ])}
+      />
+      <JournalEntryDetail item={item} author={author} imageUrl={imageUrl} project={project} event={event} />
+    </>
+  );
 }
