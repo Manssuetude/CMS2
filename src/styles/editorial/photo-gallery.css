@@ -1,0 +1,152 @@
+/* Galerie photo éditoriale (PhotoGallery) — lignes justifiées en CSS pur.
+
+   Chaque vignette garde son ratio : flex-basis = ratio × hauteur de ligne, et
+   flex-grow = ratio, si bien que l'espace restant d'une ligne est réparti au
+   prorata des ratios → toutes les vignettes d'une ligne gardent la même
+   hauteur. Le pseudo-élément final absorbe l'espace libre de la dernière
+   ligne, qui n'est donc pas étirée. --ratio vient du composant (4:3 si les
+   dimensions de l'image sont inconnues). */
+
+.site-shell .photo-gallery-section .section-head {
+  align-items: baseline;
+}
+.site-shell .photo-gallery-count {
+  font-size: var(--ed-step-small);
+  letter-spacing: 0.04em;
+  color: var(--ed-muted);
+}
+
+.site-shell .photo-gallery {
+  --photo-row-height: 260px;
+  --photo-gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--photo-gap);
+}
+.site-shell .photo-gallery::after {
+  content: "";
+  flex-grow: 999999;
+}
+@media (max-width: 640px) {
+  .site-shell .photo-gallery {
+    --photo-row-height: 180px;
+    --photo-gap: 8px;
+  }
+}
+
+.site-shell .photo-gallery-item {
+  flex-grow: var(--ratio);
+  flex-basis: calc(var(--ratio) * var(--photo-row-height));
+  min-width: 0;
+  aspect-ratio: var(--ratio);
+  margin: 0;
+}
+
+.site-shell .photo-gallery-trigger {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ed-radius);
+  overflow: hidden;
+  /* Fond neutre visible tant que l'image charge (pas de saut : la case a déjà
+     sa taille grâce à aspect-ratio). */
+  background: var(--ed-sink, var(--surface));
+  cursor: zoom-in;
+}
+.site-shell .photo-gallery-trigger:focus-visible {
+  outline: 2px solid var(--ed-focus);
+  outline-offset: 3px;
+}
+
+.site-shell .photo-gallery-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.3s ease;
+}
+.site-shell .photo-gallery-trigger:hover .photo-gallery-img,
+.site-shell .photo-gallery-trigger:focus-visible .photo-gallery-img {
+  transform: scale(1.03);
+}
+
+/* Apparition au scroll — n'agit que si le JS a posé data-animate (contenu
+   toujours visible sans JS). */
+.site-shell .photo-gallery[data-animate] .photo-gallery-item {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.5s ease var(--reveal-delay, 0ms),
+    transform 0.5s ease var(--reveal-delay, 0ms);
+}
+.site-shell .photo-gallery[data-animate] .photo-gallery-item.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.site-shell .photo-gallery-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: var(--ed-radius);
+  background: transparent;
+  font: inherit;
+  font-size: var(--ed-step-small);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ed-ink);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.site-shell .photo-gallery-more:hover {
+  border-color: var(--ed-brand);
+  color: var(--ed-clay);
+}
+.site-shell .photo-gallery-more:focus-visible {
+  outline: 2px solid var(--ed-focus);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell .photo-gallery-img,
+  .site-shell .photo-gallery[data-animate] .photo-gallery-item {
+    transition: none;
+  }
+  .site-shell .photo-gallery-trigger:hover .photo-gallery-img,
+  .site-shell .photo-gallery-trigger:focus-visible .photo-gallery-img {
+    transform: none;
+  }
+}
+
+/* Visionneuse (yet-another-react-lightbox) — fond sombre quel que soit le
+   thème, légende en Inter, accent orange au focus. Rendue en portail hors de
+   .site-shell : sélecteurs non préfixés. */
+.photo-lightbox {
+  --yarl__color_backdrop: rgba(12, 10, 8, 0.94);
+  --yarl__color_button_active: #ff5a24;
+  --yarl__slide_description_color: #f2ebe0;
+  --yarl__slide_captions_container_background: rgba(12, 10, 8, 0.6);
+  --yarl__counter_color: #f2ebe0;
+  --yarl__counter_filter: none;
+}
+.photo-lightbox .yarl__slide_description,
+.photo-lightbox .yarl__counter {
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+.photo-lightbox .yarl__button:focus-visible {
+  outline: 2px solid #ff5a24;
+  outline-offset: 2px;
+}

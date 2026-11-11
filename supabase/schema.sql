@@ -561,7 +561,11 @@ CREATE TABLE public.resources (
     author text,
     institution text,
     published_date date,
-    theme_id uuid
+    theme_id uuid,
+    width integer,
+    height integer,
+    CONSTRAINT resources_height_check CHECK ((height > 0)),
+    CONSTRAINT resources_width_check CHECK ((width > 0))
 );
 
 

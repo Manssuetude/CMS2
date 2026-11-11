@@ -1,13 +1,21 @@
 import { getSupabaseAdmin } from "@/lib/db";
-import { inferMediaType, uploadToStorage } from "@/lib/media";
-import type { Media, MediaSource, MediaType, Visibility } from "@/types/cms";
-import { asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
+import { dimensionsFromBytes, inferMediaType, readImageDimensions, uploadToStorage } from "@/lib/media";
+import type { GalleryPhoto, Media, MediaSource, MediaType, Visibility } from "@/types/cms";
+import { asNullablePositiveInt, asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
 import { parseTags } from "@/utils/tags";
 
 export function normalizeUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   if (url.startsWith("http") || url.startsWith("/")) return url;
   return `/${url}`;
+}
+
+function safeDimensions(bytes: Uint8Array) {
+  try {
+    return dimensionsFromBytes(bytes);
+  } catch {
+    return null;
+  }
 }
 
 function mapMedia(row: DataRow): Media {
@@ -32,6 +40,8 @@ function mapMedia(row: DataRow): Media {
     tags: asStringArray(row.tags),
     visibility: asString(row.visibility, "draft") as Visibility,
     uploadedBy: asNullableString(row.uploaded_by),
+    width: asNullablePositiveInt(row.width),
+    height: asNullablePositiveInt(row.height),
     createdAt: asString(row.created_at),
     updatedAt: asString(row.updated_at),
   };
@@ -58,6 +68,8 @@ export const mediaRepository = {
 
   async upload(file: File, metadata: Record<string, string>) {
     const stored = await uploadToStorage(file);
+    const dimensions =
+      inferMediaType(file.name) === "image" ? await safeDimensions(new Uint8Array(await file.arrayBuffer())) : null;
     return this.create({
       title: metadata.title || file.name,
       filename: file.name,
@@ -73,6 +85,8 @@ export const mediaRepository = {
       description: metadata.description || null,
       tags: parseTags(metadata.tags),
       visibility: metadata.visibility || "draft",
+      width: dimensions?.width ?? null,
+      height: dimensions?.height ?? null,
     });
   },
 
@@ -83,6 +97,9 @@ export const mediaRepository = {
     file: { path: string; url: string; filename: string; sizeBytes: number; mimeType: string },
     metadata: Record<string, string>,
   ) {
+    // Le serveur n'a pas vu le binaire : relecture partielle depuis le Storage
+    // (couvre aussi l'import Google Drive, qui passe par ce même chemin).
+    const dimensions = inferMediaType(file.filename) === "image" ? await readImageDimensions(file.url) : null;
     return this.create({
       title: metadata.title || file.filename,
       filename: file.filename,
@@ -98,6 +115,8 @@ export const mediaRepository = {
       description: metadata.description || null,
       tags: parseTags(metadata.tags),
       visibility: metadata.visibility || "draft",
+      width: dimensions?.width ?? null,
+      height: dimensions?.height ?? null,
     });
   },
 
@@ -134,5 +153,30 @@ export const mediaRepository = {
     const { data, error } = await db.from("resources").select("url").eq("id", id).single();
     if (error || !data) return null;
     return normalizeUrl((data as { url?: string }).url);
+  },
+
+  // Photos d'une galerie (ex. events.gallery) en une seule requête, dans l'ordre
+  // de la liste d'ids. Les ids dont la ressource a été supprimée sont ignorés.
+  async getGalleryPhotos(ids: string[]): Promise<GalleryPhoto[]> {
+    if (ids.length === 0) return [];
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("resources").select("id,url,width,height,alt,caption").in("id", ids);
+    if (error) throw error;
+    const byId = new Map((data as DataRow[]).map((row) => [asString(row.id), row]));
+    return ids.flatMap((id) => {
+      const row = byId.get(id);
+      const url = row ? normalizeUrl(asNullableString(row.url)) : null;
+      if (!row || !url) return [];
+      return [
+        {
+          id,
+          url,
+          width: asNullablePositiveInt(row.width),
+          height: asNullablePositiveInt(row.height),
+          alt: asNullableString(row.alt),
+          caption: asNullableString(row.caption),
+        },
+      ];
+    });
   },
 };

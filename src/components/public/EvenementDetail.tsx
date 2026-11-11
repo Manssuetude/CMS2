@@ -1,6 +1,7 @@
 import { ExternalLink, MapPin, Users } from "lucide-react";
-import type { Event, ActivityFormat, Author, SubTheme, Theme } from "@/types/cms";
+import type { Event, ActivityFormat, Author, GalleryPhoto, SubTheme, Theme } from "@/types/cms";
 import { CtaButton } from "@/components/forms/CtaButton";
+import { PhotoGallery } from "@/components/public/PhotoGallery";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { resolveRegistrationStatus, registrationStatusLabel } from "@/utils/registrationStatus";
 import { JsonLd } from "@/components/public/JsonLd";
@@ -41,7 +42,7 @@ export function EvenementDetail({
   formats?: ActivityFormat[];
   allFormats?: ActivityFormat[];
   animators?: ResolvedAnimator[];
-  gallery?: string[];
+  gallery?: GalleryPhoto[];
   themes?: Theme[];
   subThemes?: SubTheme[];
   allThemes?: Theme[];
@@ -230,16 +231,7 @@ export function EvenementDetail({
 
       {/* ── Galerie photo (compte-rendu) ──────────────────────── */}
       {isPast && gallery.length > 0 && (
-        <section className="section">
-          <div className="section-head">
-            <h2>Compte-rendu en images</h2>
-          </div>
-          <div className="event-gallery">
-            {gallery.map((url, i) => (
-              <img key={i} src={url} alt={`${item.title}, photo ${i + 1}`} loading="lazy" />
-            ))}
-          </div>
-        </section>
+        <PhotoGallery photos={gallery} title={item.title} heading="Compte-rendu en images" />
       )}
 
       {/* ── Documents ─────────────────────────────────────────── */}

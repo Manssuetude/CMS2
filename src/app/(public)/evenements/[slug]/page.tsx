@@ -18,7 +18,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const items = await eventRepository.listEvents(true);
     const item = items.find((e) => e.slug === slug);
     if (!item) return { robots };
-    const imageUrl = await mediaRepository.getResourceUrl(item.gallery[0]);
+    // Première photo réellement existante (un id de galerie peut pointer vers
+    // une ressource supprimée — l'image de partage restait alors vide).
+    const [firstPhoto] = await mediaRepository.getGalleryPhotos(item.gallery);
+    const imageUrl = firstPhoto?.url ?? null;
     return buildDetailMetadata({
       title: item.seoTitle || item.title,
       description: item.seoDescription || item.description,
@@ -47,13 +50,13 @@ export default async function EvenementPage({ params }: { params: Promise<{ slug
   const items = await eventRepository.listEvents(true);
   const item = items.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  const [formatIds, allFormats, animatorLinks, authors, galleryUrls, themeIds, subThemeIds, allThemes, allSubThemes] =
+  const [formatIds, allFormats, animatorLinks, authors, gallery, themeIds, subThemeIds, allThemes, allSubThemes] =
     await Promise.all([
       activityFormatRepository.getActivityFormatIds(item.id),
       activityFormatRepository.listFormats(),
       authorRepository.getEventAnimators(item.id),
       authorRepository.listAuthors(),
-      Promise.all(item.gallery.map((id) => mediaRepository.getResourceUrl(id))),
+      mediaRepository.getGalleryPhotos(item.gallery),
       eventRepository.getEventThemeIds(item.id),
       eventRepository.getEventSubThemeIds(item.id),
       themeRepository.listThemes(),
@@ -65,7 +68,6 @@ export default async function EvenementPage({ params }: { params: Promise<{ slug
     const author = authorsById.get(link.authorId);
     return author ? [{ author, contribution: link.contribution }] : [];
   });
-  const gallery = galleryUrls.filter((url): url is string => Boolean(url));
   const themes = allThemes.filter((t) => themeIds.includes(t.id));
   const subThemes = allSubThemes.filter((st) => subThemeIds.includes(st.id));
   return (
