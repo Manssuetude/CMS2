@@ -115,8 +115,21 @@ export type Media = {
   tags: string[];
   visibility: Visibility;
   uploadedBy?: string | null;
+  // Dimensions intrinsèques en pixels (images uniquement, null si inconnues).
+  width?: number | null;
+  height?: number | null;
   createdAt: string;
   updatedAt: string;
+};
+
+// Photo d'une galerie publique (événement, et plus tard projets / bloc gallery).
+export type GalleryPhoto = {
+  id: string;
+  url: string;
+  width: number | null;
+  height: number | null;
+  alt: string | null;
+  caption: string | null;
 };
 
 /**

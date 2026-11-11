@@ -1,4 +1,7 @@
+import { imageSize } from "image-size";
 import { getSupabaseAdmin } from "@/lib/db";
+import { env } from "@/lib/env";
+import { logger } from "@/lib/logger";
 import { validateUpload } from "@/utils/uploadValidation";
 import { slugify } from "@/utils/slug";
 import type { MediaType } from "@/types/cms";
@@ -58,4 +61,57 @@ export async function uploadToStorage(file: File, folder = "media") {
   if (error) throw error;
   const { data } = db.storage.from("manssuetude-media").getPublicUrl(path);
   return { path, url: data.publicUrl };
+}
+
+export type ImageDimensions = { width: number; height: number };
+
+// Taille lue en premier : l'en-tête d'un JPEG (EXIF compris) tient presque
+// toujours dans les 128 premiers Ko — inutile de rapatrier une photo de 6 Mo.
+const DIMENSIONS_PROBE_BYTES = 128 * 1024;
+
+// Dimensions affichées (rotation EXIF appliquée : une photo de téléphone en
+// portrait est souvent stockée en paysage avec une orientation 5 à 8).
+export function dimensionsFromBytes(bytes: Uint8Array): ImageDimensions | null {
+  const result = imageSize(bytes);
+  if (!result.width || !result.height) return null;
+  const rotated = (result.orientation ?? 1) >= 5;
+  return rotated ? { width: result.height, height: result.width } : { width: result.width, height: result.height };
+}
+
+function isOwnStorageUrl(url: string): boolean {
+  if (!env.NEXT_PUBLIC_SUPABASE_URL) return false;
+  try {
+    return new URL(url).host === new URL(env.NEXT_PUBLIC_SUPABASE_URL).host;
+  } catch {
+    return false;
+  }
+}
+
+// Lit les dimensions d'une image déjà déposée dans notre Storage (upload direct
+// depuis le navigateur — le serveur n'a jamais vu le binaire). Lecture partielle
+// d'abord, fichier complet en repli. Ne lève jamais : sans dimensions, la
+// galerie retombe sur un ratio 4:3. Restreint à notre propre domaine Supabase,
+// l'URL venant du client.
+export async function readImageDimensions(url: string): Promise<ImageDimensions | null> {
+  if (!isOwnStorageUrl(url)) return null;
+  try {
+    const partial = await fetch(url, {
+      headers: { Range: `bytes=0-${DIMENSIONS_PROBE_BYTES - 1}` },
+      cache: "no-store",
+    });
+    if (partial.ok) {
+      try {
+        const dims = dimensionsFromBytes(new Uint8Array(await partial.arrayBuffer()));
+        if (dims) return dims;
+      } catch {
+        // En-tête au-delà des premiers Ko : on retente avec le fichier complet.
+      }
+    }
+    const full = await fetch(url, { cache: "no-store" });
+    if (!full.ok) return null;
+    return dimensionsFromBytes(new Uint8Array(await full.arrayBuffer()));
+  } catch (error) {
+    logger.warn("media.dimensions.failed", { url, error: error instanceof Error ? error.message : String(error) });
+    return null;
+  }
 }
