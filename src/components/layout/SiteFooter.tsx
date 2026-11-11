@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { FooterConfig } from "@/types/cms";
 import { CONTACT_EMAIL, RNA_NUMBER } from "@/constants/site";
 import { InstagramIcon, TikTokIcon, LinkedInIcon } from "@/components/icons/BrandIcons";
+import { ManageCookiesButton } from "@/components/public/ManageCookiesButton";
 
 const defaultColumns = [
   {
@@ -50,6 +51,7 @@ export function SiteFooter({ config }: { config?: FooterConfig }) {
               </Link>
             ),
           )}
+          <ManageCookiesButton />
         </nav>
         <div className="footer-social">
           {socials.map(({ label, href, Icon }) => (
