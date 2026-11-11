@@ -20,7 +20,7 @@ export default async function PreviewLayout({ children }: { children: React.Reac
   }
   return (
     <div className="site-shell">
-      <SiteHeader logoUrl="/assets/photos/logo-manssuetude.png?v=4" navVisibility={navVisibility} />
+      <SiteHeader logoUrl="/assets/photos/logo-manssuetude.webp" navVisibility={navVisibility} />
       <main className="page-main" id="main-content">
         {children}
       </main>

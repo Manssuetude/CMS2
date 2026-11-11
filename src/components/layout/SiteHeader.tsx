@@ -28,7 +28,11 @@ export function SiteHeader({
   return (
     <header className="site-header">
       <Link className="brand" href="/" onClick={() => setOpen(false)}>
-        {logoUrl ? <img src={logoUrl} alt="Manssuétude" /> : <span>Manssuétude</span>}
+        {logoUrl ? (
+          <img src={logoUrl} alt="Manssuétude" width={54} height={54} decoding="async" />
+        ) : (
+          <span>Manssuétude</span>
+        )}
       </Link>
 
       <button

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Hero } from "@/components/public/Hero";
 import type { Page } from "@/types/cms";
 import { PercaStepsInteractive } from "@/components/public/PercaStepsInteractive";
+import { sanitizeSteps } from "@/utils/percaSteps";
 
 export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Page | null }) {
   return (
@@ -36,7 +37,7 @@ export function AboutEditorial({ page, percaPage }: { page: Page; percaPage?: Pa
         <p className="about-perca-intro">
           Cinq dimensions qui donnent du rythme et du sens à nos activités. Cliquez une lettre pour un aperçu.
         </p>
-        <PercaStepsInteractive steps={percaPage?.percaSteps ?? []} />
+        <PercaStepsInteractive steps={sanitizeSteps(percaPage?.percaSteps)} />
         <Link className="about-perca-link" href="/perca">
           PERCA plus en détail <span aria-hidden>→</span>
         </Link>

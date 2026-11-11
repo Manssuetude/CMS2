@@ -1,5 +1,10 @@
 /* =============================================================
-   Manssuétude CMS — feuille de styles globale (point d'entrée)
+   Manssuétude CMS — feuille de styles globale (socle commun)
+
+   Chargée sur TOUTES les pages (layout racine) : uniquement le socle
+   partagé avec le site public. Les feuilles de l'admin sont dans
+   admin.css, importé par app/admin/layout.tsx — elles ne sont plus
+   téléchargées sur les pages publiques (performance).
 
    Le CSS est découpé en modules thématiques dans `parts/`.
    L'ORDRE des imports ci-dessous reflète la cascade d'origine :
@@ -21,10 +26,4 @@
 @import "./parts/tokens.css";
 @import "./parts/base.css";
 @import "./parts/public-site.css";
-@import "./parts/admin-foundation.css";
-@import "./parts/admin-components.css";
-@import "./parts/admin-shell.css";
-@import "./parts/admin-dashboard.css";
 @import "./parts/public-content.css";
-@import "./parts/admin-extras.css";
-@import "./parts/activation.css";

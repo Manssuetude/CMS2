@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/db";
 import type { ContentBlock, ContentStatus, Page, PercaStep } from "@/types/cms";
-import { asNullableString, asRecordArray, asString, type DataRow } from "@/utils/row";
+import { asNullablePositiveInt, asNullableString, asRecordArray, asString, type DataRow } from "@/utils/row";
 import { parseImageCrop } from "@/utils/imageCrop";
 import { normalizeUrl } from "@/repositories/mediaRepository";
 
@@ -18,7 +18,8 @@ function mapPercaSteps(value: unknown): PercaStep[] {
 }
 
 function mapPage(row: DataRow): Page {
-  const imageResource = (row.image_resource as { url?: string; alt?: string | null } | null) ?? null;
+  const imageResource =
+    (row.image_resource as { url?: string; alt?: string | null; width?: unknown; height?: unknown } | null) ?? null;
   return {
     id: asString(row.id),
     slug: asString(row.slug),
@@ -28,6 +29,8 @@ function mapPage(row: DataRow): Page {
     imageId: asNullableString(row.image_id),
     imageUrl: normalizeUrl(imageResource?.url),
     imageAlt: imageResource?.alt ?? null,
+    imageWidth: asNullablePositiveInt(imageResource?.width),
+    imageHeight: asNullablePositiveInt(imageResource?.height),
     imageCrop: parseImageCrop(row.image_crop),
     quote: asNullableString(row.quote),
     primaryCtaLabel: asNullableString(row.primary_cta_label),
@@ -50,7 +53,7 @@ export const pageRepository = {
     const db = getSupabaseAdmin();
     const { data, error } = await db
       .from("pages")
-      .select("*, image_resource:resources!image_id(url,alt)")
+      .select("*, image_resource:resources!image_id(url,alt,width,height)")
       .eq("slug", slug)
       .single();
     if (error) {
@@ -67,7 +70,7 @@ export const pageRepository = {
 
   async listPages(includeDrafts = false) {
     const db = getSupabaseAdmin();
-    let query = db.from("pages").select("*, image_resource:resources!image_id(url,alt)").order("slug");
+    let query = db.from("pages").select("*, image_resource:resources!image_id(url,alt,width,height)").order("slug");
     if (!includeDrafts) query = query.eq("status", "published");
     const { data, error } = await query;
     if (error) throw error;
