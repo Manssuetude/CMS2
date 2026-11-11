@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { GalleryPhoto } from "@/types/cms";
 import { EventHeaderImage } from "@/components/public/EventHeaderImage";
 
@@ -22,11 +21,6 @@ export function EventHeaderClassic({
   return (
     <header className="event-header event-header--classic">
       <div className="event-header-text">
-        <nav className="event-breadcrumb" aria-label="Fil d'Ariane">
-          <Link href="/evenements">Événements</Link>
-          <span aria-hidden="true">/</span>
-          <span aria-current="page">{title}</span>
-        </nav>
         <p className="event-eyebrow">{eyebrow}</p>
         <h1 className="event-title">{title}</h1>
         {lead && <p className="event-lead">{lead}</p>}

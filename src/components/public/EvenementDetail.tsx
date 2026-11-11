@@ -5,6 +5,8 @@ import { SITE_URL } from "@/constants/site";
 import { PhotoGallery } from "@/components/public/PhotoGallery";
 import { EventHeaderClassic } from "@/components/public/EventHeaderClassic";
 import { EventHeaderBanner } from "@/components/public/EventHeaderBanner";
+import { EventBreadcrumb } from "@/components/public/EventBreadcrumb";
+import { EventHeaderImage } from "@/components/public/EventHeaderImage";
 import { EventInfoCard, EventThemeChips, type ThemeChip } from "@/components/public/EventInfoCard";
 import { JsonLd } from "@/components/public/JsonLd";
 import { buildEventJsonLd } from "@/lib/jsonLd";
@@ -12,7 +14,7 @@ import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { toParisIsoDateTime } from "@/utils/seoText";
 import { resolveActivityFormatIcon } from "@/utils/activityFormatIcons";
 import { injectFormatBubbles } from "@/utils/formatBubbles";
-import { headerImageFit, pickHeaderImage, resolveHeaderStyle } from "@/utils/eventHeader";
+import { headerImageFit, resolveEventHeader } from "@/utils/eventHeader";
 import { buildEventFacts, GALLERY_ANCHOR } from "@/utils/eventFacts";
 import { aboutHeading, eventFormatLabel } from "@/utils/eventLabels";
 
@@ -48,8 +50,8 @@ export function EvenementDetail({
 }) {
   const facts = buildEventFacts(item, { photoCount: gallery.length, now });
   const showGallery = facts.status === "termine" && gallery.length > 0;
-  const { image, isPoster } = pickHeaderImage(poster, gallery);
-  const style = resolveHeaderStyle(item.headerStyle, image);
+  // Bannière : 1re photo de la galerie (jamais l'affiche) ; repli Classique sinon.
+  const { style, image, isPoster } = resolveEventHeader(item.headerStyle, poster, gallery);
   const eyebrow = eventFormatLabel(item.format);
   const pageUrl = `${SITE_URL}/evenements/${item.slug}`;
 
@@ -164,6 +166,10 @@ export function EvenementDetail({
         })}
       />
 
+      <div className="event-breadcrumb-bar">
+        <EventBreadcrumb title={item.title} />
+      </div>
+
       {style === "banner" && image ? (
         <EventHeaderBanner title={item.title} eyebrow={eyebrow} lead={item.description} image={image} facts={facts} />
       ) : (
@@ -206,6 +212,22 @@ export function EvenementDetail({
 
         {style === "banner" && (
           <div className="event-aside event-aside--ruled">
+            {/* L'affiche n'est jamais le fond de la bannière (texte illisible) :
+                elle reste visible ici, en vignette qui s'ouvre en grand. */}
+            {poster && (
+              <section className="event-section" aria-labelledby="event-poster">
+                <h2 id="event-poster">Affiche</h2>
+                <EventHeaderImage
+                  photo={poster}
+                  title={item.title}
+                  isPoster
+                  fit="contain"
+                  sizes="(min-width: 1024px) 360px, 100vw"
+                  className="event-poster-thumb"
+                  priority={false}
+                />
+              </section>
+            )}
             {intervenants}
             {formatsSection}
             {themesSection}

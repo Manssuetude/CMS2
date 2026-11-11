@@ -11,6 +11,14 @@
 }
 
 /* ── Éléments communs aux deux en-têtes ─────────────────────────────── */
+/* Fil d'Ariane : toujours au-dessus de l'en-tête, sur le fond crème (jamais
+   posé sur l'image de la bannière). */
+.site-shell .event-breadcrumb-bar {
+  padding: clamp(1rem, 2.5vw, 1.75rem) var(--ed-gutter) clamp(0.75rem, 1.5vw, 1rem);
+}
+.site-shell .event-breadcrumb-bar .event-breadcrumb {
+  margin: 0;
+}
 .site-shell .event-breadcrumb {
   display: flex;
   flex-wrap: wrap;
@@ -94,7 +102,7 @@
 
 /* ── Classique ───────────────────────────────────────────────────────── */
 .site-shell .event-header--classic {
-  padding: clamp(2rem, 4vw, 3.25rem) var(--ed-gutter) 0;
+  padding: clamp(0.5rem, 1.5vw, 1rem) var(--ed-gutter) 0;
 }
 .site-shell .event-header-image--classic {
   margin-top: clamp(1.75rem, 3vw, 2.5rem);
@@ -108,8 +116,8 @@
 }
 
 /* ── Bannière ────────────────────────────────────────────────────────── */
-/* Hauteur MINIMALE (560 / 420 / 360px) : la bannière s'agrandit si le texte
-   (titre long, chapô) ne tient pas, au lieu de déborder de l'image. */
+/* Hauteur MINIMALE (560 / 420px, puis min(60vh, 420px) sous 768px) : la
+   bannière s'agrandit si le texte ne tient pas, au lieu de déborder. */
 .site-shell .event-banner {
   position: relative;
   display: flex;
@@ -124,9 +132,9 @@
     min-height: 420px;
   }
 }
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .site-shell .event-banner {
-    min-height: 360px;
+    min-height: min(60vh, 420px);
   }
 }
 .site-shell .event-header-image--banner {
@@ -134,8 +142,8 @@
   inset: 0;
   height: 100%;
 }
-/* Dégradé sombre sur la moitié basse : garantit le contraste AA du texte
-   blanc quelle que soit la photo (≥ 0,6 d'opacité sous toutes les lignes). */
+/* Dégradé sombre en bas : garantit le contraste AA du texte blanc quelle que
+   soit la photo, même très claire (≥ 0,82 d'opacité sous le titre). */
 .site-shell .event-banner::after {
   content: "";
   position: absolute;
@@ -143,10 +151,11 @@
   pointer-events: none;
   background: linear-gradient(
     to top,
-    rgba(var(--ed-image-scrim), 0.9) 0%,
-    rgba(var(--ed-image-scrim), 0.78) 40%,
-    rgba(var(--ed-image-scrim), 0.5) 62%,
-    rgba(var(--ed-image-scrim), 0) 85%
+    rgba(var(--ed-image-scrim), 0.94) 0%,
+    rgba(var(--ed-image-scrim), 0.86) 35%,
+    rgba(var(--ed-image-scrim), 0.6) 60%,
+    rgba(var(--ed-image-scrim), 0.15) 82%,
+    rgba(var(--ed-image-scrim), 0) 100%
   );
 }
 .site-shell .event-banner-text {
@@ -157,18 +166,32 @@
   pointer-events: none; /* le clic traverse vers l'image (visionneuse)… */
   text-shadow: 0 1px 12px rgba(var(--ed-image-scrim), 0.45);
 }
-.site-shell .event-banner-text a {
-  pointer-events: auto; /* …sauf sur le fil d'Ariane */
-}
-.site-shell .event-banner-text .event-breadcrumb,
 .site-shell .event-banner-text .event-lead {
   color: var(--ed-on-image);
 }
-.site-shell .event-banner-text .event-breadcrumb {
-  opacity: 0.85;
+/* Chapô : sur l'image à partir de 768px, sous la bannière (fond crème) avant. */
+.site-shell .event-lead--below {
+  display: none;
+  margin: 0;
+  padding: 1.25rem var(--ed-gutter) 0;
+}
+@media (max-width: 767px) {
+  .site-shell .event-lead--overlay {
+    display: none;
+  }
+  .site-shell .event-lead--below {
+    display: block;
+  }
+  .site-shell .event-banner-text {
+    padding-top: 4rem;
+    padding-bottom: 1.5rem;
+  }
 }
 .site-shell .event-banner-text .event-title {
   color: var(--ed-on-image);
+}
+.site-shell .event-banner-text .event-eyebrow {
+  color: var(--ed-on-image-accent);
 }
 
 /* Barre d'infos sous la bannière. */
@@ -225,16 +248,33 @@
 .site-shell .event-infobar-cta:hover {
   text-decoration: underline;
 }
+/* Variantes de contenu selon la largeur (barre d'infos). */
+.site-shell .event-xs-only {
+  display: none !important;
+}
+/* Mobile : une seule colonne, une info par ligne (icône + texte), à la taille
+   du texte courant ; statut puis action en dessous. */
 @media (max-width: 767px) {
+  .site-shell .event-xs-only {
+    display: inline-flex !important;
+  }
+  .site-shell .event-sm-up {
+    display: none !important;
+  }
   .site-shell .event-infobar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    margin: 0;
-    border-radius: 0;
-    border-inline: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    margin: 1.25rem var(--ed-gutter) 0;
+    border-top: 1px solid var(--ed-line);
+    border-radius: var(--ed-radius-lg);
+    font-size: 1rem;
   }
   .site-shell .event-infobar-facts {
-    display: contents;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
   }
   .site-shell .event-infobar-facts li,
   .site-shell .event-infobar-facts li:first-child,
@@ -243,12 +283,11 @@
     border: 0;
   }
   .site-shell .event-infobar .event-status {
-    justify-self: start;
+    align-self: flex-start;
   }
   .site-shell .event-infobar-cta {
-    grid-column: 1 / -1;
     justify-content: center;
-    margin: 0.25rem 0 0;
+    margin: 0;
     padding: 0.75rem;
     border: 1px solid var(--ed-line-strong);
     border-radius: var(--ed-radius);
@@ -569,4 +608,15 @@
   padding: 48px var(--ed-gutter, 24px);
   text-align: center;
   color: var(--ed-muted);
+}
+
+/* Affiche en colonne latérale (style Bannière) : entière, jamais recadrée. */
+.site-shell .event-poster-thumb {
+  border-radius: var(--ed-radius);
+  background: var(--surface);
+}
+.site-shell .event-poster-thumb img {
+  height: auto;
+  max-height: 520px;
+  object-fit: contain;
 }

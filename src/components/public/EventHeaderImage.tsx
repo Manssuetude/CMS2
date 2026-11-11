@@ -20,6 +20,7 @@ export function EventHeaderImage({
   fit,
   sizes,
   className,
+  priority = true,
 }: {
   photo: GalleryPhoto;
   title: string;
@@ -27,6 +28,8 @@ export function EventHeaderImage({
   fit: "contain" | "cover";
   sizes: string;
   className: string;
+  /** Faux hors du premier écran (ex. vignette de l'affiche en colonne latérale). */
+  priority?: boolean;
 }) {
   const [prepared] = useMemo(() => preparePhotos([photo], title), [photo, title]);
   const [open, setOpen] = useState(false);
@@ -49,7 +52,7 @@ export function EventHeaderImage({
           width={photo.width ?? 1600}
           height={photo.height ?? Math.round(1600 / prepared.ratio)}
           sizes={sizes}
-          priority
+          priority={priority}
         />
       </button>
       {open && (
