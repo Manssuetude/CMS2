@@ -8,6 +8,11 @@ export function asNullableString(value: unknown) {
   return typeof value === "string" ? value : null;
 }
 
+// Entier strictement positif (ex. dimensions d'image), null sinon.
+export function asNullablePositiveInt(value: unknown) {
+  return typeof value === "number" && Number.isInteger(value) && value > 0 ? value : null;
+}
+
 export function asBoolean(value: unknown, fallback = false) {
   return typeof value === "boolean" ? value : fallback;
 }

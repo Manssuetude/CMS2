@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { parseTags, uniqueTags } from "../src/utils/tags.ts";
-import { asString, asNullableString, asBoolean, asStringArray, asRecord, asRecordArray } from "../src/utils/row.ts";
+import {
+  asString,
+  asNullableString,
+  asNullablePositiveInt,
+  asBoolean,
+  asStringArray,
+  asRecord,
+  asRecordArray,
+} from "../src/utils/row.ts";
 
 test("parseTags — découpe, trim, ignore le vide", () => {
   assert.deepEqual(parseTags("a, b ,, c "), ["a", "b", "c"]);
@@ -46,4 +54,13 @@ test("row.asRecordArray — filtre les entrées qui ne sont pas des objets", () 
   assert.deepEqual(asRecordArray([{ name: "A" }, "nope", 1, null, { name: "B" }]), [{ name: "A" }, { name: "B" }]);
   assert.deepEqual(asRecordArray("not an array"), []);
   assert.deepEqual(asRecordArray(undefined), []);
+});
+
+test("row.asNullablePositiveInt — entier > 0 uniquement", () => {
+  assert.equal(asNullablePositiveInt(3864), 3864);
+  assert.equal(asNullablePositiveInt(0), null);
+  assert.equal(asNullablePositiveInt(-1), null);
+  assert.equal(asNullablePositiveInt(12.5), null);
+  assert.equal(asNullablePositiveInt("3864"), null);
+  assert.equal(asNullablePositiveInt(null), null);
 });

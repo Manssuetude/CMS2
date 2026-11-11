@@ -229,20 +229,21 @@ Auteurs/animateurs référencés par productions et évènements.
 
 Médiathèque : images, vidéos, PDF et documents.
 
-| Colonne                                   | Type              | Notes                  |
-| ----------------------------------------- | ----------------- | ---------------------- |
-| `title`, `filename`                       | text NOT NULL     |                        |
-| `source`                                  | media_source      | défaut `upload`        |
-| `type`                                    | media_type        |                        |
-| `mime_type`, `url`                        | text NOT NULL     | `url` : URL publique   |
-| `preview_url`, `thumbnail_url`            | text              |                        |
-| `size`, `alt`, `caption`, `description`   | text              |                        |
-| `tags`                                    | text[]            |                        |
-| `visibility`                              | visibility_status | défaut `public`        |
-| `uploaded_by`                             | uuid FK → users   |                        |
-| `drive_file_id`                           | text              | si source Google Drive |
-| `author`, `institution`, `published_date` | text/date         |                        |
-| `theme_id`                                | uuid FK → themes  |                        |
+| Colonne                                   | Type              | Notes                                                                                          |
+| ----------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
+| `title`, `filename`                       | text NOT NULL     |                                                                                                |
+| `source`                                  | media_source      | défaut `upload`                                                                                |
+| `type`                                    | media_type        |                                                                                                |
+| `mime_type`, `url`                        | text NOT NULL     | `url` : URL publique                                                                           |
+| `preview_url`, `thumbnail_url`            | text              |                                                                                                |
+| `size`, `alt`, `caption`, `description`   | text              |                                                                                                |
+| `tags`                                    | text[]            |                                                                                                |
+| `visibility`                              | visibility_status | défaut `public`                                                                                |
+| `uploaded_by`                             | uuid FK → users   |                                                                                                |
+| `drive_file_id`                           | text              | si source Google Drive                                                                         |
+| `author`, `institution`, `published_date` | text/date         |                                                                                                |
+| `theme_id`                                | uuid FK → themes  |                                                                                                |
+| `width`, `height`                         | integer (> 0)     | pixels, images seulement (rotation EXIF appliquée) — renseignés à l'upload ; repli 4:3 si null |
 
 ### `form_submissions`
 
