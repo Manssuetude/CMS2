@@ -315,7 +315,10 @@ CREATE TABLE public.events (
     eventbrite_url text,
     registration_status text,
     seo_title text,
-    seo_description text
+    seo_description text,
+    poster_id uuid,
+    header_style text DEFAULT 'classic'::text NOT NULL,
+    CONSTRAINT events_header_style_check CHECK ((header_style = ANY (ARRAY['classic'::text, 'banner'::text])))
 );
 
 
@@ -1223,6 +1226,14 @@ CREATE INDEX sub_themes_theme_id_idx ON public.sub_themes USING btree (theme_id)
 --
 
 CREATE INDEX themes_slug_idx ON public.themes USING btree (slug);
+
+
+--
+-- Name: events events_poster_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.events
+    ADD CONSTRAINT events_poster_id_fkey FOREIGN KEY (poster_id) REFERENCES public.resources(id) ON DELETE SET NULL;
 
 
 --

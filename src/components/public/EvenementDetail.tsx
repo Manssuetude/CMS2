@@ -1,66 +1,156 @@
-import { ExternalLink, MapPin, Users } from "lucide-react";
+import Link from "next/link";
+import { Layers, Users } from "lucide-react";
 import type { Event, ActivityFormat, Author, GalleryPhoto, SubTheme, Theme } from "@/types/cms";
-import { CtaButton } from "@/components/forms/CtaButton";
+import { SITE_URL } from "@/constants/site";
 import { PhotoGallery } from "@/components/public/PhotoGallery";
-import { sanitizeHtml } from "@/utils/sanitizeHtml";
-import { toParisIsoDateTime } from "@/utils/seoText";
-import { resolveRegistrationStatus, registrationStatusLabel } from "@/utils/registrationStatus";
+import { EventHeaderClassic } from "@/components/public/EventHeaderClassic";
+import { EventHeaderBanner } from "@/components/public/EventHeaderBanner";
+import { EventInfoCard, EventThemeChips, type ThemeChip } from "@/components/public/EventInfoCard";
 import { JsonLd } from "@/components/public/JsonLd";
 import { buildEventJsonLd } from "@/lib/jsonLd";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { toParisIsoDateTime } from "@/utils/seoText";
 import { resolveActivityFormatIcon } from "@/utils/activityFormatIcons";
 import { injectFormatBubbles } from "@/utils/formatBubbles";
-import Link from "next/link";
-
-const FORMAT_LABEL: Record<string, string> = {
-  "Debat & Conference": "Débat & Conférence",
-  "Atelier & Seance de travail": "Atelier & Séance de travail",
-  "Formation & Masterclass": "Formation & Masterclass",
-  "Visite & Immersion": "Visite & Immersion",
-  "Rencontre & Networking": "Rencontre & Networking",
-};
-
-const PROGRESS_LABEL: Record<string, string> = {
-  idea: "À l'étude",
-  preparation: "En préparation",
-  active: "En cours",
-  completed: "Terminée",
-  paused: "En pause",
-};
+import { headerImageFit, pickHeaderImage, resolveHeaderStyle } from "@/utils/eventHeader";
+import { buildEventFacts, GALLERY_ANCHOR } from "@/utils/eventFacts";
+import { aboutHeading, eventFormatLabel } from "@/utils/eventLabels";
 
 export type ResolvedAnimator = { author: Author; contribution?: string | null };
 
+// Page événement — utilisée telle quelle par la page publique ET par l'aperçu
+// admin (renderEventPreview) : ce qui est prévisualisé est exactement ce qui
+// sera publié. Deux styles d'en-tête (Classique / Bannière, repli automatique
+// vers Classique si l'image ne convient pas), corps commun en grille 8 + 4.
 export function EvenementDetail({
   item,
   formats = [],
   allFormats = formats,
   animators = [],
+  poster = null,
   gallery = [],
   themes = [],
   subThemes = [],
   allThemes = themes,
+  now = new Date(),
 }: {
   item: Event;
   formats?: ActivityFormat[];
   allFormats?: ActivityFormat[];
   animators?: ResolvedAnimator[];
+  // Affiche (posterId résolu) ; déjà retirée de `gallery` si elle y figurait.
+  poster?: GalleryPhoto | null;
   gallery?: GalleryPhoto[];
   themes?: Theme[];
   subThemes?: SubTheme[];
   allThemes?: Theme[];
+  now?: Date;
 }) {
+  const facts = buildEventFacts(item, { photoCount: gallery.length, now });
+  const showGallery = facts.status === "termine" && gallery.length > 0;
+  const { image, isPoster } = pickHeaderImage(poster, gallery);
+  const style = resolveHeaderStyle(item.headerStyle, image);
+  const eyebrow = eventFormatLabel(item.format);
+  const pageUrl = `${SITE_URL}/evenements/${item.slug}`;
+
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
-  const now = new Date();
-  const eventDate = item.date ? new Date(item.date) : null;
-  // Sans date, on ne peut pas déduire "passé" du simple fait qu'il ne soit
-  // pas "à venir" — le statut d'avancement (renseigné par l'équipe) est le
-  // signal fiable pour savoir si un compte-rendu a du sens.
-  const isPast = item.progressStatus === "completed" || (eventDate ? eventDate < now : false);
-  const isUpcoming = !isPast && (eventDate ? eventDate >= now : false);
-  const formatLabel = FORMAT_LABEL[item.format] ?? item.format;
-  const registrationStatus = resolveRegistrationStatus(item.registrationStatus, item.date, now);
+  const themeChips: ThemeChip[] = [
+    ...themes.map((t) => ({ id: t.id, title: t.title, href: `/themes/${t.slug}` })),
+    ...subThemes.flatMap((st) => {
+      const parent = themeById.get(st.themeId);
+      return parent ? [{ id: st.id, title: st.title, href: `/themes/${parent.slug}/${st.slug}` }] : [];
+    }),
+  ];
+
+  // Intervenants : invités saisis sur l'événement + animateurs (fiches auteurs).
+  const people = [
+    ...item.speakers.map((s, i) => ({ key: `s-${i}`, name: s.name, role: s.role ?? null })),
+    ...animators.map(({ author, contribution }) => ({ key: author.id, name: author.name, role: contribution ?? null })),
+  ];
+
+  const intervenants = (
+    <section className="event-section" aria-labelledby="event-people">
+      <h2 id="event-people">Intervenants</h2>
+      {people.length > 0 ? (
+        <ul className="event-people">
+          {people.map((person) => (
+            <li key={person.key}>
+              <Users size={18} strokeWidth={1.6} aria-hidden="true" />
+              <span>
+                <strong>{person.name}</strong>
+                {person.role && <span className="event-people-role">{person.role}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="event-people event-people--pending">
+          <Users size={18} strokeWidth={1.6} aria-hidden="true" />À confirmer
+        </p>
+      )}
+    </section>
+  );
+
+  const formatsSection = formats.length > 0 && (
+    <section className="event-section" aria-labelledby="event-formats">
+      <h2 id="event-formats">Formats d&apos;activité</h2>
+      <div className="format-chip-list">
+        {formats.map((format) => {
+          const Icon = resolveActivityFormatIcon(format.icon);
+          return (
+            <span
+              key={format.id}
+              className="format-chip"
+              tabIndex={0}
+              role="button"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <Icon size={14} strokeWidth={1.75} />
+              {format.title}
+              {format.description && (
+                <span className="format-chip__bubble" role="tooltip">
+                  {format.description}
+                </span>
+              )}
+            </span>
+          );
+        })}
+      </div>
+      <p className="format-chip-list-hint">
+        <Layers size={14} strokeWidth={1.75} aria-hidden="true" /> D&apos;autres formats font partie du répertoire de
+        l&apos;association.{" "}
+        <Link href="/activites/formats-d-activites" className="format-chip-list-link">
+          Les découvrir
+        </Link>
+      </p>
+    </section>
+  );
+
+  const themesSection = themeChips.length > 0 && (
+    <section className="event-section" aria-labelledby="event-themes">
+      <h2 id="event-themes">Thèmes</h2>
+      <EventThemeChips themes={themeChips} />
+    </section>
+  );
+
+  const documents = item.documents.length > 0 && (
+    <section className="event-section" aria-labelledby="event-documents">
+      <h2 id="event-documents">Documents</h2>
+      <ul className="event-documents">
+        {item.documents.map((doc, i) => (
+          <li key={i}>
+            <a href={doc} target="_blank" rel="noreferrer">
+              {doc.split("/").pop() ?? `Document ${i + 1}`}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
 
   return (
-    <>
+    <article className={`event-page event-page--${style}`}>
       <JsonLd
         data={buildEventJsonLd({
           title: item.title,
@@ -69,196 +159,63 @@ export function EvenementDetail({
           startDate: toParisIsoDateTime(item.date, item.startTime),
           endDate: item.endTime ? toParisIsoDateTime(item.date, item.endTime) : null,
           location: item.location,
-          imageUrl: gallery[0]?.url,
+          imageUrl: poster?.url ?? gallery[0]?.url,
           registrationUrl: item.eventbriteUrl,
         })}
       />
-      {/* ── Hero ─────────────────────────────────────────────────── */}
-      <section className="hero hero--detail">
-        <div className="hero-copy">
-          <p className="eyebrow">{formatLabel}</p>
-          <h1>{item.title}</h1>
-          {item.description && <p>{item.description}</p>}
-          <div className="detail-meta">
-            {eventDate && (
-              <span className="meta-pill">
-                {isUpcoming ? "" : "✓ "}
-                {eventDate.toLocaleDateString("fr-FR", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-                {item.startTime && ` · ${item.startTime}${item.endTime ? `–${item.endTime}` : ""}`}
-              </span>
-            )}
-            {item.location && (
-              <span className="meta-pill">
-                <MapPin size={13} strokeWidth={1.75} style={{ marginRight: 4 }} />
-                {item.location}
-              </span>
-            )}
-            {item.capacity && (
-              <span className="meta-pill">
-                <Users size={13} strokeWidth={1.75} style={{ marginRight: 4 }} />
-                {item.capacity}
-              </span>
-            )}
-            {registrationStatus && <span className="meta-pill">{registrationStatusLabel(registrationStatus)}</span>}
-            {item.progressStatus && (
-              <span className="meta-pill">{PROGRESS_LABEL[item.progressStatus] ?? item.progressStatus}</span>
-            )}
+
+      {style === "banner" && image ? (
+        <EventHeaderBanner title={item.title} eyebrow={eyebrow} lead={item.description} image={image} facts={facts} />
+      ) : (
+        <EventHeaderClassic
+          title={item.title}
+          eyebrow={eyebrow}
+          lead={item.description}
+          image={image}
+          isPoster={isPoster}
+          fit={headerImageFit("classic", isPoster)}
+        />
+      )}
+
+      <div className="event-layout">
+        {style === "classic" && (
+          <div className="event-aside event-aside--sticky">
+            <EventInfoCard facts={facts} shareUrl={pageUrl} title={item.title} themes={themeChips} />
           </div>
-          <div className="actions">
-            <CtaButton label="Retour aux événements" target="/evenements" variant="secondary" />
-            {item.eventbriteUrl ? (
-              <a href={item.eventbriteUrl} target="_blank" rel="noopener noreferrer" className="button primary">
-                <ExternalLink size={15} strokeWidth={1.75} />
-                S&apos;inscrire sur EventBrite
-              </a>
+        )}
+
+        <div className="event-main">
+          <section className="event-section event-section--about" aria-labelledby="event-about">
+            <h2 id="event-about">{aboutHeading(item.format)}</h2>
+            {item.body ? (
+              <div
+                className="rich-text event-body"
+                dangerouslySetInnerHTML={{ __html: injectFormatBubbles(sanitizeHtml(item.body), allFormats) }}
+              />
             ) : (
-              isUpcoming && <CtaButton label="Nous rejoindre" target="memberApplication" variant="primary" />
+              <p className="event-pending">Programme détaillé à confirmer.</p>
             )}
-          </div>
+          </section>
+          {style === "classic" && intervenants}
+          {style === "classic" && formatsSection}
+          {/* Classique : les thèmes sont dans la carte latérale ; sur mobile ils
+              sont repris ici, après les intervenants (ordre de lecture mobile). */}
+          {style === "classic" && themesSection && <div className="event-mobile-only">{themesSection}</div>}
+          {documents}
         </div>
-        <div className="hero-image" aria-hidden="true" />
-      </section>
 
-      {/* ── Corps ────────────────────────────────────────────── */}
-      {item.body && (
-        <section className="section">
-          <div className="detail-layout no-sidebar">
-            <div
-              className="rich-text"
-              dangerouslySetInnerHTML={{ __html: injectFormatBubbles(sanitizeHtml(item.body), allFormats) }}
-            />
+        {style === "banner" && (
+          <div className="event-aside event-aside--ruled">
+            {intervenants}
+            {formatsSection}
+            {themesSection}
           </div>
-        </section>
-      )}
+        )}
+      </div>
 
-      {/* ── Thèmes & sous-thèmes ─────────────────────────────── */}
-      {(themes.length > 0 || subThemes.length > 0) && (
-        <section className="section">
-          <div className="section-head">
-            <h2>Thèmes</h2>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {themes.map((theme) => (
-              <Link key={theme.id} href={`/themes/${theme.slug}`} className="theme-chip">
-                {theme.title}
-              </Link>
-            ))}
-            {subThemes.map((st) => {
-              const parentTheme = themeById.get(st.themeId);
-              return parentTheme ? (
-                <Link key={st.id} href={`/themes/${parentTheme.slug}/${st.slug}`} className="theme-chip">
-                  {st.title}
-                </Link>
-              ) : null;
-            })}
-          </div>
-        </section>
+      {showGallery && (
+        <PhotoGallery photos={gallery} title={item.title} heading="Compte-rendu en images" anchorId={GALLERY_ANCHOR} />
       )}
-
-      {/* ── Intervenants ─────────────────────────────────────── */}
-      {item.speakers.length > 0 && (
-        <section className="section">
-          <div className="section-head">
-            <h2>Intervenants</h2>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-            {item.speakers.map((speaker, i) => (
-              <div key={i}>
-                <p style={{ margin: 0, fontWeight: 600, color: "var(--ed-ink)" }}>{speaker.name}</p>
-                {speaker.role && <p style={{ margin: 0, fontSize: 13, color: "var(--ed-muted)" }}>{speaker.role}</p>}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Animateurs ───────────────────────────────────────── */}
-      {animators.length > 0 && (
-        <section className="section">
-          <div className="section-head">
-            <h2>Animateurs</h2>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
-            {animators.map(({ author, contribution }) => (
-              <div key={author.id}>
-                <p style={{ margin: 0, fontWeight: 600, color: "var(--ed-ink)" }}>{author.name}</p>
-                {contribution && <p style={{ margin: 0, fontSize: 13, color: "var(--ed-muted)" }}>{contribution}</p>}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Formats/techniques d'animation ─────────────────────── */}
-      {formats.length > 0 && (
-        <section className="section">
-          <div className="section-head">
-            <h2>Formats d&apos;activité</h2>
-          </div>
-          <div className="format-chip-list">
-            {formats.map((format) => {
-              const Icon = resolveActivityFormatIcon(format.icon);
-              return (
-                <span
-                  key={format.id}
-                  className="format-chip"
-                  tabIndex={0}
-                  role="button"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <Icon size={14} strokeWidth={1.75} />
-                  {format.title}
-                  {format.description && (
-                    <span className="format-chip__bubble" role="tooltip">
-                      {format.description}
-                    </span>
-                  )}
-                </span>
-              );
-            })}
-          </div>
-          <p className="format-chip-list-hint">
-            D&apos;autres formats d&apos;animation font partie du répertoire de l&apos;association.{" "}
-            <Link href="/activites/formats-d-activites" className="format-chip-list-link">
-              Les découvrir
-            </Link>
-          </p>
-        </section>
-      )}
-
-      {/* ── Galerie photo (compte-rendu) ──────────────────────── */}
-      {isPast && gallery.length > 0 && (
-        <PhotoGallery photos={gallery} title={item.title} heading="Compte-rendu en images" />
-      )}
-
-      {/* ── Documents ─────────────────────────────────────────── */}
-      {item.documents.length > 0 && (
-        <section className="section">
-          <div className="section-head">
-            <h2>Documents</h2>
-          </div>
-          <div style={{ display: "grid", gap: 10, maxWidth: 560 }}>
-            {item.documents.map((doc, i) => (
-              <a
-                key={i}
-                href={doc}
-                className="button"
-                target="_blank"
-                rel="noreferrer"
-                style={{ justifyContent: "flex-start" }}
-              >
-                {doc.split("/").pop() ?? `Document ${i + 1}`}
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-    </>
+    </article>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Images } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { GalleryPhoto } from "@/types/cms";
@@ -13,27 +14,29 @@ import { photoCountLabel, preparePhotos, splitVisible } from "@/utils/gallery";
 
 const PhotoGalleryLightbox = dynamic(() => import("@/components/public/PhotoGalleryLightbox"), { ssr: false });
 
-// Hauteurs de ligne (px) — à garder synchronisées avec photo-gallery.css. Une
+// Hauteur de ligne (px) — à garder synchronisée avec photo-gallery.css. Une
 // vignette peut s'étirer pour remplir sa ligne : marge de 1.4 dans `sizes`.
 const ROW_HEIGHT_DESKTOP = 260;
-const ROW_HEIGHT_MOBILE = 180;
 const SIZES_STRETCH = 1.4;
 
 function thumbnailSizes(ratio: number) {
-  const mobile = Math.round(ratio * ROW_HEIGHT_MOBILE * SIZES_STRETCH);
+  // Mobile : 2 vignettes par ligne (voir photo-gallery.css).
   const desktop = Math.round(ratio * ROW_HEIGHT_DESKTOP * SIZES_STRETCH);
-  return `(max-width: 640px) ${mobile}px, ${desktop}px`;
+  return `(max-width: 640px) 50vw, ${desktop}px`;
 }
 
 export function PhotoGallery({
   photos,
   title,
   heading = "Galerie photo",
+  anchorId,
 }: {
   photos: GalleryPhoto[];
   /** Titre du contenu (événement, projet…) — sert au texte alternatif de repli. */
   title: string;
   heading?: string;
+  /** Ancre de la section (ex. bouton « Voir les photos » de la page événement). */
+  anchorId?: string;
 }) {
   const prepared = useMemo(() => preparePhotos(photos, title), [photos, title]);
   const { visible, hiddenCount } = splitVisible(prepared);
@@ -68,10 +71,13 @@ export function PhotoGallery({
   if (prepared.length === 0) return null;
 
   return (
-    <section className="section photo-gallery-section">
+    <section className="section photo-gallery-section" id={anchorId} aria-labelledby="photo-gallery-heading">
       <div className="section-head">
-        <h2>{heading}</h2>
-        <span className="photo-gallery-count">{photoCountLabel(prepared.length)}</span>
+        <h2 id="photo-gallery-heading">{heading}</h2>
+        <span className="photo-gallery-count" aria-label={photoCountLabel(prepared.length)}>
+          <Images size={18} strokeWidth={1.6} aria-hidden="true" />
+          Photos ({prepared.length})
+        </span>
       </div>
       <ul className="photo-gallery" ref={listRef}>
         {visible.map((photo, index) => (

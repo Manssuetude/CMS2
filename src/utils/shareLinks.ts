@@ -7,5 +7,7 @@ export function buildShareUrls(url: string, text: string) {
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
     x: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`,
     whatsapp: `https://wa.me/?text=${encodedText}%20${encodedUrl}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    email: `mailto:?subject=${encodedText}&body=${encodedUrl}`,
   };
 }

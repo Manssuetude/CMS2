@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GripVertical, X } from "lucide-react";
 import type { Media } from "@/types/cms";
 import { MediaPickerModal } from "./MediaPickerModal";
@@ -10,6 +10,8 @@ interface Props {
   initialMedia: Media[];
   initialSelectedIds?: string[];
   buttonLabel?: string;
+  /** Appelé à chaque changement (ajout, retrait, réordonnancement), avec les médias dans l'ordre. */
+  onChange?: (items: Media[]) => void;
 }
 
 // Remplace l'ancienne liste de cases à cocher (titres en texte, ordre figé)
@@ -20,6 +22,7 @@ export function SortableMediaGallery({
   initialMedia,
   initialSelectedIds = [],
   buttonLabel = "Ajouter des images",
+  onChange,
 }: Props) {
   const [media, setMedia] = useState(initialMedia);
   const [selectedIds, setSelectedIds] = useState<string[]>(initialSelectedIds);
@@ -27,6 +30,20 @@ export function SortableMediaGallery({
   const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   const selectedItems = selectedIds.map((id) => media.find((m) => m.id === id)).filter((m): m is Media => m != null);
+
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+  const firstRender = useRef(true);
+  const selectionKey = selectedItems.map((m) => m.id).join(",");
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    onChangeRef.current?.(selectedItems);
+    // selectionKey résume selectedItems (même ordre, mêmes ids).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectionKey]);
 
   function remove(id: string) {
     setSelectedIds((prev) => prev.filter((x) => x !== id));
