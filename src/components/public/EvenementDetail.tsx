@@ -3,6 +3,7 @@ import type { Event, ActivityFormat, Author, GalleryPhoto, SubTheme, Theme } fro
 import { CtaButton } from "@/components/forms/CtaButton";
 import { PhotoGallery } from "@/components/public/PhotoGallery";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
+import { toParisIsoDateTime } from "@/utils/seoText";
 import { resolveRegistrationStatus, registrationStatusLabel } from "@/utils/registrationStatus";
 import { JsonLd } from "@/components/public/JsonLd";
 import { buildEventJsonLd } from "@/lib/jsonLd";
@@ -65,9 +66,11 @@ export function EvenementDetail({
           title: item.title,
           description: item.description,
           path: `/evenements/${item.slug}`,
-          startDate: item.date ? (item.startTime ? `${item.date}T${item.startTime}` : item.date) : null,
-          endDate: item.date && item.endTime ? `${item.date}T${item.endTime}` : null,
+          startDate: toParisIsoDateTime(item.date, item.startTime),
+          endDate: item.endTime ? toParisIsoDateTime(item.date, item.endTime) : null,
           location: item.location,
+          imageUrl: gallery[0]?.url,
+          registrationUrl: item.eventbriteUrl,
         })}
       />
       {/* ── Hero ─────────────────────────────────────────────────── */}

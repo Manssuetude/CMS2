@@ -37,6 +37,8 @@ interface Props {
   authors?: Author[];
   relatedProductions?: Production[];
   fileUrl?: string | null;
+  // Vignette de la production (JSON-LD Article).
+  imageUrl?: string | null;
 }
 
 export function ProductionDetail({
@@ -46,6 +48,7 @@ export function ProductionDetail({
   authors = [],
   relatedProductions = [],
   fileUrl,
+  imageUrl,
 }: Props) {
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const subThemes = allSubThemes.filter((st) => item.subThemeIds?.includes(st.id));
@@ -67,6 +70,7 @@ export function ProductionDetail({
           title: item.title,
           description: item.description,
           path: `/productions/${item.slug}`,
+          imageUrl,
           authorName: authorNames || item.author,
           datePublished: item.date,
           dateModified: item.updatedAt,

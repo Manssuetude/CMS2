@@ -5,23 +5,19 @@ import { ProposeSection } from "@/components/public/ProposeSection";
 import { pageRepository } from "@/repositories/pageRepository";
 import { projectRepository } from "@/repositories/projectRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { cmsPageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const robots = await sectionRobots("/projets");
-  try {
-    const page = await pageRepository.getPage("projets");
-    if (!page) return { robots };
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-      robots,
-    };
-  } catch {
-    return { robots };
-  }
+  return cmsPageMetadata({
+    slug: "projets",
+    path: "/projets",
+    fallbackTitle: "Projets",
+    fallbackDescription:
+      "Les projets de Manssuétude : transformer les idées en actions concrètes et à impact réel, au service de l'Afrique, de sa jeunesse et de ses diasporas.",
+    navKey: "/projets",
+  });
 }
 
 export default async function ProjetsPage() {

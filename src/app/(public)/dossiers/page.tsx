@@ -2,16 +2,18 @@ import type { Metadata } from "next";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { dossierRepository } from "@/repositories/dossierRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { buildPageMetadata, sectionRobots } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Dossiers · Manssuétude",
-    description: "Des sélections de contenus organisées autour d'un même sujet, à parcourir librement ou pas à pas.",
+  return buildPageMetadata({
+    title: "Dossiers",
+    description:
+      "Les dossiers Manssuétude : des sélections de productions, d'événements et de ressources réunies autour d'un même sujet, pour approfondir une question.",
+    path: "/dossiers",
     robots: await sectionRobots("/dossiers"),
-  };
+  });
 }
 
 export default async function DossiersPage() {

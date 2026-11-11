@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cmsPageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { PublicPage } from "@/components/public/PublicPage";
 import { pageRepository } from "@/repositories/pageRepository";
@@ -7,16 +8,13 @@ import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const page = await pageRepository.getPage("nous-rejoindre");
-    if (!page) return {};
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-    };
-  } catch {
-    return {};
-  }
+  return cmsPageMetadata({
+    slug: "nous-rejoindre",
+    path: "/nous-rejoindre",
+    fallbackTitle: "Nous rejoindre",
+    fallbackDescription:
+      "Rejoignez Manssuétude : contribuez à nos réflexions, événements et projets sur l'Afrique et ses diasporas, et construisons ensemble une voix citoyenne.",
+  });
 }
 
 export default async function JoinPage() {

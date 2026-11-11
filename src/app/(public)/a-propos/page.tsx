@@ -3,23 +3,19 @@ import { notFound } from "next/navigation";
 import { AboutEditorial } from "@/components/public/AboutEditorial";
 import { pageRepository } from "@/repositories/pageRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { cmsPageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const robots = await sectionRobots("/a-propos");
-  try {
-    const page = await pageRepository.getPage("a-propos");
-    if (!page) return { robots };
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-      robots,
-    };
-  } catch {
-    return { robots };
-  }
+  return cmsPageMetadata({
+    slug: "a-propos",
+    path: "/a-propos",
+    fallbackTitle: "À propos",
+    fallbackDescription:
+      "Qui est Manssuétude ? Notre mission, nos valeurs et notre méthode PERCA : une jeunesse qui pense sérieusement l'Afrique, produit utilement et crée du lien.",
+    navKey: "/a-propos",
+  });
 }
 
 export default async function AboutPage() {

@@ -6,23 +6,19 @@ import { pageRepository } from "@/repositories/pageRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { resolveActivityFormatIcon } from "@/utils/activityFormatIcons";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { cmsPageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const robots = await sectionRobots("/activites");
-  try {
-    const page = await pageRepository.getPage("activites");
-    if (!page) return { robots };
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-      robots,
-    };
-  } catch {
-    return { robots };
-  }
+  return cmsPageMetadata({
+    slug: "activites",
+    path: "/activites",
+    fallbackTitle: "Activités",
+    fallbackDescription:
+      "Débats, ateliers, fishbowls, hot takes : découvrez les formats d'activités de Manssuétude pour penser, débattre et produire ensemble sur l'Afrique.",
+    navKey: "/activites",
+  });
 }
 
 export default async function ActivitesPage() {

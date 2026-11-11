@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 import { CONTACT_EMAIL } from "@/constants/site";
 
-export const metadata: Metadata = {
-  title: "Politique cookies · Manssuétude",
-  description: "Liste des cookies et services tiers utilisés par ce site, et comment gérer votre consentement.",
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: "Politique cookies",
+  description:
+    "Politique cookies de Manssuétude : liste des cookies et services tiers utilisés sur le site, leur finalité, leur durée et comment gérer votre consentement.",
+  path: "/politique-cookies",
+});
 
 export default function CookiesPolicyPage() {
   return (

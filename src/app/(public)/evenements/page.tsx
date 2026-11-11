@@ -11,7 +11,7 @@ import { eventRepository } from "@/repositories/eventRepository";
 import { pageRepository } from "@/repositories/pageRepository";
 import { isThisWeek } from "@/utils/eventOfTheMoment";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { sectionRobots } from "@/lib/seo";
+import { cmsPageMetadata } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -30,18 +30,14 @@ const FORMAT_LABEL: Record<string, string> = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const robots = await sectionRobots("/evenements");
-  try {
-    const page = await pageRepository.getPage("evenements");
-    if (!page) return { robots };
-    return {
-      title: { absolute: page.seoTitle ?? page.title },
-      description: page.seoDescription ?? undefined,
-      robots,
-    };
-  } catch {
-    return { robots };
-  }
+  return cmsPageMetadata({
+    slug: "evenements",
+    path: "/evenements",
+    fallbackTitle: "Événements",
+    fallbackDescription:
+      "Agenda des événements Manssuétude : ateliers, conférences et rencontres sur l'Afrique et ses diasporas. Inscriptions, programmes et comptes-rendus.",
+    navKey: "/evenements",
+  });
 }
 
 export default async function EvenementsPage({
