@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
 
       <div className="history-body rich-text">
         <p>
-          Dernière mise à jour : 20 août 2026. Cette politique explique quelles données Manssuétude collecte lorsque
+          Dernière mise à jour : 11 novembre 2026. Cette politique explique quelles données Manssuétude collecte lorsque
           vous utilisez ce site, pourquoi, combien de temps elles sont conservées, et comment exercer vos droits.
         </p>
 
@@ -47,12 +47,16 @@ export default function PrivacyPolicyPage() {
           <li>
             <strong>Mesure d&apos;audience</strong> (cookies) : si vous l&apos;acceptez via le bandeau affiché lors de
             votre première visite, des statistiques de fréquentation anonymisées (pages consultées, performance du site)
-            via Vercel Analytics, Vercel Speed Insights et Google Analytics. Aucun cookie n&apos;est déposé avant votre
-            accord ; Google Analytics utilise le « mode de consentement » de Google, qui lui transmet uniquement un
-            signal anonyme sans cookie ni identifiant tant que vous n&apos;avez pas répondu au bandeau (à des fins de
-            modélisation statistique agrégée, sans possibilité de vous identifier). Vous pouvez retirer votre
-            consentement à tout moment en effaçant les données de navigation de votre navigateur pour ce site. Détail de
+            via Vercel Analytics, Vercel Speed Insights et Google Analytics. Ces outils ne sont chargés qu&apos;après
+            votre accord : avant, ou en cas de refus, aucune requête n&apos;est envoyée à Google et aucun cookie
+            n&apos;est déposé. Vous pouvez retirer (ou donner) votre consentement à tout moment via le lien « Gérer les
+            cookies » en bas de chaque page ; en cas de retrait, les cookies Google Analytics sont supprimés. Détail de
             chaque cookie et service tiers : <a href="/politique-cookies">politique cookies</a>.
+          </li>
+          <li>
+            <strong>Photographies et vidéos d&apos;événements</strong> : des photos ou vidéos prises lors de nos
+            événements peuvent être publiées sur ce site (comptes-rendus) et sur nos réseaux sociaux (voir « Droit à
+            l&apos;image » ci-dessous).
           </li>
           <li>
             <strong>Dons</strong> : le bouton « Faire un don » vous redirige vers une page de paiement hébergée par
@@ -102,10 +106,34 @@ export default function PrivacyPolicyPage() {
         </p>
 
         <h2>Combien de temps conservons-nous vos données ?</h2>
+        <ul>
+          <li>
+            <strong>Formulaires</strong> (adhésion, propositions, partenariat, contact…) : 3 ans à compter de votre
+            dernier contact avec nous, puis suppression.
+          </li>
+          <li>
+            <strong>Newsletter</strong> : jusqu&apos;à votre désinscription (lien présent dans chaque email).
+          </li>
+          <li>
+            <strong>Cookies de mesure d&apos;audience</strong> : 13 mois maximum à compter de leur dépôt.
+          </li>
+          <li>
+            <strong>Votre choix de consentement aux cookies</strong> : 6 mois, après quoi il vous est de nouveau
+            demandé.
+          </li>
+        </ul>
         <p>
-          Vos données sont conservées le temps nécessaire au traitement de votre demande, puis supprimées ou archivées
-          de façon sécurisée. Si vous souhaitez connaître la durée exacte applicable à votre situation, ou demander une
-          suppression anticipée, contactez-nous à <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+          Vous pouvez à tout moment demander une suppression anticipée de vos données en nous écrivant à{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+        </p>
+
+        <h2>Droit à l&apos;image</h2>
+        <p>
+          Lors de nos événements, des photos et vidéos peuvent être prises et publiées sur ce site (notamment dans les
+          comptes-rendus d&apos;événements) et sur nos réseaux sociaux. Si vous apparaissez sur l&apos;une de ces images
+          et souhaitez qu&apos;elle soit retirée, ou que vous n&apos;y soyez plus reconnaissable, écrivez-nous à{" "}
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> en précisant la page ou la publication concernée. Nous
+          la retirons dans les meilleurs délais.
         </p>
 
         <h2>Vos droits</h2>

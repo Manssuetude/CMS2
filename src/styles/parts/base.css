@@ -76,6 +76,10 @@ img {
   line-height: 1.5;
   color: var(--ink-soft);
 }
+.cookie-banner .cookie-banner-current {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+}
 .cookie-banner-actions {
   display: flex;
   align-items: center;

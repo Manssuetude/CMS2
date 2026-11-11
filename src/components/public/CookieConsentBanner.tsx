@@ -2,17 +2,30 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { readStoredConsent, writeStoredConsent, type ConsentValue } from "@/lib/consent";
+import { CONSENT_OPEN_EVENT, readStoredConsent, writeStoredConsent, type ConsentValue } from "@/lib/consent";
 
+// Bandeau de consentement : affiché tant qu'aucun choix valide n'est stocké
+// (premier passage, ou choix de plus de 6 mois), et rouvert à la demande via le
+// lien « Gérer les cookies » du pied de page pour changer d'avis.
 export function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
+  const [current, setCurrent] = useState<ConsentValue | null>(null);
 
   useEffect(() => {
-    setVisible(readStoredConsent() === null);
+    const stored = readStoredConsent();
+    setCurrent(stored);
+    setVisible(stored === null);
+    function onOpen() {
+      setCurrent(readStoredConsent());
+      setVisible(true);
+    }
+    window.addEventListener(CONSENT_OPEN_EVENT, onOpen);
+    return () => window.removeEventListener(CONSENT_OPEN_EVENT, onOpen);
   }, []);
 
   function choose(value: ConsentValue) {
     writeStoredConsent(value);
+    setCurrent(value);
     setVisible(false);
   }
 
@@ -24,9 +37,15 @@ export function CookieConsentBanner() {
         <p className="cookie-banner-title">Cookies</p>
         <p>
           Ce site utilise des cookies de mesure d&apos;audience (Vercel Analytics, Vercel Speed Insights et Google
-          Analytics) pour comprendre comment il est utilisé et sa performance. Aucune donnée n&apos;est revendue.
-          Détails sur notre <Link href="/politique-cookies">politique cookies</Link>.
+          Analytics) pour comprendre comment il est utilisé et sa performance. Rien n&apos;est activé sans votre accord
+          et aucune donnée n&apos;est revendue. Détails sur notre{" "}
+          <Link href="/politique-cookies">politique cookies</Link>.
         </p>
+        {current && (
+          <p className="cookie-banner-current">
+            Votre choix actuel : <strong>{current === "accepted" ? "accepté" : "refusé"}</strong>.
+          </p>
+        )}
       </div>
       <div className="cookie-banner-actions">
         <button type="button" className="cookie-banner-decline" onClick={() => choose("declined")}>
