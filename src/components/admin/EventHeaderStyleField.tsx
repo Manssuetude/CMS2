@@ -4,7 +4,7 @@ import type { HeaderStyle } from "@/utils/eventHeader";
 
 // Choix du style d'en-tête de la page événement : deux cartes radio (vrais
 // <input type="radio">, navigables au clavier) avec une mini-vignette SVG.
-// `warning` : l'image retenue ne permet pas la bannière (repli Classique).
+// `warning` : message si la bannière ne pourra pas s'afficher (repli Classique).
 
 const OPTIONS: Array<{ value: HeaderStyle; title: string; help: string }> = [
   {
@@ -15,7 +15,7 @@ const OPTIONS: Array<{ value: HeaderStyle; title: string; help: string }> = [
   {
     value: "banner",
     title: "Bannière",
-    help: "Image plein écran avec le titre par-dessus. Réservé aux photos en paysage, à éviter avec une affiche qui contient du texte.",
+    help: "Photo plein écran avec le titre par-dessus. Utilise la 1re photo de la galerie (en paysage), jamais l'affiche.",
   },
 ];
 
@@ -46,7 +46,7 @@ export function EventHeaderStyleField({
 }: {
   value: HeaderStyle;
   onChange: (value: HeaderStyle) => void;
-  warning: boolean;
+  warning: string | null;
 }) {
   return (
     <fieldset className="header-style-field">
@@ -69,7 +69,7 @@ export function EventHeaderStyleField({
       </div>
       {value === "banner" && warning && (
         <p className="header-style-warning" role="status">
-          Cette image ne convient pas à la bannière : la page s&apos;affichera en style Classique.
+          {warning}
         </p>
       )}
     </fieldset>

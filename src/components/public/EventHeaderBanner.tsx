@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { GalleryPhoto } from "@/types/cms";
 import type { EventFacts } from "@/utils/eventFacts";
 import { EventHeaderImage } from "@/components/public/EventHeaderImage";
@@ -32,16 +31,14 @@ export function EventHeaderBanner({
           className="event-header-image--banner"
         />
         <div className="event-banner-text">
-          <nav className="event-breadcrumb" aria-label="Fil d'Ariane">
-            <Link href="/evenements">Événements</Link>
-            <span aria-hidden="true">/</span>
-            <span aria-current="page">{title}</span>
-          </nav>
           <p className="event-eyebrow">{eyebrow}</p>
           <h1 className="event-title">{title}</h1>
-          {lead && <p className="event-lead">{lead}</p>}
+          {/* Chapô sur l'image à partir de 768px ; en dessous, il passe sous la
+              bannière (fond crème) pour garder une bannière courte et lisible. */}
+          {lead && <p className="event-lead event-lead--overlay">{lead}</p>}
         </div>
       </div>
+      {lead && <p className="event-lead event-lead--below">{lead}</p>}
       <EventInfoBar facts={facts} />
     </header>
   );

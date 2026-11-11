@@ -20,7 +20,7 @@ import { SingleMediaField } from "@/components/media/SingleMediaField";
 import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
 import { EventHeaderStyleField } from "@/components/admin/EventHeaderStyleField";
 import { EventPreviewModal } from "@/components/admin/EventPreviewModal";
-import { isBannerCompatible, pickHeaderImage, type HeaderStyle } from "@/utils/eventHeader";
+import { bannerWarning, type HeaderStyle } from "@/utils/eventHeader";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
@@ -109,13 +109,12 @@ export function EvenementForm({
   const [posterMedia, setPosterMedia] = useState<Media | null>(
     images.find((m) => m.id === initialData?.posterId) ?? null,
   );
-  const [firstGalleryMedia, setFirstGalleryMedia] = useState<Media | null>(
-    images.find((m) => m.id === initialData?.gallery[0]) ?? null,
+  const [galleryMedia, setGalleryMedia] = useState<Media[]>(
+    (initialData?.gallery ?? []).flatMap((id) => images.filter((m) => m.id === id)),
   );
-  // Même règle que la page publique : affiche, sinon 1re photo de la galerie.
-  const bannerFits = isBannerCompatible(
-    pickHeaderImage(posterMedia, firstGalleryMedia ? [firstGalleryMedia] : []).image,
-  );
+  // Même règle que la page publique : la bannière utilise la 1re photo de la
+  // galerie, l'affiche étant exclue (jamais en fond de bannière).
+  const headerWarning = bannerWarning(galleryMedia.filter((m) => m.id !== posterMedia?.id));
   const mentionItems = useMemo(() => activityFormats.map((f) => ({ id: f.id, title: f.title })), [activityFormats]);
   const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
   const subThemesByTheme = new Map<string, SubTheme[]>();
@@ -421,7 +420,7 @@ export function EvenementForm({
             buttonLabel="Choisir l'image principale"
             onChange={setPosterMedia}
           />
-          <EventHeaderStyleField value={headerStyle} onChange={setHeaderStyle} warning={!bannerFits} />
+          <EventHeaderStyleField value={headerStyle} onChange={setHeaderStyle} warning={headerWarning} />
         </div>
 
         {/* Compte-rendu en images (n'apparaît côté public que si l'événement est
@@ -435,7 +434,7 @@ export function EvenementForm({
             name="gallery"
             initialMedia={images}
             initialSelectedIds={initialData?.gallery ?? []}
-            onChange={(items) => setFirstGalleryMedia(items[0] ?? null)}
+            onChange={setGalleryMedia}
           />
         </div>
 
