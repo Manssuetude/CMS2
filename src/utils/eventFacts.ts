@@ -1,4 +1,5 @@
 import type { Event } from "@/types/cms";
+import { shortDateLabel, timeRangeLabel } from "@/utils/eventLabels";
 import { eventStatusLabel, resolveEventStatus, type EventDisplayStatus } from "@/utils/eventStatus";
 
 // Infos pratiques d'un événement, partagées par la carte « Infos pratiques »
@@ -10,6 +11,9 @@ export type EventCta = { label: string; href: string; external: boolean; kind: "
 export type EventFacts = {
   dateLabel: string | null;
   timeLabel: string | null;
+  // Versions courtes de la barre d'infos mobile : « Mer. 23 sept. 2026 », « 17h30 à 22h00 ».
+  shortDateLabel: string | null;
+  timeRangeLabel: string | null;
   location: string | null;
   mapsUrl: string | null;
   capacity: string | null;
@@ -70,6 +74,8 @@ export function buildEventFacts(
   return {
     dateLabel: dateLabel ? dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1) : null,
     timeLabel,
+    shortDateLabel: shortDateLabel(item.date),
+    timeRangeLabel: timeRangeLabel(item.startTime, item.endTime),
     location,
     mapsUrl: location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}` : null,
     capacity: item.capacity?.trim() || null,

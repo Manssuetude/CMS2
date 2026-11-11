@@ -29,6 +29,7 @@
      blanc dans les deux thèmes, d'où des jetons non redéfinis en sombre. */
   --ed-on-image: #fff;
   --ed-on-accent: #fff;
+  --ed-on-image-accent: #ff9a6b; /* surtitre orange sur photo assombrie (≥ 6,6:1 même sur photo blanche, AA) */
   --ed-image-scrim: 12, 10, 8; /* RVB du dégradé sombre sous le texte d'une bannière */
   --ed-sink: #f1e8dc; /* surface alternative */
   --ed-ink: #1c1714; /* brun-noir chaud (texte principal) */
