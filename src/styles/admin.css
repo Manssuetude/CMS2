@@ -1,0 +1,22 @@
+/* =============================================================
+   Manssuétude CMS — feuilles de styles de l'administration
+
+   Importé uniquement par app/admin/layout.tsx. Reprend l'ordre
+   historique complet de globals.css (socle + admin entrelacés) pour
+   que la cascade de l'admin reste strictement identique : les règles
+   du socle déjà chargées par le layout racine sont simplement
+   redéclarées au même rang, sans effet de bord. L'éditorial est
+   réimporté en dernier, comme dans l'ordre d'origine.
+   ============================================================= */
+
+@import "./parts/tokens.css";
+@import "./parts/base.css";
+@import "./parts/public-site.css";
+@import "./parts/admin-foundation.css";
+@import "./parts/admin-components.css";
+@import "./parts/admin-shell.css";
+@import "./parts/admin-dashboard.css";
+@import "./parts/public-content.css";
+@import "./parts/admin-extras.css";
+@import "./parts/activation.css";
+@import "./editorial.css";

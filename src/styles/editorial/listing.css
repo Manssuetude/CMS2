@@ -63,7 +63,7 @@
   width: 2.2rem;
   height: 2.2rem;
   border-radius: 999px;
-  background: var(--ed-brand);
+  background: var(--ed-accent-strong);
   color: #fff;
   font-family: var(--font-serif), Georgia, serif;
   font-size: 1.05rem;
@@ -89,7 +89,7 @@
   transition: color 0.16s ease;
 }
 .site-shell .dossier-guide-item:hover .dossier-guide-title {
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
 }
 .site-shell .dossier-guide-desc {
   font-size: 0.9rem;

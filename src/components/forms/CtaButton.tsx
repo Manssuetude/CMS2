@@ -1,10 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import { isFormCta, resolveCta } from "@/lib/cta";
 import type { CtaTarget } from "@/types/cms";
-import { FormModal } from "@/components/forms/FormModal";
+
+// La modale de formulaire (et le catalogue de champs de tous les formulaires)
+// n'est utile qu'au clic : chargée à la demande pour alléger le JS initial de
+// toutes les pages publiques (PageSpeed « JavaScript inutilisé »).
+const FormModal = dynamic(() => import("@/components/forms/FormModal").then((m) => m.FormModal), { ssr: false });
 
 export function CtaButton({
   label,

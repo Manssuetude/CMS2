@@ -965,9 +965,3 @@
   border: 0;
   transform-origin: top left;
 }
-.event-preview-loading,
-.event-preview-error {
-  padding: 48px var(--ed-gutter, 24px);
-  text-align: center;
-  color: var(--ed-muted, var(--muted));
-}

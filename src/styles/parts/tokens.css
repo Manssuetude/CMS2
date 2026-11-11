@@ -1,5 +1,9 @@
 :root {
   --orange: #ff4d12;
+  /* Contraste AA (voir --ed-accent-* dans editorial/base.css) : fond orange
+     sous texte blanc et texte orange sur fond clair. */
+  --orange-fill: #b83c0b;
+  --orange-fill-hover: #9a3109;
   --ink: #0d0d0f;
   --ink-soft: #23252b;
   --premium-black: #08090b;

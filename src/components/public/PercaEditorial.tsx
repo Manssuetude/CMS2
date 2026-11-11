@@ -1,6 +1,7 @@
 import type { Page } from "@/types/cms";
 import { sanitizeHtml } from "@/utils/sanitizeHtml";
 import { PercaStepsInteractive } from "@/components/public/PercaStepsInteractive";
+import { sanitizeSteps } from "@/utils/percaSteps";
 
 export function PercaEditorial({ page }: { page: Page }) {
   return (
@@ -10,7 +11,7 @@ export function PercaEditorial({ page }: { page: Page }) {
         <h1>{page.title}</h1>
       </header>
 
-      <PercaStepsInteractive steps={page.percaSteps ?? []} />
+      <PercaStepsInteractive steps={sanitizeSteps(page.percaSteps)} />
 
       {page.body ? (
         <div className="perca-body rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(page.body) }} />

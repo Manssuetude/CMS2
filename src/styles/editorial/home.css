@@ -30,7 +30,7 @@
 /* Initiale calligraphiée : le « M » de Manssuétude dans le titre */
 .site-shell .home-hero-initial {
   font-family: var(--font-script), "Segoe Script", cursive;
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   font-size: 1.7em;
   line-height: 0;
   padding-right: 0.02em;
@@ -387,7 +387,7 @@
   gap: clamp(0.5rem, 3vw, 1.75rem);
   font-family: var(--font-serif), Georgia, serif;
   font-size: clamp(2.5rem, 8vw, 4.5rem);
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   line-height: 1;
   margin-bottom: 1.75rem;
 }

@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import type { PercaStep } from "@/types/cms";
-import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 // Les 5 étapes du cadre PERCA — lettres/mots fixes, contenu détaillé (titre +
 // corps) éditable par étape depuis /admin/perca. Composant partagé : la même
 // interaction (bulle au clic) s'utilise sur /perca et sur la section PERCA
 // de /a-propos, pour ne pas dupliquer la logique ni le contenu.
+// `body` arrive DÉJÀ nettoyé par le composant serveur parent (sanitizeSteps) :
+// le nettoyeur HTML (sanitize-html + postcss, ~160 Ko) n'est ainsi jamais
+// envoyé au navigateur.
 const FIXED_STEPS: Array<[string, string]> = [
   ["P", "Penser"],
   ["E", "Exprimer"],
@@ -64,9 +66,7 @@ export function PercaStepsInteractive({ steps = [] }: { steps?: PercaStep[] }) {
                   ✕
                 </button>
                 {step?.title && <p className="perca-step-title">{step.title}</p>}
-                {step?.body && (
-                  <div className="rich-text" dangerouslySetInnerHTML={{ __html: sanitizeHtml(step.body) }} />
-                )}
+                {step?.body && <div className="rich-text" dangerouslySetInnerHTML={{ __html: step.body }} />}
               </div>
             )}
           </li>

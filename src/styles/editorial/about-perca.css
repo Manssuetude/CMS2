@@ -66,7 +66,7 @@
 .site-shell .perca-letter {
   font-family: var(--font-serif), Georgia, serif;
   font-size: clamp(2.4rem, 4.5vw, 3.4rem);
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
   line-height: 1;
 }
 .site-shell .perca-word {
@@ -241,5 +241,5 @@
   font-size: 3.4em;
   line-height: 0.72;
   font-weight: 600;
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
 }

@@ -252,8 +252,8 @@
   color: var(--orange);
 }
 .filter-chip.active {
-  background: var(--orange);
-  border-color: var(--orange);
+  background: var(--orange-fill);
+  border-color: var(--orange-fill);
   color: #fff;
 }
 
@@ -286,7 +286,7 @@
   left: 32px;
   padding: 8px 16px;
   border-radius: var(--radius-pill);
-  background: var(--orange);
+  background: var(--orange-fill);
   color: #fff;
   font-size: 12px;
   font-weight: 700;

@@ -2,6 +2,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { AdminShell } from "@/components/admin/AdminShell";
+// CSS de l'administration : chargé seulement ici, jamais sur le site public.
+import "@/styles/admin.css";
 
 export const dynamic = "force-dynamic";
 

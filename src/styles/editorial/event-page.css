@@ -21,6 +21,10 @@
   color: var(--ed-muted);
 }
 .site-shell .event-breadcrumb a {
+  /* Cible tactile d'au moins 24px de haut (WCAG 2.2, critère 2.5.8). */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: inherit;
   text-decoration: none;
 }
@@ -41,7 +45,7 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ed-brand);
+  color: var(--ed-accent-text);
 }
 .site-shell .event-title {
   margin: 0;
@@ -485,14 +489,14 @@
   margin-top: 1.1rem;
   padding: 0.85rem 1rem;
   border-radius: var(--ed-radius);
-  background: var(--ed-brand);
+  background: var(--ed-accent-strong);
   color: var(--ed-on-accent);
   font-weight: 600;
   text-decoration: none;
   transition: background 0.2s ease;
 }
 .site-shell .event-infocard-cta:hover {
-  background: var(--ed-brand-strong);
+  background: var(--ed-accent-strong-hover);
 }
 .site-shell .event-infocard-secondary {
   display: flex;
@@ -557,4 +561,12 @@
   .site-shell .event-theme-chips a {
     transition: none;
   }
+}
+
+/* États de l'iframe d'aperçu admin (page /apercu/evenement, sans le CSS admin). */
+.event-preview-loading,
+.event-preview-error {
+  padding: 48px var(--ed-gutter, 24px);
+  text-align: center;
+  color: var(--ed-muted);
 }

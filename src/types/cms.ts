@@ -163,6 +163,9 @@ export type Page = {
   imageUrl?: string | null;
   // alt de la ressource image (jointure resources, voir pageRepository.getPage).
   imageAlt?: string | null;
+  // Dimensions réelles de l'image (next/image, sans saut de mise en page).
+  imageWidth?: number | null;
+  imageHeight?: number | null;
   imageCrop?: ImageCrop | null;
   image?: Media | null;
   quote?: string | null;

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
@@ -14,6 +15,14 @@ function formatDate(value?: string | null) {
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return null;
   return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+}
+
+// Largeur affichée de l'image d'accueil : ~642px sur ordinateur (colonne de
+// droite du hero), pleine largeur sous 820px — multipliée par le zoom du
+// recadrage (crop.width = part visible de l'image, en %).
+function heroSizes(cropWidthPercent: number | null | undefined): string {
+  const zoom = cropWidthPercent && cropWidthPercent > 0 ? Math.min(4, 100 / cropWidthPercent) : 1;
+  return `(max-width: 820px) ${Math.round(100 * zoom)}vw, ${Math.round(642 * zoom)}px`;
 }
 
 export function HomeEditorial({
@@ -57,10 +66,17 @@ export function HomeEditorial({
         </div>
         {heroImageUrl ? (
           <figure className="home-hero-media">
-            <img
+            {/* Image LCP de l'accueil : optimisée (next/image), prioritaire, aux
+                vraies dimensions. Le recadrage agrandit l'image dans son cadre :
+                `sizes` en tient compte pour servir une source assez large. */}
+            <Image
               src={heroImageUrl}
               alt={isMeaningfulAlt(page.imageAlt) ? page.imageAlt : page.title}
-              loading="eager"
+              width={page.imageWidth ?? 1600}
+              height={page.imageHeight ?? 1280}
+              sizes={heroSizes(page.imageCrop?.width)}
+              priority
+              fetchPriority="high"
               style={cropToImageStyle(page.imageCrop)}
             />
           </figure>
