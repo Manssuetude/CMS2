@@ -19,15 +19,16 @@ export default function CookiesPolicyPage() {
 
       <div className="history-body rich-text">
         <p>
-          Dernière mise à jour : 20 août 2026. Cette page détaille les cookies et services tiers utilisés par ce site,
-          leur finalité, et si votre consentement est requis avant leur activation.
+          Dernière mise à jour : 11 novembre 2026. Cette page détaille les cookies et services tiers utilisés par ce
+          site, leur finalité, et si votre consentement est requis avant leur activation.
         </p>
 
         <h2>Qu&apos;est-ce qu&apos;un cookie ?</h2>
         <p>
           Un cookie est un petit fichier déposé sur votre appareil lors de votre visite. Certains sont nécessaires au
           fonctionnement du site, d&apos;autres (mesure d&apos;audience) ne sont activés qu&apos;avec votre accord,
-          recueilli via le bandeau affiché lors de votre première visite.
+          recueilli via le bandeau affiché lors de votre première visite et modifiable à tout moment via le lien « Gérer
+          les cookies » en bas de chaque page.
         </p>
 
         <h2>Cookies et services tiers utilisés</h2>
@@ -56,11 +57,8 @@ export default function CookiesPolicyPage() {
             <tr>
               <td>Google Analytics</td>
               <td>Mesure d&apos;audience (pages vues, provenance des visites)</td>
-              <td>
-                Oui pour les cookies et les statistiques détaillées ; sans votre accord, seul un signal anonyme sans
-                cookie est envoyé (voir ci-dessous)
-              </td>
-              <td>Visite, pages vues, adresse IP (anonymisée)</td>
+              <td>Oui, aucune requête n&apos;est envoyée à Google avant votre accord (voir ci-dessous)</td>
+              <td>Visite, pages vues, provenance, type d&apos;appareil</td>
             </tr>
             <tr>
               <td>Google Fonts</td>
@@ -104,18 +102,34 @@ export default function CookiesPolicyPage() {
         <p>Aucun pixel publicitaire ni outil de reciblage n&apos;est utilisé sur ce site.</p>
 
         <p>
-          Google Analytics utilise le « mode de consentement » de Google : tant que vous n&apos;avez pas répondu au
-          bandeau, aucun cookie n&apos;est déposé et Google ne reçoit qu&apos;un signal anonyme, sans cookie ni
-          identifiant, utilisé uniquement à des fins de modélisation statistique agrégée (il ne permet pas de vous
-          identifier individuellement). Les cookies et les statistiques de fréquentation détaillées (pages consultées,
-          provenance) ne sont activés qu&apos;après votre consentement explicite.
+          Les outils de mesure d&apos;audience ne sont chargés qu&apos;après un clic sur « Accepter ». Tant que vous
+          n&apos;avez pas répondu au bandeau, ou si vous refusez, le script de Google Analytics n&apos;est pas chargé :
+          aucune requête n&apos;est envoyée à Google et aucun cookie n&apos;est déposé.
         </p>
+
+        <h2>Durées de conservation</h2>
+        <ul>
+          <li>
+            <strong>Cookies Google Analytics</strong> (<code>_ga</code>, <code>_ga_*</code>) : 13 mois maximum à compter
+            de leur dépôt.
+          </li>
+          <li>
+            <strong>Vercel Analytics et Vercel Speed Insights</strong> : aucun cookie déposé ; les statistiques sont
+            agrégées et anonymisées.
+          </li>
+          <li>
+            <strong>Votre choix de consentement</strong> (accepté ou refusé, et sa date) : conservé 6 mois dans votre
+            navigateur (stockage local, pas un cookie). Passé ce délai, le bandeau vous est de nouveau proposé.
+          </li>
+        </ul>
 
         <h2>Gérer votre consentement</h2>
         <p>
           Vous pouvez accepter ou refuser les cookies de mesure d&apos;audience (Vercel Analytics, Vercel Speed Insights
-          et Google Analytics) via le bandeau affiché lors de votre première visite. Pour modifier votre choix, effacez
-          les données de navigation de votre navigateur pour ce site, le bandeau réapparaîtra à votre prochaine visite.
+          et Google Analytics) via le bandeau affiché lors de votre première visite. Vous pouvez changer d&apos;avis à
+          tout moment, dans un sens comme dans l&apos;autre, grâce au lien <strong>« Gérer les cookies »</strong> en bas
+          de chaque page. Si vous retirez votre accord, la mesure d&apos;audience est immédiatement arrêtée et les
+          cookies Google Analytics déjà déposés sont supprimés.
         </p>
 
         <h2>Questions</h2>

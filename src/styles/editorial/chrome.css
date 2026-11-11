@@ -323,6 +323,25 @@
 .site-shell .footer-links a:hover {
   color: var(--ed-clay);
 }
+/* « Gérer les cookies » : un bouton (il rouvre le bandeau, ce n'est pas une
+   navigation), stylé exactement comme les liens voisins. */
+.site-shell .footer-cookie-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ed-ink-soft);
+  cursor: pointer;
+  transition: color 0.16s ease;
+}
+.site-shell .footer-cookie-button:hover {
+  color: var(--ed-clay);
+}
+.site-shell .footer-cookie-button:focus-visible {
+  outline: 2px solid var(--ed-focus);
+  outline-offset: 3px;
+}
 .site-shell .footer-social {
   display: inline-flex;
   align-items: center;
