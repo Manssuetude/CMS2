@@ -193,6 +193,51 @@ CREATE TABLE public.activity_formats (
 
 
 --
+-- Name: announcements; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.announcements (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    name text NOT NULL,
+    enabled boolean DEFAULT false NOT NULL,
+    starts_at timestamp with time zone,
+    ends_at timestamp with time zone,
+    banner_enabled boolean DEFAULT true NOT NULL,
+    banner_label text,
+    banner_text text,
+    banner_link_label text,
+    banner_link_url text,
+    hero_enabled boolean DEFAULT true NOT NULL,
+    eyebrow text,
+    title text,
+    title_accent text,
+    subtitle text,
+    image_id uuid,
+    image_crop jsonb,
+    primary_cta_label text,
+    primary_cta_url text,
+    secondary_cta_label text,
+    secondary_cta_url text,
+    period_label text,
+    show_deadline boolean DEFAULT true NOT NULL,
+    show_key_figures boolean DEFAULT true NOT NULL,
+    final_enabled boolean DEFAULT true NOT NULL,
+    final_eyebrow text,
+    final_title text,
+    final_text text,
+    final_cta_label text,
+    final_cta_url text,
+    header_badge text,
+    applies_to_join_page boolean DEFAULT false NOT NULL,
+    seo_title text,
+    seo_description text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT announcements_dates_check CHECK (((starts_at IS NULL) OR (ends_at IS NULL) OR (ends_at > starts_at)))
+);
+
+
+--
 -- Name: audit_logs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -406,7 +451,8 @@ CREATE TABLE public.pages (
     perca_steps jsonb DEFAULT '[]'::jsonb NOT NULL,
     impact_stats jsonb DEFAULT '[]'::jsonb NOT NULL,
     featured_dossier_ids uuid[] DEFAULT '{}'::uuid[] NOT NULL,
-    featured_event_id uuid
+    featured_event_id uuid,
+    content jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 
@@ -764,6 +810,14 @@ ALTER TABLE ONLY public.event_resources
 
 
 --
+-- Name: announcements announcements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.announcements
+    ADD CONSTRAINT announcements_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: audit_logs audit_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1075,6 +1129,13 @@ CREATE INDEX activity_formats_position_idx ON public.activity_formats USING btre
 
 
 --
+-- Name: announcements_live_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX announcements_live_idx ON public.announcements USING btree (enabled, starts_at, ends_at);
+
+
+--
 -- Name: audit_logs_created_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1226,6 +1287,14 @@ CREATE INDEX sub_themes_theme_id_idx ON public.sub_themes USING btree (theme_id)
 --
 
 CREATE INDEX themes_slug_idx ON public.themes USING btree (slug);
+
+
+--
+-- Name: announcements announcements_image_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.announcements
+    ADD CONSTRAINT announcements_image_id_fkey FOREIGN KEY (image_id) REFERENCES public.resources(id) ON DELETE SET NULL;
 
 
 --
@@ -1641,6 +1710,12 @@ ALTER TABLE ONLY public.users
 --
 
 ALTER TABLE public.activity_formats ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: announcements; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: audit_logs; Type: ROW SECURITY; Schema: public; Owner: -

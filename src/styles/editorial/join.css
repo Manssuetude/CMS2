@@ -1,0 +1,351 @@
+/* Page /nous-rejoindre (JoinEditorial). La mise en page est identique avec ou
+   sans annonce : l'annonce ne change que des valeurs (voir utils/joinPage.ts). */
+
+.site-shell .join > section {
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding-inline: var(--ed-gutter);
+  padding-block: clamp(3rem, 7vw, 6rem);
+}
+.site-shell .join .join-section-head {
+  max-width: 62rem;
+}
+.site-shell .join h2 {
+  font-size: var(--ed-step-5);
+  font-weight: 400;
+  margin: 0 0 1rem;
+  max-width: 20ch;
+}
+.site-shell .join h2 em,
+.site-shell .join h1 em {
+  font-style: italic;
+  color: var(--ed-accent-text);
+}
+.site-shell .join-lead {
+  font-size: var(--ed-step-1);
+  line-height: 1.6;
+  color: var(--ed-ink-soft);
+  margin: 0;
+  max-width: 56ch;
+}
+
+/* -- Photos (recadrage non destructif : cadre au ratio fixe, voir cropToImageStyle) -- */
+.site-shell .join-photo {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  background: var(--ed-sink);
+  border-radius: var(--ed-radius);
+}
+.site-shell .join-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Photos verticales sans recadrage : on garde le haut (filigrane du photographe visible). */
+.site-shell .join-photo--portrait {
+  aspect-ratio: 4 / 5;
+}
+.site-shell .join-photo--portrait img {
+  object-position: 50% 0;
+}
+
+/* 1 — Hero */
+.site-shell .join > .join-hero {
+  padding-block: clamp(1rem, 2.5vw, 1.75rem) clamp(2.5rem, 5vw, 4rem);
+}
+.site-shell .join-breadcrumb {
+  margin-bottom: clamp(1.75rem, 4vw, 3rem);
+}
+.site-shell .join-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2rem clamp(2rem, 5vw, 5rem);
+  align-items: end;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+.site-shell .join-hero-title {
+  font-size: clamp(3rem, 1.5rem + 4vw, 5rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 0 0 1.25rem;
+  max-width: 16ch;
+}
+.site-shell .join-hero-subtitle {
+  font-size: var(--ed-step-1);
+  line-height: 1.6;
+  color: var(--ed-ink-soft);
+  margin: 0;
+  max-width: 58ch;
+}
+.site-shell .join-hero-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.site-shell .join-hero-action .button {
+  font-size: 1rem;
+  padding: 0.95em 1.75em;
+}
+.site-shell .join-deadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ed-ink-soft);
+}
+.site-shell .join-deadline svg {
+  flex-shrink: 0;
+  color: var(--ed-accent-text);
+}
+.site-shell .join-banner {
+  aspect-ratio: 8 / 3;
+}
+
+/* 2 — Notre point de départ */
+.site-shell .join-start {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+.site-shell .join-start-photo {
+  aspect-ratio: 4 / 3;
+}
+
+/* 4 — Une expérience collective */
+.site-shell .join-experience-grid {
+  list-style: none;
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.75rem);
+}
+.site-shell .join-experience-label {
+  margin: 0.9rem 0 0;
+  font-size: var(--ed-step-small);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ed-ink);
+}
+
+/* 5 — Le cap (fond sombre, pleine largeur) */
+.site-shell .join > .join-ambition {
+  padding-inline: 0;
+  background: var(--ed-night);
+  color: var(--ed-on-night);
+  border: 1px solid var(--ed-night-line);
+  border-radius: var(--ed-radius-lg);
+}
+.site-shell .join-ambition-inner {
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding-inline: var(--ed-gutter);
+}
+.site-shell .join-ambition .eyebrow {
+  color: var(--ed-on-image-accent);
+}
+.site-shell .join-ambition h2,
+.site-shell .join-ambition h3 {
+  color: var(--ed-on-night);
+}
+.site-shell .join-ambition .join-lead {
+  color: var(--ed-on-night-soft);
+}
+.site-shell .join-ambition-list {
+  list-style: none;
+  margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+.site-shell .join-ambition-list li {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ed-night-line);
+}
+.site-shell .join-num {
+  display: block;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--ed-on-image-accent);
+  margin-bottom: 1rem;
+}
+.site-shell .join-ambition-list h3 {
+  font-size: var(--ed-step-3);
+  margin: 0 0 0.4rem;
+}
+.site-shell .join-ambition-list p {
+  margin: 0;
+  color: var(--ed-on-night-soft);
+}
+
+/* 6 — Pour qui ? Qu'attendons-nous ? */
+.site-shell .join-audience-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 5rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding-top: clamp(1.5rem, 3vw, 2.25rem);
+  border-top: 1px solid var(--ed-line);
+}
+.site-shell .join-audience-cols h3 {
+  font-size: var(--ed-step-3);
+  margin: 0 0 0.75rem;
+}
+.site-shell .join-audience-cols p {
+  margin: 0;
+  color: var(--ed-ink-soft);
+}
+.site-shell .join-qualities {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.site-shell .join-qualities li {
+  padding: 0.4em 1em;
+  border: 1px solid var(--ed-line-strong);
+  border-radius: 999px;
+  background: var(--ed-raise);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ed-ink);
+}
+
+/* 7 — Comment rejoindre ? (frise horizontale, verticale sur téléphone) */
+.site-shell .join > .join-steps {
+  border-top: 1px solid var(--ed-line);
+}
+.site-shell .join-steps-list {
+  list-style: none;
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2rem;
+}
+.site-shell .join-steps-list li {
+  position: relative;
+}
+.site-shell .join-steps-list li::before {
+  content: "";
+  position: absolute;
+  top: 1.5rem;
+  left: 3.75rem;
+  right: -1.25rem;
+  height: 1px;
+  background: var(--ed-line-strong);
+}
+.site-shell .join-steps-list li:last-child::before {
+  display: none;
+}
+.site-shell .join-step-num {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--ed-accent-strong);
+  color: var(--ed-on-accent);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.3rem;
+  margin-bottom: 1.25rem;
+}
+.site-shell .join-steps-list h3 {
+  font-size: var(--ed-step-3);
+  margin: 0 0 0.5rem;
+}
+.site-shell .join-steps-list p {
+  margin: 0;
+  color: var(--ed-ink-soft);
+}
+.site-shell .join-steps-note {
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  padding: 1.25rem 1.5rem;
+  border-left: 3px solid var(--ed-clay);
+  background: var(--ed-raise);
+  color: var(--ed-ink-soft);
+  max-width: 72ch;
+}
+
+/* 8 — Rejoindre (#candidater) */
+.site-shell .join-final {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  scroll-margin-top: 6rem;
+}
+.site-shell .join-cta-lg {
+  margin: 2rem 0 0.9rem;
+}
+.site-shell .join-cta-lg .button {
+  font-size: 1.1rem;
+  padding: 1.05em 2.2em;
+}
+
+@media (max-width: 820px) {
+  .site-shell .join-hero-grid,
+  .site-shell .join-start,
+  .site-shell .join-final,
+  .site-shell .join-audience-cols,
+  .site-shell .join-ambition-list {
+    grid-template-columns: 1fr;
+  }
+  .site-shell .join-hero-action,
+  .site-shell .join-hero-action .button,
+  .site-shell .join-cta-lg .button {
+    width: 100%;
+  }
+  /* Le bandeau garde son ratio 8:3 (le recadrage enregistré en dépend). */
+
+  /* 3 photos verticales : défilement horizontal */
+  .site-shell .join-experience-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(-1 * var(--ed-gutter));
+    padding-inline: var(--ed-gutter);
+    scrollbar-width: none;
+  }
+  .site-shell .join-experience-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .site-shell .join-experience-grid li {
+    flex: 0 0 72%;
+    scroll-snap-align: start;
+  }
+
+  /* Frise verticale */
+  .site-shell .join-steps-list {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  .site-shell .join-steps-list li {
+    padding-left: 4.25rem;
+  }
+  .site-shell .join-step-num {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+  }
+  .site-shell .join-steps-list li::before {
+    top: 3.5rem;
+    bottom: -1.25rem;
+    left: 1.5rem;
+    right: auto;
+    width: 1px;
+    height: auto;
+  }
+}

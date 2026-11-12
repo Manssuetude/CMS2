@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   ScrollText,
   Link2,
+  Megaphone,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
@@ -29,6 +30,7 @@ import {
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "pages", label: "Gestion des pages", icon: ImagePlus },
+  { id: "annonces", label: "Annonces", icon: Megaphone },
   { id: "themes", label: "Thèmes", icon: BookOpen },
   { id: "sousthemes", label: "Sous-thèmes", icon: ListTree },
   { id: "auteurs", label: "Auteurs", icon: UserPen },

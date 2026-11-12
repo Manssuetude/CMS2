@@ -1,6 +1,7 @@
 import { getSupabaseAdmin } from "@/lib/db";
-import type { NavVisibility } from "@/types/cms";
+import type { KeyFigures, NavVisibility } from "@/types/cms";
 import { asRecord, asString, asNullableString } from "@/utils/row";
+import { parseKeyFigures } from "@/utils/keyFigures";
 
 export type FormDigestSettings = {
   recipientEmail: string;
@@ -64,6 +65,30 @@ export const siteSettingsRepository = {
     const { error } = await db
       .from("site_settings")
       .upsert({ id: "default", form_digest_last_sent_at: sentAt }, { onConflict: "id" });
+    if (error) throw error;
+  },
+
+  // Chiffres clés (homepage_config.keyFigures) — valeurs par défaut si absents.
+  async getKeyFigures(): Promise<KeyFigures> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db.from("site_settings").select("homepage_config").eq("id", "default").single();
+    if (error || !data) return parseKeyFigures(null);
+    return parseKeyFigures(asRecord(data.homepage_config).keyFigures);
+  },
+
+  // Écrit keyFigures en conservant les autres clés de homepage_config.
+  async updateKeyFigures(keyFigures: KeyFigures): Promise<void> {
+    const db = getSupabaseAdmin();
+    const { data, error: readError } = await db
+      .from("site_settings")
+      .select("homepage_config")
+      .eq("id", "default")
+      .maybeSingle();
+    if (readError) throw readError;
+    const homepageConfig = { ...asRecord(data?.homepage_config), keyFigures };
+    const { error } = await db
+      .from("site_settings")
+      .upsert({ id: "default", homepage_config: homepageConfig }, { onConflict: "id" });
     if (error) throw error;
   },
 

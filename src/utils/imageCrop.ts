@@ -60,3 +60,12 @@ export function cropToImageStyle(crop: ImageCrop | null | undefined): CSSPropert
     maxWidth: "none",
   };
 }
+
+/**
+ * Facteur d'agrandissement d'une image recadrée (1 sans recadrage, plafonné à 4) :
+ * la part visible fait `crop.width` % de l'image, qui s'affiche donc `100 / width`
+ * fois plus large que son cadre. Sert à calculer un `sizes` assez grand (next/image).
+ */
+export function cropZoom(crop: ImageCrop | null | undefined): number {
+  return crop && crop.width > 0 ? Math.min(4, 100 / crop.width) : 1;
+}

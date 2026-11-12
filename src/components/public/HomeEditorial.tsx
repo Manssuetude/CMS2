@@ -4,7 +4,10 @@ import Link from "next/link";
 import { CtaButton } from "@/components/forms/CtaButton";
 import { ProductionsCarousel } from "@/components/public/ProductionsCarousel";
 import { NewsletterForm } from "@/components/public/NewsletterForm";
-import type { Page, Production, Event, JournalEntry } from "@/types/cms";
+import { AnnouncementHero } from "@/components/public/AnnouncementHero";
+import { AnnouncementFinal } from "@/components/public/AnnouncementFinal";
+import { KeyFiguresBand } from "@/components/public/KeyFiguresBand";
+import type { Announcement, Page, Production, Event, JournalEntry, KeyFigures } from "@/types/cms";
 import { cropToImageStyle } from "@/utils/imageCrop";
 import { isMeaningfulAlt } from "@/utils/gallery";
 
@@ -32,6 +35,8 @@ export function HomeEditorial({
   events = [],
   productions = [],
   journalEntries = [],
+  announcement = null,
+  keyFigures = null,
 }: {
   page: Page;
   heroImageUrl?: string | null;
@@ -39,49 +44,64 @@ export function HomeEditorial({
   events?: Event[];
   productions?: Production[];
   journalEntries?: JournalEntry[];
+  // Annonce en ligne (ou en aperçu) : remplace le hero et le bloc final,
+  // ajoute la bande de chiffres clés. Sans annonce, l'accueil est inchangé.
+  announcement?: Announcement | null;
+  keyFigures?: KeyFigures | null;
 }) {
   // L'identité de l'association vit dans `body` (demande de René : l'asso d'abord).
   const sentences = (page.body || "").split(/\.\s+/).filter(Boolean);
   const headline = sentences[0] ? `${sentences[0]}.` : page.body;
   const intro = sentences.slice(1).join(". ");
 
+  const showAnnouncementHero = Boolean(announcement?.heroEnabled && announcement.title);
+  const showFigures = Boolean(announcement?.showKeyFigures && keyFigures);
+  const showAnnouncementFinal = Boolean(announcement?.finalEnabled && announcement.finalTitle);
+
   return (
     <div className="home">
-      {/* 1 — Hero : identité de l'association */}
-      <section className={`home-hero${heroImageUrl ? "" : " home-hero--no-image"}`}>
-        <div className="home-hero-copy">
-          <h1>
-            <span className="home-hero-initial">{(headline || "").charAt(0)}</span>
-            {(headline || "").slice(1)}
-          </h1>
-          {intro ? <p className="home-hero-intro">{intro}</p> : null}
-          <div className="home-hero-actions">
-            {page.primaryCtaLabel && page.primaryCtaTarget ? (
-              <CtaButton label={page.primaryCtaLabel} target={page.primaryCtaTarget} variant="primary" />
-            ) : null}
-            {page.secondaryCtaLabel && page.secondaryCtaTarget ? (
-              <CtaButton label={page.secondaryCtaLabel} target={page.secondaryCtaTarget} variant="secondary" />
-            ) : null}
+      {/* 1 — Hero : annonce mise en avant, sinon identité de l'association */}
+      {announcement && showAnnouncementHero ? (
+        <AnnouncementHero announcement={announcement} firstFigure={keyFigures?.items[0] ?? null} />
+      ) : (
+        <section className={`home-hero${heroImageUrl ? "" : " home-hero--no-image"}`}>
+          <div className="home-hero-copy">
+            <h1>
+              <span className="home-hero-initial">{(headline || "").charAt(0)}</span>
+              {(headline || "").slice(1)}
+            </h1>
+            {intro ? <p className="home-hero-intro">{intro}</p> : null}
+            <div className="home-hero-actions">
+              {page.primaryCtaLabel && page.primaryCtaTarget ? (
+                <CtaButton label={page.primaryCtaLabel} target={page.primaryCtaTarget} variant="primary" />
+              ) : null}
+              {page.secondaryCtaLabel && page.secondaryCtaTarget ? (
+                <CtaButton label={page.secondaryCtaLabel} target={page.secondaryCtaTarget} variant="secondary" />
+              ) : null}
+            </div>
           </div>
-        </div>
-        {heroImageUrl ? (
-          <figure className="home-hero-media">
-            {/* Image LCP de l'accueil : optimisée (next/image), prioritaire, aux
+          {heroImageUrl ? (
+            <figure className="home-hero-media">
+              {/* Image LCP de l'accueil : optimisée (next/image), prioritaire, aux
                 vraies dimensions. Le recadrage agrandit l'image dans son cadre :
                 `sizes` en tient compte pour servir une source assez large. */}
-            <Image
-              src={heroImageUrl}
-              alt={isMeaningfulAlt(page.imageAlt) ? page.imageAlt : page.title}
-              width={page.imageWidth ?? 1600}
-              height={page.imageHeight ?? 1280}
-              sizes={heroSizes(page.imageCrop?.width)}
-              priority
-              fetchPriority="high"
-              style={cropToImageStyle(page.imageCrop)}
-            />
-          </figure>
-        ) : null}
-      </section>
+              <Image
+                src={heroImageUrl}
+                alt={isMeaningfulAlt(page.imageAlt) ? page.imageAlt : page.title}
+                width={page.imageWidth ?? 1600}
+                height={page.imageHeight ?? 1280}
+                sizes={heroSizes(page.imageCrop?.width)}
+                priority
+                fetchPriority="high"
+                style={cropToImageStyle(page.imageCrop)}
+              />
+            </figure>
+          ) : null}
+        </section>
+      )}
+
+      {/* 1bis — Chiffres clés pendant une annonce */}
+      {showFigures && keyFigures ? <KeyFiguresBand figures={keyFigures} variant="home" /> : null}
 
       {/* 2 — Événement du moment : l'événement le plus proche d'aujourd'hui
              (à venir ou passé), calculé automatiquement — pas de sélection
@@ -204,17 +224,21 @@ export function HomeEditorial({
         </div>
       </section>
 
-      <section className="home-join">
-        <h2>Rejoindre une communauté qui pense, débat et produit.</h2>
-        <div className="home-join-actions">
-          <Link className="cta" href="/nous-rejoindre">
-            Rejoindre Manssuétude
-          </Link>
-          <Link className="btn secondary" href="/nous-soutenir">
-            Nous soutenir
-          </Link>
-        </div>
-      </section>
+      {announcement && showAnnouncementFinal ? (
+        <AnnouncementFinal announcement={announcement} />
+      ) : (
+        <section className="home-join">
+          <h2>Rejoindre une communauté qui pense, débat et produit.</h2>
+          <div className="home-join-actions">
+            <Link className="cta" href="/nous-rejoindre">
+              Rejoindre Manssuétude
+            </Link>
+            <Link className="btn secondary" href="/nous-soutenir">
+              Nous soutenir
+            </Link>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

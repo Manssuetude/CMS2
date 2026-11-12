@@ -75,7 +75,11 @@ export const MAIN_NAV_ITEMS = [
 export const PAGE_DIRECTORY: Record<string, { label: string; publicPath: string; editorPath?: string }> = {
   accueil: { label: "Page d'accueil", publicPath: "/", editorPath: "/admin/homepage" },
   "a-propos": { label: "À propos", publicPath: "/a-propos" },
-  "nous-rejoindre": { label: "Nous rejoindre", publicPath: "/nous-rejoindre" },
+  "nous-rejoindre": {
+    label: "Nous rejoindre",
+    publicPath: "/nous-rejoindre",
+    editorPath: "/admin/pages/nous-rejoindre",
+  },
   "nous-soutenir": { label: "Nous soutenir", publicPath: "/nous-soutenir" },
   evenements: { label: "Événements", publicPath: "/evenements" },
   activites: { label: "Activités", publicPath: "/activites" },

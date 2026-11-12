@@ -31,6 +31,13 @@
   --ed-on-accent: #fff;
   --ed-on-image-accent: #ff9a6b; /* surtitre orange sur photo assombrie (≥ 6,6:1 même sur photo blanche, AA) */
   --ed-image-scrim: 12, 10, 8; /* RVB du dégradé sombre sous le texte d'une bannière */
+  /* Blocs « encre » (bandeau d'annonce, bloc final, section sombre de
+     /nous-rejoindre) : sombres dans les deux thèmes, d'où des jetons non
+     redéfinis en sombre. Texte clair ≥ 12:1, texte secondaire ≥ 8:1 (AA). */
+  --ed-night: #1c1714;
+  --ed-night-line: #3a312a;
+  --ed-on-night: #faf6f0;
+  --ed-on-night-soft: #d4c8bb;
   --ed-sink: #f1e8dc; /* surface alternative */
   --ed-ink: #1c1714; /* brun-noir chaud (texte principal) */
   --ed-ink-soft: #574f48; /* texte secondaire */

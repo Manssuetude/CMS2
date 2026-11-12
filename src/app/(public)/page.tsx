@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { HomeEditorial } from "@/components/public/HomeEditorial";
-import { eventRepository } from "@/repositories/eventRepository";
 import { pageRepository } from "@/repositories/pageRepository";
-import { productionRepository } from "@/repositories/productionRepository";
-import { journalRepository } from "@/repositories/journalRepository";
 import { MaintenanceNotice } from "@/components/public/MaintenanceNotice";
-import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
+import { announcementService } from "@/services/announcementService";
+import { loadHomePage } from "@/services/homePageService";
 
 export const revalidate = 60;
 
@@ -17,7 +15,7 @@ const HOME_DESCRIPTION =
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const page = await pageRepository.getPage("accueil");
+    const [page, announcement] = await Promise.all([pageRepository.getPage("accueil"), announcementService.getLive()]);
     // Titre complet modifiable depuis /admin/homepage (champ SEO). L'ancien titre
     // générique « Manssuétude - Accueil » est ignoré au profit du titre par défaut.
     const custom = page?.seoTitle?.trim();
@@ -27,7 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
       absoluteTitle: title,
       description: page?.seoDescription?.trim() || HOME_DESCRIPTION,
       path: "/",
-      imageUrl: page?.imageUrl,
+      // Pendant une annonce, l'image de partage est la photo de l'annonce.
+      imageUrl: (announcement?.heroEnabled ? announcement.imageUrl : null) ?? page?.imageUrl,
     });
   } catch {
     return buildPageMetadata({
@@ -41,37 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   try {
-    const page = await pageRepository.getPage("accueil");
-    const [productions, events, journalEntries] = await Promise.all([
-      productionRepository.listProductions(),
-      eventRepository.listEvents(),
-      journalRepository.listEntries(),
-    ]);
-    if (!page) notFound();
-
-    // Journal en avant : les entrées marquées "featured", sinon les 3 plus récentes.
-    const featuredJournal = journalEntries.filter((e) => e.featured);
-    const homeJournalEntries = (featuredJournal.length ? featuredJournal : journalEntries).slice(0, 3);
-
-    // Accueil : uniquement les productions et événements marqués "en vedette"
-    // (pas de repli sur les plus récents) — max 3 productions, max 2 événements.
-    // Aucune vedette → section masquée.
-    const homeProductions = productions.filter((p) => p.featured).slice(0, 3);
-    const homeEvents = events.filter((e) => e.featured).slice(0, 2);
-
-    const fallbackEvent = page.featuredEventId ? (events.find((e) => e.id === page.featuredEventId) ?? null) : null;
-    const eventOfTheMoment = pickEventOfTheMoment(events, fallbackEvent);
-
-    return (
-      <HomeEditorial
-        page={page}
-        heroImageUrl={page.imageUrl ?? undefined}
-        eventOfTheMoment={eventOfTheMoment}
-        events={homeEvents}
-        productions={homeProductions}
-        journalEntries={homeJournalEntries}
-      />
-    );
+    const props = await loadHomePage(await announcementService.getLive());
+    if (!props) notFound();
+    return <HomeEditorial {...props} />;
   } catch (error) {
     if ((error as { digest?: string })?.digest === "NEXT_NOT_FOUND") throw error;
     // DB unreachable at build time (e.g. no credentials in CI): ISR will populate on first request.

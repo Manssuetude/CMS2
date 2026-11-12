@@ -18,4 +18,6 @@
 @import "./editorial/event-page.css";
 @import "./editorial/search.css";
 @import "./editorial/link-page.css";
+@import "./editorial/announcements.css";
+@import "./editorial/join.css";
 @import "./editorial/print.css";

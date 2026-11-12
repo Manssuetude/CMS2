@@ -2,9 +2,24 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+// Aperçu d'une annonce : /?apercu-annonce=<id> et /nous-rejoindre?apercu-annonce=<id>
+// sont servis par une route dynamique dédiée (réservée aux comptes autorisés,
+// sans cache, noindex) pour ne jamais toucher au cache ISR des pages publiques.
+const ANNOUNCEMENT_PREVIEW_TARGETS: Record<string, string> = { "/": "accueil", "/nous-rejoindre": "nous-rejoindre" };
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
   const isAdminRoute = pathname.startsWith("/admin");
+
+  const previewId = searchParams.get("apercu-annonce");
+  const previewTarget = ANNOUNCEMENT_PREVIEW_TARGETS[pathname];
+  if (previewId && previewTarget && UUID.test(previewId)) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/apercu/annonce/${previewId}/${previewTarget}`;
+    url.search = "";
+    return NextResponse.rewrite(url);
+  }
 
   if (!isAdminRoute) {
     return NextResponse.next();

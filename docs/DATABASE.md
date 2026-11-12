@@ -67,6 +67,9 @@ Pages publiques du site (accueil, à propos, thèmes/évènements/etc. — une l
 | `impact_stats`                   | jsonb               | chiffres clés de la page d'accueil                                |
 | `featured_dossier_ids`           | uuid[]              | dossiers mis en avant                                             |
 | `featured_event_id`              | uuid FK → events    | évènement mis en avant sur l'accueil                              |
+| `content`                        | jsonb               | contenu structuré propre à la page (voir ci-dessous)              |
+
+`pages.content` (jsonb, défaut `{}`) : textes et photos des sections propres à une page, quand les colonnes communes ne suffisent pas. Utilisé par `/nous-rejoindre` (point de départ, expérience collective, cap, profil, étapes, bloc final) : voir `JoinPageContent` (`src/types/cms.ts`), lu par `parseJoinPageContent` (`src/utils/joinPage.ts`) qui complète les clés absentes avec les textes par défaut (`src/constants/joinPage.ts`). Chaque photo y est stockée `{ imageId, crop, alt }`.
 
 ### `themes`
 
@@ -217,6 +220,27 @@ Liens affichés sur la page `/links` (façon Linktree — gérée depuis `/admin
 
 `site_settings.link_page_description` (text) : court texte affiché sous le logo sur `/links`, éditable depuis `/admin/links`.
 
+### `announcements`
+
+Annonces mises en avant (recrutement, appel à contributions, lancement d'une publication…), gérées depuis `/admin/annonces`. Une annonce est **en ligne** si `enabled` et `starts_at <= maintenant < ends_at` ; si plusieurs se chevauchent, la plus récemment démarrée gagne (`pickLiveAnnouncement`, `src/utils/announcements.ts`). Hors de ces dates, le site retrouve son état normal (ISR 60 s : au plus une minute de décalage). Ce n'est **pas** un évènement : rien n'est créé dans `events`.
+
+| Colonne                                                                              | Type                                   | Notes                                                                           |
+| ------------------------------------------------------------------------------------ | -------------------------------------- | ------------------------------------------------------------------------------- |
+| `name`                                                                               | text NOT NULL                          | nom interne (ex. « Recrutement nov.–déc. 2026 »)                                |
+| `enabled`                                                                            | boolean, défaut false                  |                                                                                 |
+| `starts_at`, `ends_at`                                                               | timestamptz                            | optionnelles (vides après duplication) ; CHECK `ends_at > starts_at`            |
+| `banner_enabled`, `banner_label`, `banner_text`                                      | boolean / text                         | bandeau au-dessus du header ; `{date}` dans le texte = date de clôture          |
+| `banner_link_label`, `banner_link_url`                                               | text                                   | lien du bandeau (masqué sur la page qu'il cible)                                |
+| `hero_enabled`, `eyebrow`, `title`, `title_accent`, `subtitle`                       | boolean / text                         | hero de l'accueil ; `title_accent` en orange italique                           |
+| `image_id`, `image_crop`                                                             | uuid FK → resources (SET NULL) / jsonb | photo du hero (+ `og:image` de l'accueil), recadrage non destructif             |
+| `primary_cta_label/url`, `secondary_cta_label/url`                                   | text                                   | boutons du hero (lien externe → nouvel onglet)                                  |
+| `period_label`, `show_deadline`                                                      | text / boolean                         | « Campagne … » et « Clôture le [ends_at] »                                      |
+| `show_key_figures`                                                                   | boolean                                | bande de chiffres clés (`site_settings.homepage_config.keyFigures`)             |
+| `final_enabled`, `final_eyebrow`, `final_title`, `final_text`, `final_cta_label/url` | boolean / text                         | bloc final sombre de l'accueil                                                  |
+| `header_badge`                                                                       | text                                   | pastille sur « Rejoindre » dans le header (vide = aucune)                       |
+| `applies_to_join_page`                                                               | boolean                                | `/nous-rejoindre` reprend étiquette, titre, sous-titre, bouton, clôture, SEO    |
+| `seo_title`, `seo_description`                                                       | text                                   | SEO de `/nous-rejoindre` pendant l'annonce (repli : titre + accent, sous-titre) |
+
 ### `authors`
 
 Auteurs/animateurs référencés par productions et évènements.
@@ -268,12 +292,14 @@ Paramètres globaux du site (singleton, `id = 'default'`).
 | `primary_color`, `secondary_color`           | text                | défaut `#ff4d12` / `#0d0d0f`                                            |
 | `tagline`                                    | text                |                                                                         |
 | `footer_config`                              | jsonb               | colonnes, réseaux, newsletter                                           |
-| `homepage_config`                            | jsonb               |                                                                         |
+| `homepage_config`                            | jsonb               | dont `keyFigures` (chiffres clés, voir ci-dessous)                      |
 | `nav_visibility`                             | jsonb               | items de nav togglables masqués/affichés                                |
 | `logo_id`, `favicon_id`, `fallback_image_id` | uuid FK → resources |                                                                         |
 | `form_digest_recipient_email`                | text                | défaut `contact@manssuetude.com` — voir `/admin/forms`                  |
 | `form_digest_interval_days`                  | integer             | défaut `3` — intervalle entre deux emails récapitulatifs d'inscriptions |
 | `form_digest_last_sent_at`                   | timestamptz         | dernier envoi (voir `src/lib/formDigest.ts`)                            |
+
+`homepage_config.keyFigures` : `{ eyebrow, title, items: [{ value, label }] }` (2 à 4 éléments). Chiffres clés affichés sur l'accueil pendant une annonce (`announcements.show_key_figures`) et toujours sur `/nous-rejoindre`. Édités depuis `/admin/homepage` (section « Chiffres clés ») ; les autres clés de `homepage_config` sont conservées à l'enregistrement. Valeurs par défaut si absent : `src/constants/keyFigures.ts`.
 
 ### RBAC — `roles` / `audit_logs`
 
@@ -328,30 +354,31 @@ Toutes en cascade sur suppression. L'ancienne relation directe `theme_production
 
 ## Index
 
-| Index                                  | Table                | Colonne(s)           |
-| -------------------------------------- | -------------------- | -------------------- |
-| `pages_slug_idx`                       | pages                | slug                 |
-| `themes_slug_idx`                      | themes               | slug                 |
-| `sub_themes_slug_idx`                  | sub_themes           | slug                 |
-| `sub_themes_theme_id_idx`              | sub_themes           | theme_id             |
-| `productions_slug_idx`                 | productions          | slug                 |
-| `events_slug_idx`                      | events               | slug                 |
-| `projects_slug_idx`                    | projects             | slug                 |
-| `dossiers_slug_idx`                    | dossiers             | slug                 |
-| `dossier_items_dossier_id_idx`         | dossier_items        | dossier_id, position |
-| `journal_entries_slug_idx`             | journal_entries      | slug                 |
-| `journal_entries_category_idx`         | journal_entries      | category             |
-| `journal_entries_project_id_idx`       | journal_entries      | project_id           |
-| `resources_type_idx`                   | resources            | type                 |
-| `resources_theme_id_idx`               | resources            | theme_id             |
-| `form_submissions_status_idx`          | form_submissions     | status               |
-| `audit_logs_created_idx`               | audit_logs           | created_at desc      |
-| `activity_formats_position_idx`        | activity_formats     | position             |
-| `event_animators_event_id_idx`         | event_animators      | event_id, position   |
-| `production_authors_author_id_idx`     | production_authors   | author_id            |
-| `production_resources_resource_id_idx` | production_resources | resource_id          |
-| `project_events_event_id_idx`          | project_events       | event_id             |
-| `redirects_from_path_idx`              | redirects (obsolète) | from_path            |
+| Index                                  | Table                | Colonne(s)                  |
+| -------------------------------------- | -------------------- | --------------------------- |
+| `pages_slug_idx`                       | pages                | slug                        |
+| `themes_slug_idx`                      | themes               | slug                        |
+| `sub_themes_slug_idx`                  | sub_themes           | slug                        |
+| `sub_themes_theme_id_idx`              | sub_themes           | theme_id                    |
+| `productions_slug_idx`                 | productions          | slug                        |
+| `events_slug_idx`                      | events               | slug                        |
+| `projects_slug_idx`                    | projects             | slug                        |
+| `dossiers_slug_idx`                    | dossiers             | slug                        |
+| `dossier_items_dossier_id_idx`         | dossier_items        | dossier_id, position        |
+| `journal_entries_slug_idx`             | journal_entries      | slug                        |
+| `journal_entries_category_idx`         | journal_entries      | category                    |
+| `journal_entries_project_id_idx`       | journal_entries      | project_id                  |
+| `resources_type_idx`                   | resources            | type                        |
+| `resources_theme_id_idx`               | resources            | theme_id                    |
+| `form_submissions_status_idx`          | form_submissions     | status                      |
+| `audit_logs_created_idx`               | audit_logs           | created_at desc             |
+| `announcements_live_idx`               | announcements        | enabled, starts_at, ends_at |
+| `activity_formats_position_idx`        | activity_formats     | position                    |
+| `event_animators_event_id_idx`         | event_animators      | event_id, position          |
+| `production_authors_author_id_idx`     | production_authors   | author_id                   |
+| `production_resources_resource_id_idx` | production_resources | resource_id                 |
+| `project_events_event_id_idx`          | project_events       | event_id                    |
+| `redirects_from_path_idx`              | redirects (obsolète) | from_path                   |
 
 ---
 

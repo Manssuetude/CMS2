@@ -181,6 +181,9 @@ export type Page = {
   seoTitle?: string | null;
   seoDescription?: string | null;
   seoImageId?: string | null;
+  // Colonne jsonb `pages.content` brute : contenu structuré propre à une page
+  // (ex. /nous-rejoindre, lu par parseJoinPageContent).
+  content?: Record<string, unknown>;
   status: ContentStatus;
   updatedAt: string;
 };
@@ -438,4 +441,80 @@ export type FooterConfig = {
   columns?: FooterColumn[];
   socialLinks?: FooterLink[];
   legalLinks?: FooterLink[];
+};
+
+// ── Chiffres clés (site_settings.homepage_config.keyFigures) ─────────────────
+export type KeyFigure = { value: string; label: string };
+export type KeyFigures = { eyebrow: string; title: string; items: KeyFigure[] };
+
+// ── Annonces mises en avant (table `announcements`) ──────────────────────────
+export type Announcement = {
+  id: string;
+  name: string;
+  enabled: boolean;
+  startsAt: string | null;
+  endsAt: string | null;
+  bannerEnabled: boolean;
+  bannerLabel: string | null;
+  bannerText: string | null;
+  bannerLinkLabel: string | null;
+  bannerLinkUrl: string | null;
+  heroEnabled: boolean;
+  eyebrow: string | null;
+  title: string | null;
+  titleAccent: string | null;
+  subtitle: string | null;
+  imageId: string | null;
+  imageUrl: string | null;
+  imageAlt: string | null;
+  imageWidth: number | null;
+  imageHeight: number | null;
+  imageCrop: ImageCrop | null;
+  primaryCtaLabel: string | null;
+  primaryCtaUrl: string | null;
+  secondaryCtaLabel: string | null;
+  secondaryCtaUrl: string | null;
+  periodLabel: string | null;
+  showDeadline: boolean;
+  showKeyFigures: boolean;
+  finalEnabled: boolean;
+  finalEyebrow: string | null;
+  finalTitle: string | null;
+  finalText: string | null;
+  finalCtaLabel: string | null;
+  finalCtaUrl: string | null;
+  headerBadge: string | null;
+  appliesToJoinPage: boolean;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Statut affiché dans /admin/annonces.
+export type AnnouncementState = "live" | "scheduled" | "ended" | "disabled" | "undated";
+
+// ── Page /nous-rejoindre (pages.content) ─────────────────────────────────────
+// Photo d'un emplacement : ressource de la médiathèque + recadrage + alt.
+export type SlotPhoto = { imageId: string | null; crop: ImageCrop | null; alt: string };
+// Photo résolue pour l'affichage (URL et dimensions de la ressource).
+export type ResolvedSlotPhoto = SlotPhoto & { url: string | null; width: number | null; height: number | null };
+
+export type JoinPageContent = {
+  heroSubtitle: string;
+  heroAlt: string;
+  start: { eyebrow: string; title: string; text: string; photo: SlotPhoto };
+  experience: { eyebrow: string; title: string; text: string; items: { label: string; photo: SlotPhoto }[] };
+  ambition: { eyebrow: string; title: string; text: string; items: { title: string; text: string }[] };
+  audience: {
+    eyebrow: string;
+    title: string;
+    whoTitle: string;
+    whoText: string;
+    expectTitle: string;
+    expectText: string;
+    qualities: string[];
+  };
+  steps: { eyebrow: string; title: string; items: { title: string; text: string }[]; note: string };
+  final: { eyebrow: string; title: string; text: string; photo: SlotPhoto };
 };

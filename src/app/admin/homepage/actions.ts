@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { pageRepository } from "@/repositories/pageRepository";
 import { logAction } from "@/lib/audit";
+import { requirePermission } from "@/lib/auth";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
+import { readKeyFiguresForm } from "@/utils/keyFigures";
 import type { ContentBlock } from "@/types/cms";
 
 export async function savePageBlocksAction(slug: string, blocks: ContentBlock[]): Promise<void> {
@@ -13,6 +16,7 @@ export async function savePageBlocksAction(slug: string, blocks: ContentBlock[])
 }
 
 export async function saveHomepageFieldsAction(formData: FormData): Promise<void> {
+  await requirePermission("homepage:edit");
   const fields: Record<string, unknown> = {
     body: formData.get("body") || null,
     featured_event_id: formData.get("featured_event_id") || null,
@@ -22,7 +26,11 @@ export async function saveHomepageFieldsAction(formData: FormData): Promise<void
     seo_description: formData.get("seo_description") || null,
   };
   await pageRepository.updatePage("accueil", fields);
+  // Chiffres clés (homepage_config.keyFigures) : ignorés s'il en manque (moins de 2).
+  const keyFigures = readKeyFiguresForm(formData);
+  if (keyFigures) await siteSettingsRepository.updateKeyFigures(keyFigures);
   await logAction("update", { entityType: "page", entityId: "accueil", summary: "Page d'accueil modifiée" });
   revalidatePath("/");
+  revalidatePath("/nous-rejoindre");
   redirect("/admin/homepage?saved=1");
 }

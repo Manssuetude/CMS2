@@ -5,3 +5,10 @@
  * enregistré correspond exactement à ce qui est rendu.
  */
 export const HERO_ASPECT = 5 / 4;
+
+/** /nous-rejoindre : photo principale en bandeau (~1080 × 405). */
+export const JOIN_BANNER_ASPECT = 8 / 3;
+/** /nous-rejoindre : photo « Notre point de départ ». */
+export const JOIN_START_ASPECT = 4 / 3;
+/** /nous-rejoindre : photos verticales (expérience collective, bloc « Rejoindre »). */
+export const PORTRAIT_ASPECT = 4 / 5;
