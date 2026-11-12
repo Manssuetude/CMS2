@@ -80,6 +80,10 @@ SQL schema files are in `supabase/`: `schema.sql` (full schema — single source
 
 **Formulaires publics** — les CTA `FORM:join|project|content|partner|don|theme|activity` ouvrent `FormModal`. Les pages Activités/Thèmes/Projets ont une section « Proposer … » en bas (`ProposeSection`). Soumissions en DB (`form_submissions`) → `/admin/forms` (détail dépliable, filtres par type, export CSV, statut reçu → en cours → traité → archivé). Plus de pièce jointe.
 
+**Annonces mises en avant** — table `announcements` (`/admin/annonces`) : bandeau au-dessus du header (layout public, `PublicChrome`), badge sur « Rejoindre », hero + chiffres clés + bloc final sur l'accueil, valeurs remplacées sur `/nous-rejoindre` si `applies_to_join_page`. En ligne si activée et `starts_at <= now < ends_at` (`announcementService.getLive`, logique pure dans `utils/announcements.ts`, ne lève jamais). Ce n'est pas un événement. Aperçu admin : `?apercu-annonce=<id>` sur `/` ou `/nous-rejoindre`, réécrit par le middleware vers `(apercu-annonce)` (dynamique, noindex) pour ne pas toucher au cache ISR. Chiffres clés : `site_settings.homepage_config.keyFigures`, édités dans `/admin/homepage`.
+
+**Page /nous-rejoindre** — `JoinEditorial`, 8 sections fixes ; textes et photos dans `pages.content` (jsonb, `parseJoinPageContent` complète avec `constants/joinPage.ts`), éditeur dédié `/admin/pages/nous-rejoindre`. Une annonce ne fait que remplacer des valeurs (`joinSlots`) : ne jamais ajouter/retirer de section selon l'annonce (test `tests/joinPage.test.ts`).
+
 **RBAC (rôles & permissions)** — le rôle vient de `users.role_key` (table `roles`, permissions JSONB `section:action`). `getSession()` renvoie `{ roleKey, isAdmin, permissions }`. Garde-fous : `requireRole` / `requireAdmin` / `requirePermission` (`lib/auth.ts`), `can()` (`lib/permissions.ts`), catalogue dans `constants/permissions.ts`. Enforcement : middleware (`x-pathname`) + layout admin + sidebar masquée. **Ne jamais réintroduire de rôle « admin » par défaut.** Détails : `docs/AUTH.md`.
 
 **Thème sombre** — préférence système + bouton bascule (`ThemeToggle`, `data-theme`), tokens `--ed-*` (public) et globals (admin). Utiliser les tokens, pas de couleur en dur (surtout pas de `#fff` de fond → `var(--surface)`).
@@ -92,6 +96,8 @@ SQL schema files are in `supabase/`: `schema.sql` (full schema — single source
 - `/admin/perca`, `/admin/history` : contenu riche (comme les articles)
 - `/admin/pages` : photo hero des pages statiques
 - `/admin/sousthemes` : sous-thèmes (sujets traités sous un thème) — thème parent, contenu éditorial, statut. Les productions sont reliées aux sous-thèmes (pas directement aux thèmes) depuis `/admin/productions`
+- `/admin/annonces` : annonces mises en avant (dates, bandeau, hero, bloc final, Nous rejoindre, aperçu, duplication)
+- `/admin/pages/nous-rejoindre` : textes et photos de /nous-rejoindre (éditeur dédié)
 - `/admin/forms` : soumissions (détail, filtres, export)
 - `/admin/users`, `/admin/roles`, `/admin/historique` : **admin only** (gestion RBAC + journal d'audit). Le nom « Journal » est réservé au futur Journal éditorial public (V2) — ne pas le réutiliser pour l'audit RBAC.
 - Mise en avant accueil : étoile cliquable (thèmes / productions max 4 / activités max 3)

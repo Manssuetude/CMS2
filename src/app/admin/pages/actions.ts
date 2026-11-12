@@ -7,6 +7,8 @@ import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { requirePermission } from "@/lib/auth";
 import { logAction } from "@/lib/audit";
 import { MAIN_NAV_ITEMS, PAGE_DIRECTORY } from "@/constants/site";
+import { readJoinPageForm } from "@/utils/joinPage";
+import { parseImageCrop } from "@/utils/imageCrop";
 
 export async function savePageContentAction(formData: FormData): Promise<void> {
   await requirePermission("pages:edit");
@@ -38,4 +40,32 @@ export async function saveNavVisibilityAction(formData: FormData): Promise<void>
   await logAction("update", { entityType: "site_settings", summary: "Visibilité du menu modifiée" });
   revalidatePath("/", "layout");
   redirect("/admin/pages?saved=1");
+}
+
+// Éditeur dédié de /nous-rejoindre : champs communs dans les colonnes de
+// `pages`, sections propres à la page dans `pages.content`.
+export async function saveJoinPageAction(formData: FormData): Promise<void> {
+  await requirePermission("pages:edit");
+  const text = (name: string) => {
+    const value = formData.get(name);
+    return typeof value === "string" && value.trim() ? value.trim() : null;
+  };
+  await pageRepository.updatePage("nous-rejoindre", {
+    eyebrow: text("eyebrow"),
+    title: text("title") ?? "Construisons ensemble une voix citoyenne.",
+    primary_cta_label: text("primary_cta_label"),
+    primary_cta_target: text("primary_cta_target"),
+    image_id: text("image_id"),
+    image_crop: text("image_id") ? parseImageCrop(formData.get("image_crop")) : null,
+    seo_title: text("seo_title"),
+    seo_description: text("seo_description"),
+    content: readJoinPageForm(formData),
+  });
+  await logAction("update", {
+    entityType: "page",
+    entityId: "nous-rejoindre",
+    summary: "Contenu de la page « nous-rejoindre » modifié",
+  });
+  revalidatePath("/nous-rejoindre");
+  redirect("/admin/pages/nous-rejoindre?saved=1");
 }

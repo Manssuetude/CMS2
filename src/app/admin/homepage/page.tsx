@@ -4,14 +4,17 @@ import { mediaRepository } from "@/repositories/mediaRepository";
 import { eventRepository } from "@/repositories/eventRepository";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { HERO_ASPECT } from "@/constants/imageAspects";
+import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
+import { KEY_FIGURES_MAX } from "@/constants/keyFigures";
 import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
 import { saveHomepageFieldsAction } from "./actions";
 
 export default async function AdminHomepage() {
-  const [page, media, events] = await Promise.all([
+  const [page, media, events, keyFigures] = await Promise.all([
     pageRepository.getPage("accueil"),
     mediaRepository.list(),
     eventRepository.listEvents(),
+    siteSettingsRepository.getKeyFigures(),
   ]);
 
   const images = media.filter((m) => m.type === "image");
@@ -122,6 +125,62 @@ export default async function AdminHomepage() {
               </a>
             </p>
           )}
+        </div>
+
+        {/* ── Chiffres clés ────────────────────────────────────────── */}
+        <div className="admin-form-section">
+          <h2 className="admin-form-section-title">Chiffres clés</h2>
+          <p className="admin-form-section-hint">
+            Saisis une seule fois : affichés sur l&apos;accueil pendant une annonce (si l&apos;annonce le prévoit) et
+            toujours sur /nous-rejoindre. De 2 à 4 chiffres ; une ligne vide est ignorée.
+          </p>
+          <div className="form-field">
+            <label className="form-label" htmlFor="keyFiguresEyebrow">
+              Étiquette
+            </label>
+            <input
+              id="keyFiguresEyebrow"
+              name="keyFiguresEyebrow"
+              className="form-input"
+              defaultValue={keyFigures.eyebrow}
+            />
+          </div>
+          <div className="form-field">
+            <label className="form-label" htmlFor="keyFiguresTitle">
+              Titre
+            </label>
+            <input id="keyFiguresTitle" name="keyFiguresTitle" className="form-input" defaultValue={keyFigures.title} />
+          </div>
+          {Array.from({ length: KEY_FIGURES_MAX }, (_, i) => (
+            <div key={i} style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 12 }}>
+              <div className="form-field">
+                <label className="form-label" htmlFor={`keyFigureValue${i}`}>
+                  Chiffre {i + 1}
+                </label>
+                <input
+                  id={`keyFigureValue${i}`}
+                  name={`keyFigureValue${i}`}
+                  className="form-input"
+                  defaultValue={keyFigures.items[i]?.value ?? ""}
+                  placeholder="20"
+                  required={i < 2}
+                />
+              </div>
+              <div className="form-field">
+                <label className="form-label" htmlFor={`keyFigureLabel${i}`}>
+                  Libellé
+                </label>
+                <input
+                  id={`keyFigureLabel${i}`}
+                  name={`keyFigureLabel${i}`}
+                  className="form-input"
+                  defaultValue={keyFigures.items[i]?.label ?? ""}
+                  placeholder="rencontres thématiques"
+                  required={i < 2}
+                />
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* ── SEO ──────────────────────────────────────────────────── */}

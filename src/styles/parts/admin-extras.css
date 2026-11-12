@@ -609,3 +609,79 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* =============================================================
+   Annonces mises en avant (/admin/annonces) et éditeurs de page en
+   sections repliables (/admin/pages/nous-rejoindre)
+   ============================================================= */
+
+.admin-collapsible {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  margin-bottom: 14px;
+}
+.admin-collapsible > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.admin-collapsible > summary::-webkit-details-marker {
+  display: none;
+}
+.admin-collapsible > summary::after {
+  content: "+";
+  font-size: 18px;
+  line-height: 1;
+  color: var(--muted);
+}
+.admin-collapsible[open] > summary::after {
+  content: "−";
+}
+.admin-collapsible > summary:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.admin-collapsible-body {
+  padding: 4px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.admin-collapsible-hint {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.admin-collapsible-sub {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin: 14px 0 4px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-dashed);
+}
+
+.admin-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--orange-soft);
+  color: var(--ink);
+  font-size: 13px;
+}
+.admin-warning svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--warning);
+}

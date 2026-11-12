@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/db";
 import type { ContentBlock, ContentStatus, Page, PercaStep } from "@/types/cms";
-import { asNullablePositiveInt, asNullableString, asRecordArray, asString, type DataRow } from "@/utils/row";
+import { asNullablePositiveInt, asNullableString, asRecord, asRecordArray, asString, type DataRow } from "@/utils/row";
 import { parseImageCrop } from "@/utils/imageCrop";
 import { normalizeUrl } from "@/repositories/mediaRepository";
 
@@ -43,6 +43,7 @@ function mapPage(row: DataRow): Page {
     seoTitle: asNullableString(row.seo_title),
     seoDescription: asNullableString(row.seo_description),
     seoImageId: asNullableString(row.seo_image_id),
+    content: asRecord(row.content),
     status: asString(row.status, "draft") as ContentStatus,
     updatedAt: asString(row.updated_at),
   };

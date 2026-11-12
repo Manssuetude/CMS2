@@ -1,0 +1,441 @@
+/* Annonces mises en avant : bandeau, badge du header, hero d'accueil, bande de
+   chiffres clés, bloc final, pastille d'aperçu. Voir src/components/public/Announcement*.tsx. */
+
+/* -- Point orange qui pulse doucement (bandeau, étiquette du hero) -- */
+.site-shell .ann-dot {
+  position: relative;
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ed-brand);
+}
+.site-shell .ann-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--ed-brand);
+  animation: ann-pulse 2.4s ease-out infinite;
+}
+@keyframes ann-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+/* =============================================================
+   Bandeau (au-dessus du header, toutes les pages publiques)
+   ============================================================= */
+
+.site-shell .ann-banner {
+  display: block;
+  background: var(--ed-night);
+  color: var(--ed-on-night);
+  border-bottom: 1px solid var(--ed-night-line);
+  font-size: 14px;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.site-shell .ann-banner-inner {
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding: 10px var(--ed-gutter);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem 0.65rem;
+}
+.site-shell .ann-banner-label {
+  font-weight: 700;
+}
+.site-shell .ann-banner-text {
+  color: var(--ed-on-night-soft);
+}
+.site-shell .ann-banner-link {
+  font-weight: 600;
+  color: var(--ed-on-image-accent);
+}
+.site-shell a.ann-banner:hover .ann-banner-link,
+.site-shell a.ann-banner:focus-visible .ann-banner-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.site-shell a.ann-banner:hover .ann-banner-link {
+  color: var(--ed-on-night);
+}
+.site-shell a.ann-banner:focus-visible {
+  outline-offset: -4px;
+}
+.site-shell .ann-banner-arrow {
+  display: none;
+  color: var(--ed-on-image-accent);
+  font-weight: 700;
+}
+
+/* Téléphone : une seule ligne, le texte se tronque, toute la barre reste le lien. */
+@media (max-width: 720px) {
+  .site-shell .ann-banner-inner {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    white-space: nowrap;
+    padding-block: 9px;
+  }
+  .site-shell .ann-banner-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .site-shell .ann-banner-label {
+    flex-shrink: 0;
+  }
+  .site-shell .ann-banner-link {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .site-shell .ann-banner-arrow {
+    display: inline;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+}
+
+/* =============================================================
+   Badge sur « Rejoindre » (header)
+   ============================================================= */
+
+.site-shell .cta--badged {
+  position: relative;
+}
+.site-shell .cta-badge {
+  position: absolute;
+  top: -0.7em;
+  right: -0.45em;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  border: 2px solid var(--ed-raise);
+  background: var(--ed-night);
+  color: var(--ed-on-night);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* =============================================================
+   Hero d'accueil pendant une annonce (même grille que .home-hero)
+   ============================================================= */
+
+.site-shell .ann-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  margin: 0 0 1.4rem;
+  padding: 0.45em 0.95em;
+  border-radius: var(--ed-radius);
+  background: color-mix(in srgb, var(--ed-brand) 10%, var(--ed-paper));
+  color: var(--ed-accent-text);
+  font-size: var(--ed-step-small);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+/* Grille de la maquette : texte et photo à parts presque égales */
+.site-shell .home > .ann-hero {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+}
+.site-shell .ann-title {
+  font-size: clamp(3rem, 1.6rem + 3.6vw, 4.75rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin: 0 0 1.5rem;
+  max-width: none;
+}
+/* L'accent passe à la ligne : « Manssuétude / recrute. » */
+.site-shell .ann-title em {
+  display: block;
+  font-style: italic;
+  color: var(--ed-accent-text);
+}
+.site-shell .ann-hero-subtitle {
+  font-size: var(--ed-step-1);
+  color: var(--ed-ink-soft);
+  line-height: 1.6;
+  margin: 0 0 1.75rem;
+  max-width: 44ch;
+}
+.site-shell .ann-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+.site-shell .ann-btn svg {
+  transition: transform 0.18s ease;
+}
+.site-shell .ann-btn:hover svg {
+  transform: translateX(3px);
+}
+.site-shell .ann-meta {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 1.25rem 0 0;
+  border-top: 1px solid var(--ed-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.75rem;
+  color: var(--ed-ink-soft);
+  font-size: 0.95rem;
+}
+.site-shell .ann-meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.site-shell .ann-meta svg {
+  flex-shrink: 0;
+  color: var(--ed-accent-text);
+}
+/* Carte posée à cheval sur le bord gauche de la photo */
+.site-shell .ann-hero-visual {
+  position: relative;
+}
+.site-shell .ann-figure-card {
+  position: absolute;
+  left: clamp(-1.75rem, -2vw, -0.75rem);
+  bottom: clamp(1rem, 2.5vw, 1.75rem);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0;
+  max-width: 80%;
+  padding: 0.75rem 1.1rem 0.85rem;
+  background: var(--ed-raise);
+  color: var(--ed-ink);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius);
+  box-shadow: 0 14px 34px rgba(28, 23, 20, 0.16);
+}
+.site-shell .ann-figure-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ed-accent-text);
+}
+.site-shell .ann-figure-text {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.15rem, 0.9rem + 0.8vw, 1.55rem);
+  line-height: 1.15;
+}
+
+@media (max-width: 820px) {
+  /* Photo en haut, pleine largeur */
+  .site-shell .ann-hero {
+    padding-top: 1rem;
+  }
+  .site-shell .home > .ann-hero {
+    grid-template-columns: 1fr;
+  }
+  .site-shell .ann-hero-visual {
+    order: -1;
+  }
+  .site-shell .ann-figure-card {
+    left: 0.75rem;
+    bottom: 0.75rem;
+  }
+  .site-shell .ann-actions .button {
+    width: 100%;
+  }
+}
+
+/* =============================================================
+   Bande de chiffres clés (accueil pendant une annonce, /nous-rejoindre)
+   ============================================================= */
+
+.site-shell .home > .key-figures,
+.site-shell .join > .key-figures {
+  padding: 0;
+}
+/* Pleine largeur sans débordement : fond et filets haut/bas dessinés par un
+   border-image étendu vers l'extérieur (rendu hors boîte, jamais défilable). */
+.site-shell .key-figures {
+  --bleed-bg: color-mix(in srgb, var(--ed-sink) 45%, var(--ed-paper));
+  border-image: linear-gradient(
+      to bottom,
+      var(--ed-line) 1px,
+      var(--bleed-bg) 1px calc(100% - 1px),
+      var(--ed-line) calc(100% - 1px)
+    )
+    fill 0 / 0 / 0 100vmax;
+}
+.site-shell .key-figures-inner {
+  max-width: var(--ed-container);
+  margin: 0 auto;
+  padding: clamp(2rem, 4vw, 3rem) var(--ed-gutter);
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.8fr) 2fr;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: center;
+}
+.site-shell .key-figures-head h2 {
+  font-size: var(--ed-step-4);
+  margin: 0;
+}
+.site-shell .key-figures-head .eyebrow {
+  margin-bottom: 0.6rem;
+}
+.site-shell .key-figures-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--kf-count, 4), minmax(0, 1fr));
+}
+.site-shell .key-figures-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.25rem clamp(1rem, 2vw, 2rem);
+}
+.site-shell .key-figures-list li {
+  border-left: 1px solid var(--ed-line-strong);
+}
+.site-shell .key-figure-value {
+  font-family: var(--font-serif), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(2.5rem, 1.6rem + 2.4vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ed-accent-text);
+}
+.site-shell .key-figure-label {
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--ed-ink-soft);
+}
+
+/* Variante /nous-rejoindre : titre au-dessus, chiffres plus grands, filet orange */
+.site-shell .key-figures--join .key-figures-inner {
+  grid-template-columns: 1fr;
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+.site-shell .key-figures--join .key-figures-head h2 {
+  font-size: var(--ed-step-5);
+}
+.site-shell .key-figures--join .key-figures-list {
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+.site-shell .key-figures--join .key-figures-list li {
+  padding: 1.1rem 0 0;
+  border-left: 0;
+  border-top: 2px solid var(--ed-accent-strong);
+}
+.site-shell .key-figures--join .key-figure-value {
+  font-size: clamp(3rem, 1.8rem + 3vw, 4.5rem);
+}
+
+@media (max-width: 820px) {
+  .site-shell .key-figures-inner {
+    grid-template-columns: 1fr;
+  }
+  .site-shell .key-figures-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 1.5rem;
+  }
+  .site-shell .key-figures-list li {
+    padding-inline: 1rem;
+  }
+  .site-shell .key-figures-list li:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .site-shell .key-figures--join .key-figures-list li {
+    padding-inline: 0;
+  }
+}
+
+/* =============================================================
+   Bloc final sombre de l'accueil pendant une annonce
+   ============================================================= */
+
+.site-shell .home > .ann-final {
+  --bleed-bg: var(--ed-night);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-block: clamp(2.5rem, 5vw, 3.75rem);
+  background: var(--bleed-bg);
+  box-shadow: 0 0 0 100vmax var(--bleed-bg);
+  clip-path: inset(0 -100vmax);
+  color: var(--ed-on-night);
+}
+.site-shell .ann-final-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
+}
+.site-shell .ann-final-inner .eyebrow {
+  color: var(--ed-on-image-accent);
+}
+.site-shell .ann-final-inner .eyebrow {
+  margin-bottom: 0.4rem;
+}
+.site-shell .ann-final-inner h2 {
+  color: var(--ed-on-night);
+  font-size: var(--ed-step-4);
+  margin: 0 0 0.6rem;
+}
+.site-shell .ann-final-text {
+  color: var(--ed-on-night-soft);
+  margin: 0;
+  max-width: 60ch;
+}
+@media (max-width: 720px) {
+  .site-shell .ann-final-inner .button {
+    width: 100%;
+  }
+}
+
+/* Pastille « Aperçu » (route d'aperçu admin uniquement) */
+.site-shell .ann-preview-flag {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 60;
+  margin: 0;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  background: var(--ed-night);
+  color: var(--ed-on-night);
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 10px 26px rgba(28, 23, 20, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-shell .ann-dot::after {
+    animation: none;
+    display: none;
+  }
+  .site-shell .ann-btn:hover svg {
+    transform: none;
+  }
+}

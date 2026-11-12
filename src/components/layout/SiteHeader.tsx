@@ -11,9 +11,12 @@ import type { NavVisibility } from "@/types/cms";
 export function SiteHeader({
   logoUrl,
   navVisibility = {},
+  joinBadge = null,
 }: {
   logoUrl?: string | null;
   navVisibility?: NavVisibility;
+  // Pastille sur « Rejoindre » pendant une annonce (ex. « OUVERT »).
+  joinBadge?: string | null;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -68,8 +71,13 @@ export function SiteHeader({
           )}
           <HeaderSearch />
           <ThemeToggle />
-          <Link className="cta" href="/nous-rejoindre" onClick={() => setOpen(false)}>
+          <Link
+            className={`cta${joinBadge ? " cta--badged" : ""}`}
+            href="/nous-rejoindre"
+            onClick={() => setOpen(false)}
+          >
             Rejoindre
+            {joinBadge ? <span className="cta-badge">{joinBadge}</span> : null}
           </Link>
           <a className="cta" href={MEMBER_SPACE_URL} target="_blank" rel="noopener noreferrer">
             Espace membre

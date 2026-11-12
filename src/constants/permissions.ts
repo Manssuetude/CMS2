@@ -30,6 +30,7 @@ export const permissionCatalog: PermissionSection[] = [
   { key: "dossiers", label: "Dossiers", actions: ["view", "create", "edit", "delete", "publish"] },
   { key: "media", label: "Médiathèque", actions: ["view", "create", "delete"] },
   { key: "forms", label: "Formulaires", actions: ["view", "edit", "delete"] },
+  { key: "annonces", label: "Annonces mises en avant", actions: ["view", "create", "edit", "delete"] },
   { key: "homepage", label: "Page d'accueil", actions: ["view", "edit"] },
   { key: "perca", label: "Page PERCA", actions: ["view", "edit"] },
   { key: "history", label: "Page Histoire", actions: ["view", "edit"] },

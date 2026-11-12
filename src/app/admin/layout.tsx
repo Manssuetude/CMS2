@@ -20,6 +20,7 @@ const GATED_SECTIONS = [
   "dossiers",
   "media",
   "forms",
+  "annonces",
   "homepage",
   "perca",
   "history",
