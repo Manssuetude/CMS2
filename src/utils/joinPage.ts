@@ -216,13 +216,21 @@ export function joinSlots(page: Page, content: JoinPageContent, announcement: An
   if (!announcement?.appliesToJoinPage) return permanent;
   const deadline = announcement.showDeadline ? formatDeadline(announcement.endsAt) : null;
   return {
-    eyebrow: announcement.eyebrow || announcement.bannerLabel || permanent.eyebrow,
+    eyebrow: [
+      announcement.eyebrow || announcement.bannerLabel || permanent.eyebrow,
+      announcement.periodLabel?.replace(/^campagne\s+/i, ""),
+    ]
+      .filter(Boolean)
+      .join(" · "),
     title: announcement.title || permanent.title,
     titleAccent: announcement.title ? announcement.titleAccent : null,
     subtitle: fillDateToken(announcement.subtitle, announcement.endsAt) || permanent.subtitle,
     cta:
       announcement.primaryCtaLabel && announcement.primaryCtaUrl
-        ? { label: announcement.primaryCtaLabel, target: announcement.primaryCtaUrl }
+        ? {
+            label: fillDateToken(announcement.primaryCtaLabel, announcement.endsAt),
+            target: announcement.primaryCtaUrl,
+          }
         : permanent.cta,
     deadline: deadline ? `Clôture le ${deadline}` : null,
   };

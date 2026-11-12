@@ -89,7 +89,7 @@ export const DEFAULT_JOIN_CONTENT: JoinPageContent = {
     note: "Manssuétude repose sur le bénévolat. Nous attendons une réciprocité : participer à la vie du collectif à votre mesure et être fiable dans vos engagements.",
   },
   final: {
-    eyebrow: "Rejoindre",
+    eyebrow: "Rejoindre Manssuétude",
     title: "Il y a encore tant de questions à poser.",
     text: "Rejoignez une communauté qui prend le temps de penser, de débattre et de construire ensemble.",
     photo: {

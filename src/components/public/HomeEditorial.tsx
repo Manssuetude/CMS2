@@ -62,7 +62,11 @@ export function HomeEditorial({
     <div className="home">
       {/* 1 — Hero : annonce mise en avant, sinon identité de l'association */}
       {announcement && showAnnouncementHero ? (
-        <AnnouncementHero announcement={announcement} firstFigure={keyFigures?.items[0] ?? null} />
+        <AnnouncementHero
+          announcement={announcement}
+          firstFigure={keyFigures?.items[0] ?? null}
+          figureEyebrow={keyFigures?.eyebrow ?? null}
+        />
       ) : (
         <section className={`home-hero${heroImageUrl ? "" : " home-hero--no-image"}`}>
           <div className="home-hero-copy">

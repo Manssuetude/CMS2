@@ -62,6 +62,9 @@
 .site-shell .ann-banner-link {
   font-weight: 600;
   color: var(--ed-on-image-accent);
+}
+.site-shell a.ann-banner:hover .ann-banner-link,
+.site-shell a.ann-banner:focus-visible .ann-banner-link {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -114,18 +117,24 @@
    Badge sur « Rejoindre » (header)
    ============================================================= */
 
+.site-shell .cta--badged {
+  position: relative;
+}
 .site-shell .cta-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.15em 0.55em;
+  position: absolute;
+  top: -0.7em;
+  right: -0.45em;
+  padding: 0.2em 0.6em;
   border-radius: 999px;
-  background: var(--ed-on-accent);
-  color: var(--ed-accent-strong);
-  font-size: 0.65rem;
+  border: 2px solid var(--ed-raise);
+  background: var(--ed-night);
+  color: var(--ed-on-night);
+  font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  line-height: 1.4;
+  line-height: 1.3;
   text-transform: uppercase;
+  pointer-events: none;
 }
 
 /* =============================================================
@@ -138,7 +147,7 @@
   gap: 0.65em;
   margin: 0 0 1.4rem;
   padding: 0.45em 0.95em;
-  border-radius: 999px;
+  border-radius: var(--ed-radius);
   background: color-mix(in srgb, var(--ed-brand) 10%, var(--ed-paper));
   color: var(--ed-accent-text);
   font-size: var(--ed-step-small);
@@ -146,15 +155,22 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
+/* Grille de la maquette : texte et photo à parts presque égales */
+.site-shell .home > .ann-hero {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+}
 .site-shell .ann-title {
   font-size: clamp(3rem, 1.6rem + 3.6vw, 4.75rem);
   font-weight: 400;
-  line-height: 1.02;
+  line-height: 1;
   letter-spacing: -0.025em;
-  margin: 0 0 1.25rem;
-  max-width: 12ch;
+  margin: 0 0 1.5rem;
+  max-width: none;
 }
+/* L'accent passe à la ligne : « Manssuétude / recrute. » */
 .site-shell .ann-title em {
+  display: block;
   font-style: italic;
   color: var(--ed-accent-text);
 }
@@ -196,33 +212,38 @@
   flex-shrink: 0;
   color: var(--ed-accent-text);
 }
+/* Carte posée à cheval sur le bord gauche de la photo */
+.site-shell .ann-hero-visual {
+  position: relative;
+}
 .site-shell .ann-figure-card {
   position: absolute;
-  left: clamp(12px, 2vw, 24px);
-  bottom: clamp(12px, 2vw, 24px);
+  left: clamp(-1.75rem, -2vw, -0.75rem);
+  bottom: clamp(1rem, 2.5vw, 1.75rem);
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  min-width: 9rem;
-  max-width: 60%;
-  padding: 0.9rem 1.15rem;
+  gap: 0.15rem;
+  margin: 0;
+  max-width: 80%;
+  padding: 0.75rem 1.1rem 0.85rem;
   background: var(--ed-raise);
   color: var(--ed-ink);
-  border-radius: var(--ed-radius-lg);
-  box-shadow: 0 14px 34px rgba(28, 23, 20, 0.2);
+  border: 1px solid var(--ed-line);
+  border-radius: var(--ed-radius);
+  box-shadow: 0 14px 34px rgba(28, 23, 20, 0.16);
 }
-.site-shell .ann-figure-card strong {
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 2.4rem;
-  font-weight: 500;
-  line-height: 1;
+.site-shell .ann-figure-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--ed-accent-text);
 }
-.site-shell .ann-figure-card span {
-  font-size: 0.85rem;
-  line-height: 1.35;
-  color: var(--ed-ink-soft);
+.site-shell .ann-figure-text {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.15rem, 0.9rem + 0.8vw, 1.55rem);
+  line-height: 1.15;
 }
 
 @media (max-width: 820px) {
@@ -230,9 +251,15 @@
   .site-shell .ann-hero {
     padding-top: 1rem;
   }
-  .site-shell .ann-hero-media {
+  .site-shell .home > .ann-hero {
+    grid-template-columns: 1fr;
+  }
+  .site-shell .ann-hero-visual {
     order: -1;
-    margin-inline: calc(-1 * var(--ed-gutter));
+  }
+  .site-shell .ann-figure-card {
+    left: 0.75rem;
+    bottom: 0.75rem;
   }
   .site-shell .ann-actions .button {
     width: 100%;
@@ -247,15 +274,22 @@
 .site-shell .join > .key-figures {
   padding: 0;
 }
+/* Pleine largeur sans débordement : fond et filets haut/bas dessinés par un
+   border-image étendu vers l'extérieur (rendu hors boîte, jamais défilable). */
 .site-shell .key-figures {
-  background: color-mix(in srgb, var(--ed-sink) 55%, var(--ed-paper));
-  border: 1px solid var(--ed-line);
-  border-radius: var(--ed-radius-lg);
+  --bleed-bg: color-mix(in srgb, var(--ed-sink) 45%, var(--ed-paper));
+  border-image: linear-gradient(
+      to bottom,
+      var(--ed-line) 1px,
+      var(--bleed-bg) 1px calc(100% - 1px),
+      var(--ed-line) calc(100% - 1px)
+    )
+    fill 0 / 0 / 0 100vmax;
 }
 .site-shell .key-figures-inner {
   max-width: var(--ed-container);
   margin: 0 auto;
-  padding: clamp(2rem, 4vw, 3.25rem) var(--ed-gutter);
+  padding: clamp(2rem, 4vw, 3rem) var(--ed-gutter);
   display: grid;
   grid-template-columns: minmax(14rem, 0.8fr) 2fr;
   gap: clamp(1.5rem, 4vw, 4rem);
@@ -281,7 +315,7 @@
   gap: 0.45rem;
   padding: 0.25rem clamp(1rem, 2vw, 2rem);
 }
-.site-shell .key-figures-list li + li {
+.site-shell .key-figures-list li {
   border-left: 1px solid var(--ed-line-strong);
 }
 .site-shell .key-figure-value {
@@ -312,7 +346,7 @@
 .site-shell .key-figures--join .key-figures-list li {
   padding: 1.1rem 0 0;
   border-left: 0;
-  border-top: 3px solid var(--ed-brand);
+  border-top: 2px solid var(--ed-accent-strong);
 }
 .site-shell .key-figures--join .key-figure-value {
   font-size: clamp(3rem, 1.8rem + 3vw, 4.5rem);
@@ -330,8 +364,8 @@
     padding-inline: 1rem;
   }
   .site-shell .key-figures-list li:nth-child(odd) {
-    border-left: 0;
     padding-left: 0;
+    border-left: 0;
   }
   .site-shell .key-figures--join .key-figures-list li {
     padding-inline: 0;
@@ -343,33 +377,41 @@
    ============================================================= */
 
 .site-shell .home > .ann-final {
-  padding-block: clamp(2.5rem, 5vw, 4.5rem) clamp(3rem, 6vw, 5rem);
+  --bleed-bg: var(--ed-night);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-block: clamp(2.5rem, 5vw, 3.75rem);
+  background: var(--bleed-bg);
+  box-shadow: 0 0 0 100vmax var(--bleed-bg);
+  clip-path: inset(0 -100vmax);
+  color: var(--ed-on-night);
 }
 .site-shell .ann-final-inner {
-  background: var(--ed-night);
-  color: var(--ed-on-night);
-  border: 1px solid var(--ed-night-line);
-  border-radius: var(--ed-radius-lg);
-  padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4.5rem);
-  text-align: center;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
 }
 .site-shell .ann-final-inner .eyebrow {
   color: var(--ed-on-image-accent);
 }
+.site-shell .ann-final-inner .eyebrow {
+  margin-bottom: 0.4rem;
+}
 .site-shell .ann-final-inner h2 {
   color: var(--ed-on-night);
-  font-size: var(--ed-step-5);
-  max-width: 20ch;
-  margin: 0 0 1rem;
+  font-size: var(--ed-step-4);
+  margin: 0 0 0.6rem;
 }
 .site-shell .ann-final-text {
   color: var(--ed-on-night-soft);
-  font-size: var(--ed-step-1);
-  margin: 0 0 2rem;
-  max-width: 52ch;
+  margin: 0;
+  max-width: 60ch;
+}
+@media (max-width: 720px) {
+  .site-shell .ann-final-inner .button {
+    width: 100%;
+  }
 }
 
 /* Pastille « Aperçu » (route d'aperçu admin uniquement) */

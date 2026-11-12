@@ -49,7 +49,7 @@ INSERT INTO public.announcements (
     'REJOINDRE MANSSUÉTUDE',
     'Il y a encore tant de questions à poser.',
     'Remplissez le formulaire. Notre équipe Intégration vous recontactera.',
-    'Candidater',
+    'Candidater avant le {date}',
     'https://forms.gle/NyM9MDZrdKcocHAW8',
     -- Badge du header, /nous-rejoindre, SEO (vide = dérivé : « Manssuétude recrute | Candidatures ouvertes »)
     'OUVERT',

@@ -239,10 +239,12 @@ export function JoinEditorial({
           <p className="eyebrow">{content.final.eyebrow}</p>
           <h2 id="join-final-title">{content.final.title}</h2>
           <p className="join-lead">{content.final.text}</p>
-          <div className="join-cta-lg">
-            <CtaButton label={slots.cta.label} target={slots.cta.target} variant="primary" />
+          <div className="join-cta-box">
+            <div className="join-cta-lg">
+              <CtaButton label={slots.cta.label} target={slots.cta.target} variant="primary" />
+            </div>
+            <Deadline text={slots.deadline} />
           </div>
-          <Deadline text={slots.deadline} />
         </div>
       </section>
     </div>

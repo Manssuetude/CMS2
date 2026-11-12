@@ -11,9 +11,11 @@ import { isMeaningfulAlt } from "@/utils/gallery";
 export function AnnouncementHero({
   announcement: a,
   firstFigure,
+  figureEyebrow,
 }: {
   announcement: Announcement;
   firstFigure?: KeyFigure | null;
+  figureEyebrow?: string | null;
 }) {
   const deadline = a.showDeadline ? formatDeadline(a.endsAt) : null;
   const subtitle = fillDateToken(a.subtitle, a.endsAt);
@@ -43,7 +45,7 @@ export function AnnouncementHero({
           <div className="ann-actions">
             {a.primaryCtaLabel && a.primaryCtaUrl ? (
               <SmartLink className="button primary ann-btn" href={a.primaryCtaUrl}>
-                {a.primaryCtaLabel}
+                {fillDateToken(a.primaryCtaLabel, a.endsAt)}
                 <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
               </SmartLink>
             ) : null}
@@ -72,25 +74,29 @@ export function AnnouncementHero({
         ) : null}
       </div>
       {a.imageUrl ? (
-        <figure className="home-hero-media ann-hero-media">
-          {/* Image LCP de l'accueil pendant l'annonce : seule image prioritaire. */}
-          <Image
-            src={a.imageUrl}
-            alt={isMeaningfulAlt(a.imageAlt) ? a.imageAlt : headline || a.name}
-            width={a.imageWidth ?? 1600}
-            height={a.imageHeight ?? 1200}
-            sizes={`(max-width: 820px) ${Math.round(100 * zoom)}vw, ${Math.round(760 * zoom)}px`}
-            priority
-            fetchPriority="high"
-            style={cropToImageStyle(a.imageCrop)}
-          />
+        <div className="ann-hero-visual">
+          <figure className="home-hero-media ann-hero-media">
+            {/* Image LCP de l'accueil pendant l'annonce : seule image prioritaire. */}
+            <Image
+              src={a.imageUrl}
+              alt={isMeaningfulAlt(a.imageAlt) ? a.imageAlt : headline || a.name}
+              width={a.imageWidth ?? 1600}
+              height={a.imageHeight ?? 1200}
+              sizes={`(max-width: 820px) ${Math.round(100 * zoom)}vw, ${Math.round(760 * zoom)}px`}
+              priority
+              fetchPriority="high"
+              style={cropToImageStyle(a.imageCrop)}
+            />
+          </figure>
           {firstFigure ? (
-            <figcaption className="ann-figure-card">
-              <strong>{firstFigure.value}</strong>
-              <span>{firstFigure.label}</span>
-            </figcaption>
+            <p className="ann-figure-card">
+              {figureEyebrow ? <span className="ann-figure-eyebrow">{figureEyebrow}</span> : null}
+              <span className="ann-figure-text">
+                {firstFigure.value} {firstFigure.label}
+              </span>
+            </p>
           ) : null}
-        </figure>
+        </div>
       ) : null}
     </section>
   );
