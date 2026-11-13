@@ -44,7 +44,7 @@ export default async function AdminAnnouncementsPage() {
       {missingTable ? (
         <div className="admin-empty">
           <strong>Table des annonces introuvable</strong>
-          <p>Exécutez la migration supabase/migrations/20261112_announcements.sql dans Supabase.</p>
+          <p>La table announcements est absente : recréez-la depuis supabase/schema.sql.</p>
         </div>
       ) : items.length === 0 ? (
         <div className="admin-empty">
