@@ -37,3 +37,6 @@ output/
 *.key
 *.p12
 *.pfx
+
+# Maquettes et fichiers de travail locaux (photos HD, prompts, SQL ponctuels) : non versionnés
+docs/maquettes/
