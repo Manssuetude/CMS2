@@ -32,7 +32,13 @@ export function AnnouncementHero({
           </p>
         ) : null}
         <h1 className="ann-title">
-          {a.title}
+          {/* Initiale calligraphiée orange, comme le « M » du hero habituel de l'accueil. */}
+          {a.title ? (
+            <>
+              <span className="home-hero-initial">{a.title.charAt(0)}</span>
+              {a.title.slice(1)}
+            </>
+          ) : null}
           {a.titleAccent ? (
             <>
               {" "}

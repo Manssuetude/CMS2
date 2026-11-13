@@ -169,6 +169,14 @@
   max-width: none;
 }
 /* L'accent passe à la ligne : « Manssuétude / recrute. » */
+/* Le titre est plus grand que celui du hero habituel : initiale un peu moins agrandie. */
+.site-shell .ann-title .home-hero-initial {
+  font-size: 1.45em;
+}
+/* Place pour le haut de l'initiale, qui dépasse la ligne */
+.site-shell .ann-title {
+  padding-top: 0.2em;
+}
 .site-shell .ann-title em {
   display: block;
   font-style: italic;
