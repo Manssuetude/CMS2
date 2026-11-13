@@ -2,7 +2,7 @@
 --
 -- La voie normale est de la saisir dans /admin/annonces (Nouvelle annonce).
 -- Ce fichier sert de référence des valeurs, ou de raccourci dans l'éditeur SQL
--- Supabase APRÈS la migration supabase/migrations/20261112_announcements.sql.
+-- Supabase (table announcements déjà créée, voir supabase/schema.sql).
 --
 -- Avant de l'exécuter :
 --   1. remplacer les deux dates (heure de Paris, ex. '2026-11-15 09:00 Europe/Paris') ;
