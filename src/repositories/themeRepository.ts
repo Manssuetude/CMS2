@@ -72,4 +72,25 @@ export const themeRepository = {
     if (error) throw error;
     return mapTheme(data as DataRow);
   },
+
+  async deleteTheme(id: string): Promise<void> {
+    const db = getSupabaseAdmin();
+    const { error } = await db.from("themes").delete().eq("id", id);
+    if (error) throw error;
+  },
+
+  /** Nombre d'événements et de projets reliés à chaque thème. */
+  async listThemeLinkCounts(): Promise<Record<string, { events: number; projects: number }>> {
+    const db = getSupabaseAdmin();
+    const [events, projects] = await Promise.all([
+      db.from("theme_events").select("theme_id"),
+      db.from("theme_projects").select("theme_id"),
+    ]);
+    if (events.error) throw events.error;
+    if (projects.error) throw projects.error;
+    const counts: Record<string, { events: number; projects: number }> = {};
+    for (const row of events.data ?? []) (counts[String(row.theme_id)] ??= { events: 0, projects: 0 }).events += 1;
+    for (const row of projects.data ?? []) (counts[String(row.theme_id)] ??= { events: 0, projects: 0 }).projects += 1;
+    return counts;
+  },
 };

@@ -17,16 +17,16 @@ interface Props {
 
 export default async function EditJournalEntryPage({ params }: Props) {
   const { id } = await params;
-  const [item, authors, themes, projects, events, productions, media] = await Promise.all([
+  const [item, authors, projects, events, productions, media] = await Promise.all([
     journalRepository.getEntryById(id),
     authorRepository.listAuthors(),
-    themeRepository.listThemes(true),
     projectRepository.listProjects(true),
     eventRepository.listEvents(true),
     productionRepository.listProductions(true),
     mediaRepository.list(),
   ]);
   if (!item) notFound();
+  const { themes } = await themeRepository.listSelectableThemes(item.themeId ? [item.themeId] : []);
   const images = media.filter((m) => m.type === "image");
 
   return (

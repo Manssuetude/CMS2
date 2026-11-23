@@ -104,6 +104,10 @@ SQL schema files are in `supabase/`: `schema.sql` (full schema — single source
 
 **Tableau de bord « À faire »** — règles pures dans `utils/todo.ts` (productions publiées sans Word / sans PDF, brouillons non modifiés depuis 30 jours, formulaires non traités, événements publiés passés sans photos ni documents ; catégorie vide masquée), testées dans `tests/todo.test.ts`. Données via `dashboardService` (`dashboardRepository.getDashboardSources`, colonnes légères : le texte des productions n'est pas rapatrié). « En ce moment sur le site » : annonce en ligne, prochain événement publié, événement du moment de l'accueil. Le compteur du menu « Tableau de bord » utilise `dashboardService.getTodoCount`.
 
+**Médiathèque** — grille d'abord (recherche, filtres Tout / Images / Documents / Sans texte alternatif, `utils/mediaUsage.ts`), ajout par « + Ajouter des fichiers » ou glisser-déposer sur la page (envoi direct au Storage via `mediaClientService`), autres sources (lien vidéo, lien externe, Google Drive) repliées. Panneau de détail : texte alternatif modifiable (`updateMediaAltAction`), « Utilisé dans » (`mediaUsageService`, colonnes de référence seulement, les images placées dans les textes ne sont pas recherchées), copier le lien.
+
+**Suppression des thèmes** — règle pure `utils/themeDeletion.ts` : refusée côté serveur tant que le thème a des sous-thèmes (`sub_themes.theme_id` en ON DELETE CASCADE) ; la fenêtre propose « Rattacher les sous-thèmes » (`subThemeRepository.moveSubThemes`) ou « Archiver le thème ». Sans sous-thème : confirmation avec le nombre d'événements et de projets retirés. `/themes/[slug]` inconnu redirige vers `/themes`.
+
 **Admin — sections clés**
 
 - `/admin/homepage` : texte, CTAs (libellé + lien), photo hero, sujet du moment (thème + photo), SEO
@@ -112,7 +116,7 @@ SQL schema files are in `supabase/`: `schema.sql` (full schema — single source
 - `/admin/sousthemes` : sous-thèmes (sujets traités sous un thème) — thème parent, contenu éditorial, statut. Les productions sont reliées aux sous-thèmes (pas directement aux thèmes) depuis `/admin/productions`
 - `/admin/annonces` : annonces mises en avant (dates, bandeau, hero, bloc final, Nous rejoindre, aperçu, duplication)
 - `/admin/pages/nous-rejoindre` : textes et photos de /nous-rejoindre (éditeur dédié)
-- `/admin/forms` : soumissions (détail, filtres, export)
+- `/admin/forms` : boîte de réception (À traiter / Traités / Tous, message complet, note interne `form_submissions.notes`, « Marquer comme traité », réponse `mailto:`, export CSV, réglages des notifications en bas). Helpers purs : `utils/formSubmission.ts`
 - `/admin/users`, `/admin/roles`, `/admin/historique` : **admin only** (gestion RBAC + journal d'audit). Le nom « Journal » est réservé au futur Journal éditorial public (V2) — ne pas le réutiliser pour l'audit RBAC.
 - Mise en avant accueil : étoile cliquable (thèmes / productions max 4 / activités max 3)
 - Toute action « Enregistrer » redirige avec `?saved=1` → toast (`AdminToaster`)

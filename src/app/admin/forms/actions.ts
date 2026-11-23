@@ -2,20 +2,39 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { FormStatus } from "@/types/cms";
 import { formSubmissionRepository } from "@/repositories/formSubmissionRepository";
 import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { logAction } from "@/lib/audit";
 
-const VALID_STATUSES: FormStatus[] = ["reçu", "en cours", "traité", "archivé"];
+// Boîte de réception : retour sur le message affiché, avec le même filtre.
+function inboxPath(formData: FormData, id?: string): string {
+  const filter = (formData.get("filtre") as string | null) ?? "";
+  const params = new URLSearchParams();
+  if (filter) params.set("filtre", filter);
+  if (id) params.set("message", id);
+  params.set("saved", "1");
+  return `/admin/forms?${params}`;
+}
 
-export async function updateFormStatusAction(formData: FormData): Promise<void> {
+/** « Marquer comme traité » / « Remettre à traiter ». */
+export async function setFormHandledAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
-  const status = formData.get("status") as string | null;
-  if (!id || !status || !VALID_STATUSES.includes(status as FormStatus)) return;
-  await formSubmissionRepository.updateFormStatus(id, status as FormStatus);
+  if (!id) return;
+  const handled = formData.get("handled") === "true";
+  await formSubmissionRepository.updateFormStatus(id, handled ? "traité" : "reçu");
   revalidatePath("/admin/forms");
   revalidatePath("/admin/dashboard");
+  redirect(inboxPath(formData, id));
+}
+
+/** Note interne (visible seulement dans l'admin). */
+export async function saveFormNoteAction(formData: FormData): Promise<void> {
+  const id = (formData.get("id") as string | null)?.trim();
+  if (!id) return;
+  const notes = ((formData.get("notes") as string | null) ?? "").trim().slice(0, 5000);
+  await formSubmissionRepository.updateFormNotes(id, notes || null);
+  revalidatePath("/admin/forms");
+  redirect(inboxPath(formData, id));
 }
 
 export async function deleteFormSubmissionAction(formData: FormData): Promise<void> {
@@ -29,6 +48,7 @@ export async function deleteFormSubmissionAction(formData: FormData): Promise<vo
   });
   revalidatePath("/admin/forms");
   revalidatePath("/admin/dashboard");
+  redirect(inboxPath(formData));
 }
 
 export async function updateFormDigestSettingsAction(formData: FormData): Promise<void> {

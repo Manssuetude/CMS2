@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { AdminFormBar } from "@/components/admin/AdminFormBar";
+import { themeOptionLabel } from "@/utils/themePicker";
 import dynamic from "next/dynamic";
 import type { Event, Production, Project, Theme } from "@/types/cms";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
@@ -172,7 +173,7 @@ export function ProjetForm({
             </p>
             <CheckboxMultiSelect
               idPrefix="theme"
-              items={themes.map((t) => ({ id: t.id, label: t.title }))}
+              items={themes.map((t) => ({ id: t.id, label: themeOptionLabel(t) }))}
               selected={selectedThemes}
               onChange={setSelectedThemes}
             />

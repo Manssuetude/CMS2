@@ -111,3 +111,26 @@ test("À faire — formulaires non traités et événements passés sans photos"
   assert.equal(todoCount(list), 3);
   assert.equal(list[1].items[0].href, "/admin/evenements/e1/edit#photos");
 });
+
+import {
+  matchesInboxFilter,
+  resolveInboxFilter,
+  submissionEmail,
+  submissionExcerpt,
+  submissionSenderName,
+} from "../src/utils/formSubmission.ts";
+
+test("formulaires reçus — expéditeur, e-mail, extrait, filtres", () => {
+  assert.equal(submissionSenderName({ firstName: "Awa", lastName: "Ndiaye", email: "a@b.fr" }), "Awa Ndiaye");
+  assert.equal(submissionSenderName({ name: "Ali" }), "Ali");
+  assert.equal(submissionSenderName({ email: "x@y.fr" }), "x@y.fr");
+  assert.equal(submissionEmail({ email: "pas-un-email" }), null);
+  assert.equal(
+    submissionExcerpt({ message: "Bonjour,\\n je souhaite rejoindre" }),
+    "Bonjour,\\n je souhaite rejoindre",
+  );
+  assert.equal(resolveInboxFilter(undefined), "a-traiter");
+  assert.equal(matchesInboxFilter("en cours", "a-traiter"), true);
+  assert.equal(matchesInboxFilter("archivé", "traites"), true);
+  assert.equal(matchesInboxFilter("reçu", "traites"), false);
+});

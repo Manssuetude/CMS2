@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { AdminFormBar } from "@/components/admin/AdminFormBar";
 import type { SubTheme, Theme } from "@/types/cms";
+import { themeOptionLabel } from "@/utils/themePicker";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -69,7 +70,7 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
               </option>
               {themes.map((t) => (
                 <option key={t.id} value={t.id}>
-                  {t.title}
+                  {themeOptionLabel(t)}
                 </option>
               ))}
             </select>

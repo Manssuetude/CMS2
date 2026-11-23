@@ -8,7 +8,7 @@ export function ConfirmDeleteButton() {
       type="submit"
       className="btn-sm btn-danger"
       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!window.confirm("Supprimer ? Cette action est irreversible.")) {
+        if (!window.confirm("Supprimer ? Cette action est irréversible.")) {
           e.preventDefault();
         }
       }}

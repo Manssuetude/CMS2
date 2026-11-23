@@ -9,9 +9,9 @@ import { mediaRepository } from "@/repositories/mediaRepository";
 import { createJournalEntryAction } from "../actions";
 
 export default async function NewJournalEntryPage() {
-  const [authors, themes, projects, events, productions, media] = await Promise.all([
+  const [authors, { themes }, projects, events, productions, media] = await Promise.all([
     authorRepository.listAuthors(),
-    themeRepository.listThemes(true),
+    themeRepository.listSelectableThemes(),
     projectRepository.listProjects(true),
     eventRepository.listEvents(true),
     productionRepository.listProductions(true),

@@ -11,8 +11,9 @@ interface Props {
 
 export default async function EditMediaPage({ params }: Props) {
   const { id } = await params;
-  const [item, themes] = await Promise.all([mediaRepository.getById(id), themeRepository.listThemes(true)]);
+  const item = await mediaRepository.getById(id);
   if (!item) notFound();
+  const { themes } = await themeRepository.listSelectableThemes(item.themeId ? [item.themeId] : []);
 
   return (
     <section className="admin-panel">

@@ -13,12 +13,14 @@ export async function deleteMediaAction(formData: FormData): Promise<void> {
   revalidatePath("/admin/media");
 }
 
-export async function renameMediaAction(formData: FormData): Promise<void> {
+/** Texte alternatif modifié depuis le panneau de détail de la médiathèque. */
+export async function updateMediaAltAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
-  const title = (formData.get("title") as string | null)?.trim();
-  if (!id || !title) return;
-  await mediaRepository.updateMetadata(id, { title });
+  if (!id) return;
+  const alt = ((formData.get("alt") as string | null) ?? "").trim().slice(0, 500);
+  await mediaRepository.updateMetadata(id, { alt: alt || null });
   revalidatePath("/admin/media");
+  redirect(`/admin/media?media=${id}&saved=1`);
 }
 
 const updateSchema = z.object({
@@ -68,7 +70,7 @@ export async function updateMediaMetadataAction(_: string | null, formData: Form
       visibility: parsed.data.visibility,
     });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez réessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   revalidatePath("/admin/media");

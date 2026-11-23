@@ -12,8 +12,9 @@ interface Props {
 
 export default async function EditSubThemePage({ params }: Props) {
   const { id } = await params;
-  const [item, themes] = await Promise.all([subThemeRepository.getSubThemeById(id), themeRepository.listThemes(true)]);
+  const item = await subThemeRepository.getSubThemeById(id);
   if (!item) notFound();
+  const { themes } = await themeRepository.listSelectableThemes([item.themeId]);
   const parentTheme = themes.find((t) => t.id === item.themeId);
 
   return (

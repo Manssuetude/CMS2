@@ -31,6 +31,15 @@ export const formSubmissionRepository = {
     if (error) throw error;
   },
 
+  async updateFormNotes(id: string, notes: string | null): Promise<void> {
+    const db = getSupabaseAdmin();
+    const { error } = await db
+      .from("form_submissions")
+      .update({ notes, updated_at: new Date().toISOString() })
+      .eq("id", id);
+    if (error) throw error;
+  },
+
   // Droit à l'effacement (RGPD art. 17) : suppression manuelle d'une soumission
   // depuis /admin/forms, sur demande de la personne concernée.
   async deleteFormSubmission(id: string): Promise<void> {
