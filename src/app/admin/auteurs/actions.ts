@@ -36,7 +36,7 @@ export async function createAuthorAction(_: string | null, formData: FormData): 
 
   await logAction("create", { entityType: "author", entityId: author.id, summary: `Auteur créé : ${author.name}` });
   revalidatePath("/admin/auteurs");
-  redirect("/admin/auteurs");
+  redirect("/admin/auteurs?saved=1");
 }
 
 export async function updateAuthorAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -65,7 +65,7 @@ export async function updateAuthorAction(_: string | null, formData: FormData): 
 
   await logAction("update", { entityType: "author", entityId: id, summary: "Auteur modifié" });
   revalidatePath("/admin/auteurs");
-  redirect("/admin/auteurs");
+  redirect("/admin/auteurs?saved=1");
 }
 
 export async function deleteAuthorAction(formData: FormData): Promise<void> {

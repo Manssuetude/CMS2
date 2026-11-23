@@ -96,6 +96,10 @@ SQL schema files are in `supabase/`: `schema.sql` (full schema — single source
 
 **Pages non disponibles** — `MaintenanceNotice` (404, `/maintenance`, replis, `/history` vide) avec illustration éditoriale.
 
+**Menu de l'admin** — regroupé (Tableau de bord, Contenus, Organisation, Pages du site, Réception et fichiers, Réglages replié par défaut), défini dans `constants/adminNav.ts`, règles pures dans `utils/adminNav.ts` (droits par rôle, sections vides masquées : Journal et Dossiers tant qu'ils sont vides, entrée active = préfixe le plus long). État des groupes mémorisé dans le navigateur. Compteurs (`dashboardRepository.getNavCounts`, formulaires non traités) chargés par le layout admin, jamais bloquants.
+
+**Barre d'actions des fiches** — `<AdminFormBar>` (à placer dans le `<form>`) : état à gauche (« Modifications non enregistrées », « Tout est enregistré », blocage, erreur), statut / aperçu / Enregistrer à droite. Suivi des modifications et confirmation avant de quitter : `hooks/useUnsavedChanges.ts`. Utilisée par les fiches productions, événements, projets, annonces, thèmes, sous-thèmes et les éditeurs de pages.
+
 **Admin — sections clés**
 
 - `/admin/homepage` : texte, CTAs (libellé + lien), photo hero, sujet du moment (thème + photo), SEO

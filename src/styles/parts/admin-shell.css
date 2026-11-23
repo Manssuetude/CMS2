@@ -110,6 +110,99 @@
   opacity: 1;
 }
 
+/* Menu regroupé : titres de groupe repliables, libellés seuls (icônes en menu réduit). */
+.admin-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.admin-nav ul[hidden] {
+  display: none;
+}
+.admin-nav-group {
+  margin-top: 10px;
+}
+.admin-shell .admin-nav .admin-nav-group-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.admin-shell .admin-nav .admin-nav-group-toggle:hover {
+  background: transparent;
+  color: var(--ink);
+}
+.admin-nav-group-toggle svg {
+  transition: transform 0.15s;
+}
+.admin-nav-group-toggle[aria-expanded="false"] svg {
+  transform: rotate(-90deg);
+}
+.admin-nav a:focus-visible,
+.admin-nav-btn:focus-visible,
+.admin-nav-group-toggle:focus-visible,
+.admin-sidebar-toggle:focus-visible,
+.admin-nav-hidden button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+}
+.admin-shell:not(.sidebar-collapsed) .admin-nav a svg {
+  display: none;
+}
+.admin-shell.sidebar-collapsed .admin-nav-group-toggle {
+  display: none;
+}
+.admin-nav-badge {
+  margin-left: auto;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--orange-fill);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+.admin-shell.sidebar-collapsed .admin-nav-badge {
+  display: none;
+}
+.admin-nav-hidden {
+  margin: 0 0 6px;
+  padding: 0 10px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.admin-shell .admin-nav-hidden button {
+  display: inline;
+  width: auto;
+  padding: 0;
+  font-weight: 600;
+  border: 0;
+  background: none;
+  color: var(--orange-fill);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.admin-shell.sidebar-collapsed .admin-nav-hidden {
+  display: none;
+}
+
 .admin-nav-label {
   overflow: hidden;
   text-overflow: ellipsis;

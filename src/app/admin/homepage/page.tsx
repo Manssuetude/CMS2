@@ -8,6 +8,7 @@ import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { KEY_FIGURES_MAX } from "@/constants/keyFigures";
 import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
 import { saveHomepageFieldsAction } from "./actions";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 export default async function AdminHomepage() {
   const [page, media, events, keyFigures] = await Promise.all([
@@ -207,11 +208,7 @@ export default async function AdminHomepage() {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button type="submit" className="cta" style={{ minWidth: 160 }}>
-            Enregistrer les modifications
-          </button>
-        </div>
+        <AdminFormBar />
       </form>
     </section>
   );

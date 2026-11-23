@@ -3,20 +3,18 @@
 import { usePathname } from "next/navigation";
 import { GlobalSearch } from "./GlobalSearch";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { ADMIN_NAV_DASHBOARD, ADMIN_NAV_GROUPS } from "@/constants/adminNav";
+import { activeNavHref } from "@/utils/adminNav";
 
-const SECTION_LABELS: Record<string, string> = {
-  dashboard: "Dashboard",
-  themes: "Thèmes",
-  evenements: "Événements",
-  productions: "Productions",
-  projets: "Projets",
-  media: "Médiathèque",
-  forms: "Formulaires reçus",
-};
+// Titre de la barre du haut : libellé de l'entrée de menu active.
+const NAV_ITEMS = [ADMIN_NAV_DASHBOARD, ...ADMIN_NAV_GROUPS.flatMap((group) => group.items)];
 
 function getSectionFromPath(pathname: string): string {
-  const segment = pathname.split("/")[2] ?? "dashboard";
-  return SECTION_LABELS[segment] ?? "Admin";
+  const href = activeNavHref(
+    pathname,
+    NAV_ITEMS.map((item) => item.href),
+  );
+  return NAV_ITEMS.find((item) => item.href === href)?.label ?? "Administration";
 }
 
 function getPageLabel(pathname: string): string | null {

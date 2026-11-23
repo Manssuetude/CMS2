@@ -1,9 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import Link from "next/link";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 import dynamic from "next/dynamic";
-import { ExternalLink } from "lucide-react";
 import type { Event, Production, Project, Theme } from "@/types/cms";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
@@ -70,13 +69,12 @@ export function ProjetForm({
   initialEventIds = [],
 }: Props) {
   const isEdit = !!initialData;
-  const [error, formAction, isPending] = useActionState(action, null);
+  const [error, formAction] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [body, setBody] = useState(initialData?.body ?? "");
   const [selectedThemes, setSelectedThemes] = useState<string[]>(initialThemeIds);
   const [selectedProductions, setSelectedProductions] = useState<string[]>(initialProductionIds);
   const [selectedEvents, setSelectedEvents] = useState<string[]>(initialEventIds);
-  const publicHref = isEdit ? `/projets/${initialData.slug}` : null;
 
   return (
     <form action={formAction}>
@@ -233,18 +231,8 @@ export function ProjetForm({
         </div>
 
         <div className="form-section">
-          <p className="form-section-title">Publication</p>
+          <p className="form-section-title">Avancement</p>
           <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="status">
-                Statut
-              </label>
-              <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
-                <option value="draft">Brouillon</option>
-                <option value="published">Publié</option>
-                <option value="archived">Archivé</option>
-              </select>
-            </div>
             <div className="form-field">
               <label className="field-label" htmlFor="progressStatus">
                 Avancement
@@ -260,22 +248,14 @@ export function ProjetForm({
             </div>
           </div>
         </div>
-
-        <div className="form-actions">
-          {publicHref && (
-            <a href={publicHref} target="_blank" rel="noopener noreferrer" className="btn-preview">
-              <ExternalLink size={14} strokeWidth={1.75} />
-              Voir sur le site
-            </a>
-          )}
-          <Link href="/admin/projets" className="button">
-            Annuler
-          </Link>
-          <button type="submit" className="button primary" disabled={isPending}>
-            {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer le projet"}
-          </button>
-        </div>
       </div>
+
+      <AdminFormBar
+        status={{ defaultValue: initialData?.status ?? "draft" }}
+        error={error}
+        isNew={!isEdit}
+        submitLabel={isEdit ? "Enregistrer" : "Créer le projet"}
+      />
     </form>
   );
 }

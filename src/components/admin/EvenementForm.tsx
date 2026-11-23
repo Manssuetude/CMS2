@@ -1,9 +1,8 @@
 "use client";
 
 import { useActionState, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ExternalLink, Eye, Plus, X } from "lucide-react";
+import { Eye, Plus, X } from "lucide-react";
 import type {
   Event,
   EventAnimator,
@@ -20,6 +19,7 @@ import { SingleMediaField } from "@/components/media/SingleMediaField";
 import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
 import { EventHeaderStyleField } from "@/components/admin/EventHeaderStyleField";
 import { EventPreviewModal } from "@/components/admin/EventPreviewModal";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 import { bannerWarning, type HeaderStyle } from "@/utils/eventHeader";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -93,7 +93,7 @@ export function EvenementForm({
   images = [],
 }: Props) {
   const isEdit = !!initialData;
-  const [error, formAction, isPending] = useActionState(action, null);
+  const [error, formAction] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [body, setBody] = useState(initialData?.body ?? "");
   const [speakers, setSpeakers] = useState<Speaker[]>(initialData?.speakers ?? []);
@@ -102,7 +102,6 @@ export function EvenementForm({
   const [selectedProjects, setSelectedProjects] = useState<string[]>(initialProjectIds);
   const [selectedFormats, setSelectedFormats] = useState<string[]>(initialFormatIds);
   const [animators, setAnimators] = useState<EventAnimator[]>(initialAnimators);
-  const publicHref = isEdit ? `/evenements/${initialData.slug}` : null;
   const formRef = useRef<HTMLFormElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [headerStyle, setHeaderStyle] = useState<HeaderStyle>(initialData?.headerStyle ?? "classic");
@@ -541,18 +540,8 @@ export function EvenementForm({
         </div>
 
         <div className="form-section">
-          <p className="form-section-title">Publication</p>
+          <p className="form-section-title">Avancement</p>
           <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="status">
-                Statut
-              </label>
-              <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
-                <option value="draft">Brouillon</option>
-                <option value="published">Publié</option>
-                <option value="archived">Archivé</option>
-              </select>
-            </div>
             <div className="form-field">
               <label className="field-label" htmlFor="progressStatus">
                 Avancement
@@ -568,26 +557,20 @@ export function EvenementForm({
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="form-actions">
-          {publicHref && (
-            <a href={publicHref} target="_blank" rel="noopener noreferrer" className="btn-preview">
-              <ExternalLink size={14} strokeWidth={1.75} />
-              Voir sur le site
-            </a>
-          )}
-          <Link href="/admin/evenements" className="button">
-            Annuler
-          </Link>
+      <AdminFormBar
+        status={{ defaultValue: initialData?.status ?? "draft" }}
+        error={error}
+        isNew={!isEdit}
+        submitLabel={isEdit ? "Enregistrer" : "Créer l'événement"}
+        actions={
           <button type="button" className="button" onClick={() => setPreviewOpen(true)}>
-            <Eye size={15} strokeWidth={1.75} />
+            <Eye size={15} strokeWidth={1.75} aria-hidden="true" />
             Aperçu
           </button>
-          <button type="submit" className="button primary" disabled={isPending}>
-            {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer l'événement"}
-          </button>
-        </div>
-      </div>
+        }
+      />
       {previewOpen && (
         <EventPreviewModal
           formRef={formRef}

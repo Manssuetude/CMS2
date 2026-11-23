@@ -79,7 +79,7 @@ export async function createDossierAction(_: string | null, formData: FormData):
     summary: `Dossier créé : ${dossier.title}`,
   });
   revalidatePath("/admin/dossiers");
-  redirect("/admin/dossiers");
+  redirect("/admin/dossiers?saved=1");
 }
 
 export async function updateDossierAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -107,7 +107,7 @@ export async function updateDossierAction(_: string | null, formData: FormData):
 
   await logAction("update", { entityType: "dossier", entityId: id, summary: `Dossier modifié : ${parsed.data.title}` });
   revalidatePath("/admin/dossiers");
-  redirect("/admin/dossiers");
+  redirect("/admin/dossiers?saved=1");
 }
 
 export async function deleteDossierAction(formData: FormData): Promise<void> {

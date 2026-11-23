@@ -1,10 +1,10 @@
 "use client";
 
 import { useActionState, useCallback, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { Eye, ExternalLink } from "lucide-react";
+import { Eye } from "lucide-react";
 import type { Author, ContentStatus, Media, Production, SubTheme, Theme } from "@/types/cms";
 import { splitIntoParts } from "@/utils/articleParts";
+import { PRODUCTION_TYPE_LABELS, productionTypeLabel } from "@/constants/productionTypes";
 import {
   checkProductionPublication,
   publicationBlockedMessage,
@@ -19,10 +19,11 @@ import {
 } from "@/components/admin/ArticleFilesModal";
 import { ProductionFilesPanel } from "@/components/admin/ProductionFilesPanel";
 import { ProductionPreviewModal } from "@/components/admin/ProductionPreviewModal";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
-const TYPES = ["Article", "Note & Synthese", "Etude & Rapport", "Video", "Podcast", "Infographie"];
+const TYPES = Object.keys(PRODUCTION_TYPE_LABELS);
 
 function toSlug(s: string): string {
   return s
@@ -66,7 +67,7 @@ export function ProductionForm({
   initialPdfName = null,
 }: Props) {
   const isEdit = !!initialData;
-  const [error, formAction, isPending] = useActionState(action, null);
+  const [error, formAction] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [type, setType] = useState(initialData?.type ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
@@ -134,8 +135,6 @@ export function ProductionForm({
     list.push(st);
     subThemesByTheme.set(st.themeId, list);
   }
-
-  const publicHref = isEdit ? `/productions/${initialData.slug}` : null;
 
   return (
     <form action={formAction} ref={formRef}>
@@ -207,7 +206,7 @@ export function ProductionForm({
                 </option>
                 {TYPES.map((t) => (
                   <option key={t} value={t}>
-                    {t}
+                    {productionTypeLabel(t)}
                   </option>
                 ))}
               </select>
@@ -367,42 +366,15 @@ export function ProductionForm({
             />
           </div>
         </div>
+      </div>
 
-        {/* Publication */}
-        <div className="form-section">
-          <p className="form-section-title">Publication</p>
-          <div className="form-field" style={{ maxWidth: 280 }}>
-            <label className="field-label" htmlFor="status">
-              Statut
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value as ContentStatus)}
-            >
-              <option value="draft">Brouillon</option>
-              <option value="published">Publié</option>
-              <option value="archived">Archivé</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="form-actions">
-          {blockedMessage && (
-            <p className="form-actions-blocked" role="status">
-              {blockedMessage}
-            </p>
-          )}
-          {publicHref && (
-            <a href={publicHref} target="_blank" rel="noopener noreferrer" className="btn-preview">
-              <ExternalLink size={14} strokeWidth={1.75} />
-              Voir sur le site
-            </a>
-          )}
-          <Link href="/admin/productions" className="button">
-            Annuler
-          </Link>
+      <AdminFormBar
+        status={{ value: status, onChange: setStatus }}
+        blockedMessage={blockedMessage}
+        error={error}
+        isNew={!isEdit}
+        submitLabel={isEdit ? "Enregistrer" : "Créer la production"}
+        actions={
           <button
             type="button"
             className="button"
@@ -413,11 +385,8 @@ export function ProductionForm({
             <Eye size={15} strokeWidth={1.75} aria-hidden="true" />
             Aperçu
           </button>
-          <button type="submit" className="button primary" disabled={isPending || !!blockedMessage}>
-            {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer la production"}
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {filesModal && (
         <ArticleFilesModal

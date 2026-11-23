@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { dashboardRepository, type AdminNavCounts } from "@/repositories/dashboardRepository";
 // CSS de l'administration : chargé seulement ici, jamais sur le site public.
 import "@/styles/admin.css";
 
@@ -41,8 +42,21 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     }
   }
 
+  // Compteurs du menu : jamais bloquants (base injoignable → menu sans compteurs).
+  let counts: AdminNavCounts = { pendingForms: 0, journalEntries: 1, dossiers: 1 };
+  try {
+    counts = await dashboardRepository.getNavCounts();
+  } catch {
+    // menu affiché sans compteurs
+  }
+
   return (
-    <AdminShell isAdmin={session.isAdmin} permissions={session.permissions}>
+    <AdminShell
+      isAdmin={session.isAdmin}
+      permissions={session.permissions}
+      badges={{ pendingForms: counts.pendingForms }}
+      emptySections={{ journal: counts.journalEntries === 0, dossiers: counts.dossiers === 0 }}
+    >
       {children}
     </AdminShell>
   );

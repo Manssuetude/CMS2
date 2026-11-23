@@ -6,6 +6,7 @@ import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
 import { StatusToggleButton } from "@/components/admin/StatusToggleButton";
 import { FeaturedToggleButton } from "@/components/admin/FeaturedToggleButton";
+import { productionTypeLabel } from "@/constants/productionTypes";
 import { missingProductionFiles, publicationBlockedMessage } from "@/utils/productionPublication";
 import { buildStatusTabs, countByStatus, resolveActiveStatus, STATUS_LABELS } from "@/utils/adminStatus";
 import { deleteProductionAction, toggleProductionStatusAction } from "./actions";
@@ -72,7 +73,7 @@ export default async function AdminProductionsPage({ searchParams }: { searchPar
               return (
                 <tr key={item.id}>
                   <td className="col-title">{item.title}</td>
-                  <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.type}</td>
+                  <td style={{ color: "var(--muted)", fontSize: 13 }}>{productionTypeLabel(item.type)}</td>
                   <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.author ?? "-"}</td>
                   <td>
                     <StatusToggleButton

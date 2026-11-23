@@ -567,7 +567,8 @@
 .admin-toast {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  /* Au-dessus de la barre d'actions fixe des fiches. */
+  bottom: 92px;
   z-index: 1300;
   display: flex;
   align-items: center;
@@ -1137,4 +1138,75 @@
   background: var(--surface);
   color: var(--ink);
   font: inherit;
+}
+
+/* ─── Barre d'actions fixe en bas des fiches ────────────────────────── */
+.admin-form-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+  margin: 28px -32px -28px;
+  padding: 14px 32px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+}
+.admin-form-bar-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.admin-form-bar-state::before {
+  content: "";
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+.admin-form-bar-state.is-warning::before {
+  background: var(--orange);
+}
+.admin-form-bar-state.is-ok::before {
+  background: var(--success);
+}
+.admin-form-bar-state.is-error {
+  color: var(--danger);
+  font-weight: 600;
+}
+.admin-form-bar-state.is-error::before {
+  background: var(--danger);
+}
+.admin-form-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.admin-form-bar-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.admin-form-bar-status select {
+  min-width: 130px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
 }

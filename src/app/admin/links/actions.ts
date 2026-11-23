@@ -41,7 +41,7 @@ export async function createLinkAction(_: string | null, formData: FormData): Pr
   await logAction("create", { entityType: "link_item", entityId: item.id, summary: `Lien créé : ${item.label}` });
   revalidatePath("/admin/links");
   revalidatePath("/links");
-  redirect("/admin/links");
+  redirect("/admin/links?saved=1");
 }
 
 export async function updateLinkAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -62,7 +62,7 @@ export async function updateLinkAction(_: string | null, formData: FormData): Pr
   await logAction("update", { entityType: "link_item", entityId: id, summary: "Lien modifié" });
   revalidatePath("/admin/links");
   revalidatePath("/links");
-  redirect("/admin/links");
+  redirect("/admin/links?saved=1");
 }
 
 export async function deleteLinkAction(formData: FormData): Promise<void> {

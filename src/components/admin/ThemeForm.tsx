@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import Link from "next/link";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 import type { Theme } from "@/types/cms";
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function ThemeForm({ initialData, action }: Props) {
-  const [error, formAction, isPending] = useActionState(action, null);
+  const [error, formAction] = useActionState(action, null);
 
   return (
     <form action={formAction}>
@@ -89,36 +89,15 @@ export function ThemeForm({ initialData, action }: Props) {
         </div>
 
         <div className="form-section">
-          <p className="form-section-title">Publication</p>
-          <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="status">
-                Statut
-              </label>
-              <select id="status" name="status" defaultValue={initialData.status ?? "draft"}>
-                <option value="draft">Brouillon</option>
-                <option value="published">Publié</option>
-                <option value="archived">Archivé</option>
-              </select>
-            </div>
-            <div className="form-field" style={{ justifyContent: "flex-end" }}>
-              <div className="form-checkbox">
-                <input type="checkbox" id="featured" name="featured" defaultChecked={initialData.featured} />
-                <label htmlFor="featured">Mettre en avant</label>
-              </div>
-            </div>
+          <p className="form-section-title">Mise en avant</p>
+          <div className="form-checkbox">
+            <input type="checkbox" id="featured" name="featured" defaultChecked={initialData.featured} />
+            <label htmlFor="featured">Mettre en avant</label>
           </div>
         </div>
-
-        <div className="form-actions">
-          <Link href="/admin/themes" className="button">
-            Annuler
-          </Link>
-          <button type="submit" className="button primary" disabled={isPending}>
-            {isPending ? "Enregistrement..." : "Mettre à jour le thème"}
-          </button>
-        </div>
       </div>
+
+      <AdminFormBar status={{ defaultValue: initialData.status ?? "draft" }} error={error} />
     </form>
   );
 }

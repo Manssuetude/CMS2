@@ -57,7 +57,7 @@ export async function createActivityFormatAction(_: string | null, formData: For
   });
   revalidatePath("/admin/formatsactivites");
   revalidatePath("/activites/formats-d-activites");
-  redirect("/admin/formatsactivites");
+  redirect("/admin/formatsactivites?saved=1");
 }
 
 export async function updateActivityFormatAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -78,7 +78,7 @@ export async function updateActivityFormatAction(_: string | null, formData: For
   await logAction("update", { entityType: "activity_format", entityId: id, summary: "Format modifié" });
   revalidatePath("/admin/formatsactivites");
   revalidatePath("/activites/formats-d-activites");
-  redirect("/admin/formatsactivites");
+  redirect("/admin/formatsactivites?saved=1");
 }
 
 export async function deleteActivityFormatAction(formData: FormData): Promise<void> {

@@ -56,7 +56,7 @@ export async function createThemeAction(_: string | null, formData: FormData): P
 
   await logAction("create", { entityType: "theme", summary: `Thème créé : ${parsed.data.title}` });
   revalidatePath("/admin/themes");
-  redirect("/admin/themes");
+  redirect("/admin/themes?saved=1");
 }
 
 export async function toggleThemeFeaturedAction(formData: FormData): Promise<void> {
@@ -82,7 +82,7 @@ export async function updateThemeAction(_: string | null, formData: FormData): P
   });
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
   try {
@@ -95,10 +95,10 @@ export async function updateThemeAction(_: string | null, formData: FormData): P
       featured: parsed.data.featured,
     });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   await logAction("update", { entityType: "theme", entityId: id, summary: "Thème modifié" });
   revalidatePath("/admin/themes");
-  redirect("/admin/themes");
+  redirect("/admin/themes?saved=1");
 }

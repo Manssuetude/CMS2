@@ -13,7 +13,7 @@ export async function createEventAction(_: string | null, formData: FormData): P
   const parsed = eventFormSchema.safeParse(readEventForm(formData));
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
@@ -22,7 +22,7 @@ export async function createEventAction(_: string | null, formData: FormData): P
   try {
     event = await eventRepository.createEvent({ slug, ...toEventInput(parsed.data) });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   const themeIds = parseIdList(formData, "themeIds");
@@ -38,7 +38,7 @@ export async function createEventAction(_: string | null, formData: FormData): P
 
   await logAction("create", { entityType: "event", summary: `Événement créé : ${parsed.data.title}` });
   revalidatePath("/admin/evenements");
-  redirect("/admin/evenements");
+  redirect("/admin/evenements?saved=1");
 }
 
 export async function updateEventAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -48,7 +48,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
   const parsed = eventFormSchema.safeParse(readEventForm(formData));
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
   try {
@@ -59,7 +59,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
     const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
     await eventRepository.updateEvent(id, { ...input, ...slugSync });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   await eventRepository.setEventThemes(id, parseIdList(formData, "themeIds"));
@@ -74,7 +74,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
     summary: `Événement modifié : ${parsed.data.title}`,
   });
   revalidatePath("/admin/evenements");
-  redirect("/admin/evenements");
+  redirect("/admin/evenements?saved=1");
 }
 
 export async function deleteEventAction(formData: FormData): Promise<void> {

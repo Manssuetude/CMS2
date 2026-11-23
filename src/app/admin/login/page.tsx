@@ -51,7 +51,7 @@ export default function LoginPage() {
         </div>
 
         <h1 style={{ fontSize: 22, marginBottom: 6 }}>Connexion</h1>
-        <p className="login-subtitle">Espace reserve aux membres de l&apos;equipe editoriale.</p>
+        <p className="login-subtitle">Espace réservé aux membres de l&apos;équipe éditoriale.</p>
 
         <form action={action} className="form-grid login-form">
           <label className="login-field">

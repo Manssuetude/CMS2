@@ -3,6 +3,7 @@ import { pageRepository } from "@/repositories/pageRepository";
 import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
 import { PercaStepsEditor } from "@/components/admin/PercaStepsEditor";
 import { savePercaFieldsAction } from "./actions";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 export default async function AdminPerca() {
   const page = await pageRepository.getPage("perca");
@@ -95,11 +96,7 @@ export default async function AdminPerca() {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button type="submit" className="cta" style={{ minWidth: 160 }}>
-            Enregistrer les modifications
-          </button>
-        </div>
+        <AdminFormBar />
       </form>
     </section>
   );

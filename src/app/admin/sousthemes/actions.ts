@@ -65,7 +65,7 @@ export async function createSubThemeAction(_: string | null, formData: FormData)
     summary: `Sous-thème créé : ${parsed.data.title}`,
   });
   revalidatePath("/admin/sousthemes");
-  redirect("/admin/sousthemes");
+  redirect("/admin/sousthemes?saved=1");
 }
 
 export async function updateSubThemeAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -105,7 +105,7 @@ export async function updateSubThemeAction(_: string | null, formData: FormData)
 
   await logAction("update", { entityType: "sub_theme", entityId: id, summary: "Sous-thème modifié" });
   revalidatePath("/admin/sousthemes");
-  redirect("/admin/sousthemes");
+  redirect("/admin/sousthemes?saved=1");
 }
 
 export async function deleteSubThemeAction(formData: FormData): Promise<void> {

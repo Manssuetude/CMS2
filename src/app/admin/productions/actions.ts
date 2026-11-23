@@ -115,7 +115,7 @@ export async function createProductionAction(_: string | null, formData: FormDat
   });
   revalidatePath("/admin/productions");
   revalidateProductionPages(production);
-  redirect("/admin/productions");
+  redirect("/admin/productions?saved=1");
 }
 
 export async function updateProductionAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -164,7 +164,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
   });
   revalidatePath("/admin/productions");
   revalidateProductionPages(updated);
-  redirect("/admin/productions");
+  redirect("/admin/productions?saved=1");
 }
 
 export async function deleteProductionAction(formData: FormData): Promise<void> {

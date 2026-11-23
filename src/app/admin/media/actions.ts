@@ -72,5 +72,5 @@ export async function updateMediaMetadataAction(_: string | null, formData: Form
   }
 
   revalidatePath("/admin/media");
-  redirect("/admin/media");
+  redirect("/admin/media?saved=1");
 }
