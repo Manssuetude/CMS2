@@ -1,4 +1,36 @@
 /* ─── CKEditor overrides ─────────────────────────────────────────────── */
+/* Barre d'outils, menus et fenêtres de CKEditor : thème de l'admin (clair ou
+   sombre). `html:root` pour passer devant les variables par défaut de
+   CKEditor, déclarées sur :root. */
+html:root {
+  --ck-color-base-foreground: var(--soft);
+  --ck-color-base-border: var(--line);
+  --ck-color-text: var(--ink);
+  --ck-color-shadow-drop: var(--overlay);
+  --ck-color-toolbar-background: var(--admin-surface);
+  --ck-color-toolbar-border: var(--line);
+  --ck-color-button-default-background: transparent;
+  --ck-color-button-default-hover-background: var(--soft);
+  --ck-color-button-default-active-background: var(--soft);
+  --ck-color-button-on-background: var(--orange-soft);
+  --ck-color-button-on-hover-background: var(--orange-soft);
+  --ck-color-button-on-color: var(--ink);
+  --ck-color-dropdown-panel-background: var(--admin-surface-raised);
+  --ck-color-dropdown-panel-border: var(--line);
+  --ck-color-list-background: var(--admin-surface-raised);
+  --ck-color-list-button-hover-background: var(--soft);
+  --ck-color-list-button-on-background: var(--orange-soft);
+  --ck-color-list-button-on-text: var(--ink);
+  --ck-color-panel-background: var(--admin-surface-raised);
+  --ck-color-panel-border: var(--line);
+  --ck-color-input-background: var(--admin-input-bg);
+  --ck-color-input-border: var(--line-strong);
+  --ck-color-input-text: var(--ink);
+  --ck-color-labeled-field-label-background: var(--admin-surface-raised);
+  --ck-color-tooltip-background: var(--ink);
+  --ck-color-tooltip-text: var(--admin-surface);
+  --ck-color-focus-border: var(--admin-accent-text);
+}
 .ck.ck-editor {
   max-width: 100%;
   border-radius: var(--radius) !important;
@@ -13,7 +45,19 @@
 }
 
 /* Reproduit la typographie publique (.rich-text, public-content.css) dans
-   l'éditeur, pour que ce que l'auteur voit corresponde à ce qui s'affichera. */
+   l'éditeur, pour que ce que l'auteur voit corresponde à ce qui s'affichera.
+   VOLONTAIREMENT CLAIR même quand l'admin est en sombre : la zone de texte
+   montre le rendu du site, pas l'interface de l'admin. Les variables du thème
+   sont redéfinies ici avec les valeurs « aperçu » (tokens.css). */
+.ck.ck-editor__editable,
+.ck-content {
+  --ink: var(--preview-ink);
+  --muted: var(--preview-muted);
+  --soft: var(--preview-soft);
+  --line: var(--preview-line);
+  --admin-accent-text: var(--preview-accent);
+  background: var(--preview-surface);
+}
 .ck-content {
   font-size: 17px;
   line-height: 1.78;
@@ -66,7 +110,7 @@
   font-size: 18px;
 }
 .ck-content a {
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .ck-content strong {
   font-weight: 700;
@@ -187,7 +231,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(17, 17, 17, 0.48);
+  background: var(--overlay);
   backdrop-filter: blur(2px);
   animation: fadeIn 0.2s ease;
 }
@@ -198,9 +242,7 @@
   padding: 22px 22px 18px;
   border-radius: var(--radius-lg, 12px);
   background: var(--surface);
-  box-shadow:
-    0 8px 40px rgba(0, 0, 0, 0.18),
-    0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--admin-toast-shadow);
   animation: slideUp 0.22s ease;
 }
 @keyframes fadeIn {
@@ -232,7 +274,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .tour-close {
   display: flex;
@@ -349,12 +391,12 @@
   margin: 4px 0;
 }
 .button.danger {
-  color: #c0392b;
-  border-color: #fecaca;
-  background: #fff5f5;
+  color: var(--status-danger-ink);
+  border-color: var(--status-danger-line);
+  background: var(--status-danger-bg);
 }
 .button.danger:hover {
-  background: #fecaca;
+  background: var(--status-danger-line);
 }
 
 /* Bloc masqué dans la structure */
@@ -382,8 +424,8 @@
   border: 0;
   border-radius: var(--radius);
   background: transparent;
-  /* Orange Manssuétude atténué à l'état vide, plein à l'état actif. */
-  color: color-mix(in srgb, var(--orange) 42%, transparent);
+  /* Contour gris à l'état vide (visible dans les deux thèmes), orange à l'état actif. */
+  color: var(--muted);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
@@ -394,13 +436,13 @@
 }
 .featured-star:hover {
   background: var(--orange-soft);
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .featured-star:active {
   transform: scale(0.9);
 }
 .featured-star.is-on {
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .featured-star.is-limited {
   cursor: not-allowed;
@@ -408,7 +450,7 @@
 }
 .featured-star.is-limited:hover {
   background: transparent;
-  color: color-mix(in srgb, var(--orange) 42%, transparent);
+  color: var(--muted);
 }
 /* Bulle d'avertissement (limite vedette) — variante du toast unifié. */
 .featured-toast {
@@ -427,9 +469,7 @@
   color: var(--ink);
   font-size: 13.5px;
   line-height: 1.45;
-  box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.18),
-    0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--admin-toast-shadow);
   animation: toastIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .featured-toast::before {
@@ -442,7 +482,7 @@
   height: 24px;
   border-radius: 50%;
   background: var(--orange);
-  color: #fff;
+  color: var(--admin-primary-ink);
   font-size: 14px;
   font-weight: 800;
 }
@@ -453,7 +493,7 @@
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   background: var(--orange-soft);
-  color: var(--orange);
+  color: var(--admin-accent-text);
   font-size: 11px;
   font-weight: 700;
 }
@@ -475,7 +515,7 @@
 }
 .form-row-toggle:hover svg {
   opacity: 1;
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .form-row-name {
   display: block;
@@ -581,9 +621,7 @@
   color: var(--ink);
   font-size: 14px;
   font-weight: 500;
-  box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.18),
-    0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--admin-toast-shadow);
   animation: toastIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .admin-toast-check {
@@ -594,8 +632,8 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #1f9d55;
-  color: #fff;
+  background: var(--status-success-bg);
+  color: var(--status-success-ink);
   font-size: 13px;
   font-weight: 800;
 }
@@ -767,7 +805,7 @@
   color: var(--ink-soft);
 }
 .files-slot-icon--pdf {
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .files-slot-text {
   flex: 1;
@@ -1115,7 +1153,7 @@
   font: inherit;
   font-size: 14px;
   font-weight: 600;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
   cursor: pointer;
 }
 .files-modal-preview:hover {
@@ -1154,7 +1192,7 @@
   padding: 14px 32px;
   border-top: 1px solid var(--line);
   background: var(--surface);
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--admin-bar-shadow);
 }
 .admin-form-bar-state {
   display: flex;
@@ -1271,7 +1309,7 @@
   gap: 4px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
   text-decoration: none;
 }
 .fiche-public-link:hover {
@@ -1291,12 +1329,12 @@
   color: var(--ink);
 }
 .fiche-notice strong {
-  color: var(--warning);
+  color: var(--status-warning-ink);
 }
 .fiche-notice a {
   margin-left: auto;
   font-weight: 600;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .form-tabs-list {
   display: flex;
@@ -1434,7 +1472,7 @@
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
   cursor: pointer;
 }
 .chip-picker-chip button:hover {
@@ -1540,7 +1578,7 @@
   margin: 4px 0 !important;
   font-size: 19px;
   line-height: 1.3;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .seo-preview-description {
   font-size: 13.5px;
@@ -1700,7 +1738,7 @@
 .todo-items a {
   flex-shrink: 0;
   font-weight: 600;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
   text-decoration: none;
 }
 .todo-items a:hover {
@@ -1751,7 +1789,7 @@
 }
 .dashboard-now-meta a {
   font-weight: 600;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .dashboard-figures {
   display: grid;
@@ -1792,7 +1830,7 @@
 .inbox-settings-link {
   font-size: 14px;
   font-weight: 600;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .inbox {
   display: grid;
@@ -1877,10 +1915,10 @@
   margin: 0;
   font-size: 12px;
   font-weight: 700;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .inbox-type--join {
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .inbox-type--donation,
 .inbox-type--partner {
@@ -1933,7 +1971,7 @@
 }
 .inbox-status.is-pending {
   border-color: var(--orange-fill);
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .inbox-fields {
   display: grid;
@@ -2068,7 +2106,7 @@
   background: var(--orange-soft);
   font-size: 18px;
   font-weight: 700;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
   pointer-events: none;
 }
 .media-main {
@@ -2266,7 +2304,7 @@
   margin-top: 4px;
 }
 .media-detail-usage a {
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
 }
 .media-detail-actions {
   display: flex;
@@ -2280,4 +2318,25 @@
   .media-detail {
     position: static;
   }
+}
+
+/* Sur-titres hérités du site public (.eyebrow, orange vif) : texte d'accent
+   lisible dans l'admin, en clair comme en sombre. */
+.admin-shell .eyebrow {
+  color: var(--admin-accent-text);
+}
+
+/* Focus des champs : visible et assorti au thème (dates et heures comprises,
+   dont le focus est porté par des segments internes au navigateur). */
+.admin-shell input:focus,
+.admin-shell input:focus-within,
+.admin-shell select:focus,
+.admin-shell textarea:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--admin-accent-text);
+}
+/* Recherche du haut : le cadre est porté par son conteneur. */
+.admin-shell .admin-search-wrap input:focus {
+  outline: none;
 }

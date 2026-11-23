@@ -45,7 +45,7 @@ export default function LoginPage() {
                 lineHeight: 1.2,
               }}
             >
-              Manssuetude CMS
+              Manssuétude CMS
             </p>
           </div>
         </div>

@@ -97,7 +97,7 @@
 }
 .admin-nav a[aria-current="page"] {
   background: var(--orange-soft);
-  color: var(--orange);
+  color: var(--admin-accent-text);
   font-weight: 600;
 }
 .admin-nav a svg,
@@ -194,7 +194,7 @@
   font-weight: 600;
   border: 0;
   background: none;
-  color: var(--orange-fill);
+  color: var(--admin-accent-text);
   font: inherit;
   text-decoration: underline;
   cursor: pointer;
@@ -296,7 +296,7 @@
   height: 34px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #f7f8fa;
+  background: var(--admin-search-bg);
   color: var(--muted);
   font-size: 13px;
   transition:

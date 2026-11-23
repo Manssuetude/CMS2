@@ -160,7 +160,7 @@ export default async function EditJoinPage() {
         <Section title="3. Chiffres clés">
           <p className="admin-collapsible-hint" style={{ margin: 0 }}>
             Les chiffres sont communs à l&apos;accueil et à cette page :{" "}
-            <Link href="/admin/homepage" style={{ color: "var(--orange)" }}>
+            <Link href="/admin/homepage" style={{ color: "var(--admin-accent-text)" }}>
               les modifier dans Page d&apos;accueil →
             </Link>
           </p>

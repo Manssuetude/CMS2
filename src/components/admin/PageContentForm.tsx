@@ -81,7 +81,7 @@ export function PageContentForm({ slug, label, page, images, action }: Props) {
         {images.length === 0 && (
           <p style={{ fontSize: 13, color: "var(--muted)" }}>
             Aucune image dans la médiathèque.{" "}
-            <Link href="/admin/media" style={{ color: "var(--orange)" }}>
+            <Link href="/admin/media" style={{ color: "var(--admin-accent-text)" }}>
               Importer une photo →
             </Link>
           </p>

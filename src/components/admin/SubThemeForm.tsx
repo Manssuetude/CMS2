@@ -41,14 +41,14 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
           {isEdit ? (
             <div className="form-field">
               <label className="field-label" htmlFor="title">
-                Titre <span style={{ color: "var(--orange)" }}>*</span>
+                Titre <span style={{ color: "var(--admin-accent-text)" }}>*</span>
               </label>
               <input id="title" name="title" required defaultValue={initialData.title} />
             </div>
           ) : (
             <div className="form-field">
               <label className="field-label" htmlFor="title">
-                Titre <span style={{ color: "var(--orange)" }}>*</span>
+                Titre <span style={{ color: "var(--admin-accent-text)" }}>*</span>
               </label>
               <input
                 id="title"
@@ -62,7 +62,7 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
 
           <div className="form-field">
             <label className="field-label" htmlFor="themeId">
-              Thème parent <span style={{ color: "var(--orange)" }}>*</span>
+              Thème parent <span style={{ color: "var(--admin-accent-text)" }}>*</span>
             </label>
             <select id="themeId" name="themeId" defaultValue={initialData?.themeId ?? ""} required>
               <option value="" disabled>

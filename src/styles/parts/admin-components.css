@@ -79,13 +79,15 @@
   padding: 0 5px;
   border-radius: 9px;
   background: var(--line);
-  color: var(--muted);
+  color: var(--ink-soft);
   font-size: 11px;
   font-weight: 700;
 }
+/* Compteur de l'onglet actif : couleurs inversées (encre / surface), lisibles
+   dans les deux thèmes. */
 .admin-filter-tab.active .tab-count {
   background: var(--ink);
-  color: #fff;
+  color: var(--admin-surface);
 }
 
 /* ─── Status badges ──────────────────────────────── */
@@ -103,23 +105,23 @@
 }
 .badge-draft {
   color: var(--muted);
-  background: #f3f4f6;
-  border-color: #e5e7eb;
+  background: var(--status-draft-bg);
+  border-color: var(--status-draft-line);
 }
 .badge-published {
-  color: #166534;
-  background: #dcfce7;
-  border-color: #bbf7d0;
+  color: var(--status-published-ink);
+  background: var(--status-published-bg);
+  border-color: var(--status-published-line);
 }
 .badge-archived {
-  color: #6b21a8;
-  background: #f3e8ff;
-  border-color: #e9d5ff;
+  color: var(--status-archived-ink);
+  background: var(--status-archived-bg);
+  border-color: var(--status-archived-line);
 }
 .badge-review {
-  color: #92400e;
-  background: #fef3c7;
-  border-color: #fde68a;
+  color: var(--status-warning-ink);
+  background: var(--status-warning-bg);
+  border-color: var(--status-warning-line);
 }
 .progress-tag {
   display: inline-flex;
@@ -130,9 +132,9 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  background: #f3f4f6;
+  background: var(--status-draft-bg);
   color: var(--muted);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--status-draft-line);
 }
 
 /* ─── Admin table improvements ───────────────────── */
@@ -197,9 +199,9 @@
   color: var(--muted);
 }
 .btn-sm.btn-danger:hover {
-  background: #fef2f2;
-  border-color: #fca5a5;
-  color: #b91c1c;
+  background: var(--status-danger-bg);
+  border-color: var(--status-danger-line);
+  color: var(--status-danger-ink);
 }
 
 /* ─── Empty state ────────────────────────────────── */
@@ -273,7 +275,7 @@
   margin: 0;
 }
 .required-mark {
-  color: var(--orange);
+  color: var(--admin-accent-text);
   margin-left: 3px;
   font-weight: 600;
 }
@@ -287,7 +289,7 @@
 }
 .hint-tip:hover,
 .hint-tip:focus-visible {
-  color: var(--orange);
+  color: var(--admin-accent-text);
   text-decoration-color: var(--orange);
   outline: none;
 }
@@ -303,7 +305,7 @@
   font-weight: 400;
   line-height: 1.5;
   text-align: left;
-  box-shadow: 0 8px 24px rgba(8, 8, 10, 0.12);
+  box-shadow: var(--admin-popover-shadow);
 }
 .hint-tip:hover .hint-tip__bubble,
 .hint-tip:focus-visible .hint-tip__bubble {
@@ -457,7 +459,7 @@
   height: 20px;
   border-radius: 50%;
   background: var(--orange);
-  color: #fff;
+  color: var(--admin-primary-ink);
 }
 .media-picker-label {
   font-size: 12px;
@@ -746,16 +748,16 @@
 /* Bouton principal + CTA d'enregistrement : orange de marque */
 .admin-shell .button.primary,
 .admin-shell .cta {
-  background: var(--orange);
-  border-color: var(--orange);
-  color: #fff;
-  box-shadow: 0 1px 2px rgba(255, 77, 18, 0.18);
+  background: var(--admin-primary-bg);
+  border-color: var(--admin-primary-bg);
+  color: var(--admin-primary-ink);
+  box-shadow: var(--admin-primary-shadow);
 }
 .admin-shell .button.primary:hover,
 .admin-shell .cta:hover {
-  background: #e63e08;
-  border-color: #e63e08;
-  box-shadow: 0 5px 16px rgba(255, 77, 18, 0.28);
+  background: var(--admin-primary-bg-hover);
+  border-color: var(--admin-primary-bg-hover);
+  box-shadow: var(--admin-primary-shadow-hover);
 }
 /* Base reset: undo browser bold default on plain buttons + heavy labels */
 .admin-shell button {
@@ -769,7 +771,8 @@
   display: flex;
   height: 100dvh;
   overflow: hidden;
-  background: #f4f5f7;
+  background: var(--admin-bg);
+  color: var(--ink);
 }
 
 /* ─── Événement : style d'en-tête (cartes radio) ─────────────────────── */
@@ -869,6 +872,9 @@
 }
 
 /* ─── Événement : aperçu plein écran (iframe) ────────────────────────── */
+/* La barre d'outils suit le thème de l'admin ; l'iframe affiche la page du
+   site avec son propre thème (choix Clair / Sombre de l'aperçu), jamais celui
+   de l'admin. */
 .event-preview {
   position: fixed;
   inset: 0;
@@ -880,8 +886,8 @@
 .event-preview-flag {
   margin: 0;
   padding: 6px 16px;
-  background: #f5c518;
-  color: #1c1714;
+  background: var(--preview-flag-bg);
+  color: var(--preview-flag-ink);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;

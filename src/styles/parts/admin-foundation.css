@@ -29,7 +29,7 @@
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .admin-nav-section {
   padding: 6px 8px 2px;
@@ -69,7 +69,7 @@
   opacity: 0.55;
 }
 .admin-sidebar a[aria-current="page"] {
-  color: var(--orange);
+  color: var(--admin-accent-text);
   background: var(--orange-soft);
   font-weight: 600;
 }
@@ -165,9 +165,9 @@
 .form-error {
   padding: 10px 14px;
   border-radius: var(--radius);
-  background: #fff0f0;
-  border: 1px solid #f5c6c6;
-  color: #c0392b;
+  background: var(--status-danger-bg);
+  border: 1px solid var(--status-danger-line);
+  color: var(--status-danger-ink);
   font-size: 13px;
   font-weight: 600;
   margin: 0;
@@ -208,6 +208,8 @@ select {
   padding: 0 13px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  background: var(--admin-input-bg);
+  color: var(--ink);
   font: inherit;
 }
 textarea {
@@ -345,7 +347,7 @@ textarea {
 .editor-structure button.is-selected,
 .wizard-sources button.is-selected {
   border-color: var(--ink);
-  color: #fff;
+  color: var(--admin-surface);
   background: var(--ink);
 }
 .block-library {
@@ -363,7 +365,7 @@ textarea {
 .editor-preview {
   display: grid;
   gap: 18px;
-  background: linear-gradient(180deg, #fff, var(--soft-gradient));
+  background: linear-gradient(180deg, var(--surface), var(--soft-gradient));
 }
 .cms-preview-block {
   padding: 24px;
@@ -375,7 +377,8 @@ textarea {
 .cms-preview-block.is-dark,
 .cms-preview-hero.is-dark,
 .cms-preview-cta.is-premium-black {
-  color: #fff;
+  /* Aperçu du site : garde les couleurs du site, pas celles de l'admin. */
+  color: var(--white);
   background: var(--premium-black);
   border-color: var(--premium-black);
 }
@@ -416,7 +419,7 @@ textarea {
   background: var(--soft-panel);
 }
 .cms-preview-feed article span {
-  color: var(--orange);
+  color: var(--admin-accent-text);
   font-size: 12px;
   font-weight: 900;
   text-transform: uppercase;
@@ -448,7 +451,7 @@ textarea {
   width: fit-content;
   padding: 6px 10px;
   border-radius: var(--radius-pill);
-  color: var(--orange);
+  color: var(--admin-accent-text);
   background: var(--orange-soft);
   font-size: 12px;
   font-weight: 900;
@@ -487,7 +490,7 @@ textarea {
   padding: 8px 10px;
   border-radius: var(--radius-pill);
   background: var(--orange-soft);
-  color: var(--orange);
+  color: var(--admin-accent-text);
   font-size: 12px;
   font-weight: 600;
 }
@@ -521,7 +524,7 @@ textarea {
   height: 100%;
 }
 .media-kind {
-  color: var(--orange);
+  color: var(--admin-accent-text);
   font-size: 30px;
   font-weight: 950;
 }
@@ -555,7 +558,7 @@ textarea {
   font-size: 34px;
 }
 .health-item.is-high strong {
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .health-item.is-medium strong {
   color: var(--warning);

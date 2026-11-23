@@ -205,7 +205,7 @@ export function GoogleDrivePicker({ onImported }: { onImported: (item: Media) =>
             ? "Connexion à Google…"
             : "Parcourir Google Drive"}
       </button>
-      {error && <p style={{ color: "var(--error, #b91c1c)", margin: "10px 0 0" }}>{error}</p>}
+      {error && <p style={{ color: "var(--status-danger-ink)", margin: "10px 0 0" }}>{error}</p>}
     </div>
   );
 }
