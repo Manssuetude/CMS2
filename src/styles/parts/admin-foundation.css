@@ -93,6 +93,17 @@
   margin-left: auto;
   margin-right: auto;
 }
+/* Pages de l'admin : le contenu repose directement sur le fond de
+   l'application (--admin-bg), sans grand cadre autour. Seuls les blocs
+   internes (sections de formulaire, cartes, tableaux) ont une surface.
+   Limité à .admin-shell : la carte de connexion garde son cadre. */
+.admin-shell .admin-panel {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
 .login-panel {
   max-width: 480px;
   margin: 80px auto 0;

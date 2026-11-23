@@ -235,7 +235,7 @@ export default async function AdminFormsPage({
         </div>
       </div>
 
-      <div className="admin-card" id="notifications" style={{ marginTop: 24 }}>
+      <div id="notifications" style={{ marginTop: 24 }}>
         <div className="form-section">
           <p className="form-section-title">Notifications</p>
           <p style={{ color: "var(--muted)", fontSize: 14, marginTop: -8, marginBottom: 16 }}>

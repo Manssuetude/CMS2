@@ -80,7 +80,7 @@ export default async function AdminLinksPage() {
         </table>
       )}
 
-      <div className="admin-card" style={{ marginTop: 24 }}>
+      <div style={{ marginTop: 24 }}>
         <div className="form-section">
           <p className="form-section-title">Description de la page /link</p>
           <p style={{ color: "var(--muted)", fontSize: 14, marginTop: -8, marginBottom: 16 }}>
