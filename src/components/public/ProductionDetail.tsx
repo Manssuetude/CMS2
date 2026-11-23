@@ -16,15 +16,7 @@ import { SITE_URL } from "@/constants/site";
 import { getEmbedUrl } from "@/utils/videoEmbed";
 import { buildArticleJsonLd } from "@/lib/jsonLd";
 import { PdfViewer } from "@/components/public/PdfViewerLoader";
-
-const TYPE_LABEL: Record<string, string> = {
-  Article: "Article",
-  "Note & Synthese": "Note & Synthèse",
-  "Etude & Rapport": "Étude & Rapport",
-  Video: "Vidéo",
-  Podcast: "Podcast",
-  Infographie: "Infographie",
-};
+import { productionTypeLabel } from "@/constants/productionTypes";
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
@@ -52,7 +44,7 @@ export function ProductionDetail({
 }: Props) {
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const subThemes = allSubThemes.filter((st) => item.subThemeIds?.includes(st.id));
-  const typeLabel = TYPE_LABEL[item.type] ?? item.type;
+  const typeLabel = productionTypeLabel(item.type);
   const authorNames = authors.map((a) => a.name).join(", ");
   const hasAside = subThemes.length > 0 || item.tags.length > 0;
   const readingTime = item.readingTime || estimateReadingTime(item.body);
@@ -212,7 +204,7 @@ export function ProductionDetail({
             title: p.title,
             description: p.description,
             href: `/productions/${p.slug}`,
-            meta: TYPE_LABEL[p.type] ?? p.type,
+            meta: productionTypeLabel(p.type),
             tags: p.tags,
           }))}
         />

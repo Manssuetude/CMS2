@@ -685,3 +685,63 @@
   margin-top: 2px;
   color: var(--warning);
 }
+
+/* ─── Productions : import Word et aperçu des parties ─────────────────── */
+.docx-import {
+  display: grid;
+  gap: 10px;
+}
+.docx-import-result {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft-panel);
+  font-size: 13px;
+}
+.docx-import-done {
+  margin: 0;
+  color: var(--ink);
+}
+.docx-import-warnings summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.docx-import-warnings ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+.article-parts-preview {
+  font-size: 13px;
+  color: var(--ink);
+}
+.article-parts-preview-count {
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+.article-parts-preview ol {
+  margin: 0;
+  padding-left: 22px;
+}
+.article-parts-preview li + li {
+  margin-top: 2px;
+}
+.article-parts-preview-tag {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.production-content-preview {
+  max-width: 820px;
+  margin: 0 auto 24px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft-panel);
+}
+.production-content-tools {
+  max-width: 820px;
+  margin: 0 auto 16px;
+}

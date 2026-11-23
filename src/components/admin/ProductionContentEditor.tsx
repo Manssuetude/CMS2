@@ -3,6 +3,8 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { updateProductionBodyAction } from "@/app/admin/productions/actions";
+import { ArticlePartsPreview } from "@/components/admin/ArticlePartsPreview";
+import { DocxImportButton } from "@/components/admin/DocxImportButton";
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor").then((m) => m.RichTextEditor), {
   ssr: false,
@@ -60,9 +62,19 @@ export function ProductionContentEditor({ productionId, initialBody }: Props) {
           (.detail-body), sans hériter des tokens de couleur/police globaux
           du site — le chrome de l'éditeur reste dans le thème admin, seul
           le contenu (.ck-content) reproduit la typographie publique. */}
-      <div style={{ maxWidth: 820, margin: "0 auto 24px" }}>
-        <RichTextEditor value={body} onChange={setBody} />
+      <div className="production-content-tools">
+        <DocxImportButton productionId={productionId} hasContent={body.trim().length > 0} onImported={setBody} />
       </div>
+
+      <div style={{ maxWidth: 820, margin: "0 auto 24px" }}>
+        <RichTextEditor value={body} onChange={setBody} headingVariant="articleParts" />
+      </div>
+
+      {body.trim() && (
+        <div className="production-content-preview">
+          <ArticlePartsPreview html={body} />
+        </div>
+      )}
 
       <div className="form-actions">
         <button type="submit" className="button primary" disabled={isPending}>

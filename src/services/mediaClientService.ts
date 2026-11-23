@@ -18,6 +18,12 @@ type UploadMetadata = {
   visibility?: string;
 };
 
+/** Envoie un fichier vers le Storage à l'aide d'un ticket signé (sans passer par nos fonctions). */
+export async function uploadWithTicket(ticket: { path: string; token: string }, file: File): Promise<void> {
+  const { error } = await supabase.storage.from(STORAGE_BUCKET).uploadToSignedUrl(ticket.path, ticket.token, file);
+  if (error) throw new Error(error.message || "Échec de l'envoi du fichier.");
+}
+
 export const mediaClientService = {
   async uploadFile(file: File, metadata?: UploadMetadata): Promise<Media> {
     // 1. Ticket d'upload signé — requête JSON minuscule (pas de binaire), ne
@@ -38,10 +44,7 @@ export const mediaClientService = {
 
     // 2. Envoi direct du fichier vers Supabase Storage, depuis le navigateur —
     //    contourne entièrement notre fonction serveur pour le binaire.
-    const { error: uploadError } = await supabase.storage
-      .from(STORAGE_BUCKET)
-      .uploadToSignedUrl(ticket.path, ticket.token, file);
-    if (uploadError) throw new Error(uploadError.message || "Échec de l'envoi du fichier.");
+    await uploadWithTicket(ticket, file);
 
     // 3. Enregistre les métadonnées — le fichier est déjà dans le stockage,
     //    cette requête ne transporte plus aucun binaire.

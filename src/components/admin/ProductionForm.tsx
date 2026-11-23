@@ -7,6 +7,7 @@ import type { Author, Media, Production, SubTheme, Theme } from "@/types/cms";
 import { mediaClientService } from "@/services/mediaClientService";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
+import { DocxImportButton } from "@/components/admin/DocxImportButton";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -54,6 +55,9 @@ export function ProductionForm({
   const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  // Texte importé depuis Word : envoyé avec le formulaire (champ `body`)
+  // seulement s'il y a eu un import — sinon le contenu existant n'est pas touché.
+  const [importedBody, setImportedBody] = useState<string | null>(null);
 
   async function handlePdfUpload(file: File) {
     setUploading(true);
@@ -86,6 +90,7 @@ export function ProductionForm({
       <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
       <input type="hidden" name="authorIds" value={selectedAuthors.join(",")} />
       <input type="hidden" name="fileId" value={fileId} />
+      {importedBody !== null && <input type="hidden" name="body" value={importedBody} />}
 
       {error && <p className="form-error">{error}</p>}
 
@@ -334,6 +339,18 @@ export function ProductionForm({
               </label>
             )}
             {uploadError && <p className="form-error">{uploadError}</p>}
+          </div>
+          <div className="form-field">
+            <p className="field-label">Texte de l&apos;article</p>
+            <p style={{ margin: "0 0 8px", fontSize: 12, color: "var(--muted)" }}>
+              Les grands titres (style « Titre 1 » dans Word) découpent l&apos;article en parties, une page par partie.
+              Le texte importé est enregistré avec la production.
+            </p>
+            <DocxImportButton
+              productionId={initialData?.id}
+              hasContent={importedBody !== null ? importedBody.trim().length > 0 : !!initialData?.body?.trim()}
+              onImported={setImportedBody}
+            />
           </div>
           <div className="form-field">
             <label className="field-label" htmlFor="downloadLabel">

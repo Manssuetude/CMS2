@@ -10,6 +10,7 @@ const ACTION_LABEL: Record<string, string> = {
   invite: "Invitation",
   "role change": "Changement de rôle",
   login: "Connexion",
+  import: "Import",
 };
 
 function actionClass(action: string) {

@@ -7,6 +7,26 @@ import { productionRepository } from "@/repositories/productionRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
 import { slugify } from "@/utils/slug";
+import { partPath, splitIntoParts } from "@/utils/articleParts";
+import type { Production } from "@/types/cms";
+
+// Pages publiques d'une production : l'article (partie 1) et chacune de ses
+// parties. "layout" couvre aussi les anciennes URL de parties renommées (elles
+// se mettent alors à rediriger vers la partie 1).
+function revalidateProductionPages(production: Pick<Production, "slug" | "body">) {
+  const basePath = `/productions/${production.slug}`;
+  revalidatePath(basePath, "layout");
+  const parts = splitIntoParts(production.body);
+  parts.forEach((_, index) => revalidatePath(partPath(basePath, parts, index)));
+  revalidatePath("/productions");
+}
+
+// Champ `body` envoyé par le formulaire uniquement après un import Word.
+function bodyFromForm(formData: FormData): { body?: string | null } {
+  if (!formData.has("body")) return {};
+  const body = ((formData.get("body") as string | null) ?? "").trim();
+  return { body: body || null };
+}
 
 export async function toggleProductionFeaturedAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
@@ -92,7 +112,11 @@ export async function createProductionAction(_: string | null, formData: FormDat
 
   let production;
   try {
-    production = await productionRepository.createProduction({ slug, ...toInput(parsed.data) });
+    production = await productionRepository.createProduction({
+      slug,
+      ...toInput(parsed.data),
+      ...bodyFromForm(formData),
+    });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -116,6 +140,7 @@ export async function createProductionAction(_: string | null, formData: FormDat
     summary: `Production créée : ${parsed.data.title}`,
   });
   revalidatePath("/admin/productions");
+  revalidateProductionPages(production);
   redirect("/admin/productions");
 }
 
@@ -144,6 +169,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     return parsed.error.errors[0]?.message ?? "Donnees invalides.";
   }
 
+  let updated: Production;
   try {
     // Le lien (slug) suit le titre tant que le contenu est encore en
     // brouillon (jamais publié) — évite qu'un titre provisoire (ex. "aaaa")
@@ -152,7 +178,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     const current = await productionRepository.getProductionById(id);
     const input = toInput(parsed.data);
     const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
-    await productionRepository.updateProduction(id, { ...input, ...slugSync });
+    updated = await productionRepository.updateProduction(id, { ...input, ...slugSync, ...bodyFromForm(formData) });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez reessayer.";
   }
@@ -167,6 +193,7 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     summary: `Production modifiée : ${parsed.data.title}`,
   });
   revalidatePath("/admin/productions");
+  revalidateProductionPages(updated);
   redirect("/admin/productions");
 }
 
@@ -175,14 +202,16 @@ export async function updateProductionBodyAction(_: string | null, formData: For
   if (!id) return "Identifiant manquant.";
   const body = (formData.get("body") as string | null) ?? "";
 
+  let updated: Production;
   try {
-    await productionRepository.updateProduction(id, { body: body || null });
+    updated = await productionRepository.updateProduction(id, { body: body || null });
   } catch {
     return "Erreur lors de la sauvegarde. Veuillez réessayer.";
   }
 
   await logAction("update", { entityType: "production", entityId: id, summary: "Contenu de la production modifié" });
   revalidatePath("/admin/productions");
+  revalidateProductionPages(updated);
   revalidatePath(`/admin/productions/${id}/edit`);
   return null;
 }

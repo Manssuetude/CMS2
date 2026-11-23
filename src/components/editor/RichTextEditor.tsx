@@ -215,6 +215,17 @@ const BASE_CONFIG: Omit<EditorConfig, "mention"> = {
   },
 };
 
+// Productions : l'article est découpé en parties à chaque h2 (une page par
+// partie). Les libellés le disent explicitement dans le menu des titres.
+const ARTICLE_PARTS_HEADINGS: NonNullable<EditorConfig["heading"]> = {
+  options: [
+    { model: "paragraph" as const, title: "Paragraphe", class: "ck-heading_paragraph" },
+    { model: "heading2" as const, view: "h2" as const, title: "Titre de partie", class: "ck-heading_heading2" },
+    { model: "heading3" as const, view: "h3" as const, title: "Sous-titre", class: "ck-heading_heading3" },
+    { model: "heading4" as const, view: "h4" as const, title: "Petit titre", class: "ck-heading_heading4" },
+  ],
+};
+
 // Item d'un répertoire (ex. formats d'activité) insérable dans le texte via "#" —
 // tape le marqueur, choisit dans la liste, un repère cliquable est inséré. La
 // description associée n'est jamais dupliquée dans le corps : elle est résolue
@@ -236,9 +247,17 @@ interface Props {
   onChange: (value: string) => void;
   name?: string;
   mentionItems?: MentionItem[];
+  /** "articleParts" : libellés « Titre de partie / Sous-titre / Petit titre » (productions). */
+  headingVariant?: "default" | "articleParts";
 }
 
-export function RichTextEditor({ value, onChange, name, mentionItems = EMPTY_MENTION_ITEMS }: Props) {
+export function RichTextEditor({
+  value,
+  onChange,
+  name,
+  mentionItems = EMPTY_MENTION_ITEMS,
+  headingVariant = "default",
+}: Props) {
   const wordCountRef = useRef<HTMLDivElement>(null);
 
   // Mémoïsé sur `mentionItems` (le composant appelant doit lui-même fournir une
@@ -247,6 +266,7 @@ export function RichTextEditor({ value, onChange, name, mentionItems = EMPTY_MEN
   const config: EditorConfig = useMemo(
     () => ({
       ...BASE_CONFIG,
+      ...(headingVariant === "articleParts" ? { heading: ARTICLE_PARTS_HEADINGS } : {}),
       mention: {
         feeds:
           mentionItems.length > 0
@@ -267,7 +287,7 @@ export function RichTextEditor({ value, onChange, name, mentionItems = EMPTY_MEN
             : [],
       },
     }),
-    [mentionItems],
+    [mentionItems, headingVariant],
   );
 
   return (
