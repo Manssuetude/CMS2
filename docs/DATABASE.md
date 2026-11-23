@@ -122,7 +122,7 @@ Contenus éditoriaux publiés (articles, rapports, notes).
 | `body_source_name`             | text                | nom du Word importé       |
 | `body_imported_at`             | timestamptz         | date de l'import du Word  |
 
-Le `body` n'est plus édité dans l'admin : il vient uniquement de l'import du Word (onglet « Fichiers de l'article »). Une production ne peut passer en « Publié » qu'avec un Word (`body`) et un PDF (`file_id`) ; les productions déjà publiées sans l'un des deux restent en ligne (règle dans `utils/productionPublication.ts`). Migration `20261123_productions_word_source`.
+Le `body` n'est plus édité dans l'admin : il vient uniquement de l'import du Word (onglet « Fichiers de l'article »). Une production ne peut passer en « Publié » qu'avec un Word (`body`) et un PDF (`file_id`) ; les productions déjà publiées sans l'un des deux restent en ligne (règle dans `utils/productionPublication.ts`). Migration `20261123_productions_word_source` (appliquée le 2026-11-24, consolidée ici).
 
 ### `events`
 
