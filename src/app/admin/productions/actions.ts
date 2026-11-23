@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { productionRepository } from "@/repositories/productionRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
+import { requirePermission } from "@/lib/auth";
+import { duplicateProduction } from "@/services/duplicationService";
 import { slugify } from "@/utils/slug";
 import { partPath, splitIntoParts } from "@/utils/articleParts";
 import type { ContentStatus, Production } from "@/types/cms";
@@ -191,4 +193,19 @@ export async function toggleProductionStatusAction(formData: FormData): Promise<
   }
   await productionRepository.toggleStatus(id, status);
   revalidatePath("/admin/productions");
+}
+
+// « Dupliquer » : copie en brouillon, puis ouverture de la copie.
+export async function duplicateProductionAction(formData: FormData): Promise<void> {
+  await requirePermission("productions:create");
+  const id = (formData.get("id") as string | null)?.trim();
+  const copy = id ? await duplicateProduction(id) : null;
+  if (!copy) redirect("/admin/productions");
+  await logAction("create", {
+    entityType: "production",
+    entityId: copy.id,
+    summary: `Production dupliquée : ${copy.title}`,
+  });
+  revalidatePath("/admin/productions");
+  redirect(`/admin/productions/${copy.id}/edit?saved=1`);
 }

@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/db";
 import type { ContentStatus, ProgressStatus, Theme } from "@/types/cms";
+import { selectableThemes, type SelectableThemes } from "@/utils/themePicker";
 import { asBoolean, asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
 
 function mapTheme(row: DataRow): Theme {
@@ -31,6 +32,14 @@ export const themeRepository = {
     const { data, error } = await query;
     if (error) throw error;
     return data.map(mapTheme);
+  },
+
+  /**
+   * Thèmes proposés dans les sélecteurs de l'admin : sans les thèmes archivés,
+   * sauf ceux de `attachedIds` (déjà rattachés au contenu édité).
+   */
+  async listSelectableThemes(attachedIds: string[] = []): Promise<SelectableThemes> {
+    return selectableThemes(await themeRepository.listThemes(true), attachedIds);
   },
 
   async getTheme(slug: string): Promise<Theme | null> {

@@ -6,6 +6,8 @@ import { eventRepository } from "@/repositories/eventRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
+import { requirePermission } from "@/lib/auth";
+import { duplicateEvent } from "@/services/duplicationService";
 import { slugify } from "@/utils/slug";
 import { eventFormSchema, parseAnimators, parseIdList, readEventForm, toEventInput } from "./eventForm";
 
@@ -106,4 +108,15 @@ export async function toggleEventFeaturedAction(formData: FormData): Promise<voi
   await eventRepository.updateEvent(id, { featured });
   revalidatePath("/admin/evenements");
   revalidatePath("/");
+}
+
+// « Dupliquer » : copie en brouillon (sans dates ni photos de compte-rendu), puis ouverture de la copie.
+export async function duplicateEventAction(formData: FormData): Promise<void> {
+  await requirePermission("evenements:create");
+  const id = (formData.get("id") as string | null)?.trim();
+  const copy = id ? await duplicateEvent(id) : null;
+  if (!copy) redirect("/admin/evenements");
+  await logAction("create", { entityType: "event", entityId: copy.id, summary: `Événement dupliqué : ${copy.title}` });
+  revalidatePath("/admin/evenements");
+  redirect(`/admin/evenements/${copy.id}/edit?saved=1`);
 }

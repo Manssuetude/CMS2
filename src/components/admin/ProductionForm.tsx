@@ -19,6 +19,9 @@ import {
 } from "@/components/admin/ArticleFilesModal";
 import { ProductionFilesPanel } from "@/components/admin/ProductionFilesPanel";
 import { ProductionPreviewModal } from "@/components/admin/ProductionPreviewModal";
+import { FormTabPanel, FormTabs } from "@/components/admin/FormTabs";
+import { ThemeTreePicker } from "@/components/admin/ThemeTreePicker";
+import { SeoFields } from "@/components/admin/SeoFields";
 import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
@@ -38,6 +41,8 @@ interface Props {
   initialData?: Production;
   action: ActionFn;
   themes?: Theme[];
+  /** Thèmes archivés non proposés (voir themeRepository.listSelectableThemes). */
+  archivedHiddenCount?: number;
   subThemes?: SubTheme[];
   initialSubThemeIds?: string[];
   authors?: Author[];
@@ -58,6 +63,7 @@ export function ProductionForm({
   initialData,
   action,
   themes = [],
+  archivedHiddenCount = 0,
   subThemes = [],
   initialSubThemeIds = [],
   authors = [],
@@ -96,6 +102,12 @@ export function ProductionForm({
     files: { hasWord: !!word.html, hasPdf: !!pdf.id },
   });
   const blockedMessage = publication.allowed ? null : publicationBlockedMessage(publication.missing);
+  const tabs = [
+    { id: "essentiel", label: "Essentiel" },
+    { id: "fichiers", label: "Fichiers de l'article", issue: publication.missing.length > 0 },
+    { id: "liens", label: "Thèmes et liens" },
+    { id: "referencement", label: "Référencement" },
+  ];
   const legacyWarning = publication.legacyWarning ? publicationLegacyMessage(publication.missing) : null;
 
   const closePreview = useCallback(() => setPreview(null), []);
@@ -128,14 +140,6 @@ export function ProductionForm({
     });
   }
 
-  const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
-  const subThemesByTheme = new Map<string, SubTheme[]>();
-  for (const st of subThemes) {
-    const list = subThemesByTheme.get(st.themeId) ?? [];
-    list.push(st);
-    subThemesByTheme.set(st.themeId, list);
-  }
-
   return (
     <form action={formAction} ref={formRef}>
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
@@ -152,221 +156,200 @@ export function ProductionForm({
 
       {error && <p className="form-error">{error}</p>}
 
-      <div className="content-form">
-        {/* Fichiers de l'article (Word + PDF) */}
-        <div className="form-section">
-          <p className="form-section-title">Fichiers de l&apos;article</p>
-          <ProductionFilesPanel
-            word={{
-              present: !!word.html,
-              fileName: word.fileName,
-              importedAt: word.importedAt,
-              pending: word.pending,
-            }}
-            pdf={{ present: !!pdf.id, fileName: pdf.fileName, pending: pdf.pending }}
-            partTitles={partTitles}
-            pages={pages}
-            onPagesChange={setPages}
-            downloadLabel={initialData?.downloadLabel}
-            legacyWarning={legacyWarning}
-            onReplace={openFilesModal}
-            onPreview={() => setPreview({ body: null, fileId: null, partTitles, canSave: true })}
-          />
-        </div>
+      <FormTabs tabs={tabs}>
+        <FormTabPanel id="essentiel">
+          <div className="content-form">
+            <div className="form-section">
+              <p className="form-section-title">Informations générales</p>
 
-        {/* Informations */}
-        <div className="form-section">
-          <p className="form-section-title">Informations générales</p>
-
-          <div className="form-field">
-            <label className="field-label" htmlFor="title">
-              Titre *
-            </label>
-            <input
-              id="title"
-              type="text"
-              name="title"
-              defaultValue={initialData?.title}
-              required
-              placeholder="Ex. : Industrialisation en CEMAC : où en sommes-nous ?"
-              onChange={(e) => {
-                if (!isEdit) setSlug(toSlug(e.target.value));
-              }}
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="type">
-                Type *
-              </label>
-              <select id="type" name="type" value={type} onChange={(e) => setType(e.target.value)} required>
-                <option value="" disabled>
-                  Choisir un type...
-                </option>
-                {TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {productionTypeLabel(t)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-field">
-              <label className="field-label" htmlFor="author">
-                Auteur
-              </label>
-              <input
-                id="author"
-                type="text"
-                name="author"
-                defaultValue={initialData?.author ?? ""}
-                placeholder="Nom de l'auteur ou de l'équipe"
-              />
-            </div>
-          </div>
-
-          {(type === "Video" || type === "Podcast") && (
-            <div className="form-field">
-              <label className="field-label" htmlFor="videoUrl">
-                {type === "Video" ? "URL vidéo (YouTube ou Vimeo)" : "URL audio (fichier .mp3 ou lien YouTube/Vimeo)"}
-              </label>
-              <input
-                id="videoUrl"
-                type="url"
-                name="videoUrl"
-                defaultValue={initialData?.videoUrl ?? ""}
-                placeholder={type === "Video" ? "https://www.youtube.com/watch?v=..." : "https://.../episode.mp3"}
-              />
-            </div>
-          )}
-
-          <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="date">
-                Date de publication
-              </label>
-              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
-            </div>
-            <div className="form-field">
-              <label className="field-label" htmlFor="readingTime">
-                {type === "Video" || type === "Podcast" ? "Durée" : "Temps de lecture (optionnel)"}
-              </label>
-              <input
-                id="readingTime"
-                type="text"
-                name="readingTime"
-                defaultValue={initialData?.readingTime ?? ""}
-                placeholder={
-                  type === "Video" || type === "Podcast" ? "Ex. : 12 min" : "Calculé automatiquement si laissé vide"
-                }
-              />
-            </div>
-          </div>
-
-          <div className="form-checkbox">
-            <input type="checkbox" id="featured" name="featured" defaultChecked={initialData?.featured} />
-            <label htmlFor="featured">Mettre en vedette</label>
-          </div>
-        </div>
-
-        {/* Description courte */}
-        <div className="form-section">
-          <p className="form-section-title">Résumé court</p>
-          <div className="form-field">
-            <label className="field-label" htmlFor="description">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              defaultValue={initialData?.description ?? ""}
-              rows={3}
-              placeholder="Description courte pour les listes et les metas SEO..."
-            />
-          </div>
-        </div>
-
-        {/* Relations sous-thèmes */}
-        {subThemes.length > 0 && (
-          <div className="form-section">
-            <p className="form-section-title">Sous-thèmes</p>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Cochez les sujets traités par cette production.
-            </p>
-            {[...subThemesByTheme.entries()].map(([themeId, items]) => (
-              <div key={themeId} style={{ marginBottom: 14 }}>
-                <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 600, color: "var(--ink)" }}>
-                  {themeTitleById.get(themeId) ?? "Thème"}
-                </p>
-                <CheckboxMultiSelect
-                  idPrefix="subtheme"
-                  items={items.map((st) => ({ id: st.id, label: st.title }))}
-                  selected={selectedSubThemes}
-                  onChange={setSelectedSubThemes}
+              <div className="form-field">
+                <label className="field-label" htmlFor="title">
+                  Titre *
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  name="title"
+                  defaultValue={initialData?.title}
+                  required
+                  placeholder="Ex. : Industrialisation en CEMAC : où en sommes-nous ?"
+                  onChange={(e) => {
+                    if (!isEdit) setSlug(toSlug(e.target.value));
+                  }}
                 />
               </div>
-            ))}
-          </div>
-        )}
 
-        {/* Relations auteurs */}
-        {authors.length > 0 && (
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="field-label" htmlFor="type">
+                    Type *
+                  </label>
+                  <select id="type" name="type" value={type} onChange={(e) => setType(e.target.value)} required>
+                    <option value="" disabled>
+                      Choisir un type...
+                    </option>
+                    {TYPES.map((t) => (
+                      <option key={t} value={t}>
+                        {productionTypeLabel(t)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-field">
+                  <label className="field-label" htmlFor="author">
+                    Auteur
+                  </label>
+                  <input
+                    id="author"
+                    type="text"
+                    name="author"
+                    defaultValue={initialData?.author ?? ""}
+                    placeholder="Nom de l'auteur ou de l'équipe"
+                  />
+                </div>
+              </div>
+
+              {(type === "Video" || type === "Podcast") && (
+                <div className="form-field">
+                  <label className="field-label" htmlFor="videoUrl">
+                    {type === "Video"
+                      ? "URL vidéo (YouTube ou Vimeo)"
+                      : "URL audio (fichier .mp3 ou lien YouTube/Vimeo)"}
+                  </label>
+                  <input
+                    id="videoUrl"
+                    type="url"
+                    name="videoUrl"
+                    defaultValue={initialData?.videoUrl ?? ""}
+                    placeholder={type === "Video" ? "https://www.youtube.com/watch?v=..." : "https://.../episode.mp3"}
+                  />
+                </div>
+              )}
+
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="field-label" htmlFor="date">
+                    Date de publication
+                  </label>
+                  <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
+                </div>
+                <div className="form-field">
+                  <label className="field-label" htmlFor="readingTime">
+                    {type === "Video" || type === "Podcast" ? "Durée" : "Temps de lecture (optionnel)"}
+                  </label>
+                  <input
+                    id="readingTime"
+                    type="text"
+                    name="readingTime"
+                    defaultValue={initialData?.readingTime ?? ""}
+                    placeholder={
+                      type === "Video" || type === "Podcast" ? "Ex. : 12 min" : "Calculé automatiquement si laissé vide"
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-checkbox">
+                <input type="checkbox" id="featured" name="featured" defaultChecked={initialData?.featured} />
+                <label htmlFor="featured">Mettre en vedette</label>
+              </div>
+            </div>
+
+            <div className="form-section">
+              <p className="form-section-title">Résumé court</p>
+              <div className="form-field">
+                <label className="field-label" htmlFor="description">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  defaultValue={initialData?.description ?? ""}
+                  rows={3}
+                  placeholder="Description courte pour les listes et les metas SEO..."
+                />
+              </div>
+            </div>
+
+            {/* Relations auteurs */}
+            {authors.length > 0 && (
+              <div className="form-section">
+                <p className="form-section-title">Fiches auteur</p>
+                <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+                  En complément (ou au lieu) du champ « Auteur » en texte libre ci-dessus.
+                </p>
+                <CheckboxMultiSelect
+                  idPrefix="author"
+                  items={authors.map((a) => ({ id: a.id, label: a.name }))}
+                  selected={selectedAuthors}
+                  onChange={setSelectedAuthors}
+                />
+              </div>
+            )}
+          </div>
+        </FormTabPanel>
+
+        <FormTabPanel id="fichiers">
           <div className="form-section">
-            <p className="form-section-title">Fiches auteur</p>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              En complément (ou au lieu) du champ « Auteur » en texte libre ci-dessus.
-            </p>
-            <CheckboxMultiSelect
-              idPrefix="author"
-              items={authors.map((a) => ({ id: a.id, label: a.name }))}
-              selected={selectedAuthors}
-              onChange={setSelectedAuthors}
+            <ProductionFilesPanel
+              word={{
+                present: !!word.html,
+                fileName: word.fileName,
+                importedAt: word.importedAt,
+                pending: word.pending,
+              }}
+              pdf={{ present: !!pdf.id, fileName: pdf.fileName, pending: pdf.pending }}
+              partTitles={partTitles}
+              pages={pages}
+              onPagesChange={setPages}
+              downloadLabel={initialData?.downloadLabel}
+              legacyWarning={legacyWarning}
+              onReplace={openFilesModal}
+              onPreview={() => setPreview({ body: null, fileId: null, partTitles, canSave: true })}
             />
           </div>
-        )}
+        </FormTabPanel>
 
-        {/* Ressources / références */}
-        <div className="form-section">
-          <p className="form-section-title">Ressources / références liées</p>
-          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-            Documents ou médias de la médiathèque cités par cette production.
-          </p>
-          <SortableMediaGallery
-            name="resourceIds"
-            initialMedia={mediaItems}
-            initialSelectedIds={initialResourceIds}
-            buttonLabel="Ajouter des ressources"
-          />
-        </div>
+        <FormTabPanel id="liens">
+          <div className="content-form">
+            <div className="form-section">
+              <ThemeTreePicker
+                themes={themes}
+                subThemes={subThemes}
+                archivedHiddenCount={archivedHiddenCount}
+                selectedSubThemeIds={selectedSubThemes}
+                onSubThemesChange={setSelectedSubThemes}
+              />
+            </div>
+            <div className="form-section">
+              <p className="form-section-title">Ressources / références liées</p>
+              <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+                Documents ou médias de la médiathèque cités par cette production.
+              </p>
+              <SortableMediaGallery
+                name="resourceIds"
+                initialMedia={mediaItems}
+                initialSelectedIds={initialResourceIds}
+                buttonLabel="Ajouter des ressources"
+              />
+            </div>
+          </div>
+        </FormTabPanel>
 
-        {/* SEO */}
-        <div className="form-section">
-          <p className="form-section-title">SEO</p>
-          <div className="form-field">
-            <label className="field-label" htmlFor="seoTitle">
-              Titre SEO (onglet navigateur)
-            </label>
-            <input
-              id="seoTitle"
-              name="seoTitle"
-              defaultValue={initialData?.seoTitle ?? ""}
-              placeholder={initialData?.title}
-            />
+        <FormTabPanel id="referencement">
+          <div className="content-form">
+            <div className="form-section">
+              <SeoFields
+                defaultTitle={initialData?.seoTitle}
+                defaultDescription={initialData?.seoDescription}
+                fallbackTitle={initialData?.title}
+                fallbackDescription={initialData?.description}
+                path={initialData ? `/productions/${initialData.slug}` : null}
+              />
+            </div>
           </div>
-          <div className="form-field">
-            <label className="field-label" htmlFor="seoDescription">
-              Description SEO
-            </label>
-            <textarea
-              id="seoDescription"
-              name="seoDescription"
-              defaultValue={initialData?.seoDescription ?? ""}
-              rows={3}
-              placeholder={initialData?.description ?? ""}
-            />
-          </div>
-        </div>
-      </div>
+        </FormTabPanel>
+      </FormTabs>
 
       <AdminFormBar
         status={{ value: status, onChange: setStatus }}

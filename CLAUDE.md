@@ -100,6 +100,8 @@ SQL schema files are in `supabase/`: `schema.sql` (full schema — single source
 
 **Barre d'actions des fiches** — `<AdminFormBar>` (à placer dans le `<form>`) : état à gauche (« Modifications non enregistrées », « Tout est enregistré », blocage, erreur), statut / aperçu / Enregistrer à droite. Suivi des modifications et confirmation avant de quitter : `hooks/useUnsavedChanges.ts`. Utilisée par les fiches productions, événements, projets, annonces, thèmes, sous-thèmes et les éditeurs de pages.
 
+**Fiches en onglets** — `<FormTabs>` / `<FormTabPanel>` (`role="tablist"`, ancre d'adresse `#onglet`, point orange si un champ du panneau est invalide ou si `issue`, ouverture automatique de l'onglet d'un champ invalide à l'enregistrement). Tous les panneaux restent dans le formulaire. Production : Essentiel, Fichiers de l'article, Thèmes et liens, Référencement. Événement : Essentiel, Description, Intervenants, Affiche et photos, Thèmes et liens, Référencement. En-tête commun `AdminFicheHeader` (statut, badges, « Dupliquer », « Voir sur le site », bandeau). Dupliquer : `services/duplicationService.ts` (copie en brouillon « Copie de … », slug unique ; un événement copié perd dates et photos de compte-rendu). Thèmes proposés : `themeRepository.listSelectableThemes(attachedIds)` (archivés masqués sauf déjà rattachés, `utils/themePicker.ts`) + `ThemeTreePicker` (sous-thèmes sous le thème coché). Référencement : `SeoFields` (compteur 60 caractères, aperçu Google). Événement passé sans photos ni documents : `utils/eventReport.ts`.
+
 **Admin — sections clés**
 
 - `/admin/homepage` : texte, CTAs (libellé + lien), photo hero, sujet du moment (thème + photo), SEO
