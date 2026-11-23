@@ -1,7 +1,7 @@
 import { uploadWithTicket } from "@/services/mediaClientService";
 import { MAX_DOCX_BYTES } from "@/constants/docxImport";
 
-export type DocxImportResult = { html: string; warnings: string[]; imageCount: number };
+export type DocxImportResult = { html: string; warnings: string[]; imageCount: number; noteCount: number };
 
 async function readError(response: Response, fallback: string): Promise<string> {
   const body = (await response.json().catch(() => null)) as { error?: string } | null;

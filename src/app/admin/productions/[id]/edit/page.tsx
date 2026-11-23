@@ -23,10 +23,11 @@ export default async function EditProductionPage({ params }: Props) {
     mediaRepository.list(),
   ]);
   if (!item) notFound();
-  const [initialSubThemeIds, initialAuthorIds, initialResourceIds] = await Promise.all([
+  const [initialSubThemeIds, initialAuthorIds, initialResourceIds, pdf] = await Promise.all([
     productionRepository.getProductionSubThemeIds(id),
     authorRepository.getProductionAuthorIds(id),
     productionRepository.getProductionResourceIds(id),
+    item.fileId ? mediaRepository.getById(item.fileId) : Promise.resolve(null),
   ]);
 
   return (
@@ -65,6 +66,7 @@ export default async function EditProductionPage({ params }: Props) {
         initialAuthorIds={initialAuthorIds}
         mediaItems={media}
         initialResourceIds={initialResourceIds}
+        initialPdfName={pdf ? pdf.filename || pdf.title : null}
       />
     </section>
   );

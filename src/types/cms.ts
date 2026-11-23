@@ -213,7 +213,11 @@ export type Production = {
   title: string;
   type: string;
   description?: string | null;
+  /** Texte de l'article (HTML), rempli uniquement par l'import du Word. */
   body?: string | null;
+  /** Nom du Word (.docx) dont provient `body`, et date de l'import. */
+  bodySourceName?: string | null;
+  bodyImportedAt?: string | null;
   contentBlocks: ContentBlock[];
   author?: string | null;
   date?: string | null;

@@ -161,6 +161,27 @@ function buildIntro(nodesHtml: string[]): RawPart | null {
   };
 }
 
+// Une partie sans texte (seulement une image, un logo, des paragraphes vides)
+// ne mérite pas sa propre page : son contenu est placé en tête de la partie
+// suivante (ou, pour la dernière, à la fin de la précédente). Son titre
+// disparaît avec elle. Modifie `raw` en place.
+function mergeTextlessParts(raw: RawPart[]): void {
+  for (let i = 0; i < raw.length && raw.length > 1; ) {
+    const part = raw[i];
+    if (textOf(part.html)) {
+      i += 1;
+      continue;
+    }
+    const next = raw[i + 1];
+    if (next) {
+      next.html = part.html + next.html;
+    } else {
+      raw[i - 1].html += part.html;
+    }
+    raw.splice(i, 1);
+  }
+}
+
 /** Chemin public d'une partie : la première est servie sur l'URL de l'article. */
 export function partPath(basePath: string, parts: Pick<ArticlePart, "slug">[], index: number): string {
   if (index <= 0 || !parts[index]) return basePath;
@@ -212,7 +233,10 @@ export function splitIntoParts(html: string | null | undefined, options: { baseP
 
   for (const node of nodes) {
     const nodeHtml = clean.slice(node.start, node.end);
-    if (node.tag === "h2") {
+    // Un <h2> sans texte (logo mis en forme comme un titre, titre vide) n'ouvre
+    // pas de partie : il reste dans le contenu, sinon la partie s'appellerait
+    // « Partie 1 ».
+    if (node.tag === "h2" && textOf(nodeHtml)) {
       if (currentPart) raw.push(currentPart);
       currentPart = { title: textOf(nodeHtml), html: "", anchorId: idOf(nodeHtml), isIntro: false };
       continue;
@@ -229,6 +253,7 @@ export function splitIntoParts(html: string | null | undefined, options: { baseP
     const intro = buildIntro(introNodes);
     if (intro) raw.unshift(intro);
   }
+  mergeTextlessParts(raw);
   const usedSlugs = new Map<string, number>();
   const anchorsByPart: Set<string>[] = [];
   const parts = raw.map((part, index): ArticlePart => {

@@ -69,6 +69,9 @@ export function ArticleReader({
   const videoEmbedUrl = item.videoUrl && !isAudioFile ? getEmbedUrl(item.videoUrl) : null;
   const themeById = new Map(allThemes.map((t) => [t.id, t]));
   const subThemes = allSubThemes.filter((st) => item.subThemeIds.includes(st.id));
+  // Retour (téléphone) : vers le début de l'article depuis une partie, vers la
+  // liste des productions depuis la première partie.
+  const backLink = isFirst ? { href: "/productions", label: "Productions" } : { href: basePath, label: shortTitle };
 
   return (
     <>
@@ -100,6 +103,10 @@ export function ArticleReader({
 
         <article className="article-reader-main">
           <nav className="article-breadcrumb" aria-label="Fil d'Ariane">
+            {/* Téléphone : un seul lien de retour au lieu du fil complet. */}
+            <Link href={backLink.href} className="article-breadcrumb-back">
+              <span aria-hidden="true">←</span> {backLink.label}
+            </Link>
             <ol>
               <li className="article-breadcrumb-home">
                 <Link href="/">Accueil</Link>

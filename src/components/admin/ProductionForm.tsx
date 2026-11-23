@@ -1,13 +1,24 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ExternalLink, FileText, PenLine, X } from "lucide-react";
-import type { Author, Media, Production, SubTheme, Theme } from "@/types/cms";
-import { mediaClientService } from "@/services/mediaClientService";
+import { Eye, ExternalLink } from "lucide-react";
+import type { Author, ContentStatus, Media, Production, SubTheme, Theme } from "@/types/cms";
+import { splitIntoParts } from "@/utils/articleParts";
+import {
+  checkProductionPublication,
+  publicationBlockedMessage,
+  publicationLegacyMessage,
+} from "@/utils/productionPublication";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
-import { DocxImportButton } from "@/components/admin/DocxImportButton";
+import {
+  ArticleFilesModal,
+  type ArticleFilesMode,
+  type ArticleFilesResult,
+} from "@/components/admin/ArticleFilesModal";
+import { ProductionFilesPanel } from "@/components/admin/ProductionFilesPanel";
+import { ProductionPreviewModal } from "@/components/admin/ProductionPreviewModal";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -32,7 +43,15 @@ interface Props {
   initialAuthorIds?: string[];
   mediaItems?: Media[];
   initialResourceIds?: string[];
+  /** Nom du PDF déjà attaché (médiathèque). */
+  initialPdfName?: string | null;
 }
+
+// Texte de l'article : celui enregistré, ou celui d'un Word importé pendant
+// cette visite (envoyé avec le formulaire seulement dans ce cas).
+type WordState = { html: string | null; fileName: string | null; importedAt: string | null; pending: boolean };
+type PdfState = { id: string; fileName: string | null; pending: boolean };
+type PreviewState = { body: string | null; fileId: string | null; partTitles: string[]; canSave: boolean };
 
 export function ProductionForm({
   initialData,
@@ -44,6 +63,7 @@ export function ProductionForm({
   initialAuthorIds = [],
   mediaItems = [],
   initialResourceIds = [],
+  initialPdfName = null,
 }: Props) {
   const isEdit = !!initialData;
   const [error, formAction, isPending] = useActionState(action, null);
@@ -51,26 +71,60 @@ export function ProductionForm({
   const [type, setType] = useState(initialData?.type ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
   const [selectedAuthors, setSelectedAuthors] = useState<string[]>(initialAuthorIds);
-  const [fileId, setFileId] = useState(initialData?.fileId ?? "");
-  const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  // Texte importé depuis Word : envoyé avec le formulaire (champ `body`)
-  // seulement s'il y a eu un import — sinon le contenu existant n'est pas touché.
-  const [importedBody, setImportedBody] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<ContentStatus>(initialData?.status ?? "draft");
+  const [word, setWord] = useState<WordState>({
+    html: initialData?.body?.trim() ? initialData.body : null,
+    fileName: initialData?.bodySourceName ?? null,
+    importedAt: initialData?.bodyImportedAt ?? null,
+    pending: false,
+  });
+  const [pdf, setPdf] = useState<PdfState>({
+    id: initialData?.fileId ?? "",
+    fileName: initialPdfName,
+    pending: false,
+  });
+  const [pages, setPages] = useState(initialData?.pages ?? "");
+  const [filesModal, setFilesModal] = useState<ArticleFilesMode | null>(null);
+  const [preview, setPreview] = useState<PreviewState | null>(null);
 
-  async function handlePdfUpload(file: File) {
-    setUploading(true);
-    setUploadError(null);
-    try {
-      const media = await mediaClientService.uploadFile(file);
-      setFileId(media.id);
-      setFileName(media.title);
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Échec de l'envoi du fichier.");
-    } finally {
-      setUploading(false);
+  const partTitles = useMemo(() => splitIntoParts(word.html).map((part) => part.title), [word.html]);
+  const publication = checkProductionPublication({
+    previousStatus: initialData?.status ?? null,
+    nextStatus: status,
+    files: { hasWord: !!word.html, hasPdf: !!pdf.id },
+  });
+  const blockedMessage = publication.allowed ? null : publicationBlockedMessage(publication.missing);
+  const legacyWarning = publication.legacyWarning ? publicationLegacyMessage(publication.missing) : null;
+
+  const closePreview = useCallback(() => setPreview(null), []);
+  const closeFilesModal = useCallback(() => setFilesModal(null), []);
+
+  function openFilesModal(kind: "word" | "pdf") {
+    // Aucun des deux fichiers : on les demande ensemble.
+    setFilesModal(!word.html && !pdf.id ? "both" : kind);
+  }
+
+  function applyFiles(result: ArticleFilesResult) {
+    if (result.word) {
+      setWord({ html: result.word.html, fileName: result.word.fileName, importedAt: null, pending: true });
     }
+    if (result.pdf) {
+      setPdf({ id: result.pdf.id, fileName: result.pdf.name, pending: true });
+      if (result.pdf.pages) setPages(String(result.pdf.pages));
+    }
+    setFilesModal(null);
+  }
+
+  function previewFiles(result: ArticleFilesResult) {
+    const html = result.word?.html ?? word.html;
+    setPreview({
+      body: result.word ? result.word.html : null,
+      fileId: result.pdf ? result.pdf.id : null,
+      partTitles: splitIntoParts(html).map((part) => part.title),
+      // Fichiers pas encore validés : on ne propose pas d'enregistrer depuis l'aperçu.
+      canSave: false,
+    });
   }
 
   const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
@@ -84,17 +138,43 @@ export function ProductionForm({
   const publicHref = isEdit ? `/productions/${initialData.slug}` : null;
 
   return (
-    <form action={formAction}>
+    <form action={formAction} ref={formRef}>
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
       <input type="hidden" name="authorIds" value={selectedAuthors.join(",")} />
-      <input type="hidden" name="fileId" value={fileId} />
-      {importedBody !== null && <input type="hidden" name="body" value={importedBody} />}
+      <input type="hidden" name="fileId" value={pdf.id} />
+      {word.pending && (
+        <>
+          <input type="hidden" name="body" value={word.html ?? ""} />
+          <input type="hidden" name="bodySourceName" value={word.fileName ?? ""} />
+        </>
+      )}
 
       {error && <p className="form-error">{error}</p>}
 
       <div className="content-form">
+        {/* Fichiers de l'article (Word + PDF) */}
+        <div className="form-section">
+          <p className="form-section-title">Fichiers de l&apos;article</p>
+          <ProductionFilesPanel
+            word={{
+              present: !!word.html,
+              fileName: word.fileName,
+              importedAt: word.importedAt,
+              pending: word.pending,
+            }}
+            pdf={{ present: !!pdf.id, fileName: pdf.fileName, pending: pdf.pending }}
+            partTitles={partTitles}
+            pages={pages}
+            onPagesChange={setPages}
+            downloadLabel={initialData?.downloadLabel}
+            legacyWarning={legacyWarning}
+            onReplace={openFilesModal}
+            onPreview={() => setPreview({ body: null, fileId: null, partTitles, canSave: true })}
+          />
+        </div>
+
         {/* Informations */}
         <div className="form-section">
           <p className="form-section-title">Informations générales</p>
@@ -184,25 +264,9 @@ export function ProductionForm({
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="pages">
-                Nombre de pages
-              </label>
-              <input
-                id="pages"
-                type="text"
-                name="pages"
-                defaultValue={initialData?.pages ?? ""}
-                placeholder="Ex. : 42"
-              />
-            </div>
-            <div className="form-field" style={{ justifyContent: "flex-end" }}>
-              <div className="form-checkbox">
-                <input type="checkbox" id="featured" name="featured" defaultChecked={initialData?.featured} />
-                <label htmlFor="featured">Mettre en vedette</label>
-              </div>
-            </div>
+          <div className="form-checkbox">
+            <input type="checkbox" id="featured" name="featured" defaultChecked={initialData?.featured} />
+            <label htmlFor="featured">Mettre en vedette</label>
           </div>
         </div>
 
@@ -221,33 +285,6 @@ export function ProductionForm({
               placeholder="Description courte pour les listes et les metas SEO..."
             />
           </div>
-        </div>
-
-        {/* Corps du document */}
-        <div className="form-section">
-          <p className="form-section-title">Contenu principal</p>
-          {isEdit ? (
-            <>
-              <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-                S&apos;édite dans un onglet dédié, avec le même rendu que sur le site public.
-              </p>
-              <button
-                type="button"
-                className="button"
-                style={{ width: "fit-content" }}
-                onClick={() =>
-                  window.open(`/admin/productions/${initialData.id}/edit/contenu`, "_blank", "noopener,noreferrer")
-                }
-              >
-                <PenLine size={15} strokeWidth={1.75} />
-                Modifier le contenu principal
-              </button>
-            </>
-          ) : (
-            <p style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
-              Disponible après le premier enregistrement de la production.
-            </p>
-          )}
         </div>
 
         {/* Relations sous-thèmes */}
@@ -303,68 +340,6 @@ export function ProductionForm({
           />
         </div>
 
-        {/* PDF joint */}
-        <div className="form-section">
-          <p className="form-section-title">Document PDF</p>
-          <div className="form-field">
-            <label className="field-label">Fichier</label>
-            {fileName ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--ink)" }}>
-                  <FileText size={15} strokeWidth={1.75} />
-                  {fileName}
-                </span>
-                <button
-                  type="button"
-                  className="btn-sm"
-                  onClick={() => {
-                    setFileId("");
-                    setFileName(null);
-                  }}
-                >
-                  <X size={13} strokeWidth={2} />
-                  Retirer
-                </button>
-              </div>
-            ) : (
-              <label className="button" style={{ width: "fit-content" }}>
-                {uploading ? "Import en cours..." : "Importer un PDF"}
-                <input
-                  hidden
-                  type="file"
-                  accept="application/pdf"
-                  disabled={uploading}
-                  onChange={(e) => e.target.files?.[0] && handlePdfUpload(e.target.files[0])}
-                />
-              </label>
-            )}
-            {uploadError && <p className="form-error">{uploadError}</p>}
-          </div>
-          <div className="form-field">
-            <p className="field-label">Texte de l&apos;article</p>
-            <p style={{ margin: "0 0 8px", fontSize: 12, color: "var(--muted)" }}>
-              Les grands titres (style « Titre 1 » dans Word) découpent l&apos;article en parties, une page par partie.
-              Le texte importé est enregistré avec la production.
-            </p>
-            <DocxImportButton
-              productionId={initialData?.id}
-              hasContent={importedBody !== null ? importedBody.trim().length > 0 : !!initialData?.body?.trim()}
-              onImported={setImportedBody}
-            />
-          </div>
-          <div className="form-field">
-            <label className="field-label" htmlFor="downloadLabel">
-              Libellé du bouton de téléchargement
-            </label>
-            <input
-              id="downloadLabel"
-              name="downloadLabel"
-              defaultValue={initialData?.downloadLabel ?? ""}
-              placeholder="Ex. : Télécharger le rapport complet (PDF)"
-            />
-          </div>
-        </div>
-
         {/* SEO */}
         <div className="form-section">
           <p className="form-section-title">SEO</p>
@@ -400,7 +375,12 @@ export function ProductionForm({
             <label className="field-label" htmlFor="status">
               Statut
             </label>
-            <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
+            <select
+              id="status"
+              name="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ContentStatus)}
+            >
               <option value="draft">Brouillon</option>
               <option value="published">Publié</option>
               <option value="archived">Archivé</option>
@@ -409,6 +389,11 @@ export function ProductionForm({
         </div>
 
         <div className="form-actions">
+          {blockedMessage && (
+            <p className="form-actions-blocked" role="status">
+              {blockedMessage}
+            </p>
+          )}
           {publicHref && (
             <a href={publicHref} target="_blank" rel="noopener noreferrer" className="btn-preview">
               <ExternalLink size={14} strokeWidth={1.75} />
@@ -418,11 +403,49 @@ export function ProductionForm({
           <Link href="/admin/productions" className="button">
             Annuler
           </Link>
-          <button type="submit" className="button primary" disabled={isPending}>
+          <button
+            type="button"
+            className="button"
+            disabled={partTitles.length === 0}
+            title={partTitles.length === 0 ? "Importez le Word pour voir l'aperçu" : undefined}
+            onClick={() => setPreview({ body: null, fileId: null, partTitles, canSave: true })}
+          >
+            <Eye size={15} strokeWidth={1.75} aria-hidden="true" />
+            Aperçu
+          </button>
+          <button type="submit" className="button primary" disabled={isPending || !!blockedMessage}>
             {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer la production"}
           </button>
         </div>
       </div>
+
+      {filesModal && (
+        <ArticleFilesModal
+          mode={filesModal}
+          productionId={initialData?.id}
+          onClose={closeFilesModal}
+          onValidate={applyFiles}
+          onPreview={previewFiles}
+        />
+      )}
+      {preview && (
+        <ProductionPreviewModal
+          formRef={formRef}
+          partTitles={preview.partTitles}
+          body={preview.body}
+          fileId={preview.fileId}
+          onClose={closePreview}
+          onSave={
+            preview.canSave
+              ? () => {
+                  setPreview(null);
+                  formRef.current?.requestSubmit();
+                }
+              : undefined
+          }
+          saveDisabled={!!blockedMessage}
+        />
+      )}
     </form>
   );
 }

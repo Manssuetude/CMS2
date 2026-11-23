@@ -52,6 +52,11 @@ test("convertDocxToHtml — image en échec : retirée du corps, avertissement",
   assert.ok(result.warnings.some((w) => /Image 1 non importée/.test(w)));
 });
 
+test("convertDocxToHtml — nombre de notes renvoyé (étape « Vérifier » de l'import)", async () => {
+  const { noteCount } = await convert();
+  assert.equal(noteCount, 2);
+});
+
 test("convertDocxToHtml — notes de bas de page rangées à la fin de leur partie", async () => {
   const { html } = await convert();
   const parts = splitIntoParts(html);

@@ -119,6 +119,10 @@ Contenus éditoriaux publiés (articles, rapports, notes).
 | `tags`                         | text[]              |                           |
 | `download_label`, `video_url`  | text                |                           |
 | `seo_title`, `seo_description` | text                |                           |
+| `body_source_name`             | text                | nom du Word importé       |
+| `body_imported_at`             | timestamptz         | date de l'import du Word  |
+
+Le `body` n'est plus édité dans l'admin : il vient uniquement de l'import du Word (onglet « Fichiers de l'article »). Une production ne peut passer en « Publié » qu'avec un Word (`body`) et un PDF (`file_id`) ; les productions déjà publiées sans l'un des deux restent en ligne (règle dans `utils/productionPublication.ts`). Migration `20261123_productions_word_source`.
 
 ### `events`
 

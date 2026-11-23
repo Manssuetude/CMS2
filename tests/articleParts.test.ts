@@ -132,3 +132,37 @@ test("partProgressPercent — arrondi à l'entier (1/8 = 13 %, 3/8 = 38 %)", () 
   assert.equal(partProgressPercent(7, 8), 100);
   assert.equal(partProgressPercent(0, 0), 0);
 });
+
+test("splitIntoParts — partie sans texte (seulement une image) : fusionnée avec la suivante", () => {
+  const parts = splitIntoParts(
+    '<p><img src="https://x.test/logo.png" alt="Logo"></p><p>&nbsp;</p><h2>Résumé</h2><p>A</p>',
+  );
+  assert.equal(parts.length, 1);
+  assert.equal(parts[0].title, "Résumé");
+  assert.match(parts[0].html, /^<p><img src="https:\/\/x\.test\/logo\.png"/);
+  assert.match(parts[0].html, /<p>A<\/p>$/);
+});
+
+test("splitIntoParts — titre de partie sans contenu : fusionné avec la suivante, dernière partie vide rattachée à la précédente", () => {
+  const parts = splitIntoParts(
+    '<h2>Vide</h2><h2>Un</h2><p>A</p><h2>Deux</h2><p>B</p><h2>Annexe</h2><p><img src="https://x.test/a.png" alt="A"></p>',
+  );
+  assert.deepEqual(
+    parts.map((p) => p.title),
+    ["Un", "Deux"],
+  );
+  assert.match(parts[1].html, /<p>B<\/p><p><img/);
+});
+
+test("splitIntoParts — h2 sans texte (logo en titre) : n'ouvre pas de partie, le contenu d'avant s'appelle « Introduction »", () => {
+  const parts = splitIntoParts(
+    '<h2><strong><img src="https://x.test/logo.png" alt="Logo"></strong></h2><p>Chapeau</p><h2>Suite</h2><p>B</p>',
+  );
+  assert.deepEqual(
+    parts.map((p) => p.title),
+    ["Introduction", "Suite"],
+  );
+  assert.equal(parts[0].isIntro, true);
+  assert.match(parts[0].html, /logo\.png/);
+  assert.match(parts[0].html, /Chapeau/);
+});

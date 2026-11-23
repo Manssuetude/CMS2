@@ -6,6 +6,7 @@ import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
 import { StatusToggleButton } from "@/components/admin/StatusToggleButton";
 import { FeaturedToggleButton } from "@/components/admin/FeaturedToggleButton";
+import { missingProductionFiles, publicationBlockedMessage } from "@/utils/productionPublication";
 import { buildStatusTabs, countByStatus, resolveActiveStatus, STATUS_LABELS } from "@/utils/adminStatus";
 import { deleteProductionAction, toggleProductionStatusAction } from "./actions";
 
@@ -66,46 +67,59 @@ export default async function AdminProductionsPage({ searchParams }: { searchPar
             </tr>
           </thead>
           <tbody>
-            {items.map((item) => (
-              <tr key={item.id}>
-                <td className="col-title">{item.title}</td>
-                <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.type}</td>
-                <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.author ?? "-"}</td>
-                <td>
-                  <StatusToggleButton action={toggleProductionStatusAction} id={item.id} status={item.status} />
-                </td>
-                <td style={{ color: "var(--muted)", fontSize: 13 }}>
-                  {item.date
-                    ? new Date(item.date).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })
-                    : "-"}
-                </td>
-                <td style={{ textAlign: "center" }}>
-                  <FeaturedToggleButton
-                    id={item.id}
-                    featured={item.featured}
-                    kind="production"
-                    count={featuredCount}
-                    max={4}
-                  />
-                </td>
-                <td className="col-actions">
-                  <div className="row-actions">
-                    <Link href={`/admin/productions/${item.id}/edit`} className="btn-sm">
-                      <Pencil size={13} strokeWidth={2} />
-                      Modifier
-                    </Link>
-                    <form action={deleteProductionAction}>
-                      <input type="hidden" name="id" value={item.id} />
-                      <ConfirmDeleteButton />
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {items.map((item) => {
+              const missing = missingProductionFiles({ hasWord: !!item.body?.trim(), hasPdf: !!item.fileId });
+              return (
+                <tr key={item.id}>
+                  <td className="col-title">{item.title}</td>
+                  <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.type}</td>
+                  <td style={{ color: "var(--muted)", fontSize: 13 }}>{item.author ?? "-"}</td>
+                  <td>
+                    <StatusToggleButton
+                      action={toggleProductionStatusAction}
+                      id={item.id}
+                      status={item.status}
+                      blockedReason={missing.length > 0 ? publicationBlockedMessage(missing) : null}
+                    />
+                    {missing.length > 0 && (
+                      <span className="admin-missing-files">
+                        Sans {missing.map((file) => (file === "word" ? "Word" : "PDF")).join(" ni ")}
+                      </span>
+                    )}
+                  </td>
+                  <td style={{ color: "var(--muted)", fontSize: 13 }}>
+                    {item.date
+                      ? new Date(item.date).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })
+                      : "-"}
+                  </td>
+                  <td style={{ textAlign: "center" }}>
+                    <FeaturedToggleButton
+                      id={item.id}
+                      featured={item.featured}
+                      kind="production"
+                      count={featuredCount}
+                      max={4}
+                    />
+                  </td>
+                  <td className="col-actions">
+                    <div className="row-actions">
+                      <Link href={`/admin/productions/${item.id}/edit`} className="btn-sm">
+                        <Pencil size={13} strokeWidth={2} />
+                        Modifier
+                      </Link>
+                      <form action={deleteProductionAction}>
+                        <input type="hidden" name="id" value={item.id} />
+                        <ConfirmDeleteButton />
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

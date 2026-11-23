@@ -50,7 +50,7 @@ export type DocxImage = {
 /** Renvoie l'URL publique de l'image téléversée. */
 export type DocxImageUploader = (image: DocxImage, index: number) => Promise<string>;
 
-export type DocxConversion = { html: string; warnings: string[]; imageCount: number };
+export type DocxConversion = { html: string; warnings: string[]; imageCount: number; noteCount: number };
 
 const NOTE_ITEM = /<li id="((?:footnote|endnote)-[^"]+)">([\s\S]*?)<\/li>/g;
 
@@ -173,5 +173,10 @@ export async function convertDocxToHtml(buffer: Buffer, uploadImage: DocxImageUp
   const withoutBrokenImages = result.value.replace(/<img\b[^>]*\bsrc="(?:data:[^"]*)?"[^>]*\/?>/gi, "");
   const html = sanitizeHtml(distributeNotes(resolveBookmarks(withoutBrokenImages)));
 
-  return { html, warnings: dedupe(warnings), imageCount };
+  return { html, warnings: dedupe(warnings), imageCount, noteCount: countNotes(html) };
+}
+
+/** Nombre de notes de bas de page conservées dans le HTML converti. */
+export function countNotes(html: string): number {
+  return (html.match(/<p class="footnote" id="/g) ?? []).length;
 }

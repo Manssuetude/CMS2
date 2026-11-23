@@ -28,10 +28,15 @@ export type ProductionPageData = {
   nextArticle: Pick<Production, "slug" | "title"> | null;
 };
 
-export const loadProductionPage = cache(async (slug: string): Promise<ProductionPageData | null> => {
-  const item = await productionRepository.getProduction(slug);
-  if (!item) return null;
-
+/**
+ * Données de lecture d'une production donnée (enregistrée ou non). `links`
+ * fournit les sous-thèmes et auteurs quand ils viennent d'un formulaire non
+ * enregistré (aperçu admin) ; sinon ils sont lus en base.
+ */
+export async function buildProductionPageData(
+  item: Production,
+  links?: { subThemeIds: string[]; authorIds: string[] },
+): Promise<ProductionPageData> {
   const [
     allThemes,
     allSubThemes,
@@ -45,12 +50,12 @@ export const loadProductionPage = cache(async (slug: string): Promise<Production
   ] = await Promise.all([
     themeRepository.listThemes(false),
     subThemeRepository.listSubThemes(false),
-    productionRepository.getProductionSubThemeIds(item.id),
+    links ? links.subThemeIds : productionRepository.getProductionSubThemeIds(item.id),
     mediaRepository.getResourceUrl(item.fileId),
     mediaRepository.getResourceUrl(item.thumbnailId),
     productionRepository.listProductions(),
     productionRepository.getAllProductionSubThemeLinks(),
-    authorRepository.getProductionAuthorIds(item.id),
+    links ? links.authorIds : authorRepository.getProductionAuthorIds(item.id),
     authorRepository.listAuthors(),
   ]);
 
@@ -68,6 +73,11 @@ export const loadProductionPage = cache(async (slug: string): Promise<Production
     parts,
     nextArticle: next ? { slug: next.slug, title: next.title } : null,
   };
+}
+
+export const loadProductionPage = cache(async (slug: string): Promise<ProductionPageData | null> => {
+  const item = await productionRepository.getProduction(slug);
+  return item ? buildProductionPageData(item) : null;
 });
 
 /** Chemins publics à pré-générer : l'article (partie 1) et ses autres parties. */
