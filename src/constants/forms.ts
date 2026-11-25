@@ -195,7 +195,7 @@ export const formDefinitions: Record<PublicFormType, FormFieldDefinition[]> = {
     },
   ],
   // Proposer une contribution sur une production précise — "productionTitle" est
-  // injecté en champ caché (voir ProductionDetail.tsx), pas saisi par le
+  // injecté en champ caché (contextFields du CtaButton), pas saisi par le
   // visiteur, pour que la contribution reste rattachée à la bonne production.
   // Distinct de "content" (bouton "Contribuer" partagé par Thèmes/Sous-thèmes,
   // sans production précise) pour ne pas leur imposer ce champ de contexte.

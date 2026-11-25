@@ -328,6 +328,35 @@
 .site-shell .article-part-body .rich-text h4 {
   scroll-margin-top: calc(var(--article-header-h, 88px) + 5rem);
 }
+/* Production sans texte (pas encore de Word) : encadré sobre au-dessus du
+   bandeau de téléchargement. */
+.site-shell .article-pdf-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: clamp(2rem, 4vw, 2.75rem);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--ed-line);
+  border-left: 3px solid var(--ed-brand);
+  border-radius: var(--ed-radius);
+  background: var(--ed-raise);
+}
+.site-shell .article-pdf-notice-icon {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--ed-accent-text);
+}
+.site-shell .article-pdf-notice-title {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ed-ink);
+}
+.site-shell .article-pdf-notice-text {
+  margin: 0.35rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ed-ink-soft);
+}
 .site-shell .article-part-body img {
   max-width: 100%;
   height: auto;

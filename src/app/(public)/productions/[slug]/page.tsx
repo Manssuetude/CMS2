@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { completeDescription } from "@/utils/seoText";
 import { notFound } from "next/navigation";
 import { ArticleReader } from "@/components/public/ArticleReader";
-import { ProductionDetail } from "@/components/public/ProductionDetail";
 import { productionRepository } from "@/repositories/productionRepository";
 import { loadProductionPage, productionBasePath } from "@/services/productionReadingService";
 import { buildPageMetadata, sectionRobots } from "@/lib/seo";
@@ -51,7 +50,7 @@ export default async function ProductionPage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const data = await loadProductionPage(slug);
   if (!data) notFound();
-  const { item, parts } = data;
+  const { item } = data;
   const basePath = productionBasePath(item.slug);
 
   return (
@@ -62,19 +61,8 @@ export default async function ProductionPage({ params }: { params: Promise<{ slu
           { name: item.title, path: basePath },
         ])}
       />
-      {parts.length > 0 ? (
-        <ArticleReader {...data} currentIndex={0} />
-      ) : (
-        <ProductionDetail
-          item={item}
-          allThemes={data.allThemes}
-          allSubThemes={data.allSubThemes}
-          authors={data.authors}
-          relatedProductions={data.relatedProductions}
-          fileUrl={data.fileUrl}
-          imageUrl={data.imageUrl}
-        />
-      )}
+      {/* Toute production passe par la lecture d'article (page de secours sans texte). */}
+      <ArticleReader {...data} currentIndex={0} />
     </>
   );
 }

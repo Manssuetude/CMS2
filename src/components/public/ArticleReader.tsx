@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight, Download, FileText } from "lucide-react";
 import type { Author, Production, SubTheme, Theme } from "@/types/cms";
 import type { ArticlePart } from "@/utils/articleParts";
 import { buildPartsMenu, partPath } from "@/utils/articleParts";
 import { formatPageCount, splitArticleTitle } from "@/utils/articleNavigation";
+import { productionReadingMode } from "@/utils/productionReading";
 import { estimateReadingTime } from "@/utils/readingTime";
 import { getEmbedUrl } from "@/utils/videoEmbed";
 import { productionTypeLabel } from "@/constants/productionTypes";
@@ -38,6 +39,9 @@ interface Props {
 // Lecture d'un article découpé en parties (une par <h2> du `body`). La partie 1
 // est servie sur /productions/[slug], les suivantes sur /productions/[slug]/[partie].
 // Un article sans <h2> s'affiche en page simple (sans colonne des parties).
+// Sans texte (pas encore de Word) : page de secours, en-tête de l'article,
+// encadré « disponible en PDF » et bandeau de téléchargement (ou chapô seul
+// sans PDF). Jamais de lecteur PDF intégré.
 export function ArticleReader({
   item,
   parts,
@@ -51,17 +55,19 @@ export function ArticleReader({
   imageUrl,
 }: Props) {
   const basePath = `/productions/${item.slug}`;
-  const part = parts[currentIndex];
+  const mode = productionReadingMode(parts.length, fileUrl);
+  const hasText = mode === "parts";
+  const part = hasText ? parts[currentIndex] : null;
   const total = parts.length;
   const isMultiPart = total > 1;
-  const isFirst = currentIndex === 0;
-  const isLast = currentIndex === total - 1;
+  const isFirst = !hasText || currentIndex === 0;
+  const isLast = !hasText || currentIndex === total - 1;
   const typeLabel = productionTypeLabel(item.type);
   const { main: shortTitle, subtitle } = splitArticleTitle(item.title);
   const authorNames = authors.map((a) => a.name).join(", ") || item.author || "";
-  const readingTime = item.readingTime || estimateReadingTime(item.body);
+  const readingTime = item.readingTime || (hasText ? estimateReadingTime(item.body) : null);
   const articleUrl = `${SITE_URL}${basePath}`;
-  const partUrl = `${SITE_URL}${partPath(basePath, parts, currentIndex)}`;
+  const partUrl = hasText ? `${SITE_URL}${partPath(basePath, parts, currentIndex)}` : articleUrl;
   const pageCount = formatPageCount(item.pages);
   const nextPart = isMultiPart && !isLast ? parts[currentIndex + 1] : null;
   const isAudioFile = item.videoUrl ? /\.(mp3|wav|m4a|ogg)$/i.test(item.videoUrl) : false;
@@ -87,10 +93,10 @@ export function ArticleReader({
           })}
         />
       )}
-      {!isMultiPart && <ReadingProgressBar slug={item.slug} />}
+      {hasText && !isMultiPart && <ReadingProgressBar slug={item.slug} />}
 
       <div className={`article-reader${isMultiPart ? "" : " article-reader--single"}`}>
-        {isMultiPart && (
+        {part && isMultiPart && (
           <ArticlePartsNav
             typeLabel={typeLabel}
             shortTitle={shortTitle}
@@ -113,7 +119,7 @@ export function ArticleReader({
               <li>
                 <Link href="/productions">Productions</Link>
               </li>
-              {isMultiPart ? (
+              {part && isMultiPart ? (
                 <>
                   <li>
                     <Link href={basePath}>{shortTitle}</Link>
@@ -141,10 +147,12 @@ export function ArticleReader({
               <div className="article-meta">
                 {authorNames && <span className="article-meta-author">{authorNames}</span>}
                 {item.date && <span>{formatDate(item.date)}</span>}
-                <span>
-                  {isMultiPart && `${total} parties · `}
-                  {readingTime} de lecture
-                </span>
+                {readingTime && (
+                  <span>
+                    {isMultiPart && `${total} parties · `}
+                    {readingTime} de lecture
+                  </span>
+                )}
                 <details className="article-share">
                   <summary>Partager</summary>
                   <div className="article-share-panel">
@@ -175,7 +183,7 @@ export function ArticleReader({
             </audio>
           )}
 
-          {isMultiPart && (
+          {part && isMultiPart && (
             <div className="article-part-heading">
               <p className="article-part-eyebrow">
                 Partie {currentIndex + 1} sur {total}
@@ -184,14 +192,29 @@ export function ArticleReader({
             </div>
           )}
 
-          <div className="article-part-body">
-            {/* Article en plusieurs parties : les sous-titres sont dans le menu
-                « Dans cet article », pas de sommaire en doublon dans le texte. */}
-            {!isMultiPart && <TableOfContents headings={part.headings} />}
-            <QuoteShareBar url={partUrl}>
-              <div className="rich-text" dangerouslySetInnerHTML={{ __html: part.html }} />
-            </QuoteShareBar>
-          </div>
+          {part ? (
+            <div className="article-part-body">
+              {/* Article en plusieurs parties : les sous-titres sont dans le menu
+                  « Dans cet article », pas de sommaire en doublon dans le texte. */}
+              {!isMultiPart && <TableOfContents headings={part.headings} />}
+              <QuoteShareBar url={partUrl}>
+                <div className="rich-text" dangerouslySetInnerHTML={{ __html: part.html }} />
+              </QuoteShareBar>
+            </div>
+          ) : (
+            mode === "pdf" && (
+              <div className="article-pdf-notice">
+                <FileText className="article-pdf-notice-icon" size={22} strokeWidth={1.75} aria-hidden="true" />
+                <div>
+                  <p className="article-pdf-notice-title">Cet article est disponible en PDF</p>
+                  <p className="article-pdf-notice-text">
+                    Sa version à lire en ligne n&apos;est pas encore prête. Le document complet se télécharge
+                    ci-dessous.
+                  </p>
+                </div>
+              </div>
+            )
+          )}
 
           {isLast && (
             <div className="article-end">

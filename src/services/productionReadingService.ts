@@ -23,7 +23,7 @@ export type ProductionPageData = {
   relatedProductions: Production[];
   fileUrl: string | null;
   imageUrl: string | null;
-  /** Vide si la production n'a pas de `body` : rendu historique (lecteur PDF). */
+  /** Vide si la production n'a pas de `body` : page de secours (voir utils/productionReading). */
   parts: ArticlePart[];
   nextArticle: Pick<Production, "slug" | "title"> | null;
 };

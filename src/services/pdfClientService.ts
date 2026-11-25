@@ -3,11 +3,12 @@ import { mediaClientService } from "@/services/mediaClientService";
 import { MAX_UPLOAD_BYTES } from "@/utils/uploadValidation";
 
 // PDF de téléchargement d'une production, côté navigateur : nombre de pages
-// lu dans le fichier (pdf.js, déjà embarqué par react-pdf pour la liseuse),
+// lu dans le fichier avec pdf.js (pdfjs-dist, chargé à la demande),
 // puis envoi dans la médiathèque. Le PDF n'est rattaché à la production
 // qu'à l'enregistrement de la fiche.
 
-// Fichier copié dans public/ (voir PdfViewer).
+// Copie de node_modules/pdfjs-dist/build/pdf.worker.min.mjs : à recopier si la
+// version de pdfjs-dist (épinglée dans package.json) change.
 const PDF_WORKER_SRC = "/pdf.worker.min.mjs";
 
 export function isPdfFile(file: File): boolean {
@@ -17,7 +18,7 @@ export function isPdfFile(file: File): boolean {
 /** Nombre de pages du PDF, ou null s'il n'a pas pu être lu (à saisir à la main). */
 export async function countPdfPages(file: File): Promise<number | null> {
   try {
-    const { pdfjs } = await import("react-pdf");
+    const pdfjs = await import("pdfjs-dist");
     pdfjs.GlobalWorkerOptions.workerSrc = PDF_WORKER_SRC;
     const document = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
     const pages = document.numPages;
