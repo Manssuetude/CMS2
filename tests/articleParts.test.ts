@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { partPath, partProgressPercent, splitIntoParts } from "../src/utils/articleParts.ts";
+import {
+  buildPartsMenu,
+  partMenuHeadings,
+  partPath,
+  readingPercent,
+  splitIntoParts,
+} from "../src/utils/articleParts.ts";
 
 test("splitIntoParts — contenu vide : aucune partie", () => {
   assert.deepEqual(splitIntoParts(null), []);
@@ -126,11 +132,23 @@ test("partPath — la première partie est servie sur l'URL de l'article", () =>
   assert.equal(partPath("/productions/a", parts, 1), "/productions/a/suite");
 });
 
-test("partProgressPercent — arrondi à l'entier (1/8 = 13 %, 3/8 = 38 %)", () => {
-  assert.equal(partProgressPercent(0, 8), 13);
-  assert.equal(partProgressPercent(2, 8), 38);
-  assert.equal(partProgressPercent(7, 8), 100);
-  assert.equal(partProgressPercent(0, 0), 0);
+test("readingPercent — début, milieu, fin de lecture, pondéré par la longueur des parties", () => {
+  const weights = [100, 300, 600];
+  assert.equal(readingPercent(weights, 0, 0), 0);
+  assert.equal(readingPercent(weights, 1, 0), 10);
+  assert.equal(readingPercent(weights, 1, 0.5), 25);
+  assert.equal(readingPercent(weights, 2, 0), 40);
+  assert.equal(readingPercent(weights, 2, 1), 100);
+});
+
+test("readingPercent — poids nuls, fraction et index hors bornes", () => {
+  assert.equal(readingPercent([], 0, 0.5), 0);
+  assert.equal(readingPercent([0, 0], 1, 1), 0);
+  assert.equal(readingPercent([0, 50, 50], 1, 1), 50);
+  assert.equal(readingPercent([100, 100], 0, 2), 50);
+  assert.equal(readingPercent([100, 100], 0, -1), 0);
+  assert.equal(readingPercent([100, 100], 9, 1), 100);
+  assert.equal(readingPercent([100, 100], 0, Number.NaN), 0);
 });
 
 test("splitIntoParts — partie sans texte (seulement une image) : fusionnée avec la suivante", () => {
@@ -165,4 +183,57 @@ test("splitIntoParts — h2 sans texte (logo en titre) : n'ouvre pas de partie, 
   assert.equal(parts[0].isIntro, true);
   assert.match(parts[0].html, /logo\.png/);
   assert.match(parts[0].html, /Chapeau/);
+});
+
+test("splitIntoParts — poids de lecture = longueur du texte sans balises", () => {
+  const parts = splitIntoParts("<h2>Un</h2><p>abc <strong>de</strong></p><h2>Deux</h2><p>abcdefghij</p>");
+  assert.deepEqual(
+    parts.map((p) => p.weight),
+    [6, 10],
+  );
+});
+
+test("splitIntoParts — sous-titres h3 avec id, uniques dans la page", () => {
+  const parts = splitIntoParts(
+    "<h2>Focus</h2><p>A</p><h3>Cameroun</h3><p>B</p><h3>Congo</h3><p>C</p><h3>Cameroun</h3><p>D</p><h4>Détail</h4>",
+  );
+  const ids = parts[0].headings.map((h) => h.id);
+  assert.deepEqual(
+    parts[0].headings.map((h) => h.label),
+    ["Cameroun", "Congo", "Cameroun"],
+  );
+  assert.ok(ids.every(Boolean));
+  assert.equal(new Set(ids).size, ids.length);
+  for (const id of ids) assert.match(parts[0].html, new RegExp(`<h3 id="${id}">`));
+});
+
+test("menu — sous-titre identique au titre de la partie masqué (casse, espaces, ponctuation)", () => {
+  const headings = partMenuHeadings({
+    title: "V. Grille d’analyse des œuvres",
+    headings: [
+      { id: "a", label: "Grille d'analyse des oeuvres", level: 3 },
+      { id: "c", label: "GRILLE D’ANALYSE  DES ŒUVRES !", level: 3 },
+      { id: "b", label: "Critères", level: 3 },
+    ],
+  });
+  assert.deepEqual(headings, [{ id: "b", label: "Critères" }]);
+  // Un sous-titre qui ne fait que commencer comme le titre reste affiché.
+  assert.equal(
+    partMenuHeadings({ title: "II. Méthode", headings: [{ id: "m", label: "Méthode et sources", level: 3 }] }).length,
+    1,
+  );
+});
+
+test("menu — seule la partie ouverte déplie ses sous-titres", () => {
+  const parts = splitIntoParts(
+    "<h2>Un</h2><p>A</p><h3>Sous un</h3><p>B</p><h2>Deux</h2><p>C</p><h3>Sous deux</h3><p>D</p>",
+  );
+  const menu = buildPartsMenu(parts, 1, "/productions/x");
+  assert.deepEqual(
+    menu.map((m) => [m.href, m.headings.map((h) => h.label)]),
+    [
+      ["/productions/x", []],
+      ["/productions/x/deux", ["Sous deux"]],
+    ],
+  );
 });

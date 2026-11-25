@@ -19,6 +19,8 @@ export type ArticlePart = {
   headings: TocHeading[];
   /** Contenu placé avant le premier <h2>. */
   isIntro: boolean;
+  /** Poids de lecture : nombre de caractères du texte (sans balises). */
+  weight: number;
 };
 
 export const INTRO_PART_TITLE = "Introduction";
@@ -275,6 +277,7 @@ export function splitIntoParts(html: string | null | undefined, options: { baseP
       html,
       headings: extractHeadings(html).filter((h) => h.level === 3),
       isIntro: part.isIntro,
+      weight: textOf(html).length,
     };
   });
 
@@ -282,10 +285,58 @@ export function splitIntoParts(html: string | null | undefined, options: { baseP
   return parts;
 }
 
-/** Progression affichée (« Partie 3 sur 8 · 38 % »). */
-export function partProgressPercent(index: number, total: number): number {
-  if (total <= 0) return 0;
-  return Math.round(((index + 1) / total) * 100);
+/**
+ * Pourcentage lu de l'article : parties précédentes entières + fraction lue
+ * de la partie courante, pondérées par la longueur de leur texte. Borné 0–100.
+ */
+export function readingPercent(weights: number[], currentIndex: number, fraction: number): number {
+  const total = weights.reduce((sum, w) => sum + Math.max(0, w), 0);
+  if (total <= 0 || weights.length === 0) return 0;
+  const index = Math.min(Math.max(currentIndex, 0), weights.length - 1);
+  const before = weights.slice(0, index).reduce((sum, w) => sum + Math.max(0, w), 0);
+  const ratio = Math.min(Math.max(Number.isFinite(fraction) ? fraction : 0, 0), 1);
+  const percent = Math.round(((before + ratio * Math.max(0, weights[index])) / total) * 100);
+  return Math.min(100, Math.max(0, percent));
+}
+
+/**
+ * Texte comparable : sans numérotation de section en tête (« V. », « 2) »,
+ * « III - »), sans casse, accents, ligatures, espaces ni ponctuation.
+ */
+function comparableText(value: string): string {
+  return value
+    .trim()
+    .replace(/^(?:[IVXLC]+|\d+)\s*[.)\-–—:]\s+/, "")
+    .replace(/œ/gi, "oe")
+    .replace(/æ/gi, "ae")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "");
+}
+
+/** Sous-titres d'une partie affichés dans le menu : sans celui qui répète le titre de la partie. */
+export function partMenuHeadings(part: Pick<ArticlePart, "title" | "headings">): Array<{ id: string; label: string }> {
+  const title = comparableText(part.title);
+  return part.headings
+    .filter((h) => h.level === 3 && comparableText(h.label) !== title)
+    .map((h) => ({ id: h.id, label: h.label }));
+}
+
+export type PartsMenuItem = {
+  title: string;
+  href: string;
+  /** Sous-titres (h3), seulement pour la partie ouverte. */
+  headings: Array<{ id: string; label: string }>;
+};
+
+/** Menu « Dans cet article » : seule la partie ouverte déplie ses sous-titres. */
+export function buildPartsMenu(parts: ArticlePart[], currentIndex: number, basePath: string): PartsMenuItem[] {
+  return parts.map((part, index) => ({
+    title: part.title,
+    href: partPath(basePath, parts, index),
+    headings: index === currentIndex ? partMenuHeadings(part) : [],
+  }));
 }
 
 /** Début du texte d'une partie, pour sa meta description. */

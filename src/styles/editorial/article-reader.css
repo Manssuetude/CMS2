@@ -118,6 +118,41 @@
 .site-shell .article-parts-nav a[aria-current="page"] .article-parts-num {
   color: var(--ed-accent-text);
 }
+/* Sous-titres (h3) de la partie ouverte : liste indentée, filet à gauche. */
+.site-shell .article-parts-sub {
+  list-style: none;
+  margin: 0.15rem 0 0.5rem calc(0.75rem + 1.6rem + 0.6rem - 0.75rem);
+  padding: 0 0 0 0.25rem;
+  border-left: 2px solid var(--ed-line);
+  display: grid;
+  gap: 1px;
+}
+.site-shell .article-parts-nav .article-parts-sub a {
+  display: block;
+  min-height: 0;
+  padding: 0.4rem 0.6rem 0.4rem 0.75rem;
+  margin-left: -2px;
+  border-left: 2px solid transparent;
+  border-radius: 0 var(--ed-radius-lg) var(--ed-radius-lg) 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--ed-ink-soft);
+}
+.site-shell .article-parts-nav .article-parts-sub a:hover {
+  color: var(--ed-ink);
+}
+.site-shell .article-parts-nav .article-parts-sub a[aria-current="location"] {
+  border-left-color: var(--ed-accent-strong);
+  color: var(--ed-accent-text);
+  font-weight: 600;
+}
+
+/* Titres visés par le menu : jamais cachés sous le header collant. */
+.site-shell .article-part-body :is(h2, h3) {
+  scroll-margin-top: calc(var(--article-header-h, 88px) + 1.5rem);
+}
+
 .site-shell .article-parts-progress {
   margin-top: 1rem;
   padding-top: 0.9rem;
@@ -557,6 +592,15 @@
   .site-shell .article-parts-nav a {
     min-height: 48px;
     font-size: 1.02rem;
+  }
+  .site-shell .article-parts-nav .article-parts-sub a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 0.95rem;
+  }
+  .site-shell .article-part-body :is(h2, h3) {
+    scroll-margin-top: calc(var(--article-header-h, 64px) + 56px + 1rem);
   }
 
   /* Fil d'Ariane réduit à « ← titre de l'article » (une ligne, cible de 44 px). */

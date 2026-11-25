@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Download } from "lucide-react";
 import type { Author, Production, SubTheme, Theme } from "@/types/cms";
 import type { ArticlePart } from "@/utils/articleParts";
-import { partPath, partProgressPercent } from "@/utils/articleParts";
+import { buildPartsMenu, partPath } from "@/utils/articleParts";
 import { formatPageCount, splitArticleTitle } from "@/utils/articleNavigation";
 import { estimateReadingTime } from "@/utils/readingTime";
 import { getEmbedUrl } from "@/utils/videoEmbed";
@@ -56,7 +56,6 @@ export function ArticleReader({
   const isMultiPart = total > 1;
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === total - 1;
-  const percent = partProgressPercent(currentIndex, total);
   const typeLabel = productionTypeLabel(item.type);
   const { main: shortTitle, subtitle } = splitArticleTitle(item.title);
   const authorNames = authors.map((a) => a.name).join(", ") || item.author || "";
@@ -95,9 +94,9 @@ export function ArticleReader({
           <ArticlePartsNav
             typeLabel={typeLabel}
             shortTitle={shortTitle}
-            parts={parts.map((p, index) => ({ title: p.title, href: partPath(basePath, parts, index) }))}
+            parts={buildPartsMenu(parts, currentIndex, basePath)}
+            weights={parts.map((p) => p.weight)}
             currentIndex={currentIndex}
-            percent={percent}
           />
         )}
 
@@ -186,7 +185,9 @@ export function ArticleReader({
           )}
 
           <div className="article-part-body">
-            <TableOfContents headings={part.headings} />
+            {/* Article en plusieurs parties : les sous-titres sont dans le menu
+                « Dans cet article », pas de sommaire en doublon dans le texte. */}
+            {!isMultiPart && <TableOfContents headings={part.headings} />}
             <QuoteShareBar url={partUrl}>
               <div className="rich-text" dangerouslySetInnerHTML={{ __html: part.html }} />
             </QuoteShareBar>
