@@ -5,12 +5,14 @@ import type { ArticlePart } from "@/utils/articleParts";
 import { buildPartsMenu, partPath } from "@/utils/articleParts";
 import { formatPageCount, splitArticleTitle } from "@/utils/articleNavigation";
 import { productionReadingMode } from "@/utils/productionReading";
-import { estimateReadingTime } from "@/utils/readingTime";
+import { estimateReadingTime, parseReadingMinutes, readingMinutes } from "@/utils/readingTime";
 import { getEmbedUrl } from "@/utils/videoEmbed";
 import { productionTypeLabel } from "@/constants/productionTypes";
 import { SITE_URL } from "@/constants/site";
 import { buildArticleJsonLd } from "@/lib/jsonLd";
+import { ReadingProgressProvider } from "@/hooks/useReadingProgress";
 import { ArticlePartsNav } from "@/components/public/ArticlePartsNav";
+import { ArticleReadingTools } from "@/components/public/ArticleReadingTools";
 import { CardGrid } from "@/components/cards/CardGrid";
 import { CiteButton } from "@/components/public/CiteButton";
 import { JsonLd } from "@/components/public/JsonLd";
@@ -32,7 +34,8 @@ interface Props {
   authors: Author[];
   relatedProductions: Production[];
   nextArticle: Pick<Production, "slug" | "title"> | null;
-  fileUrl: string | null;
+  /** Lien des boutons PDF : route /telecharger (site) ou fichier direct (aperçu). */
+  pdfHref: string | null;
   imageUrl: string | null;
 }
 
@@ -51,11 +54,11 @@ export function ArticleReader({
   authors,
   relatedProductions,
   nextArticle,
-  fileUrl,
+  pdfHref,
   imageUrl,
 }: Props) {
   const basePath = `/productions/${item.slug}`;
-  const mode = productionReadingMode(parts.length, fileUrl);
+  const mode = productionReadingMode(parts.length, pdfHref);
   const hasText = mode === "parts";
   const part = hasText ? parts[currentIndex] : null;
   const total = parts.length;
@@ -66,6 +69,11 @@ export function ArticleReader({
   const { main: shortTitle, subtitle } = splitArticleTitle(item.title);
   const authorNames = authors.map((a) => a.name).join(", ") || item.author || "";
   const readingTime = item.readingTime || (hasText ? estimateReadingTime(item.body) : null);
+  const totalMinutes = hasText ? (parseReadingMinutes(item.readingTime) ?? readingMinutes(item.body)) : null;
+  const menu = hasText ? buildPartsMenu(parts, currentIndex, basePath) : [];
+  const trackedHeadingIds = menu[currentIndex]?.headings.map((h) => h.id) ?? [];
+  const downloadHref = pdfHref;
+  const pdfLabel = item.downloadLabel || "Télécharger le PDF";
   const articleUrl = `${SITE_URL}${basePath}`;
   const partUrl = hasText ? `${SITE_URL}${partPath(basePath, parts, currentIndex)}` : articleUrl;
   const pageCount = formatPageCount(item.pages);
@@ -95,179 +103,188 @@ export function ArticleReader({
       )}
       {hasText && !isMultiPart && <ReadingProgressBar slug={item.slug} />}
 
-      <div className={`article-reader${isMultiPart ? "" : " article-reader--single"}`}>
-        {part && isMultiPart && (
-          <ArticlePartsNav
-            typeLabel={typeLabel}
-            shortTitle={shortTitle}
-            parts={buildPartsMenu(parts, currentIndex, basePath)}
-            weights={parts.map((p) => p.weight)}
-            currentIndex={currentIndex}
-          />
-        )}
-
-        <article className="article-reader-main">
-          <nav className="article-breadcrumb" aria-label="Fil d'Ariane">
-            {/* Téléphone : un seul lien de retour au lieu du fil complet. */}
-            <Link href={backLink.href} className="article-breadcrumb-back">
-              <span aria-hidden="true">←</span> {backLink.label}
-            </Link>
-            <ol>
-              <li className="article-breadcrumb-home">
-                <Link href="/">Accueil</Link>
-              </li>
-              <li>
-                <Link href="/productions">Productions</Link>
-              </li>
-              {part && isMultiPart ? (
-                <>
-                  <li>
-                    <Link href={basePath}>{shortTitle}</Link>
-                  </li>
-                  <li className="article-breadcrumb-part">
-                    <span aria-current="page">{part.title}</span>
-                  </li>
-                </>
-              ) : (
-                <li>
-                  <span aria-current="page">{shortTitle}</span>
-                </li>
-              )}
-            </ol>
-          </nav>
-
-          {isFirst ? (
-            <header className="article-header">
-              <p className="article-type">{typeLabel}</p>
-              <h1 className="article-title">
-                {shortTitle}
-                {subtitle && <span className="article-subtitle">{subtitle}</span>}
-              </h1>
-              {item.description && <p className="article-standfirst">{item.description}</p>}
-              <div className="article-meta">
-                {authorNames && <span className="article-meta-author">{authorNames}</span>}
-                {item.date && <span>{formatDate(item.date)}</span>}
-                {readingTime && (
-                  <span>
-                    {isMultiPart && `${total} parties · `}
-                    {readingTime} de lecture
-                  </span>
-                )}
-                <details className="article-share">
-                  <summary>Partager</summary>
-                  <div className="article-share-panel">
-                    <ShareButtons url={articleUrl} title={item.title} />
-                  </div>
-                </details>
-              </div>
-            </header>
-          ) : (
-            // Un seul <h1> par page (le titre de l'article), pour une hiérarchie de
-            // titres continue : h1 article → h2 partie → h3 du contenu.
-            <h1 className="sr-only">{item.title}</h1>
-          )}
-
-          {isFirst && videoEmbedUrl && (
-            <div className="video-embed">
-              <iframe
-                src={videoEmbedUrl}
-                title={item.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          )}
-          {isFirst && isAudioFile && item.videoUrl && (
-            <audio controls src={item.videoUrl} className="audio-player">
-              Votre navigateur ne prend pas en charge la lecture audio.
-            </audio>
-          )}
-
+      <ReadingProgressProvider
+        weights={hasText ? parts.map((p) => p.weight) : []}
+        currentIndex={hasText ? currentIndex : 0}
+        headingIds={trackedHeadingIds}
+      >
+        <div className={`article-reader${isMultiPart ? "" : " article-reader--single"}`}>
           {part && isMultiPart && (
-            <div className="article-part-heading">
-              <p className="article-part-eyebrow">
-                Partie {currentIndex + 1} sur {total}
-              </p>
-              <h2 className="article-part-title">{part.title}</h2>
-            </div>
+            <ArticlePartsNav typeLabel={typeLabel} shortTitle={shortTitle} parts={menu} currentIndex={currentIndex} />
           )}
 
-          {part ? (
-            <div className="article-part-body">
-              {/* Article en plusieurs parties : les sous-titres sont dans le menu
-                  « Dans cet article », pas de sommaire en doublon dans le texte. */}
-              {!isMultiPart && <TableOfContents headings={part.headings} />}
-              <QuoteShareBar url={partUrl}>
-                <div className="rich-text" dangerouslySetInnerHTML={{ __html: part.html }} />
-              </QuoteShareBar>
-            </div>
-          ) : (
-            mode === "pdf" && (
-              <div className="article-pdf-notice">
-                <FileText className="article-pdf-notice-icon" size={22} strokeWidth={1.75} aria-hidden="true" />
-                <div>
-                  <p className="article-pdf-notice-title">Cet article est disponible en PDF</p>
-                  <p className="article-pdf-notice-text">
-                    Sa version à lire en ligne n&apos;est pas encore prête. Le document complet se télécharge
-                    ci-dessous.
-                  </p>
+          <article className="article-reader-main">
+            <nav className="article-breadcrumb" aria-label="Fil d'Ariane">
+              {/* Téléphone : un seul lien de retour au lieu du fil complet. */}
+              <Link href={backLink.href} className="article-breadcrumb-back">
+                <span aria-hidden="true">←</span> {backLink.label}
+              </Link>
+              <ol>
+                <li className="article-breadcrumb-home">
+                  <Link href="/">Accueil</Link>
+                </li>
+                <li>
+                  <Link href="/productions">Productions</Link>
+                </li>
+                {part && isMultiPart ? (
+                  <>
+                    <li>
+                      <Link href={basePath}>{shortTitle}</Link>
+                    </li>
+                    <li className="article-breadcrumb-part">
+                      <span aria-current="page">{part.title}</span>
+                    </li>
+                  </>
+                ) : (
+                  <li>
+                    <span aria-current="page">{shortTitle}</span>
+                  </li>
+                )}
+              </ol>
+            </nav>
+
+            {isFirst ? (
+              <header className="article-header">
+                <p className="article-type">{typeLabel}</p>
+                <h1 className="article-title">
+                  {shortTitle}
+                  {subtitle && <span className="article-subtitle">{subtitle}</span>}
+                </h1>
+                {item.description && <p className="article-standfirst">{item.description}</p>}
+                <div className="article-meta">
+                  {authorNames && <span className="article-meta-author">{authorNames}</span>}
+                  {item.date && <span>{formatDate(item.date)}</span>}
+                  {readingTime && (
+                    <span>
+                      {isMultiPart && `${total} parties · `}
+                      {readingTime} de lecture
+                    </span>
+                  )}
+                  <details className="article-share">
+                    <summary>Partager</summary>
+                    <div className="article-share-panel">
+                      <ShareButtons url={articleUrl} title={item.title} />
+                    </div>
+                  </details>
                 </div>
+              </header>
+            ) : (
+              // Un seul <h1> par page (le titre de l'article), pour une hiérarchie de
+              // titres continue : h1 article → h2 partie → h3 du contenu.
+              <h1 className="sr-only">{item.title}</h1>
+            )}
+
+            {isFirst && videoEmbedUrl && (
+              <div className="video-embed">
+                <iframe
+                  src={videoEmbedUrl}
+                  title={item.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
               </div>
-            )
-          )}
+            )}
+            {isFirst && isAudioFile && item.videoUrl && (
+              <audio controls src={item.videoUrl} className="audio-player">
+                Votre navigateur ne prend pas en charge la lecture audio.
+              </audio>
+            )}
 
-          {isLast && (
-            <div className="article-end">
-              <CiteButton title={item.title} author={authorNames} date={item.date} url={articleUrl} />
-              {(subThemes.length > 0 || item.tags.length > 0) && (
-                <div className="article-topics">
-                  {subThemes.map((st) => {
-                    const parentTheme = themeById.get(st.themeId);
-                    return parentTheme ? (
-                      <Link key={st.id} href={`/themes/${parentTheme.slug}/${st.slug}`} className="theme-chip">
-                        {st.title}
-                      </Link>
-                    ) : null;
-                  })}
-                  {item.tags.map((tag) => (
-                    <Link key={tag} href={`/tags/${encodeURIComponent(tag)}`} className="article-tag">
-                      {tag}
-                    </Link>
-                  ))}
+            {part && isMultiPart && (
+              <div className="article-part-heading">
+                <p className="article-part-eyebrow">
+                  Partie {currentIndex + 1} sur {total}
+                </p>
+                <h2 className="article-part-title">{part.title}</h2>
+              </div>
+            )}
+
+            {part ? (
+              <div className="article-part-body">
+                {/* Article en plusieurs parties : les sous-titres sont dans le menu
+                  « Dans cet article », pas de sommaire en doublon dans le texte. */}
+                {!isMultiPart && <TableOfContents headings={part.headings} />}
+                <QuoteShareBar url={partUrl}>
+                  <div className="rich-text" dangerouslySetInnerHTML={{ __html: part.html }} />
+                </QuoteShareBar>
+              </div>
+            ) : (
+              mode === "pdf" && (
+                <div className="article-pdf-notice">
+                  <FileText className="article-pdf-notice-icon" size={22} strokeWidth={1.75} aria-hidden="true" />
+                  <div>
+                    <p className="article-pdf-notice-title">Cet article est disponible en PDF</p>
+                    <p className="article-pdf-notice-text">
+                      Sa version à lire en ligne n&apos;est pas encore prête : le document complet se télécharge en PDF.
+                    </p>
+                  </div>
                 </div>
-              )}
-            </div>
-          )}
+              )
+            )}
 
-          {nextPart ? (
-            <Link href={partPath(basePath, parts, currentIndex + 1)} className="article-next">
-              <span className="article-next-text">
-                <span className="article-next-label">
-                  Partie suivante · {currentIndex + 2} sur {total}
-                </span>
-                <span className="article-next-title">{nextPart.title}</span>
-                <span className="article-next-hint">Continuer la lecture</span>
-              </span>
-              <span className="article-next-arrow" aria-hidden="true">
-                <ArrowRight size={22} strokeWidth={2} />
-              </span>
-            </Link>
-          ) : (
-            nextArticle && (
-              <Link href={`/productions/${nextArticle.slug}`} className="article-next">
+            {isLast && (
+              <div className="article-end">
+                <CiteButton title={item.title} author={authorNames} date={item.date} url={articleUrl} />
+                {(subThemes.length > 0 || item.tags.length > 0) && (
+                  <div className="article-topics">
+                    {subThemes.map((st) => {
+                      const parentTheme = themeById.get(st.themeId);
+                      return parentTheme ? (
+                        <Link key={st.id} href={`/themes/${parentTheme.slug}/${st.slug}`} className="theme-chip">
+                          {st.title}
+                        </Link>
+                      ) : null;
+                    })}
+                    {item.tags.map((tag) => (
+                      <Link key={tag} href={`/tags/${encodeURIComponent(tag)}`} className="article-tag">
+                        {tag}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {nextPart ? (
+              <Link href={partPath(basePath, parts, currentIndex + 1)} className="article-next">
                 <span className="article-next-text">
-                  <span className="article-next-label">Fin de l&apos;article · Article suivant</span>
-                  <span className="article-next-title">{nextArticle.title}</span>
-                  <span className="article-next-hint">Lire l&apos;article</span>
+                  <span className="article-next-label">
+                    Partie suivante · {currentIndex + 2} sur {total}
+                  </span>
+                  <span className="article-next-title">{nextPart.title}</span>
+                  <span className="article-next-hint">Continuer la lecture</span>
                 </span>
                 <span className="article-next-arrow" aria-hidden="true">
                   <ArrowRight size={22} strokeWidth={2} />
                 </span>
               </Link>
-            )
-          )}
-        </article>
-      </div>
+            ) : (
+              nextArticle && (
+                <Link href={`/productions/${nextArticle.slug}`} className="article-next">
+                  <span className="article-next-text">
+                    <span className="article-next-label">Fin de l&apos;article · Article suivant</span>
+                    <span className="article-next-title">{nextArticle.title}</span>
+                    <span className="article-next-hint">Lire l&apos;article</span>
+                  </span>
+                  <span className="article-next-arrow" aria-hidden="true">
+                    <ArrowRight size={22} strokeWidth={2} />
+                  </span>
+                </Link>
+              )
+            )}
+          </article>
+
+          <ArticleReadingTools
+            pdfHref={downloadHref}
+            pdfLabel={pdfLabel}
+            pageCount={pageCount}
+            totalMinutes={totalMinutes}
+            shareUrl={articleUrl}
+            title={item.title}
+            citation={{ title: item.title, author: authorNames, date: item.date ?? null, url: articleUrl }}
+          />
+        </div>
+      </ReadingProgressProvider>
 
       {isLast && relatedProductions.length > 0 && (
         <CardGrid
@@ -282,7 +299,7 @@ export function ArticleReader({
         />
       )}
 
-      {fileUrl && (
+      {downloadHref && (
         <section className="article-pdf-band" aria-label="Télécharger l'article complet">
           <div className="article-pdf-band-inner">
             <span className="article-pdf-icon" aria-hidden="true">
@@ -295,9 +312,9 @@ export function ArticleReader({
                 {pageCount && ` · ${pageCount}`}
               </p>
             </div>
-            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="article-pdf-button">
+            <a href={downloadHref} className="article-pdf-button">
               <Download size={18} strokeWidth={2} aria-hidden="true" />
-              {item.downloadLabel || "Télécharger le PDF"}
+              {pdfLabel}
             </a>
           </div>
         </section>

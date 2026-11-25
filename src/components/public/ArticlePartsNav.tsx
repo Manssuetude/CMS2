@@ -1,24 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
-import { readingPercent, type PartsMenuItem } from "@/utils/articleParts";
+import { readingTopOffset, useReadingProgress } from "@/hooks/useReadingProgress";
+import type { PartsMenuItem } from "@/utils/articleParts";
 
 interface Props {
   typeLabel: string;
   shortTitle: string;
   /** Parties ; seule la partie ouverte porte ses sous-titres (buildPartsMenu). */
   parts: PartsMenuItem[];
-  /** Poids de lecture de chaque partie (longueur du texte). */
-  weights: number[];
   currentIndex: number;
 }
-
-const MOBILE_QUERY = "(max-width: 899px)";
-// Marge sous le header (et sous la barre sur téléphone) à partir de laquelle
-// un titre est considéré comme « passé ».
-const ACTIVE_OFFSET = 24;
 
 function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -28,103 +22,14 @@ function prefersReducedMotion(): boolean {
 // (liste toujours visible, sous-titres de la partie ouverte dépliés).
 // Téléphone : barre collante sous le header, un bouton déplie/replie la même
 // liste. La progression suit la lecture réelle, pondérée par la longueur des
-// parties (rendu serveur : début de la partie ouverte).
-export function ArticlePartsNav({ typeLabel, shortTitle, parts, weights, currentIndex }: Props) {
+// parties (useReadingProgress, partagé avec la colonne outils).
+export function ArticlePartsNav({ typeLabel, shortTitle, parts, currentIndex }: Props) {
   const [open, setOpen] = useState(false);
-  const [fraction, setFraction] = useState(0);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const { percent, activeId } = useReadingProgress();
   const navId = useId();
   const asideRef = useRef<HTMLElement>(null);
   const total = parts.length;
   const current = parts[currentIndex];
-  const headingIds = (current?.headings ?? []).map((h) => h.id).join("|");
-  const percent = readingPercent(weights, currentIndex, fraction);
-
-  // Le header du site est collant et sa hauteur varie selon la largeur
-  // d'écran : mesurée pour coller la barre juste en dessous.
-  useEffect(() => {
-    const header = document.querySelector<HTMLElement>(".site-header");
-    if (!header) return;
-    const root = document.documentElement;
-    const apply = () => root.style.setProperty("--article-header-h", `${header.getBoundingClientRect().height}px`);
-    apply();
-    const observer = new ResizeObserver(apply);
-    observer.observe(header);
-    return () => {
-      observer.disconnect();
-      root.style.removeProperty("--article-header-h");
-    };
-  }, []);
-
-  /**
-   * Hauteur couverte en haut de l'écran une fois la page défilée : le header
-   * collant (sa hauteur, pas sa position : le bandeau d'annonce au-dessus
-   * sort de l'écran en défilant), plus la barre collante sur téléphone.
-   */
-  const topOffset = useCallback(() => {
-    const header = document.querySelector<HTMLElement>(".site-header");
-    let offset = header ? header.getBoundingClientRect().height : 0;
-    if (window.matchMedia(MOBILE_QUERY).matches) {
-      const toggle = asideRef.current?.querySelector<HTMLElement>(".article-parts-toggle");
-      offset += toggle?.getBoundingClientRect().height ?? 0;
-    }
-    return offset;
-  }, []);
-
-  // Avancement dans la partie et sous-titre en cours, recalculés au défilement
-  // (une fois par image) et au redimensionnement.
-  useEffect(() => {
-    const body = document.querySelector<HTMLElement>(".article-part-body");
-    if (!body) return;
-    const headings = headingIds
-      ? headingIds
-          .split("|")
-          .map((id) => document.getElementById(id))
-          .filter((el): el is HTMLElement => !!el && body.contains(el))
-      : [];
-    let frame = 0;
-
-    const measure = () => {
-      frame = 0;
-      const offset = topOffset();
-      const rect = body.getBoundingClientRect();
-      const visible = window.innerHeight - offset;
-      const travel = rect.height - visible;
-      let next: number;
-      if (travel <= 0) next = rect.top <= offset ? 1 : 0;
-      else next = (offset - rect.top) / travel;
-      // Dernière partie : bas de page atteint = tout est lu.
-      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-      if (currentIndex === total - 1 && atBottom) next = 1;
-      setFraction(Math.min(1, Math.max(0, next)));
-
-      let active: string | null = null;
-      for (const heading of headings) {
-        if (heading.getBoundingClientRect().top - offset <= ACTIVE_OFFSET) active = heading.id;
-      }
-      setActiveId(active);
-    };
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(measure);
-    };
-
-    // Les titres qui passent sous le haut de l'écran déclenchent aussi le recalcul.
-    const observer = new IntersectionObserver(schedule, {
-      rootMargin: `-${Math.round(topOffset() + ACTIVE_OFFSET)}px 0px 0px 0px`,
-      threshold: [0, 1],
-    });
-    headings.forEach((heading) => observer.observe(heading));
-
-    measure();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      if (frame) cancelAnimationFrame(frame);
-      observer.disconnect();
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [headingIds, currentIndex, total, topOffset]);
 
   // Sous-titre en cours hors de la zone visible de la colonne : on fait
   // défiler la colonne seulement (jamais la page).
@@ -155,7 +60,7 @@ export function ArticlePartsNav({ typeLabel, shortTitle, parts, weights, current
     setOpen(false);
     requestAnimationFrame(() =>
       requestAnimationFrame(() => {
-        const top = target.getBoundingClientRect().top + window.scrollY - topOffset() - 12;
+        const top = target.getBoundingClientRect().top + window.scrollY - readingTopOffset() - 12;
         window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
         history.replaceState(null, "", `#${id}`);
         target.setAttribute("tabindex", "-1");
