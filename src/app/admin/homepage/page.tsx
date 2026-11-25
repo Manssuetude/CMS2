@@ -8,6 +8,7 @@ import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { KEY_FIGURES_MAX } from "@/constants/keyFigures";
 import { pickEventOfTheMoment } from "@/utils/eventOfTheMoment";
 import { saveHomepageFieldsAction } from "./actions";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 export default async function AdminHomepage() {
   const [page, media, events, keyFigures] = await Promise.all([
@@ -55,14 +56,14 @@ export default async function AdminHomepage() {
               Actuellement affiché : <strong>{eventOfTheMoment.title}</strong>
               {eventOfTheMoment.date ? ` · ${eventOfTheMoment.date}` : ""}
               {" · "}
-              <a href={`/admin/evenements/${eventOfTheMoment.id}/edit`} style={{ color: "var(--orange)" }}>
+              <a href={`/admin/evenements/${eventOfTheMoment.id}/edit`} style={{ color: "var(--admin-accent-text)" }}>
                 Modifier cet événement →
               </a>
             </p>
           ) : (
             <p style={{ fontSize: 13, color: "var(--muted)", margin: "0 0 14px" }}>
               Aucun événement avec une date pour l&apos;instant, donc rien ne s&apos;affiche ici.{" "}
-              <a href="/admin/evenements" style={{ color: "var(--orange)" }}>
+              <a href="/admin/evenements" style={{ color: "var(--admin-accent-text)" }}>
                 Voir les événements →
               </a>
             </p>
@@ -120,7 +121,7 @@ export default async function AdminHomepage() {
           {images.length === 0 && (
             <p style={{ fontSize: 13, color: "var(--muted)" }}>
               Aucune image dans la médiathèque.{" "}
-              <a href="/admin/media" style={{ color: "var(--orange)" }}>
+              <a href="/admin/media" style={{ color: "var(--admin-accent-text)" }}>
                 Importer une photo →
               </a>
             </p>
@@ -207,11 +208,7 @@ export default async function AdminHomepage() {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button type="submit" className="cta" style={{ minWidth: 160 }}>
-            Enregistrer les modifications
-          </button>
-        </div>
+        <AdminFormBar />
       </form>
     </section>
   );

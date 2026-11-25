@@ -3,7 +3,14 @@ import test from "node:test";
 import { permKey, allPermissionKeys, permissionCatalog } from "../src/constants/permissions.ts";
 import { can, canViewSection } from "../src/lib/permissions.ts";
 
-const adminSession = { userId: "1", email: "a@x", roleKey: "admin", roleLabel: "Admin", isAdmin: true, permissions: ["*"] };
+const adminSession = {
+  userId: "1",
+  email: "a@x",
+  roleKey: "admin",
+  roleLabel: "Admin",
+  isAdmin: true,
+  permissions: ["*"],
+};
 const prodSession = {
   userId: "2",
   email: "p@x",

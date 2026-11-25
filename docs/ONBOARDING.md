@@ -187,7 +187,7 @@ Voir [`ARCHITECTURE.md`](ARCHITECTURE.md) pour l'arborescence complète, les res
 
 - Routes : `src/app/(public)`
 - Rendu page générique : `src/components/public/PublicPage.tsx`
-- Pages détail : un composant dédié par entité (`ProductionDetail.tsx`, `EvenementDetail.tsx`, `ThemeDetail.tsx`, `ProjetDetail.tsx`, `SubThemeDetail.tsx`, `DossierDetail.tsx`, `JournalEntryDetail.tsx`…)
+- Pages détail : un composant dédié par entité (`ArticleReader.tsx` pour les productions, `EvenementDetail.tsx`, `ThemeDetail.tsx`, `ProjetDetail.tsx`, `SubThemeDetail.tsx`, `DossierDetail.tsx`, `JournalEntryDetail.tsx`…)
 
 **Admin**
 

@@ -15,6 +15,8 @@ function mapProduction(row: DataRow): Production {
     type: asString(row.type),
     description: asNullableString(row.description),
     body: asNullableString(row.body),
+    bodySourceName: asNullableString(row.body_source_name),
+    bodyImportedAt: asNullableString(row.body_imported_at),
     contentBlocks: mapContentBlocks(blocks),
     author: asNullableString(row.author),
     date: asNullableString(row.date),

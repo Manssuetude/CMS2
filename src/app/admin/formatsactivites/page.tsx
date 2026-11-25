@@ -52,7 +52,12 @@ export default async function AdminActivityFormatsPage({
       </AdminListHeader>
       <p style={{ marginTop: -8, marginBottom: 20, fontSize: 13, color: "var(--muted)" }}>
         Répertoire des techniques d&apos;animation (Fishbowl, Hot Takes, Débat 2v2...), présenté en grille sur{" "}
-        <a href="/activites/formats-d-activites" target="_blank" rel="noreferrer" style={{ color: "var(--orange)" }}>
+        <a
+          href="/activites/formats-d-activites"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: "var(--admin-accent-text)" }}
+        >
           /activites/formats-d-activites
         </a>
         .

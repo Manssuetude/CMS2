@@ -14,9 +14,8 @@ interface Props {
 
 export default async function EditProjetPage({ params }: Props) {
   const { id } = await params;
-  const [item, themes, productions, events] = await Promise.all([
+  const [item, productions, events] = await Promise.all([
     projectRepository.getProjectById(id),
-    themeRepository.listThemes(true),
     productionRepository.listProductions(true),
     eventRepository.listEvents(true),
   ]);
@@ -26,6 +25,7 @@ export default async function EditProjetPage({ params }: Props) {
     projectRepository.getProjectProductionIds(id),
     projectRepository.getProjectEventIds(id),
   ]);
+  const { themes } = await themeRepository.listSelectableThemes(initialThemeIds);
 
   return (
     <section className="admin-panel">

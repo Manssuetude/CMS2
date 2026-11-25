@@ -6,6 +6,8 @@ import { eventRepository } from "@/repositories/eventRepository";
 import { activityFormatRepository } from "@/repositories/activityFormatRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
+import { requirePermission } from "@/lib/auth";
+import { duplicateEvent } from "@/services/duplicationService";
 import { slugify } from "@/utils/slug";
 import { eventFormSchema, parseAnimators, parseIdList, readEventForm, toEventInput } from "./eventForm";
 
@@ -13,7 +15,7 @@ export async function createEventAction(_: string | null, formData: FormData): P
   const parsed = eventFormSchema.safeParse(readEventForm(formData));
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
@@ -22,7 +24,7 @@ export async function createEventAction(_: string | null, formData: FormData): P
   try {
     event = await eventRepository.createEvent({ slug, ...toEventInput(parsed.data) });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   const themeIds = parseIdList(formData, "themeIds");
@@ -38,7 +40,7 @@ export async function createEventAction(_: string | null, formData: FormData): P
 
   await logAction("create", { entityType: "event", summary: `Événement créé : ${parsed.data.title}` });
   revalidatePath("/admin/evenements");
-  redirect("/admin/evenements");
+  redirect("/admin/evenements?saved=1");
 }
 
 export async function updateEventAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -48,7 +50,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
   const parsed = eventFormSchema.safeParse(readEventForm(formData));
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
   try {
@@ -59,7 +61,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
     const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
     await eventRepository.updateEvent(id, { ...input, ...slugSync });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   await eventRepository.setEventThemes(id, parseIdList(formData, "themeIds"));
@@ -74,7 +76,7 @@ export async function updateEventAction(_: string | null, formData: FormData): P
     summary: `Événement modifié : ${parsed.data.title}`,
   });
   revalidatePath("/admin/evenements");
-  redirect("/admin/evenements");
+  redirect("/admin/evenements?saved=1");
 }
 
 export async function deleteEventAction(formData: FormData): Promise<void> {
@@ -106,4 +108,15 @@ export async function toggleEventFeaturedAction(formData: FormData): Promise<voi
   await eventRepository.updateEvent(id, { featured });
   revalidatePath("/admin/evenements");
   revalidatePath("/");
+}
+
+// « Dupliquer » : copie en brouillon (sans dates ni photos de compte-rendu), puis ouverture de la copie.
+export async function duplicateEventAction(formData: FormData): Promise<void> {
+  await requirePermission("evenements:create");
+  const id = (formData.get("id") as string | null)?.trim();
+  const copy = id ? await duplicateEvent(id) : null;
+  if (!copy) redirect("/admin/evenements");
+  await logAction("create", { entityType: "event", entityId: copy.id, summary: `Événement dupliqué : ${copy.title}` });
+  revalidatePath("/admin/evenements");
+  redirect(`/admin/evenements/${copy.id}/edit?saved=1`);
 }

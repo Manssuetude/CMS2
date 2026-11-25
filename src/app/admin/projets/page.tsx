@@ -69,7 +69,7 @@ export default async function AdminProjetsPage({ searchParams }: { searchParams:
                 <td className="col-title">
                   {item.featured && (
                     <span
-                      style={{ color: "var(--orange)", fontWeight: 900, marginRight: 6, fontSize: 13 }}
+                      style={{ color: "var(--admin-accent-text)", fontWeight: 900, marginRight: 6, fontSize: 13 }}
                       title="Mis en avant"
                     >
                       ★

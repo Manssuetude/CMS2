@@ -80,7 +80,7 @@ export async function createJournalEntryAction(_: string | null, formData: FormD
     summary: `Entrée créée : ${entry.title}`,
   });
   revalidatePath("/admin/journal");
-  redirect("/admin/journal");
+  redirect("/admin/journal?saved=1");
 }
 
 export async function updateJournalEntryAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -109,7 +109,7 @@ export async function updateJournalEntryAction(_: string | null, formData: FormD
     summary: `Entrée modifiée : ${parsed.data.title}`,
   });
   revalidatePath("/admin/journal");
-  redirect("/admin/journal");
+  redirect("/admin/journal?saved=1");
 }
 
 export async function deleteJournalEntryAction(formData: FormData): Promise<void> {

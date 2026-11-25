@@ -1,4 +1,6 @@
 :root {
+  /* Contrôles natifs (listes, dates, barres de défilement) assortis au thème. */
+  color-scheme: light;
   --orange: #ff4d12;
   /* Contraste AA (voir --ed-accent-* dans editorial/base.css) : fond orange
      sous texte blanc et texte orange sur fond clair. */
@@ -20,6 +22,10 @@
   --surface: #fff;
   --cream-text: #f6ded1;
   --warning: #c86a21;
+  /* États (fichiers manquants / présents) : contraste AA sur --surface. */
+  --danger: #b42318;
+  --danger-soft: #fdf1f0;
+  --success: #17703a;
   --focus-ring: rgba(255, 77, 18, 0.45);
   --overlay: rgba(8, 8, 10, 0.62);
   --radius: 8px;
@@ -30,6 +36,58 @@
   --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.26);
   --content-max: 1480px;
   --page-x: clamp(18px, 4vw, 58px);
+  /* ─── Admin : fonds et états (clair). Voir aussi les blocs sombres. ─── */
+  --admin-bg: #f4f5f7;
+  --admin-surface: var(--surface);
+  --admin-surface-raised: #fff;
+  --admin-input-bg: #fff;
+  --admin-search-bg: #f7f8fa;
+  --admin-muted-surface: #f3f4f6;
+  /* Bouton principal : orange foncé, texte blanc (contraste AA). */
+  --admin-primary-bg: var(--orange-fill);
+  --admin-primary-bg-hover: var(--orange-fill-hover);
+  --admin-primary-ink: #fff;
+  /* Texte et icônes d'accent (liens, onglet actif) : AA sur les fonds de l'admin. */
+  --admin-accent-text: var(--orange-fill);
+  --admin-primary-shadow: 0 1px 2px rgba(184, 60, 11, 0.2);
+  --admin-primary-shadow-hover: 0 5px 16px rgba(184, 60, 11, 0.3);
+  --admin-bar-shadow: 0 -8px 24px rgba(0, 0, 0, 0.04);
+  --admin-popover-shadow: 0 8px 24px rgba(8, 8, 10, 0.12);
+  --admin-toast-shadow: 0 14px 36px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08);
+  --admin-card-shadow: 0 30px 80px -42px rgba(13, 13, 15, 0.42);
+  /* Rendu du site dans l'admin (contenu de CKEditor) : toujours clair, comme
+     la page publique prévisualisée. Jamais redéfini dans les blocs sombres. */
+  --preview-surface: #fff;
+  --preview-ink: #0d0d0f;
+  --preview-muted: #62646d;
+  --preview-soft: #fff4ed;
+  --preview-line: #e9e2dd;
+  --preview-accent: #b83c0b;
+  /* Bandeau « Aperçu : non publié » : même jaune dans les deux thèmes. */
+  --preview-flag-bg: #f5c518;
+  --preview-flag-ink: #1c1714;
+  /* États : fond / texte / bordure. */
+  --status-published-bg: #dcfce7;
+  --status-published-ink: #166534;
+  --status-published-line: #bbf7d0;
+  --status-draft-bg: #f3f4f6;
+  --status-draft-ink: #4b5563;
+  --status-draft-line: #e5e7eb;
+  --status-archived-bg: #f3e8ff;
+  --status-archived-ink: #6b21a8;
+  --status-archived-line: #e9d5ff;
+  --status-info-bg: #dbeafe;
+  --status-info-ink: #1d4ed8;
+  --status-info-line: #bfdbfe;
+  --status-warning-bg: #fef3c7;
+  --status-warning-ink: #92400e;
+  --status-warning-line: #fde68a;
+  --status-danger-bg: #fef2f2;
+  --status-danger-ink: #b91c1c;
+  --status-danger-line: #fecaca;
+  --status-success-bg: #dcfce7;
+  --status-success-ink: #166534;
+  --status-success-line: #bbf7d0;
 }
 
 /* =============================================================
@@ -38,6 +96,7 @@
    soit par préférence système quand aucun choix n'est fait.
    ============================================================= */
 :root[data-theme="dark"] {
+  color-scheme: dark;
   --ink: #f1eae0;
   --ink-soft: #c4baac;
   --muted: #948b7d;
@@ -56,9 +115,47 @@
   --shadow-subtle: 0 12px 30px rgba(0, 0, 0, 0.4);
   --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
   --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.65);
+  --danger: #f0897d;
+  --danger-soft: #2a1512;
+  --success: #6fcf8f;
+  /* ─── Admin (sombre) ─── */
+  --admin-accent-text: #ff8a5c;
+  --admin-bg: #14110d;
+  --admin-surface-raised: #2a231b;
+  --admin-input-bg: #18140f;
+  --admin-search-bg: #18140f;
+  --admin-muted-surface: #2a231b;
+  --admin-primary-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --admin-primary-shadow-hover: 0 5px 16px rgba(0, 0, 0, 0.5);
+  --admin-bar-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  --admin-popover-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --admin-toast-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --admin-card-shadow: 0 30px 80px -42px rgba(0, 0, 0, 0.8);
+  --status-published-bg: #17301f;
+  --status-published-ink: #7bd69a;
+  --status-published-line: #24503a;
+  --status-draft-bg: #2a231b;
+  --status-draft-ink: #d8cfc2;
+  --status-draft-line: #3d342a;
+  --status-archived-bg: #2a1f33;
+  --status-archived-ink: #d8b4fe;
+  --status-archived-line: #45325a;
+  --status-info-bg: #13233a;
+  --status-info-ink: #93c5fd;
+  --status-info-line: #1e3a5f;
+  --status-warning-bg: #2a1a0a;
+  --status-warning-ink: #fdba74;
+  --status-warning-line: #5a3a12;
+  --status-danger-bg: #2a1512;
+  --status-danger-ink: #fca5a5;
+  --status-danger-line: #5c2620;
+  --status-success-bg: #17301f;
+  --status-success-ink: #7bd69a;
+  --status-success-line: #24503a;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    color-scheme: dark;
     --ink: #f1eae0;
     --ink-soft: #c4baac;
     --muted: #948b7d;
@@ -77,5 +174,42 @@
     --shadow-subtle: 0 12px 30px rgba(0, 0, 0, 0.4);
     --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.35);
     --shadow-modal: 0 28px 80px rgba(0, 0, 0, 0.65);
+    --danger: #f0897d;
+    --danger-soft: #2a1512;
+    --success: #6fcf8f;
+    /* ─── Admin (sombre) ─── */
+    --admin-accent-text: #ff8a5c;
+    --admin-bg: #14110d;
+    --admin-surface-raised: #2a231b;
+    --admin-input-bg: #18140f;
+    --admin-search-bg: #18140f;
+    --admin-muted-surface: #2a231b;
+    --admin-primary-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --admin-primary-shadow-hover: 0 5px 16px rgba(0, 0, 0, 0.5);
+    --admin-bar-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+    --admin-popover-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --admin-toast-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+    --admin-card-shadow: 0 30px 80px -42px rgba(0, 0, 0, 0.8);
+    --status-published-bg: #17301f;
+    --status-published-ink: #7bd69a;
+    --status-published-line: #24503a;
+    --status-draft-bg: #2a231b;
+    --status-draft-ink: #d8cfc2;
+    --status-draft-line: #3d342a;
+    --status-archived-bg: #2a1f33;
+    --status-archived-ink: #d8b4fe;
+    --status-archived-line: #45325a;
+    --status-info-bg: #13233a;
+    --status-info-ink: #93c5fd;
+    --status-info-line: #1e3a5f;
+    --status-warning-bg: #2a1a0a;
+    --status-warning-ink: #fdba74;
+    --status-warning-line: #5a3a12;
+    --status-danger-bg: #2a1512;
+    --status-danger-ink: #fca5a5;
+    --status-danger-line: #5c2620;
+    --status-success-bg: #17301f;
+    --status-success-ink: #7bd69a;
+    --status-success-line: #24503a;
   }
 }

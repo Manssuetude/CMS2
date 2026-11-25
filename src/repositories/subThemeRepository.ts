@@ -73,4 +73,14 @@ export const subThemeRepository = {
     const { error } = await db.from("sub_themes").delete().eq("id", id);
     if (error) throw error;
   },
+
+  /** Rattache tous les sous-thèmes d'un thème à un autre thème. */
+  async moveSubThemes(fromThemeId: string, toThemeId: string): Promise<void> {
+    const db = getSupabaseAdmin();
+    const { error } = await db
+      .from("sub_themes")
+      .update({ theme_id: toThemeId, updated_at: new Date().toISOString() })
+      .eq("theme_id", fromThemeId);
+    if (error) throw error;
+  },
 };

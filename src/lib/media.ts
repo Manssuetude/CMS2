@@ -48,6 +48,22 @@ export async function createUploadTicket(filename: string, folder = "media") {
   return { path, token: data.token, url: publicUrlData.publicUrl };
 }
 
+// Lecture/suppression d'un fichier déposé via un ticket d'upload (ex. .docx à
+// convertir : envoyé directement au Storage pour contourner la limite de taille
+// de requête des fonctions Vercel, lu ici côté serveur, puis supprimé).
+export async function downloadFromStorage(path: string): Promise<Buffer> {
+  const db = getSupabaseAdmin();
+  const { data, error } = await db.storage.from("manssuetude-media").download(path);
+  if (error || !data) throw error ?? new Error("Fichier introuvable dans le stockage.");
+  return Buffer.from(await data.arrayBuffer());
+}
+
+export async function removeFromStorage(path: string): Promise<void> {
+  const db = getSupabaseAdmin();
+  const { error } = await db.storage.from("manssuetude-media").remove([path]);
+  if (error) logger.warn("media.remove.failed", { path, error: error.message });
+}
+
 export async function uploadToStorage(file: File, folder = "media") {
   validateUpload(file);
   const db = getSupabaseAdmin();

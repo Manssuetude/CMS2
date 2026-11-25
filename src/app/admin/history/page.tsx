@@ -2,6 +2,7 @@ import { ExternalLink } from "lucide-react";
 import { pageRepository } from "@/repositories/pageRepository";
 import { PercaBodyEditor } from "@/components/admin/PercaBodyEditor";
 import { saveHistoryFieldsAction } from "./actions";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 export default async function AdminHistory() {
   const page = await pageRepository.getPage("history");
@@ -80,11 +81,7 @@ export default async function AdminHistory() {
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button type="submit" className="cta" style={{ minWidth: 160 }}>
-            Enregistrer les modifications
-          </button>
-        </div>
+        <AdminFormBar />
       </form>
     </section>
   );

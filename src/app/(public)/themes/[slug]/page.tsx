@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { completeDescription } from "@/utils/seoText";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ThemeDetail } from "@/components/public/ThemeDetail";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
@@ -50,7 +50,8 @@ export async function generateStaticParams() {
 export default async function ThemePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const item = await themeRepository.getTheme(slug);
-  if (!item) notFound();
+  // Thème supprimé (ou adresse inconnue) : retour à la liste des thèmes.
+  if (!item) redirect("/themes");
   const [subThemes, allSubThemes, events, projects] = await Promise.all([
     subThemeRepository.listSubThemesByTheme(item.id),
     subThemeRepository.listSubThemes(),

@@ -1,16 +1,32 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import Link from "next/link";
-import { ExternalLink, FileText, PenLine, X } from "lucide-react";
-import type { Author, Media, Production, SubTheme, Theme } from "@/types/cms";
-import { mediaClientService } from "@/services/mediaClientService";
+import { useActionState, useCallback, useMemo, useRef, useState } from "react";
+import { Eye } from "lucide-react";
+import type { Author, ContentStatus, Media, Production, SubTheme, Theme } from "@/types/cms";
+import { splitIntoParts } from "@/utils/articleParts";
+import { PRODUCTION_TYPE_LABELS, productionTypeLabel } from "@/constants/productionTypes";
+import {
+  checkProductionPublication,
+  publicationBlockedMessage,
+  publicationLegacyMessage,
+} from "@/utils/productionPublication";
 import { CheckboxMultiSelect } from "@/components/admin/CheckboxMultiSelect";
 import { SortableMediaGallery } from "@/components/media/SortableMediaGallery";
+import {
+  ArticleFilesModal,
+  type ArticleFilesMode,
+  type ArticleFilesResult,
+} from "@/components/admin/ArticleFilesModal";
+import { ProductionFilesPanel } from "@/components/admin/ProductionFilesPanel";
+import { ProductionPreviewModal } from "@/components/admin/ProductionPreviewModal";
+import { FormTabPanel, FormTabs } from "@/components/admin/FormTabs";
+import { ThemeTreePicker } from "@/components/admin/ThemeTreePicker";
+import { SeoFields } from "@/components/admin/SeoFields";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
-const TYPES = ["Article", "Note & Synthese", "Etude & Rapport", "Video", "Podcast", "Infographie"];
+const TYPES = Object.keys(PRODUCTION_TYPE_LABELS);
 
 function toSlug(s: string): string {
   return s
@@ -25,387 +41,363 @@ interface Props {
   initialData?: Production;
   action: ActionFn;
   themes?: Theme[];
+  /** Thèmes archivés non proposés (voir themeRepository.listSelectableThemes). */
+  archivedHiddenCount?: number;
   subThemes?: SubTheme[];
   initialSubThemeIds?: string[];
   authors?: Author[];
   initialAuthorIds?: string[];
   mediaItems?: Media[];
   initialResourceIds?: string[];
+  /** Nom du PDF déjà attaché (médiathèque). */
+  initialPdfName?: string | null;
 }
+
+// Texte de l'article : celui enregistré, ou celui d'un Word importé pendant
+// cette visite (envoyé avec le formulaire seulement dans ce cas).
+type WordState = { html: string | null; fileName: string | null; importedAt: string | null; pending: boolean };
+type PdfState = { id: string; fileName: string | null; pending: boolean };
+type PreviewState = { body: string | null; fileId: string | null; partTitles: string[]; canSave: boolean };
 
 export function ProductionForm({
   initialData,
   action,
   themes = [],
+  archivedHiddenCount = 0,
   subThemes = [],
   initialSubThemeIds = [],
   authors = [],
   initialAuthorIds = [],
   mediaItems = [],
   initialResourceIds = [],
+  initialPdfName = null,
 }: Props) {
   const isEdit = !!initialData;
-  const [error, formAction, isPending] = useActionState(action, null);
+  const [error, formAction] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
   const [type, setType] = useState(initialData?.type ?? "");
   const [selectedSubThemes, setSelectedSubThemes] = useState<string[]>(initialSubThemeIds);
   const [selectedAuthors, setSelectedAuthors] = useState<string[]>(initialAuthorIds);
-  const [fileId, setFileId] = useState(initialData?.fileId ?? "");
-  const [fileName, setFileName] = useState<string | null>(initialData?.fileId ? "PDF déjà attaché" : null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<ContentStatus>(initialData?.status ?? "draft");
+  const [word, setWord] = useState<WordState>({
+    html: initialData?.body?.trim() ? initialData.body : null,
+    fileName: initialData?.bodySourceName ?? null,
+    importedAt: initialData?.bodyImportedAt ?? null,
+    pending: false,
+  });
+  const [pdf, setPdf] = useState<PdfState>({
+    id: initialData?.fileId ?? "",
+    fileName: initialPdfName,
+    pending: false,
+  });
+  const [pages, setPages] = useState(initialData?.pages ?? "");
+  const [filesModal, setFilesModal] = useState<ArticleFilesMode | null>(null);
+  const [preview, setPreview] = useState<PreviewState | null>(null);
 
-  async function handlePdfUpload(file: File) {
-    setUploading(true);
-    setUploadError(null);
-    try {
-      const media = await mediaClientService.uploadFile(file);
-      setFileId(media.id);
-      setFileName(media.title);
-    } catch (err) {
-      setUploadError(err instanceof Error ? err.message : "Échec de l'envoi du fichier.");
-    } finally {
-      setUploading(false);
+  const partTitles = useMemo(() => splitIntoParts(word.html).map((part) => part.title), [word.html]);
+  const publication = checkProductionPublication({
+    previousStatus: initialData?.status ?? null,
+    nextStatus: status,
+    files: { hasWord: !!word.html, hasPdf: !!pdf.id },
+  });
+  const blockedMessage = publication.allowed ? null : publicationBlockedMessage(publication.missing);
+  const tabs = [
+    { id: "essentiel", label: "Essentiel" },
+    { id: "fichiers", label: "Fichiers de l'article", issue: publication.missing.length > 0 },
+    { id: "liens", label: "Thèmes et liens" },
+    { id: "referencement", label: "Référencement" },
+  ];
+  const legacyWarning = publication.legacyWarning ? publicationLegacyMessage(publication.missing) : null;
+
+  const closePreview = useCallback(() => setPreview(null), []);
+  const closeFilesModal = useCallback(() => setFilesModal(null), []);
+
+  function openFilesModal(kind: "word" | "pdf") {
+    // Aucun des deux fichiers : on les demande ensemble.
+    setFilesModal(!word.html && !pdf.id ? "both" : kind);
+  }
+
+  function applyFiles(result: ArticleFilesResult) {
+    if (result.word) {
+      setWord({ html: result.word.html, fileName: result.word.fileName, importedAt: null, pending: true });
     }
+    if (result.pdf) {
+      setPdf({ id: result.pdf.id, fileName: result.pdf.name, pending: true });
+      if (result.pdf.pages) setPages(String(result.pdf.pages));
+    }
+    setFilesModal(null);
   }
 
-  const themeTitleById = new Map(themes.map((t) => [t.id, t.title]));
-  const subThemesByTheme = new Map<string, SubTheme[]>();
-  for (const st of subThemes) {
-    const list = subThemesByTheme.get(st.themeId) ?? [];
-    list.push(st);
-    subThemesByTheme.set(st.themeId, list);
+  function previewFiles(result: ArticleFilesResult) {
+    const html = result.word?.html ?? word.html;
+    setPreview({
+      body: result.word ? result.word.html : null,
+      fileId: result.pdf ? result.pdf.id : null,
+      partTitles: splitIntoParts(html).map((part) => part.title),
+      // Fichiers pas encore validés : on ne propose pas d'enregistrer depuis l'aperçu.
+      canSave: false,
+    });
   }
-
-  const publicHref = isEdit ? `/productions/${initialData.slug}` : null;
 
   return (
-    <form action={formAction}>
+    <form action={formAction} ref={formRef}>
       {isEdit && <input type="hidden" name="id" value={initialData.id} />}
       {!isEdit && <input type="hidden" name="slug" value={slug} />}
       <input type="hidden" name="subThemeIds" value={selectedSubThemes.join(",")} />
       <input type="hidden" name="authorIds" value={selectedAuthors.join(",")} />
-      <input type="hidden" name="fileId" value={fileId} />
+      <input type="hidden" name="fileId" value={pdf.id} />
+      {word.pending && (
+        <>
+          <input type="hidden" name="body" value={word.html ?? ""} />
+          <input type="hidden" name="bodySourceName" value={word.fileName ?? ""} />
+        </>
+      )}
 
       {error && <p className="form-error">{error}</p>}
 
-      <div className="content-form">
-        {/* Informations */}
-        <div className="form-section">
-          <p className="form-section-title">Informations générales</p>
+      <FormTabs tabs={tabs}>
+        <FormTabPanel id="essentiel">
+          <div className="content-form">
+            <div className="form-section">
+              <p className="form-section-title">Informations générales</p>
 
-          <div className="form-field">
-            <label className="field-label" htmlFor="title">
-              Titre *
-            </label>
-            <input
-              id="title"
-              type="text"
-              name="title"
-              defaultValue={initialData?.title}
-              required
-              placeholder="Ex. : Industrialisation en CEMAC : où en sommes-nous ?"
-              onChange={(e) => {
-                if (!isEdit) setSlug(toSlug(e.target.value));
-              }}
-            />
-          </div>
+              <div className="form-field">
+                <label className="field-label" htmlFor="title">
+                  Titre *
+                </label>
+                <input
+                  id="title"
+                  type="text"
+                  name="title"
+                  defaultValue={initialData?.title}
+                  required
+                  placeholder="Ex. : Industrialisation en CEMAC : où en sommes-nous ?"
+                  onChange={(e) => {
+                    if (!isEdit) setSlug(toSlug(e.target.value));
+                  }}
+                />
+              </div>
 
-          <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="type">
-                Type *
-              </label>
-              <select id="type" name="type" value={type} onChange={(e) => setType(e.target.value)} required>
-                <option value="" disabled>
-                  Choisir un type...
-                </option>
-                {TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-field">
-              <label className="field-label" htmlFor="author">
-                Auteur
-              </label>
-              <input
-                id="author"
-                type="text"
-                name="author"
-                defaultValue={initialData?.author ?? ""}
-                placeholder="Nom de l'auteur ou de l'équipe"
-              />
-            </div>
-          </div>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="field-label" htmlFor="type">
+                    Type *
+                  </label>
+                  <select id="type" name="type" value={type} onChange={(e) => setType(e.target.value)} required>
+                    <option value="" disabled>
+                      Choisir un type...
+                    </option>
+                    {TYPES.map((t) => (
+                      <option key={t} value={t}>
+                        {productionTypeLabel(t)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-field">
+                  <label className="field-label" htmlFor="author">
+                    Auteur
+                  </label>
+                  <input
+                    id="author"
+                    type="text"
+                    name="author"
+                    defaultValue={initialData?.author ?? ""}
+                    placeholder="Nom de l'auteur ou de l'équipe"
+                  />
+                </div>
+              </div>
 
-          {(type === "Video" || type === "Podcast") && (
-            <div className="form-field">
-              <label className="field-label" htmlFor="videoUrl">
-                {type === "Video" ? "URL vidéo (YouTube ou Vimeo)" : "URL audio (fichier .mp3 ou lien YouTube/Vimeo)"}
-              </label>
-              <input
-                id="videoUrl"
-                type="url"
-                name="videoUrl"
-                defaultValue={initialData?.videoUrl ?? ""}
-                placeholder={type === "Video" ? "https://www.youtube.com/watch?v=..." : "https://.../episode.mp3"}
-              />
-            </div>
-          )}
+              {(type === "Video" || type === "Podcast") && (
+                <div className="form-field">
+                  <label className="field-label" htmlFor="videoUrl">
+                    {type === "Video"
+                      ? "URL vidéo (YouTube ou Vimeo)"
+                      : "URL audio (fichier .mp3 ou lien YouTube/Vimeo)"}
+                  </label>
+                  <input
+                    id="videoUrl"
+                    type="url"
+                    name="videoUrl"
+                    defaultValue={initialData?.videoUrl ?? ""}
+                    placeholder={type === "Video" ? "https://www.youtube.com/watch?v=..." : "https://.../episode.mp3"}
+                  />
+                </div>
+              )}
 
-          <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="date">
-                Date de publication
-              </label>
-              <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
-            </div>
-            <div className="form-field">
-              <label className="field-label" htmlFor="readingTime">
-                {type === "Video" || type === "Podcast" ? "Durée" : "Temps de lecture (optionnel)"}
-              </label>
-              <input
-                id="readingTime"
-                type="text"
-                name="readingTime"
-                defaultValue={initialData?.readingTime ?? ""}
-                placeholder={
-                  type === "Video" || type === "Podcast" ? "Ex. : 12 min" : "Calculé automatiquement si laissé vide"
-                }
-              />
-            </div>
-          </div>
+              <div className="form-row">
+                <div className="form-field">
+                  <label className="field-label" htmlFor="date">
+                    Date de publication
+                  </label>
+                  <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
+                </div>
+                <div className="form-field">
+                  <label className="field-label" htmlFor="readingTime">
+                    {type === "Video" || type === "Podcast" ? "Durée" : "Temps de lecture (optionnel)"}
+                  </label>
+                  <input
+                    id="readingTime"
+                    type="text"
+                    name="readingTime"
+                    defaultValue={initialData?.readingTime ?? ""}
+                    placeholder={
+                      type === "Video" || type === "Podcast" ? "Ex. : 12 min" : "Calculé automatiquement si laissé vide"
+                    }
+                  />
+                </div>
+              </div>
 
-          <div className="form-row">
-            <div className="form-field">
-              <label className="field-label" htmlFor="pages">
-                Nombre de pages
-              </label>
-              <input
-                id="pages"
-                type="text"
-                name="pages"
-                defaultValue={initialData?.pages ?? ""}
-                placeholder="Ex. : 42"
-              />
-            </div>
-            <div className="form-field" style={{ justifyContent: "flex-end" }}>
               <div className="form-checkbox">
                 <input type="checkbox" id="featured" name="featured" defaultChecked={initialData?.featured} />
                 <label htmlFor="featured">Mettre en vedette</label>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Description courte */}
-        <div className="form-section">
-          <p className="form-section-title">Résumé court</p>
-          <div className="form-field">
-            <label className="field-label" htmlFor="description">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              defaultValue={initialData?.description ?? ""}
-              rows={3}
-              placeholder="Description courte pour les listes et les metas SEO..."
-            />
-          </div>
-        </div>
+            <div className="form-section">
+              <p className="form-section-title">Résumé court</p>
+              <div className="form-field">
+                <label className="field-label" htmlFor="description">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  defaultValue={initialData?.description ?? ""}
+                  rows={3}
+                  placeholder="Description courte pour les listes et les metas SEO..."
+                />
+              </div>
+            </div>
 
-        {/* Corps du document */}
-        <div className="form-section">
-          <p className="form-section-title">Contenu principal</p>
-          {isEdit ? (
-            <>
-              <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-                S&apos;édite dans un onglet dédié, avec le même rendu que sur le site public.
-              </p>
-              <button
-                type="button"
-                className="button"
-                style={{ width: "fit-content" }}
-                onClick={() =>
-                  window.open(`/admin/productions/${initialData.id}/edit/contenu`, "_blank", "noopener,noreferrer")
-                }
-              >
-                <PenLine size={15} strokeWidth={1.75} />
-                Modifier le contenu principal
-              </button>
-            </>
-          ) : (
-            <p style={{ margin: 0, fontSize: 12, color: "var(--muted)" }}>
-              Disponible après le premier enregistrement de la production.
-            </p>
-          )}
-        </div>
-
-        {/* Relations sous-thèmes */}
-        {subThemes.length > 0 && (
-          <div className="form-section">
-            <p className="form-section-title">Sous-thèmes</p>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              Cochez les sujets traités par cette production.
-            </p>
-            {[...subThemesByTheme.entries()].map(([themeId, items]) => (
-              <div key={themeId} style={{ marginBottom: 14 }}>
-                <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 600, color: "var(--ink)" }}>
-                  {themeTitleById.get(themeId) ?? "Thème"}
+            {/* Relations auteurs */}
+            {authors.length > 0 && (
+              <div className="form-section">
+                <p className="form-section-title">Fiches auteur</p>
+                <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+                  En complément (ou au lieu) du champ « Auteur » en texte libre ci-dessus.
                 </p>
                 <CheckboxMultiSelect
-                  idPrefix="subtheme"
-                  items={items.map((st) => ({ id: st.id, label: st.title }))}
-                  selected={selectedSubThemes}
-                  onChange={setSelectedSubThemes}
+                  idPrefix="author"
+                  items={authors.map((a) => ({ id: a.id, label: a.name }))}
+                  selected={selectedAuthors}
+                  onChange={setSelectedAuthors}
                 />
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* Relations auteurs */}
-        {authors.length > 0 && (
-          <div className="form-section">
-            <p className="form-section-title">Fiches auteur</p>
-            <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-              En complément (ou au lieu) du champ « Auteur » en texte libre ci-dessus.
-            </p>
-            <CheckboxMultiSelect
-              idPrefix="author"
-              items={authors.map((a) => ({ id: a.id, label: a.name }))}
-              selected={selectedAuthors}
-              onChange={setSelectedAuthors}
-            />
-          </div>
-        )}
-
-        {/* Ressources / références */}
-        <div className="form-section">
-          <p className="form-section-title">Ressources / références liées</p>
-          <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
-            Documents ou médias de la médiathèque cités par cette production.
-          </p>
-          <SortableMediaGallery
-            name="resourceIds"
-            initialMedia={mediaItems}
-            initialSelectedIds={initialResourceIds}
-            buttonLabel="Ajouter des ressources"
-          />
-        </div>
-
-        {/* PDF joint */}
-        <div className="form-section">
-          <p className="form-section-title">Document PDF</p>
-          <div className="form-field">
-            <label className="field-label">Fichier</label>
-            {fileName ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--ink)" }}>
-                  <FileText size={15} strokeWidth={1.75} />
-                  {fileName}
-                </span>
-                <button
-                  type="button"
-                  className="btn-sm"
-                  onClick={() => {
-                    setFileId("");
-                    setFileName(null);
-                  }}
-                >
-                  <X size={13} strokeWidth={2} />
-                  Retirer
-                </button>
-              </div>
-            ) : (
-              <label className="button" style={{ width: "fit-content" }}>
-                {uploading ? "Import en cours..." : "Importer un PDF"}
-                <input
-                  hidden
-                  type="file"
-                  accept="application/pdf"
-                  disabled={uploading}
-                  onChange={(e) => e.target.files?.[0] && handlePdfUpload(e.target.files[0])}
-                />
-              </label>
             )}
-            {uploadError && <p className="form-error">{uploadError}</p>}
           </div>
-          <div className="form-field">
-            <label className="field-label" htmlFor="downloadLabel">
-              Libellé du bouton de téléchargement
-            </label>
-            <input
-              id="downloadLabel"
-              name="downloadLabel"
-              defaultValue={initialData?.downloadLabel ?? ""}
-              placeholder="Ex. : Télécharger le rapport complet (PDF)"
+        </FormTabPanel>
+
+        <FormTabPanel id="fichiers">
+          <div className="form-section">
+            <ProductionFilesPanel
+              word={{
+                present: !!word.html,
+                fileName: word.fileName,
+                importedAt: word.importedAt,
+                pending: word.pending,
+              }}
+              pdf={{ present: !!pdf.id, fileName: pdf.fileName, pending: pdf.pending }}
+              partTitles={partTitles}
+              pages={pages}
+              onPagesChange={setPages}
+              downloadLabel={initialData?.downloadLabel}
+              legacyWarning={legacyWarning}
+              onReplace={openFilesModal}
+              onPreview={() => setPreview({ body: null, fileId: null, partTitles, canSave: true })}
             />
           </div>
-        </div>
+        </FormTabPanel>
 
-        {/* SEO */}
-        <div className="form-section">
-          <p className="form-section-title">SEO</p>
-          <div className="form-field">
-            <label className="field-label" htmlFor="seoTitle">
-              Titre SEO (onglet navigateur)
-            </label>
-            <input
-              id="seoTitle"
-              name="seoTitle"
-              defaultValue={initialData?.seoTitle ?? ""}
-              placeholder={initialData?.title}
-            />
+        <FormTabPanel id="liens">
+          <div className="content-form">
+            <div className="form-section">
+              <ThemeTreePicker
+                themes={themes}
+                subThemes={subThemes}
+                archivedHiddenCount={archivedHiddenCount}
+                selectedSubThemeIds={selectedSubThemes}
+                onSubThemesChange={setSelectedSubThemes}
+              />
+            </div>
+            <div className="form-section">
+              <p className="form-section-title">Ressources / références liées</p>
+              <p style={{ margin: "0 0 10px", fontSize: 12, color: "var(--muted)" }}>
+                Documents ou médias de la médiathèque cités par cette production.
+              </p>
+              <SortableMediaGallery
+                name="resourceIds"
+                initialMedia={mediaItems}
+                initialSelectedIds={initialResourceIds}
+                buttonLabel="Ajouter des ressources"
+              />
+            </div>
           </div>
-          <div className="form-field">
-            <label className="field-label" htmlFor="seoDescription">
-              Description SEO
-            </label>
-            <textarea
-              id="seoDescription"
-              name="seoDescription"
-              defaultValue={initialData?.seoDescription ?? ""}
-              rows={3}
-              placeholder={initialData?.description ?? ""}
-            />
-          </div>
-        </div>
+        </FormTabPanel>
 
-        {/* Publication */}
-        <div className="form-section">
-          <p className="form-section-title">Publication</p>
-          <div className="form-field" style={{ maxWidth: 280 }}>
-            <label className="field-label" htmlFor="status">
-              Statut
-            </label>
-            <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
-              <option value="draft">Brouillon</option>
-              <option value="published">Publié</option>
-              <option value="archived">Archivé</option>
-            </select>
+        <FormTabPanel id="referencement">
+          <div className="content-form">
+            <div className="form-section">
+              <SeoFields
+                defaultTitle={initialData?.seoTitle}
+                defaultDescription={initialData?.seoDescription}
+                fallbackTitle={initialData?.title}
+                fallbackDescription={initialData?.description}
+                path={initialData ? `/productions/${initialData.slug}` : null}
+              />
+            </div>
           </div>
-        </div>
+        </FormTabPanel>
+      </FormTabs>
 
-        <div className="form-actions">
-          {publicHref && (
-            <a href={publicHref} target="_blank" rel="noopener noreferrer" className="btn-preview">
-              <ExternalLink size={14} strokeWidth={1.75} />
-              Voir sur le site
-            </a>
-          )}
-          <Link href="/admin/productions" className="button">
-            Annuler
-          </Link>
-          <button type="submit" className="button primary" disabled={isPending}>
-            {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer la production"}
+      <AdminFormBar
+        status={{ value: status, onChange: setStatus }}
+        blockedMessage={blockedMessage}
+        error={error}
+        isNew={!isEdit}
+        submitLabel={isEdit ? "Enregistrer" : "Créer la production"}
+        actions={
+          <button
+            type="button"
+            className="button"
+            disabled={partTitles.length === 0}
+            title={partTitles.length === 0 ? "Importez le Word pour voir l'aperçu" : undefined}
+            onClick={() => setPreview({ body: null, fileId: null, partTitles, canSave: true })}
+          >
+            <Eye size={15} strokeWidth={1.75} aria-hidden="true" />
+            Aperçu
           </button>
-        </div>
-      </div>
+        }
+      />
+
+      {filesModal && (
+        <ArticleFilesModal
+          mode={filesModal}
+          productionId={initialData?.id}
+          onClose={closeFilesModal}
+          onValidate={applyFiles}
+          onPreview={previewFiles}
+        />
+      )}
+      {preview && (
+        <ProductionPreviewModal
+          formRef={formRef}
+          partTitles={preview.partTitles}
+          body={preview.body}
+          fileId={preview.fileId}
+          onClose={closePreview}
+          onSave={
+            preview.canSave
+              ? () => {
+                  setPreview(null);
+                  formRef.current?.requestSubmit();
+                }
+              : undefined
+          }
+          saveDisabled={!!blockedMessage}
+        />
+      )}
     </form>
   );
 }

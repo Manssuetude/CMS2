@@ -10,6 +10,7 @@ import { JOIN_FALLBACK } from "@/constants/joinPage";
 import type { Media, SlotPhoto } from "@/types/cms";
 import { parseJoinPageContent } from "@/utils/joinPage";
 import { saveJoinPageAction } from "../actions";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 // Éditeur dédié de /nous-rejoindre (comme /admin/homepage) : tous les textes
 // et toutes les photos de la page. Les textes par défaut sont préremplis.
@@ -159,7 +160,7 @@ export default async function EditJoinPage() {
         <Section title="3. Chiffres clés">
           <p className="admin-collapsible-hint" style={{ margin: 0 }}>
             Les chiffres sont communs à l&apos;accueil et à cette page :{" "}
-            <Link href="/admin/homepage" style={{ color: "var(--orange)" }}>
+            <Link href="/admin/homepage" style={{ color: "var(--admin-accent-text)" }}>
               les modifier dans Page d&apos;accueil →
             </Link>
           </p>
@@ -248,11 +249,7 @@ export default async function EditJoinPage() {
           <Text name="seo_description" label="Description SEO" value={page?.seoDescription} textarea />
         </Section>
 
-        <div className="form-actions">
-          <button type="submit" className="button primary">
-            Enregistrer les modifications
-          </button>
-        </div>
+        <AdminFormBar />
       </form>
     </section>
   );

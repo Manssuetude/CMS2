@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useMemo, useState, type FormEvent, type ReactNode } from "react";
-import Link from "next/link";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 import { AlertTriangle, ExternalLink } from "lucide-react";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { HERO_ASPECT } from "@/constants/imageAspects";
@@ -102,7 +102,7 @@ export function AnnouncementForm({
 }) {
   const a = initialData;
   const isEdit = Boolean(a);
-  const [serverError, formAction, isPending] = useActionState(action, null);
+  const [serverError, formAction] = useActionState(action, null);
   const [clientError, setClientError] = useState<string | null>(null);
   const [enabled, setEnabled] = useState(a?.enabled ?? false);
   const [startsAt, setStartsAt] = useState(isoToParisLocal(a?.startsAt));
@@ -380,11 +380,22 @@ export function AnnouncementForm({
             hint="Vide = sous-titre de l'annonce."
           />
         </Section>
+      </div>
 
-        <div className="form-actions">
-          {a ? (
+      <AdminFormBar
+        error={error}
+        isNew={!isEdit}
+        submitLabel={isEdit ? "Enregistrer" : "Créer l'annonce"}
+        actions={
+          a ? (
             <>
-              <a className="button" href={`/?apercu-annonce=${a.id}`} target="_blank" rel="noopener noreferrer">
+              <a
+                className="button"
+                href={`/?apercu-annonce=${a.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Aperçu de la dernière version enregistrée"
+              >
                 <ExternalLink size={14} strokeWidth={2} aria-hidden="true" /> Aperçu de l&apos;accueil
               </a>
               <a
@@ -392,24 +403,14 @@ export function AnnouncementForm({
                 href={`/nous-rejoindre?apercu-annonce=${a.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Aperçu de la dernière version enregistrée"
               >
                 <ExternalLink size={14} strokeWidth={2} aria-hidden="true" /> Aperçu de Nous rejoindre
               </a>
             </>
-          ) : null}
-          <Link href="/admin/annonces" className="button">
-            Annuler
-          </Link>
-          <button type="submit" className="button primary" disabled={isPending}>
-            {isPending ? "Enregistrement..." : isEdit ? "Enregistrer" : "Créer l'annonce"}
-          </button>
-        </div>
-        {a ? (
-          <p className="field-hint" style={{ textAlign: "right" }}>
-            L&apos;aperçu montre la dernière version enregistrée.
-          </p>
-        ) : null}
-      </div>
+          ) : null
+        }
+      />
     </form>
   );
 }

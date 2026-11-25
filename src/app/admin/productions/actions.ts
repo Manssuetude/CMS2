@@ -2,11 +2,58 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import { productionRepository } from "@/repositories/productionRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { logAction } from "@/lib/audit";
+import { requirePermission } from "@/lib/auth";
+import { duplicateProduction } from "@/services/duplicationService";
 import { slugify } from "@/utils/slug";
+import { partPath, splitIntoParts } from "@/utils/articleParts";
+import type { ContentStatus, Production } from "@/types/cms";
+import {
+  checkProductionPublication,
+  publicationBlockedMessage,
+  type ProductionFilesState,
+} from "@/utils/productionPublication";
+import {
+  importedBodyFromForm,
+  parseIdList,
+  productionFormSchema,
+  readProductionForm,
+  toProductionColumns,
+} from "./productionForm";
+
+// Pages publiques d'une production : l'article (partie 1) et chacune de ses
+// parties. "layout" couvre aussi les anciennes URL de parties renommées (elles
+// se mettent alors à rediriger vers la partie 1).
+function revalidateProductionPages(production: Pick<Production, "slug" | "body">) {
+  const basePath = `/productions/${production.slug}`;
+  revalidatePath(basePath, "layout");
+  const parts = splitIntoParts(production.body);
+  parts.forEach((_, index) => revalidatePath(partPath(basePath, parts, index)));
+  revalidatePath("/productions");
+}
+
+// Colonnes du texte importé depuis le Word (uniquement après un import).
+function bodyColumns(imported: ReturnType<typeof importedBodyFromForm>) {
+  if (!imported) return {};
+  return {
+    body: imported.body,
+    body_source_name: imported.body ? imported.sourceName : null,
+    body_imported_at: imported.body ? new Date().toISOString() : null,
+  };
+}
+
+// Refus côté serveur d'un passage en « Publié » sans Word ni PDF (l'interface
+// le bloque déjà, mais elle peut être contournée).
+function publicationError(
+  previousStatus: ContentStatus | null,
+  nextStatus: ContentStatus,
+  files: ProductionFilesState,
+) {
+  const check = checkProductionPublication({ previousStatus, nextStatus, files });
+  return check.allowed ? null : `${publicationBlockedMessage(check.missing)}.`;
+}
 
 export async function toggleProductionFeaturedAction(formData: FormData): Promise<void> {
   const id = (formData.get("id") as string | null)?.trim();
@@ -23,78 +70,31 @@ export async function toggleProductionFeaturedAction(formData: FormData): Promis
   revalidatePath("/");
 }
 
-const schema = z.object({
-  title: z.string().min(1, "Le titre est requis."),
-  type: z.string().min(1, "Le type est requis."),
-  status: z.enum(["draft", "published", "archived"]).default("draft"),
-  author: z.string().optional().nullable(),
-  date: z.string().optional().nullable(),
-  readingTime: z.string().optional().nullable(),
-  pages: z.string().optional().nullable(),
-  featured: z.boolean().default(false),
-  description: z.string().optional().nullable(),
-  fileId: z.string().optional().nullable(),
-  downloadLabel: z.string().optional().nullable(),
-  videoUrl: z.string().optional().nullable(),
-  seoTitle: z.string().optional().nullable(),
-  seoDescription: z.string().optional().nullable(),
-});
-
-function toInput(data: z.infer<typeof schema>) {
-  return {
-    title: data.title,
-    type: data.type,
-    status: data.status,
-    author: data.author || null,
-    date: data.date || null,
-    reading_time: data.readingTime || null,
-    pages: data.pages || null,
-    featured: data.featured,
-    description: data.description || null,
-    file_id: data.fileId || null,
-    download_label: data.downloadLabel || null,
-    video_url: data.videoUrl || null,
-    seo_title: data.seoTitle || null,
-    seo_description: data.seoDescription || null,
-  };
-}
-
-function parseIdList(formData: FormData, field: string): string[] {
-  return ((formData.get(field) as string | null) ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
-
 export async function createProductionAction(_: string | null, formData: FormData): Promise<string | null> {
-  const parsed = schema.safeParse({
-    title: formData.get("title"),
-    type: formData.get("type"),
-    status: formData.get("status") || "draft",
-    author: formData.get("author") || null,
-    date: formData.get("date") || null,
-    readingTime: formData.get("readingTime") || null,
-    pages: formData.get("pages") || null,
-    featured: formData.get("featured") === "on",
-    description: formData.get("description") || null,
-    fileId: formData.get("fileId") || null,
-    downloadLabel: formData.get("downloadLabel") || null,
-    videoUrl: formData.get("videoUrl") || null,
-    seoTitle: formData.get("seoTitle") || null,
-    seoDescription: formData.get("seoDescription") || null,
-  });
+  const parsed = productionFormSchema.safeParse(readProductionForm(formData));
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
+
+  const imported = importedBodyFromForm(formData);
+  const blocked = publicationError(null, parsed.data.status, {
+    hasWord: !!imported?.body,
+    hasPdf: !!parsed.data.fileId,
+  });
+  if (blocked) return blocked;
 
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
 
   let production;
   try {
-    production = await productionRepository.createProduction({ slug, ...toInput(parsed.data) });
+    production = await productionRepository.createProduction({
+      slug,
+      ...toProductionColumns(parsed.data),
+      ...bodyColumns(imported),
+    });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   const subThemeIds = parseIdList(formData, "subThemeIds");
@@ -116,45 +116,43 @@ export async function createProductionAction(_: string | null, formData: FormDat
     summary: `Production créée : ${parsed.data.title}`,
   });
   revalidatePath("/admin/productions");
-  redirect("/admin/productions");
+  revalidateProductionPages(production);
+  redirect("/admin/productions?saved=1");
 }
 
 export async function updateProductionAction(_: string | null, formData: FormData): Promise<string | null> {
   const id = (formData.get("id") as string | null)?.trim();
   if (!id) return "Identifiant manquant.";
 
-  const parsed = schema.safeParse({
-    title: formData.get("title"),
-    type: formData.get("type"),
-    status: formData.get("status") || "draft",
-    author: formData.get("author") || null,
-    date: formData.get("date") || null,
-    readingTime: formData.get("readingTime") || null,
-    pages: formData.get("pages") || null,
-    featured: formData.get("featured") === "on",
-    description: formData.get("description") || null,
-    fileId: formData.get("fileId") || null,
-    downloadLabel: formData.get("downloadLabel") || null,
-    videoUrl: formData.get("videoUrl") || null,
-    seoTitle: formData.get("seoTitle") || null,
-    seoDescription: formData.get("seoDescription") || null,
-  });
+  const parsed = productionFormSchema.safeParse(readProductionForm(formData));
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
+  const current = await productionRepository.getProductionById(id);
+  if (!current) return "Production introuvable.";
+  const imported = importedBodyFromForm(formData);
+  const blocked = publicationError(current.status, parsed.data.status, {
+    hasWord: imported ? !!imported.body : !!current.body?.trim(),
+    hasPdf: !!parsed.data.fileId,
+  });
+  if (blocked) return blocked;
+
+  let updated: Production;
   try {
     // Le lien (slug) suit le titre tant que le contenu est encore en
-    // brouillon (jamais publié) — évite qu'un titre provisoire (ex. "aaaa")
+    // brouillon (jamais publié) : évite qu'un titre provisoire (ex. "aaaa")
     // reste figé dans l'URL. Se fige dès la première publication, pour ne
     // jamais casser un lien déjà partagé/indexé.
-    const current = await productionRepository.getProductionById(id);
-    const input = toInput(parsed.data);
-    const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
-    await productionRepository.updateProduction(id, { ...input, ...slugSync });
+    const slugSync = current.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
+    updated = await productionRepository.updateProduction(id, {
+      ...toProductionColumns(parsed.data),
+      ...slugSync,
+      ...bodyColumns(imported),
+    });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   await productionRepository.setProductionSubThemes(id, parseIdList(formData, "subThemeIds"));
@@ -167,24 +165,8 @@ export async function updateProductionAction(_: string | null, formData: FormDat
     summary: `Production modifiée : ${parsed.data.title}`,
   });
   revalidatePath("/admin/productions");
-  redirect("/admin/productions");
-}
-
-export async function updateProductionBodyAction(_: string | null, formData: FormData): Promise<string | null> {
-  const id = (formData.get("id") as string | null)?.trim();
-  if (!id) return "Identifiant manquant.";
-  const body = (formData.get("body") as string | null) ?? "";
-
-  try {
-    await productionRepository.updateProduction(id, { body: body || null });
-  } catch {
-    return "Erreur lors de la sauvegarde. Veuillez réessayer.";
-  }
-
-  await logAction("update", { entityType: "production", entityId: id, summary: "Contenu de la production modifié" });
-  revalidatePath("/admin/productions");
-  revalidatePath(`/admin/productions/${id}/edit`);
-  return null;
+  revalidateProductionPages(updated);
+  redirect("/admin/productions?saved=1");
 }
 
 export async function deleteProductionAction(formData: FormData): Promise<void> {
@@ -199,6 +181,31 @@ export async function toggleProductionStatusAction(formData: FormData): Promise<
   const id = (formData.get("id") as string | null)?.trim();
   const status = (formData.get("status") as string | null)?.trim();
   if (!id || !status) return;
+  // Bascule vers « Publié » : même règle que la fiche (Word et PDF requis).
+  if (status !== "published") {
+    const current = await productionRepository.getProductionById(id);
+    if (!current) return;
+    const blocked = publicationError(current.status, "published", {
+      hasWord: !!current.body?.trim(),
+      hasPdf: !!current.fileId,
+    });
+    if (blocked) return;
+  }
   await productionRepository.toggleStatus(id, status);
   revalidatePath("/admin/productions");
+}
+
+// « Dupliquer » : copie en brouillon, puis ouverture de la copie.
+export async function duplicateProductionAction(formData: FormData): Promise<void> {
+  await requirePermission("productions:create");
+  const id = (formData.get("id") as string | null)?.trim();
+  const copy = id ? await duplicateProduction(id) : null;
+  if (!copy) redirect("/admin/productions");
+  await logAction("create", {
+    entityType: "production",
+    entityId: copy.id,
+    summary: `Production dupliquée : ${copy.title}`,
+  });
+  revalidatePath("/admin/productions");
+  redirect(`/admin/productions/${copy.id}/edit?saved=1`);
 }

@@ -126,7 +126,7 @@ export function ImportWizard() {
                 <option value="private">Privé</option>
               </select>
             </label>
-            {error && <p style={{ color: "var(--error, #b91c1c)", margin: 0 }}>{error}</p>}
+            {error && <p style={{ color: "var(--status-danger-ink)", margin: 0 }}>{error}</p>}
             <button className="button primary" type="submit" disabled={loading}>
               {loading ? "Import en cours…" : "Importer dans la médiathèque"}
             </button>
@@ -154,7 +154,7 @@ export function ImportWizard() {
                 <option value="private">Privé</option>
               </select>
             </label>
-            {error && <p style={{ color: "var(--error, #b91c1c)", margin: 0 }}>{error}</p>}
+            {error && <p style={{ color: "var(--status-danger-ink)", margin: 0 }}>{error}</p>}
             <button className="button primary" type="submit" disabled={loading}>
               {loading ? "Import en cours…" : "Ajouter la vidéo"}
             </button>
@@ -182,7 +182,7 @@ export function ImportWizard() {
                 <option value="private">Privé</option>
               </select>
             </label>
-            {error && <p style={{ color: "var(--error, #b91c1c)", margin: 0 }}>{error}</p>}
+            {error && <p style={{ color: "var(--status-danger-ink)", margin: 0 }}>{error}</p>}
             <button className="button primary" type="submit" disabled={loading}>
               {loading ? "Enregistrement…" : "Ajouter le lien"}
             </button>

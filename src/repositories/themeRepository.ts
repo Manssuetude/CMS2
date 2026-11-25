@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from "@/lib/db";
 import type { ContentStatus, ProgressStatus, Theme } from "@/types/cms";
+import { selectableThemes, type SelectableThemes } from "@/utils/themePicker";
 import { asBoolean, asNullableString, asString, asStringArray, type DataRow } from "@/utils/row";
 
 function mapTheme(row: DataRow): Theme {
@@ -33,6 +34,14 @@ export const themeRepository = {
     return data.map(mapTheme);
   },
 
+  /**
+   * Thèmes proposés dans les sélecteurs de l'admin : sans les thèmes archivés,
+   * sauf ceux de `attachedIds` (déjà rattachés au contenu édité).
+   */
+  async listSelectableThemes(attachedIds: string[] = []): Promise<SelectableThemes> {
+    return selectableThemes(await themeRepository.listThemes(true), attachedIds);
+  },
+
   async getTheme(slug: string): Promise<Theme | null> {
     const themes = await themeRepository.listThemes(true);
     return themes.find((t) => t.slug === slug) ?? null;
@@ -62,5 +71,26 @@ export const themeRepository = {
       .single();
     if (error) throw error;
     return mapTheme(data as DataRow);
+  },
+
+  async deleteTheme(id: string): Promise<void> {
+    const db = getSupabaseAdmin();
+    const { error } = await db.from("themes").delete().eq("id", id);
+    if (error) throw error;
+  },
+
+  /** Nombre d'événements et de projets reliés à chaque thème. */
+  async listThemeLinkCounts(): Promise<Record<string, { events: number; projects: number }>> {
+    const db = getSupabaseAdmin();
+    const [events, projects] = await Promise.all([
+      db.from("theme_events").select("theme_id"),
+      db.from("theme_projects").select("theme_id"),
+    ]);
+    if (events.error) throw events.error;
+    if (projects.error) throw projects.error;
+    const counts: Record<string, { events: number; projects: number }> = {};
+    for (const row of events.data ?? []) (counts[String(row.theme_id)] ??= { events: 0, projects: 0 }).events += 1;
+    for (const row of projects.data ?? []) (counts[String(row.theme_id)] ??= { events: 0, projects: 0 }).projects += 1;
+    return counts;
   },
 };

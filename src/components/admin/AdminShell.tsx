@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AdminSidebar } from "./AdminSidebar";
+import { AdminSidebar, type AdminNavBadges } from "./AdminSidebar";
 import { AdminTopbar } from "./AdminTopbar";
 import { OnboardingTour } from "./OnboardingTour";
 import { AdminToaster } from "./AdminToaster";
@@ -10,10 +10,14 @@ export function AdminShell({
   children,
   isAdmin = false,
   permissions = [],
+  badges,
+  emptySections,
 }: {
   children: React.ReactNode;
   isAdmin?: boolean;
   permissions?: string[];
+  badges?: AdminNavBadges;
+  emptySections?: { journal: boolean; dossiers: boolean };
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -37,7 +41,14 @@ export function AdminShell({
 
   return (
     <div className={`admin-shell${collapsed ? " sidebar-collapsed" : ""}`}>
-      <AdminSidebar collapsed={collapsed} onToggle={toggle} isAdmin={isAdmin} permissions={permissions} />
+      <AdminSidebar
+        collapsed={collapsed}
+        onToggle={toggle}
+        isAdmin={isAdmin}
+        permissions={permissions}
+        badges={badges}
+        emptySections={emptySections}
+      />
       <div className="admin-main">
         <AdminTopbar />
         <main className="admin-content">{children}</main>

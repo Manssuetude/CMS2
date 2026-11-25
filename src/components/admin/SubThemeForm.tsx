@@ -1,8 +1,9 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import Link from "next/link";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 import type { SubTheme, Theme } from "@/types/cms";
+import { themeOptionLabel } from "@/utils/themePicker";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -23,7 +24,7 @@ interface Props {
 
 export function SubThemeForm({ initialData, action, themes }: Props) {
   const isEdit = !!initialData;
-  const [error, formAction, isPending] = useActionState(action, null);
+  const [error, formAction] = useActionState(action, null);
   const [slug, setSlug] = useState(initialData?.slug ?? "");
 
   return (
@@ -40,14 +41,14 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
           {isEdit ? (
             <div className="form-field">
               <label className="field-label" htmlFor="title">
-                Titre <span style={{ color: "var(--orange)" }}>*</span>
+                Titre <span style={{ color: "var(--admin-accent-text)" }}>*</span>
               </label>
               <input id="title" name="title" required defaultValue={initialData.title} />
             </div>
           ) : (
             <div className="form-field">
               <label className="field-label" htmlFor="title">
-                Titre <span style={{ color: "var(--orange)" }}>*</span>
+                Titre <span style={{ color: "var(--admin-accent-text)" }}>*</span>
               </label>
               <input
                 id="title"
@@ -61,7 +62,7 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
 
           <div className="form-field">
             <label className="field-label" htmlFor="themeId">
-              Thème parent <span style={{ color: "var(--orange)" }}>*</span>
+              Thème parent <span style={{ color: "var(--admin-accent-text)" }}>*</span>
             </label>
             <select id="themeId" name="themeId" defaultValue={initialData?.themeId ?? ""} required>
               <option value="" disabled>
@@ -69,7 +70,7 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
               </option>
               {themes.map((t) => (
                 <option key={t.id} value={t.id}>
-                  {t.title}
+                  {themeOptionLabel(t)}
                 </option>
               ))}
             </select>
@@ -112,30 +113,14 @@ export function SubThemeForm({ initialData, action, themes }: Props) {
             <input id="date" type="date" name="date" defaultValue={initialData?.date?.slice(0, 10) ?? ""} />
           </div>
         </div>
-
-        <div className="form-section">
-          <p className="form-section-title">Publication</p>
-          <div className="form-field" style={{ maxWidth: 280 }}>
-            <label className="field-label" htmlFor="status">
-              Statut
-            </label>
-            <select id="status" name="status" defaultValue={initialData?.status ?? "draft"}>
-              <option value="draft">Brouillon</option>
-              <option value="published">Publié</option>
-              <option value="archived">Archivé</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="form-actions">
-          <Link href="/admin/sousthemes" className="button">
-            Annuler
-          </Link>
-          <button type="submit" className="button primary" disabled={isPending}>
-            {isPending ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Créer le sous-thème"}
-          </button>
-        </div>
       </div>
+
+      <AdminFormBar
+        status={{ defaultValue: initialData?.status ?? "draft" }}
+        error={error}
+        isNew={!isEdit}
+        submitLabel={isEdit ? "Enregistrer" : "Créer le sous-thème"}
+      />
     </form>
   );
 }

@@ -1,21 +1,19 @@
 "use server";
 
-import type { ReactNode } from "react";
 import { requirePermission } from "@/lib/auth";
 import { eventRepository } from "@/repositories/eventRepository";
 import { buildEventPageProps } from "@/services/eventPageService";
 import { EvenementDetail } from "@/components/public/EvenementDetail";
 import type { Event } from "@/types/cms";
+import type { PreviewResult } from "@/constants/preview";
 import { slugify } from "@/utils/slug";
 import { toHeaderStyle } from "@/utils/eventHeader";
 import { eventFormSchema, parseAnimators, parseIdList, readEventForm } from "./eventForm";
 
-export type EventPreviewResult = { ok: true; node: ReactNode } | { ok: false; error: string };
-
 // Aperçu de la page événement avec les valeurs du formulaire, même non
 // enregistrées. Même schéma de validation que l'enregistrement, mêmes
 // composants que la page publique. LECTURE SEULE : aucune écriture en base.
-export async function renderEventPreview(entries: Record<string, string>): Promise<EventPreviewResult> {
+export async function renderEventPreview(entries: Record<string, string>): Promise<PreviewResult> {
   await requirePermission("evenements:edit");
 
   const formData = new FormData();

@@ -23,7 +23,10 @@ function Toaster() {
   if (!visible) return null;
   return (
     <div className="admin-toast" role="status" aria-live="polite">
-      <span className="admin-toast-check">✓</span> Modifications enregistrées
+      <span className="admin-toast-check" aria-hidden="true">
+        ✓
+      </span>{" "}
+      Enregistré
     </div>
   );
 }

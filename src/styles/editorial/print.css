@@ -13,12 +13,21 @@
   .site-shell .hero-aside,
   .site-shell .cta,
   .site-shell .toc,
+  .site-shell .article-parts,
+  .site-shell .article-next,
+  .site-shell .article-pdf-band,
+  .site-shell .article-share,
   .cookie-banner {
     display: none !important;
   }
   .site-shell .detail-body,
+  .site-shell .article-reader,
   .site-shell .hero-copy {
     max-width: 100% !important;
+  }
+  .site-shell .article-reader {
+    display: block !important;
+    padding: 0 !important;
   }
   .site-shell .rich-text {
     font-size: 12pt;

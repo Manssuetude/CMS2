@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Pencil, Plus } from "lucide-react";
 import { themeRepository } from "@/repositories/themeRepository";
+import { subThemeRepository } from "@/repositories/subThemeRepository";
+import { ThemeDeleteButton } from "@/components/admin/ThemeDeleteButton";
+import { archiveThemeAction, deleteThemeAction, reattachSubThemesAction } from "./actions";
 import { AdminListHeader } from "@/components/admin/AdminListHeader";
 import { StatusFilterTabs } from "@/components/admin/StatusFilterTabs";
 import {
@@ -23,9 +26,18 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`badge-status ${cls}`}>{label}</span>;
 }
 
-export default async function AdminThemesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  const { status } = await searchParams;
-  const all = await themeRepository.listThemes(true);
+export default async function AdminThemesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; erreur?: string }>;
+}) {
+  const { status, erreur } = await searchParams;
+  const [all, subThemes, linkCounts] = await Promise.all([
+    themeRepository.listThemes(true),
+    subThemeRepository.listSubThemes(true),
+    themeRepository.listThemeLinkCounts(),
+  ]);
+  const subThemesOf = (themeId: string) => subThemes.filter((st) => st.themeId === themeId);
   const activeStatus = resolveActiveStatus(status);
   const items = activeStatus ? all.filter((i) => i.status === activeStatus) : all;
   const tabs = buildStatusTabs(countByStatus(all), "m");
@@ -47,6 +59,13 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
 
       <StatusFilterTabs basePath="/admin/themes" activeStatus={activeStatus} tabs={tabs} />
 
+      {erreur === "sous-themes" && (
+        <p className="form-error" role="alert" style={{ marginBottom: 16 }}>
+          Suppression refusée : ce thème contient encore des sous-thèmes. Rattachez-les à un autre thème ou archivez le
+          thème.
+        </p>
+      )}
+
       {items.length === 0 ? (
         <div className="admin-empty">
           <strong>Aucun thème{activeStatus ? ` avec le statut « ${STATUS_LABELS[activeStatus]} »` : " en base"}</strong>
@@ -63,6 +82,7 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
           <thead>
             <tr>
               <th>Thème</th>
+              <th>Sous-thèmes</th>
               <th>Statut</th>
               <th>Description</th>
               <th className="col-actions">Actions</th>
@@ -72,6 +92,9 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
             {items.map((item) => (
               <tr key={item.id}>
                 <td className="col-title">{item.title}</td>
+                <td style={{ color: "var(--muted)", fontSize: 13, whiteSpace: "nowrap" }}>
+                  {subThemesOf(item.id).length} sous-thème{subThemesOf(item.id).length > 1 ? "s" : ""}
+                </td>
                 <td>
                   <StatusBadge status={item.status} />
                 </td>
@@ -97,6 +120,18 @@ export default async function AdminThemesPage({ searchParams }: { searchParams: 
                       <Pencil size={13} strokeWidth={2} />
                       Modifier
                     </Link>
+                    <ThemeDeleteButton
+                      theme={{ id: item.id, title: item.title }}
+                      subThemeTitles={subThemesOf(item.id).map((st) => st.title)}
+                      eventCount={linkCounts[item.id]?.events ?? 0}
+                      projectCount={linkCounts[item.id]?.projects ?? 0}
+                      otherThemes={all
+                        .filter((t) => t.id !== item.id && t.status !== "archived")
+                        .map((t) => ({ id: t.id, title: t.title }))}
+                      deleteAction={deleteThemeAction}
+                      archiveAction={archiveThemeAction}
+                      reattachAction={reattachSubThemesAction}
+                    />
                   </div>
                 </td>
               </tr>

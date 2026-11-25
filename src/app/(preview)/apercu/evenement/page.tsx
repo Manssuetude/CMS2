@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { requirePermission } from "@/lib/auth";
-import { EventPreviewFrame } from "@/components/admin/EventPreviewFrame";
+import { renderEventPreview } from "@/app/admin/evenements/preview";
+import { PagePreviewFrame } from "@/components/admin/PagePreviewFrame";
 import { EvenementDetail } from "@/components/public/EvenementDetail";
 
 // Contenu de l'iframe d'aperçu d'un événement (voir EventPreviewModal) : reçoit
@@ -17,8 +18,8 @@ export const metadata: Metadata = {
 // serveur : ses composants client (image d'en-tête, galerie, partage, icônes)
 // doivent faire partie du manifeste client de CETTE route, sinon React ne sait
 // pas les hydrater (« Could not find the module … in the React Client
-// Manifest »). Les importer ici, via le composant passé au cadre, suffit.
+// Manifest »). Les importer ici, via le nom passé au cadre, suffit.
 export default async function EventPreviewPage() {
   await requirePermission("evenements:edit");
-  return <EventPreviewFrame detailComponent={EvenementDetail.name} />;
+  return <PagePreviewFrame render={renderEventPreview} rendererName={EvenementDetail.name} />;
 }

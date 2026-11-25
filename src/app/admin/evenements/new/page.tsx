@@ -9,8 +9,8 @@ import { mediaRepository } from "@/repositories/mediaRepository";
 import { createEventAction } from "../actions";
 
 export default async function NewEvenementPage() {
-  const [themes, subThemes, projects, activityFormats, authors, images] = await Promise.all([
-    themeRepository.listThemes(true),
+  const [{ themes, archivedHiddenCount }, subThemes, projects, activityFormats, authors, images] = await Promise.all([
+    themeRepository.listSelectableThemes(),
     subThemeRepository.listSubThemes(true),
     projectRepository.listProjects(true),
     activityFormatRepository.listFormats(true),
@@ -32,6 +32,7 @@ export default async function NewEvenementPage() {
       <EvenementForm
         action={createEventAction}
         themes={themes}
+        archivedHiddenCount={archivedHiddenCount}
         subThemes={subThemes}
         projects={projects}
         activityFormats={activityFormats}

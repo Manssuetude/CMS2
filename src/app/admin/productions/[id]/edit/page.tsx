@@ -1,5 +1,3 @@
-import Link from "next/link";
-import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { productionRepository } from "@/repositories/productionRepository";
 import { subThemeRepository } from "@/repositories/subThemeRepository";
@@ -7,7 +5,8 @@ import { themeRepository } from "@/repositories/themeRepository";
 import { authorRepository } from "@/repositories/authorRepository";
 import { mediaRepository } from "@/repositories/mediaRepository";
 import { ProductionForm } from "@/components/admin/ProductionForm";
-import { updateProductionAction } from "../../actions";
+import { AdminFicheHeader } from "@/components/admin/AdminFicheHeader";
+import { duplicateProductionAction, updateProductionAction } from "../../actions";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -15,56 +14,46 @@ interface Props {
 
 export default async function EditProductionPage({ params }: Props) {
   const { id } = await params;
-  const [item, themes, subThemes, authors, media] = await Promise.all([
-    productionRepository.getProductionById(id),
-    themeRepository.listThemes(true),
-    subThemeRepository.listSubThemes(true),
-    authorRepository.listAuthors(),
-    mediaRepository.list(),
-  ]);
+  const [item, subThemes, authors, media, initialSubThemeIds, initialAuthorIds, initialResourceIds] = await Promise.all(
+    [
+      productionRepository.getProductionById(id),
+      subThemeRepository.listSubThemes(true),
+      authorRepository.listAuthors(),
+      mediaRepository.list(),
+      productionRepository.getProductionSubThemeIds(id),
+      authorRepository.getProductionAuthorIds(id),
+      productionRepository.getProductionResourceIds(id),
+    ],
+  );
   if (!item) notFound();
-  const [initialSubThemeIds, initialAuthorIds, initialResourceIds] = await Promise.all([
-    productionRepository.getProductionSubThemeIds(id),
-    authorRepository.getProductionAuthorIds(id),
-    productionRepository.getProductionResourceIds(id),
+  // Thèmes rattachés : ceux des sous-thèmes de la production (gardés même archivés).
+  const attachedThemeIds = subThemes.filter((st) => initialSubThemeIds.includes(st.id)).map((st) => st.themeId);
+  const [{ themes, archivedHiddenCount }, pdf] = await Promise.all([
+    themeRepository.listSelectableThemes(attachedThemeIds),
+    item.fileId ? mediaRepository.getById(item.fileId) : Promise.resolve(null),
   ]);
 
   return (
     <section className="admin-panel">
-      <Link href="/admin/productions" className="admin-back">
-        ← Retour aux productions
-      </Link>
-      <div className="admin-page-header">
-        <div>
-          <h1>Modifier la production</h1>
-          <p>{item.title}</p>
-        </div>
-        <a
-          href={`/productions/${item.slug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="btn-sm"
-          title="Voir la page publique dans un nouvel onglet"
-        >
-          <ExternalLink size={13} strokeWidth={2} />
-          Prévisualiser
-          {item.status !== "published" && (
-            <span className="badge-status badge-draft" style={{ marginLeft: 4 }}>
-              {item.status === "archived" ? "Archivé" : "Brouillon"}
-            </span>
-          )}
-        </a>
-      </div>
+      <AdminFicheHeader
+        section={{ label: "Productions", href: "/admin/productions" }}
+        title={item.title}
+        status={item.status}
+        publicHref={`/productions/${item.slug}`}
+        duplicate={{ action: duplicateProductionAction, id: item.id }}
+      />
       <ProductionForm
         initialData={item}
         action={updateProductionAction}
         themes={themes}
+        archivedHiddenCount={archivedHiddenCount}
         subThemes={subThemes}
         initialSubThemeIds={initialSubThemeIds}
         authors={authors}
         initialAuthorIds={initialAuthorIds}
         mediaItems={media}
         initialResourceIds={initialResourceIds}
+        initialPdfName={pdf ? pdf.filename || pdf.title : null}
       />
     </section>
   );

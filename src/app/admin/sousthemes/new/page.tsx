@@ -4,7 +4,7 @@ import { SubThemeForm } from "@/components/admin/SubThemeForm";
 import { createSubThemeAction } from "../actions";
 
 export default async function NewSubThemePage() {
-  const themes = await themeRepository.listThemes(true);
+  const { themes } = await themeRepository.listSelectableThemes();
 
   return (
     <section className="admin-panel">

@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { ExternalLink } from "lucide-react";
 import type { Event, Author, JournalEntry, Media, Production, Project, Theme } from "@/types/cms";
 import { SingleMediaField } from "@/components/media/SingleMediaField";
+import { themeOptionLabel } from "@/utils/themePicker";
 
 type ActionFn = (prevState: string | null, formData: FormData) => Promise<string | null>;
 
@@ -181,7 +182,7 @@ export function JournalEntryForm({
                 <option value="">Aucun</option>
                 {themes.map((t) => (
                   <option key={t.id} value={t.id}>
-                    {t.title}
+                    {themeOptionLabel(t)}
                   </option>
                 ))}
               </select>

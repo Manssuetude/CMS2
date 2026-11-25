@@ -57,7 +57,7 @@ export async function createProjectAction(_: string | null, formData: FormData):
   });
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
   const slug = (formData.get("slug") as string | null)?.trim() || slugify(parsed.data.title);
@@ -66,7 +66,7 @@ export async function createProjectAction(_: string | null, formData: FormData):
   try {
     project = await projectRepository.createProject({ slug, ...toInput(parsed.data) });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   const themeIds = parseIdList(formData, "themeIds");
@@ -78,7 +78,7 @@ export async function createProjectAction(_: string | null, formData: FormData):
 
   await logAction("create", { entityType: "project", summary: `Projet créé : ${parsed.data.title}` });
   revalidatePath("/admin/projets");
-  redirect("/admin/projets");
+  redirect("/admin/projets?saved=1");
 }
 
 export async function updateProjectAction(_: string | null, formData: FormData): Promise<string | null> {
@@ -99,7 +99,7 @@ export async function updateProjectAction(_: string | null, formData: FormData):
   });
 
   if (!parsed.success) {
-    return parsed.error.errors[0]?.message ?? "Donnees invalides.";
+    return parsed.error.errors[0]?.message ?? "Données invalides.";
   }
 
   try {
@@ -110,7 +110,7 @@ export async function updateProjectAction(_: string | null, formData: FormData):
     const slugSync = current?.status === "draft" ? { slug: slugify(parsed.data.title) } : {};
     await projectRepository.updateProject(id, { ...input, ...slugSync });
   } catch {
-    return "Erreur lors de la sauvegarde. Veuillez reessayer.";
+    return "Erreur lors de l'enregistrement. Veuillez réessayer.";
   }
 
   await projectRepository.setProjectThemes(id, parseIdList(formData, "themeIds"));
@@ -119,7 +119,7 @@ export async function updateProjectAction(_: string | null, formData: FormData):
 
   await logAction("update", { entityType: "project", entityId: id, summary: `Projet modifié : ${parsed.data.title}` });
   revalidatePath("/admin/projets");
-  redirect("/admin/projets");
+  redirect("/admin/projets?saved=1");
 }
 
 export async function deleteProjectAction(formData: FormData): Promise<void> {

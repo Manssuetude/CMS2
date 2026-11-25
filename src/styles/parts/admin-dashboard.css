@@ -38,24 +38,24 @@
   flex-shrink: 0;
 }
 .metric-icon.green {
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--status-success-bg);
+  color: var(--status-success-ink);
 }
 .metric-icon.blue {
-  background: #dbeafe;
-  color: #2563eb;
+  background: var(--status-info-bg);
+  color: var(--status-info-ink);
 }
 .metric-icon.purple {
-  background: #f3e8ff;
-  color: #9333ea;
+  background: var(--status-archived-bg);
+  color: var(--status-archived-ink);
 }
 .metric-icon.orange {
   background: var(--orange-soft);
-  color: var(--orange);
+  color: var(--admin-accent-text);
 }
 .metric-icon.amber {
-  background: #fef3c7;
-  color: #d97706;
+  background: var(--status-warning-bg);
+  color: var(--status-warning-ink);
 }
 .metric-card-label {
   font-size: 10.5px;
@@ -78,7 +78,7 @@
   margin-top: 10px;
 }
 .metric-card-sub.alert {
-  color: var(--orange);
+  color: var(--admin-accent-text);
   font-weight: 600;
 }
 
@@ -127,28 +127,28 @@
   white-space: nowrap;
 }
 .btn-toggle.published {
-  color: #166534;
-  background: #dcfce7;
-  border-color: #bbf7d0;
+  color: var(--status-published-ink);
+  background: var(--status-published-bg);
+  border-color: var(--status-published-line);
 }
 .btn-toggle.published:hover {
-  background: #bbf7d0;
+  background: var(--status-published-line);
 }
 .btn-toggle.draft {
   color: var(--muted);
-  background: #f3f4f6;
-  border-color: #e5e7eb;
+  background: var(--status-draft-bg);
+  border-color: var(--status-draft-line);
 }
 .btn-toggle.draft:hover {
-  background: #e5e7eb;
+  background: var(--status-draft-line);
 }
 .btn-toggle.archived {
-  color: #6b21a8;
-  background: #f3e8ff;
-  border-color: #e9d5ff;
+  color: var(--status-archived-ink);
+  background: var(--status-archived-bg);
+  border-color: var(--status-archived-line);
 }
 .btn-toggle.archived:hover {
-  background: #e9d5ff;
+  background: var(--status-archived-line);
 }
 
 /* ─── Calendar ───────────────────────────────────────────────────────── */
@@ -205,11 +205,11 @@
   border-right: 0;
 }
 .calendar-day.other-month {
-  background: #fafafa;
+  background: var(--admin-muted-surface);
 }
 .calendar-day.today .calendar-day-num {
   background: var(--orange);
-  color: #fff;
+  color: var(--admin-primary-ink);
   border-radius: 50%;
 }
 .calendar-day-num {
@@ -236,16 +236,16 @@
   line-height: 1.5;
 }
 .calendar-event.draft {
-  background: #f3f4f6;
+  background: var(--status-draft-bg);
   color: var(--muted);
 }
 .calendar-event.published {
-  background: #dcfce7;
-  color: #16a34a;
+  background: var(--status-published-bg);
+  color: var(--status-published-ink);
 }
 .calendar-event.archived {
-  background: #f3e8ff;
-  color: #6b21a8;
+  background: var(--status-archived-bg);
+  color: var(--status-archived-ink);
 }
 
 /* ─── Global search dropdown ─────────────────────────────────────────── */
@@ -292,23 +292,23 @@
 /* ─── Form submission badges ─────────────────────────────────────────── */
 .badge-recu {
   color: var(--muted);
-  background: #f3f4f6;
-  border-color: #e5e7eb;
+  background: var(--status-draft-bg);
+  border-color: var(--status-draft-line);
 }
 .badge-encours {
-  color: #92400e;
-  background: #fef3c7;
-  border-color: #fde68a;
+  color: var(--status-warning-ink);
+  background: var(--status-warning-bg);
+  border-color: var(--status-warning-line);
 }
 .badge-traite {
-  color: #166534;
-  background: #dcfce7;
-  border-color: #bbf7d0;
+  color: var(--status-success-ink);
+  background: var(--status-success-bg);
+  border-color: var(--status-success-line);
 }
 .badge-archive {
-  color: #6b21a8;
-  background: #f3e8ff;
-  border-color: #e9d5ff;
+  color: var(--status-archived-ink);
+  background: var(--status-archived-bg);
+  border-color: var(--status-archived-line);
 }
 
 /* ─── Preview link button ────────────────────────────────────────────── */

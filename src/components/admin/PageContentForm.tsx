@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import type { Media, Page } from "@/types/cms";
 import { ImageCropField } from "@/components/media/ImageCropField";
 import { HERO_ASPECT } from "@/constants/imageAspects";
+import { AdminFormBar } from "@/components/admin/AdminFormBar";
 
 type ActionFn = (formData: FormData) => Promise<void>;
 
@@ -80,7 +81,7 @@ export function PageContentForm({ slug, label, page, images, action }: Props) {
         {images.length === 0 && (
           <p style={{ fontSize: 13, color: "var(--muted)" }}>
             Aucune image dans la médiathèque.{" "}
-            <Link href="/admin/media" style={{ color: "var(--orange)" }}>
+            <Link href="/admin/media" style={{ color: "var(--admin-accent-text)" }}>
               Importer une photo →
             </Link>
           </p>
@@ -105,11 +106,7 @@ export function PageContentForm({ slug, label, page, images, action }: Props) {
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button type="submit" className="cta" style={{ minWidth: 160 }}>
-          Enregistrer les modifications
-        </button>
-      </div>
+      <AdminFormBar />
     </form>
   );
 }

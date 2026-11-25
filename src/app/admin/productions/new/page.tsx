@@ -7,8 +7,8 @@ import { ProductionForm } from "@/components/admin/ProductionForm";
 import { createProductionAction } from "../actions";
 
 export default async function NewProductionPage() {
-  const [themes, subThemes, authors, media] = await Promise.all([
-    themeRepository.listThemes(true),
+  const [{ themes, archivedHiddenCount }, subThemes, authors, media] = await Promise.all([
+    themeRepository.listSelectableThemes(),
     subThemeRepository.listSubThemes(true),
     authorRepository.listAuthors(),
     mediaRepository.list(),
@@ -28,6 +28,7 @@ export default async function NewProductionPage() {
       <ProductionForm
         action={createProductionAction}
         themes={themes}
+        archivedHiddenCount={archivedHiddenCount}
         subThemes={subThemes}
         authors={authors}
         mediaItems={media}

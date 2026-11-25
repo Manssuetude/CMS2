@@ -6,8 +6,8 @@ import { eventRepository } from "@/repositories/eventRepository";
 import { createProjectAction } from "../actions";
 
 export default async function NewProjetPage() {
-  const [themes, productions, events] = await Promise.all([
-    themeRepository.listThemes(true),
+  const [{ themes }, productions, events] = await Promise.all([
+    themeRepository.listSelectableThemes(),
     productionRepository.listProductions(true),
     eventRepository.listEvents(true),
   ]);

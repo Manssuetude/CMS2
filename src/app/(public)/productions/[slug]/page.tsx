@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import { completeDescription } from "@/utils/seoText";
 import { notFound } from "next/navigation";
-import { ProductionDetail } from "@/components/public/ProductionDetail";
+import { ArticleReader } from "@/components/public/ArticleReader";
 import { productionRepository } from "@/repositories/productionRepository";
-import { mediaRepository } from "@/repositories/mediaRepository";
-import { subThemeRepository } from "@/repositories/subThemeRepository";
-import { themeRepository } from "@/repositories/themeRepository";
-import { authorRepository } from "@/repositories/authorRepository";
+import { loadProductionPage, productionBasePath } from "@/services/productionReadingService";
 import { buildPageMetadata, sectionRobots } from "@/lib/seo";
-import { rankRelatedProductions } from "@/utils/relatedProductions";
 import { JsonLd } from "@/components/public/JsonLd";
 import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 
@@ -18,9 +14,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const robots = await sectionRobots("/productions");
   try {
-    const item = await productionRepository.getProduction(slug);
-    if (!item) return { robots };
-    const imageUrl = await mediaRepository.getResourceUrl(item.thumbnailId);
+    const data = await loadProductionPage(slug);
+    if (!data) return { robots };
+    const { item, imageUrl } = data;
+    // Partie 1 = l'article lui-même : on garde le titre de l'article (URL
+    // principale, celle qui est partagée et référencée).
     return buildPageMetadata({
       title: item.seoTitle || item.title,
       description:
@@ -28,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         completeDescription(item.description, [
           "Une production de Manssuétude, think tank jeunesse sur l'Afrique et ses diasporas.",
         ]),
-      path: `/productions/${item.slug}`,
+      path: productionBasePath(item.slug),
       imageUrl,
       ogType: "article",
       robots,
@@ -50,52 +48,21 @@ export async function generateStaticParams() {
 
 export default async function ProductionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const item = await productionRepository.getProduction(slug);
-  if (!item) notFound();
-
-  const [
-    allThemes,
-    allSubThemes,
-    subThemeIds,
-    fileUrl,
-    imageUrl,
-    allProductions,
-    subThemeLinks,
-    authorIds,
-    allAuthors,
-  ] = await Promise.all([
-    themeRepository.listThemes(false),
-    subThemeRepository.listSubThemes(false),
-    productionRepository.getProductionSubThemeIds(item.id),
-    mediaRepository.getResourceUrl(item.fileId),
-    mediaRepository.getResourceUrl(item.thumbnailId),
-    productionRepository.listProductions(),
-    productionRepository.getAllProductionSubThemeLinks(),
-    authorRepository.getProductionAuthorIds(item.id),
-    authorRepository.listAuthors(),
-  ]);
-
-  const enriched = { ...item, subThemeIds };
-  const relatedProductions = rankRelatedProductions(item, subThemeIds, allProductions, subThemeLinks);
-  const authors = allAuthors.filter((a) => authorIds.includes(a.id));
+  const data = await loadProductionPage(slug);
+  if (!data) notFound();
+  const { item } = data;
+  const basePath = productionBasePath(item.slug);
 
   return (
     <>
       <JsonLd
         data={buildBreadcrumbJsonLd([
           { name: "Productions", path: "/productions" },
-          { name: item.title, path: `/productions/${item.slug}` },
+          { name: item.title, path: basePath },
         ])}
       />
-      <ProductionDetail
-        item={enriched}
-        allThemes={allThemes}
-        allSubThemes={allSubThemes}
-        authors={authors}
-        relatedProductions={relatedProductions}
-        fileUrl={fileUrl}
-        imageUrl={imageUrl}
-      />
+      {/* Toute production passe par la lecture d'article (page de secours sans texte). */}
+      <ArticleReader {...data} currentIndex={0} />
     </>
   );
 }

@@ -522,7 +522,9 @@ CREATE TABLE public.productions (
     download_label text,
     video_url text,
     seo_title text,
-    seo_description text
+    seo_description text,
+    body_source_name text,
+    body_imported_at timestamp with time zone
 );
 
 

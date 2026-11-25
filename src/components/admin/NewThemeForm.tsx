@@ -31,7 +31,7 @@ export function NewThemeForm({ action }: Props) {
 
           <div className="form-field">
             <label className="field-label" htmlFor="title">
-              Titre <span style={{ color: "var(--orange)" }}>*</span>
+              Titre <span style={{ color: "var(--admin-accent-text)" }}>*</span>
             </label>
             <input
               id="title"
@@ -49,7 +49,7 @@ export function NewThemeForm({ action }: Props) {
 
           <div className="form-field">
             <label className="field-label" htmlFor="slug">
-              Identifiant URL <span style={{ color: "var(--orange)" }}>*</span>
+              Identifiant URL <span style={{ color: "var(--admin-accent-text)" }}>*</span>
             </label>
             <input
               id="slug"
