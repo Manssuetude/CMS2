@@ -328,6 +328,38 @@
 .site-shell .article-part-body .rich-text h4 {
   scroll-margin-top: calc(var(--article-header-h, 88px) + 5rem);
 }
+/* Hiérarchie des titres du texte : le « Titre 2 » du Word (h3) doit se
+   distinguer nettement du texte (1,15rem) et d'un paragraphe tout en gras ;
+   le « Titre 3 » (h4) reste au moins à la taille du texte, en gras. */
+.site-shell .article-part-body .rich-text h3 {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.67rem);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  color: var(--ed-ink);
+}
+.site-shell .article-part-body .rich-text > h3 {
+  margin-top: 2.2em;
+}
+.site-shell .article-part-body .rich-text h4 {
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  font-size: 1.265rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--ed-ink);
+}
+.site-shell .article-part-body .rich-text > h4 {
+  margin-top: 1.9em;
+}
+.site-shell .article-part-body .rich-text > h3 + h4 {
+  margin-top: 0.9em;
+}
+.site-shell .article-part-body .rich-text > :is(h3, h4) + * {
+  margin-top: 0.7em;
+}
+
 /* Production sans texte (pas encore de Word) : encadré sobre au-dessus du
    bandeau de téléchargement. */
 .site-shell .article-pdf-notice {
