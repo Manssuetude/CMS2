@@ -7,6 +7,7 @@ import { subThemeRepository } from "@/repositories/subThemeRepository";
 import { themeRepository } from "@/repositories/themeRepository";
 import { splitIntoParts, type ArticlePart } from "@/utils/articleParts";
 import { pickNextArticle } from "@/utils/articleNavigation";
+import { productionDownloadPath, resolveProductionDownload, type ProductionDownload } from "@/utils/productionDownload";
 import { rankRelatedProductions } from "@/utils/relatedProductions";
 
 // Données des pages publiques d'une production (/productions/[slug] et
@@ -21,7 +22,12 @@ export type ProductionPageData = {
   allSubThemes: SubTheme[];
   authors: Author[];
   relatedProductions: Production[];
-  fileUrl: string | null;
+  /**
+   * Lien des boutons de téléchargement : route /productions/[slug]/telecharger
+   * sur le site (l'URL du Storage n'est jamais affichée), fichier direct dans
+   * l'aperçu de l'admin (production pas forcément publiée). null sans PDF.
+   */
+  pdfHref: string | null;
   imageUrl: string | null;
   /** Vide si la production n'a pas de `body` : page de secours (voir utils/productionReading). */
   parts: ArticlePart[];
@@ -68,7 +74,7 @@ export async function buildProductionPageData(
     allSubThemes,
     authors: allAuthors.filter((a) => authorIds.includes(a.id)),
     relatedProductions: rankRelatedProductions(item, subThemeIds, allProductions, subThemeLinks),
-    fileUrl,
+    pdfHref: fileUrl ? (links ? fileUrl : productionDownloadPath(item.slug)) : null,
     imageUrl,
     parts,
     nextArticle: next ? { slug: next.slug, title: next.title } : null,
@@ -90,4 +96,14 @@ export async function listProductionPartParams(): Promise<Array<{ slug: string; 
         .slice(1)
         .map((part) => ({ slug: p.slug, partie: part.slug })),
     );
+}
+
+/**
+ * Téléchargement du PDF d'une production publiée (route /telecharger) :
+ * redirection vers le fichier du Storage, en pièce jointe. Lecture seule.
+ */
+export async function getProductionPdfDownload(slug: string): Promise<ProductionDownload> {
+  const item = await productionRepository.getProduction(slug);
+  const fileUrl = item?.fileId ? await mediaRepository.getResourceUrl(item.fileId) : null;
+  return resolveProductionDownload(item, fileUrl);
 }

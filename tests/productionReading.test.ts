@@ -39,10 +39,14 @@ test("page production — sans texte ni PDF : page de secours, chapô seul", () 
 
 test("page production — ArticleReader : encadré PDF seulement en mode « pdf », bandeau seulement avec un PDF", () => {
   const reader = read("src/components/public/ArticleReader.tsx");
-  assert.match(reader, /productionReadingMode\(parts\.length, fileUrl\)/);
+  assert.match(reader, /productionReadingMode\(parts\.length, pdfHref\)/);
   assert.match(reader, /mode === "pdf" && \(\s*<div className="article-pdf-notice">/);
   assert.match(reader, /Cet article est disponible en PDF/);
-  assert.match(reader, /\{fileUrl && \(\s*<section className="article-pdf-band"/);
+  assert.match(reader, /\{downloadHref && \(\s*<section className="article-pdf-band"/);
+  // Téléchargement direct : plus d'ouverture dans un onglet ni d'URL du Storage.
+  assert.doesNotMatch(reader, /target="_blank"/);
+  // L'URL du fichier n'est jamais transmise au composant public (seulement pdfHref).
+  assert.doesNotMatch(reader, /fileUrl/);
   assert.doesNotMatch(reader, /—/, "pas de tiret cadratin dans les textes affichés");
 });
 

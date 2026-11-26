@@ -1,7 +1,8 @@
 /* Lecture d'un article par parties (ArticleReader / ArticlePartsNav) —
-   /productions/[slug] et /productions/[slug]/[partie]. Ordinateur : colonne des
-   parties collante (≈ 280 px) + colonne de lecture (760 px max). Téléphone
-   (< 900 px) : la colonne devient une barre collante dépliable sous le header. */
+   /productions/[slug] et /productions/[slug]/[partie]. L'ensemble est centré :
+   ≥ 1440 px : parties (280 px) | texte (760 px max) | outils (240 px) ;
+   900–1439 px : parties | texte ; < 900 px : la colonne des parties devient
+   une barre collante dépliable sous le header, pas de colonne outils. */
 
 .site-shell .sr-only {
   position: absolute;
@@ -22,9 +23,10 @@
   --article-card: color-mix(in srgb, var(--ed-sink) 45%, var(--ed-raise));
   display: grid;
   grid-template-columns: minmax(240px, 300px) minmax(0, 760px);
-  gap: clamp(2.5rem, 5vw, 6rem);
+  justify-content: center;
+  gap: clamp(2.5rem, 4vw, 4.5rem);
   align-items: start;
-  /* Même bord gauche que le logo du header (voir event-page.css). */
+  /* Pleine largeur (sans la marge de .page-main), colonnes centrées. */
   margin-inline: calc(-1 * var(--page-x, 0px));
   padding: clamp(1.5rem, 3vw, 2.5rem) var(--ed-gutter) clamp(3rem, 6vw, 5rem);
 }
@@ -323,6 +325,8 @@
   font-size: 1.15rem;
   line-height: 1.85;
   color: var(--ed-ink);
+  /* Le texte justifié du site crée des espaces irréguliers à l'écran. */
+  text-align: left;
 }
 .site-shell .article-part-body .rich-text h3,
 .site-shell .article-part-body .rich-text h4 {
@@ -573,6 +577,128 @@
 }
 .site-shell .article-pdf-button:hover {
   background: var(--ed-accent-strong-hover);
+}
+
+/* ── Colonne outils (≥ 1440 px seulement) ───────────────────────────── */
+.site-shell .article-tools {
+  display: none;
+}
+.site-shell .article-tools-block + .article-tools-block {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ed-line);
+}
+.site-shell .article-tools-label {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ed-accent-text);
+}
+.site-shell .article-tools-value {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  color: var(--ed-ink);
+}
+.site-shell .article-tools-pdf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.7rem 1rem;
+  border-radius: var(--ed-radius);
+  background: var(--ed-accent-strong);
+  color: var(--ed-on-accent);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+}
+.site-shell .article-tools-pdf svg {
+  flex-shrink: 0;
+}
+.site-shell .article-tools-pdf:hover {
+  background: var(--ed-accent-strong-hover);
+}
+.site-shell .article-tools-meta {
+  margin: 0.5rem 0 0;
+  font-size: var(--ed-step-small);
+  color: var(--ed-muted);
+  text-align: center;
+}
+.site-shell .article-tools .share-buttons {
+  flex-wrap: wrap;
+}
+.site-shell .article-tools .share-buttons :is(a, button) {
+  min-width: 44px;
+  min-height: 44px;
+}
+.site-shell .article-tools .cite-block {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.9rem 1rem;
+}
+.site-shell .article-tools .cite-text {
+  flex: none;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.site-shell .article-tools .cite-block .btn {
+  justify-content: center;
+  min-height: 44px;
+}
+
+@media (min-width: 1440px) {
+  .site-shell .article-reader {
+    grid-template-columns: 280px minmax(0, 760px) 240px;
+    column-gap: clamp(2rem, 2.5vw, 3rem);
+  }
+  .site-shell .article-reader--single {
+    grid-template-columns: minmax(0, 760px) 240px;
+  }
+  .site-shell .article-tools {
+    display: block;
+    position: sticky;
+    top: var(--article-sticky-top);
+    max-height: calc(100vh - var(--article-sticky-top) - 1rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* Le téléchargement est déjà dans la colonne outils : bandeau compact. */
+  .site-shell .article-pdf-band-inner {
+    justify-content: center;
+    gap: 1.25rem;
+    padding-block: 1.25rem;
+  }
+  .site-shell .article-pdf-icon {
+    display: none;
+  }
+  .site-shell .article-pdf-text {
+    flex: 0 1 auto;
+  }
+  .site-shell .article-pdf-title {
+    font-size: 1.2rem;
+  }
+  .site-shell .article-pdf-meta {
+    margin-top: 0.15rem;
+    font-size: var(--ed-step-small);
+  }
+  .site-shell .article-pdf-button {
+    min-height: 44px;
+    padding: 0.55rem 1.2rem;
+    background: transparent;
+    border: 1px solid var(--ed-on-night-soft);
+    color: var(--ed-on-night);
+  }
+  .site-shell .article-pdf-button:hover {
+    background: color-mix(in srgb, var(--ed-on-night) 12%, transparent);
+  }
 }
 
 /* ── Téléphone et tablette étroite ──────────────────────────────────── */
