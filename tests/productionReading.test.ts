@@ -70,3 +70,18 @@ test("liseuse PDF retirée : plus de PdfViewer, ProductionDetail ni react-pdf", 
   assert.equal(pkg.dependencies?.["react-pdf"], undefined);
   assert.ok(pkg.dependencies?.["pdfjs-dist"], "pdfjs-dist sert au comptage des pages dans l'admin");
 });
+
+test("pages publiques production — brouillons et archives non servis", () => {
+  const service = read("src/services/productionReadingService.ts");
+  // La page et le téléchargement ne chargent que des productions publiées.
+  assert.match(service, /loadProductionPage = cache\(async[^]*?getPublishedProduction\(slug\)/);
+  assert.match(service, /getProductionPdfDownload[^]*?getPublishedProduction\(slug\)/);
+  const repository = read("src/repositories/productionRepository.ts");
+  assert.match(repository, /getPublishedProduction[^]*?\.eq\("status", "published"\)/);
+  // Pas de pré-génération des brouillons.
+  const page = read("src/app/(public)/productions/[slug]/page.tsx");
+  assert.doesNotMatch(page, /listProductions\(true\)/);
+  // « Voir sur le site » seulement pour une production publiée (sinon : Aperçu).
+  const edit = read("src/app/admin/productions/[id]/edit/page.tsx");
+  assert.match(edit, /publicHref=\{item\.status === "published"/);
+});

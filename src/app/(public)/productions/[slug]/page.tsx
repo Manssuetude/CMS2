@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export async function generateStaticParams() {
   try {
-    const items = await productionRepository.listProductions(true);
+    const items = await productionRepository.listProductions();
     return items.map((p) => ({ slug: p.slug }));
   } catch {
     // DB unreachable at build time (e.g. no credentials in CI): render on demand instead.

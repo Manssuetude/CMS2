@@ -81,8 +81,10 @@ export async function buildProductionPageData(
   };
 }
 
+// Pages publiques : production publiée seulement (un brouillon ou une archive
+// répond 404 ; l'admin passe par l'aperçu).
 export const loadProductionPage = cache(async (slug: string): Promise<ProductionPageData | null> => {
-  const item = await productionRepository.getProduction(slug);
+  const item = await productionRepository.getPublishedProduction(slug);
   return item ? buildProductionPageData(item) : null;
 });
 
@@ -103,7 +105,7 @@ export async function listProductionPartParams(): Promise<Array<{ slug: string; 
  * redirection vers le fichier du Storage, en pièce jointe. Lecture seule.
  */
 export async function getProductionPdfDownload(slug: string): Promise<ProductionDownload> {
-  const item = await productionRepository.getProduction(slug);
+  const item = await productionRepository.getPublishedProduction(slug);
   const fileUrl = item?.fileId ? await mediaRepository.getResourceUrl(item.fileId) : null;
   return resolveProductionDownload(item, fileUrl);
 }

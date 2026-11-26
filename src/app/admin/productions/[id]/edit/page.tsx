@@ -39,7 +39,7 @@ export default async function EditProductionPage({ params }: Props) {
         section={{ label: "Productions", href: "/admin/productions" }}
         title={item.title}
         status={item.status}
-        publicHref={`/productions/${item.slug}`}
+        publicHref={item.status === "published" ? `/productions/${item.slug}` : undefined}
         duplicate={{ action: duplicateProductionAction, id: item.id }}
       />
       <ProductionForm
