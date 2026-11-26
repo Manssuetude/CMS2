@@ -46,9 +46,17 @@ export const productionRepository = {
     return data.map(mapProduction);
   },
 
-  async getProduction(slug: string): Promise<Production | null> {
-    const items = await productionRepository.listProductions(true);
-    return items.find((i) => i.slug === slug) ?? null;
+  /** Production publiée seulement (pages publiques) : brouillons et archives → null. */
+  async getPublishedProduction(slug: string): Promise<Production | null> {
+    const db = getSupabaseAdmin();
+    const { data, error } = await db
+      .from("productions")
+      .select("*")
+      .eq("slug", slug)
+      .eq("status", "published")
+      .maybeSingle();
+    if (error) throw error;
+    return data ? mapProduction(data as DataRow) : null;
   },
 
   async getProductionById(id: string): Promise<Production | null> {
