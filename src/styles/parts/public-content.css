@@ -280,19 +280,6 @@
 }
 
 /* ─── Hero detail variants ───────────────────────────────────────────── */
-.hero-type-badge {
-  position: absolute;
-  top: 32px;
-  left: 32px;
-  padding: 8px 16px;
-  border-radius: var(--radius-pill);
-  background: var(--orange-fill);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
 .hero-progress {
   position: absolute;
   bottom: 10%;

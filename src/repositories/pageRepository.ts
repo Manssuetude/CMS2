@@ -93,13 +93,4 @@ export const pageRepository = {
     if (error) throw error;
     return data;
   },
-
-  async updatePageSections(slug: string, sections: unknown[]) {
-    const db = getSupabaseAdmin();
-    const { error } = await db
-      .from("pages")
-      .update({ sections, status: "published", updated_at: new Date().toISOString() })
-      .eq("slug", slug);
-    if (error) throw error;
-  },
 };

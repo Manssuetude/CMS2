@@ -154,12 +154,3 @@ export function FormTabPanel({ id, children }: { id: string; children: ReactNode
     </div>
   );
 }
-
-/** Lien qui ouvre un onglet de la fiche (ex. « Ajouter les photos → »). */
-export function TabLink({ tab, children, className }: { tab: string; children: ReactNode; className?: string }) {
-  return (
-    <a href={`#${tab}`} className={className}>
-      {children}
-    </a>
-  );
-}

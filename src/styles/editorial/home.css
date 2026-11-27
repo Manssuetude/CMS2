@@ -89,21 +89,6 @@
 .site-shell .home-focus--no-image {
   grid-template-columns: 1fr;
 }
-.site-shell .home-focus-media {
-  position: relative;
-  overflow: hidden;
-  aspect-ratio: 5 / 4;
-  border-radius: 0;
-}
-.site-shell .home-focus-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.site-shell .home-focus:hover .home-focus-media img {
-  transform: scale(1.03);
-}
 .site-shell .home-focus-copy h2 {
   font-size: var(--ed-step-4);
   margin: 0 0 1rem;
@@ -307,44 +292,6 @@
 
 /* Thèmes en vedette : grille adaptative au nombre (cartes de largeur fixe,
    centrées quand il y en a peu, réparties quand il y en a plus). */
-.site-shell .home-themes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.25rem;
-}
-.site-shell .home-theme-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding: 1.75rem;
-  background: var(--ed-raise);
-  border: 1px solid var(--ed-line);
-  border-radius: var(--ed-radius-lg);
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease;
-}
-.site-shell .home-theme-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--ed-line-strong);
-}
-.site-shell .home-theme-kicker {
-  font-size: var(--ed-step-small);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ed-clay);
-}
-.site-shell .home-theme-card h3 {
-  font-size: var(--ed-step-3);
-  margin: 0;
-}
-.site-shell .home-theme-card p {
-  color: var(--ed-ink-soft);
-  font-size: 0.98rem;
-  line-height: 1.6;
-  margin: 0;
-}
 
 /* 5 — Méthode PERCA */
 .site-shell .home-method {
@@ -487,9 +434,6 @@
   .site-shell .home-focus {
     grid-template-columns: 1fr;
   }
-  .site-shell .home-focus-media {
-    order: 2;
-  }
   .site-shell .home-section-head {
     flex-direction: column;
     align-items: flex-start;
@@ -529,8 +473,7 @@
     animation-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .site-shell .home-hero-media:hover img,
-  .site-shell .home-focus-media:hover img {
+  .site-shell .home-hero-media:hover img {
     transform: none;
   }
   .site-shell .btn:hover,

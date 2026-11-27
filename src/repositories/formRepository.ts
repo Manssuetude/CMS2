@@ -36,16 +36,4 @@ export const formRepository = {
     if (error) throw error;
     return mapSubmission(row);
   },
-
-  async updateStatus(id: string, status: FormSubmission["status"], notes?: string) {
-    const db = getSupabaseAdmin();
-    const { data, error } = await db
-      .from("form_submissions")
-      .update({ status, notes, updated_at: new Date().toISOString() })
-      .eq("id", id)
-      .select()
-      .single();
-    if (error) throw error;
-    return mapSubmission(data);
-  },
 };

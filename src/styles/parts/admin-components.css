@@ -650,24 +650,12 @@
 @media (max-width: 960px) {
   .hero,
   .grid,
-  .admin-layout,
-  .admin-grid,
   .site-footer,
-  .editor-shell,
-  .media-grid,
-  .health-grid,
   .block-registry-grid {
     grid-template-columns: 1fr 1fr;
   }
   .admin-sidebar {
     position: static;
-    grid-column: 1 / -1;
-  }
-  .editor-structure,
-  .editor-settings {
-    position: static;
-  }
-  .editor-preview {
     grid-column: 1 / -1;
   }
 }
@@ -678,15 +666,8 @@
   }
   .hero,
   .grid,
-  .admin-layout,
-  .admin-grid,
   .form-grid,
   .site-footer,
-  .editor-shell,
-  .cms-preview-feed,
-  .cms-preview-gallery,
-  .media-grid,
-  .health-grid,
   .block-registry-grid,
   .wizard-sources {
     grid-template-columns: 1fr;
@@ -698,11 +679,6 @@
   }
   h1 {
     font-size: 42px;
-  }
-  .editor-toolbar,
-  .cms-preview-cta {
-    align-items: flex-start;
-    flex-direction: column;
   }
 }
 

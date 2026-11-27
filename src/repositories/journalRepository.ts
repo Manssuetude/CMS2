@@ -82,14 +82,4 @@ export const journalRepository = {
     const { error } = await db.from("journal_entries").delete().eq("id", id);
     if (error) throw error;
   },
-
-  async toggleStatus(id: string, currentStatus: string): Promise<void> {
-    const next = currentStatus === "published" ? "draft" : "published";
-    const db = getSupabaseAdmin();
-    const { error } = await db
-      .from("journal_entries")
-      .update({ status: next, updated_at: new Date().toISOString() })
-      .eq("id", id);
-    if (error) throw error;
-  },
 };

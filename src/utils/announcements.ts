@@ -67,12 +67,6 @@ function frenchDate(time: number): string {
   return label.replace(/^1 /, "1er ");
 }
 
-/** « 31 décembre 2026 » (heure de Paris). */
-export function formatParisDate(iso: string | null | undefined): string | null {
-  const time = toTime(iso);
-  return time === null ? null : frenchDate(time);
-}
-
 /**
  * Date de clôture affichée. `ends_at` est exclusif : une fin saisie à minuit pile
  * (1er janvier 00:00) se lit « clôture le 31 décembre ».

@@ -119,11 +119,3 @@ export async function deleteJournalEntryAction(formData: FormData): Promise<void
   await logAction("delete", { entityType: "journal_entry", entityId: id, summary: "Entrée supprimée" });
   revalidatePath("/admin/journal");
 }
-
-export async function toggleJournalEntryStatusAction(formData: FormData): Promise<void> {
-  const id = (formData.get("id") as string | null)?.trim();
-  const status = (formData.get("status") as string | null)?.trim();
-  if (!id || !status) return;
-  await journalRepository.toggleStatus(id, status);
-  revalidatePath("/admin/journal");
-}
