@@ -74,16 +74,4 @@ export const activityFormatRepository = {
       if (error) throw error;
     }
   },
-
-  async getAllActivityFormatLinks(): Promise<Record<string, string[]>> {
-    const db = getSupabaseAdmin();
-    const { data, error } = await db.from("event_activity_formats").select("event_id, activity_format_id");
-    if (error) throw error;
-    const map: Record<string, string[]> = {};
-    for (const row of data ?? []) {
-      const eventId = String(row.event_id);
-      (map[eventId] ??= []).push(String(row.activity_format_id));
-    }
-    return map;
-  },
 };

@@ -4,8 +4,6 @@
 
 export type HeaderStyle = "classic" | "banner";
 
-export const HEADER_STYLES: readonly HeaderStyle[] = ["classic", "banner"];
-
 // En dessous de ce ratio largeur/hauteur, une image ne remplit pas une bannière
 // bord à bord sans perdre l'essentiel (portrait, carré, affiche) : repli Classique.
 export const BANNER_MIN_RATIO = 1.2;

@@ -127,7 +127,6 @@ SQL schema files are in `supabase/`: `schema.sql` (full schema — single source
 
 - `getPage(slug)` — retourne page + `imageUrl` résolue (jointure resources)
 - `updatePage(slug, fields)` — met à jour n'importe quel champ de la table `pages`
-- `updatePageSections(slug, blocks)` — met à jour uniquement les blocs de contenu
 
 ## Documentation
 
@@ -140,7 +139,7 @@ Detailed guides live in `docs/`:
 - `DATABASE.md` — table schemas
 - `WORKFLOWS.md` — Git branching and PR requirements
 - `QUALITY_GATES.md` — definition of done
-- `ENGINEERING_GUIDE.md` — high-level principles and anti-patterns
+- `ENGINEERING_GUIDE.md` (à la racine du dépôt, pas dans `docs/`) — high-level principles and anti-patterns
 
 ## Action Log
 

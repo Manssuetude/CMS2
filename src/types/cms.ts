@@ -501,8 +501,6 @@ export type AnnouncementState = "live" | "scheduled" | "ended" | "disabled" | "u
 // ── Page /nous-rejoindre (pages.content) ─────────────────────────────────────
 // Photo d'un emplacement : ressource de la médiathèque + recadrage + alt.
 export type SlotPhoto = { imageId: string | null; crop: ImageCrop | null; alt: string };
-// Photo résolue pour l'affichage (URL et dimensions de la ressource).
-export type ResolvedSlotPhoto = SlotPhoto & { url: string | null; width: number | null; height: number | null };
 
 export type JoinPageContent = {
   heroSubtitle: string;

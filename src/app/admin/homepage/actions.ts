@@ -7,13 +7,6 @@ import { logAction } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth";
 import { siteSettingsRepository } from "@/repositories/siteSettingsRepository";
 import { readKeyFiguresForm } from "@/utils/keyFigures";
-import type { ContentBlock } from "@/types/cms";
-
-export async function savePageBlocksAction(slug: string, blocks: ContentBlock[]): Promise<void> {
-  await pageRepository.updatePageSections(slug, blocks);
-  revalidatePath("/");
-  revalidatePath(`/${slug === "accueil" ? "" : slug}`);
-}
 
 export async function saveHomepageFieldsAction(formData: FormData): Promise<void> {
   await requirePermission("homepage:edit");

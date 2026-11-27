@@ -70,18 +70,6 @@ export const authorRepository = {
     }
   },
 
-  async getAllProductionAuthorLinks(): Promise<Record<string, string[]>> {
-    const db = getSupabaseAdmin();
-    const { data, error } = await db.from("production_authors").select("production_id, author_id");
-    if (error) throw error;
-    const map: Record<string, string[]> = {};
-    for (const row of data ?? []) {
-      const productionId = String(row.production_id);
-      (map[productionId] ??= []).push(String(row.author_id));
-    }
-    return map;
-  },
-
   // ── Événement ↔ Animateurs (many-to-many + contribution par lien) ────
   async getEventAnimators(eventId: string): Promise<EventAnimator[]> {
     const db = getSupabaseAdmin();
